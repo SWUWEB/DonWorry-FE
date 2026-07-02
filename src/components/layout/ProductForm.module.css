@@ -1,0 +1,115 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  width: 316px;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #5B6B6A;
+  margin-bottom: 4px;
+}
+
+.inputWrapper {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.textInput {
+  flex: 1;
+  border: none;
+  border-bottom: 2px solid #dddddd;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 0;
+  outline: none;
+}
+
+.priceWrapper {
+  display: flex;
+  gap: 4px;
+  margin: -8px 0 -4px 0;
+  align-items: baseline;
+}
+
+.priceInput {
+  width: 100%;
+  border: none;
+  font-size: 32px;
+  font-weight: bold;
+  outline: none;
+}
+
+.priceInput::placeholder,
+.textInput::placeholder {
+  color: #dddddd;
+  font-weight: bold;
+}
+
+.currency {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.message {
+  font-size: 12px;
+  margin-top: 0;
+}
+.errorMessage { color: #eb0000; }
+.successMessage { color: #008d02; }
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip, .button {
+  display: flex;
+  height: 32px;
+  border: 1.5px solid #2F7F82;
+  border-radius: 16px;
+
+  color: #2F7F82;
+  background: white;
+  font-size: 14px;
+
+  padding: 0 12px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.button {
+  flex-shrink: 0;
+  border-radius: 5px;
+  color: white;
+  border-color: #243130;
+  background-color: #243130;
+}
+
+.chip:hover {
+  color: #2F7F82;
+  background-color: #E5F2F1;
+}
+
+.button:hover {
+  border-color: #5B6B6A;
+  background-color: #5B6B6A;
+}
+
+.chipSelected {
+  color: #fefefe;
+  background-color: #2F7F82;
+  font-weight: 500;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+}
