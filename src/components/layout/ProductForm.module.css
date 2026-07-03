@@ -77,11 +77,9 @@
   height: 32px;
   border: 1.5px solid #2F7F82;
   border-radius: 16px;
-
   color: #2F7F82;
   background: white;
   font-size: 14px;
-
   padding: 0 12px;
   align-items: center;
   justify-content: center;
@@ -91,6 +89,7 @@
 
 .button {
   flex-shrink: 0;
+  width: 80px;
   border-radius: 5px;
   color: white;
   border-color: #243130;
