@@ -1,0 +1,22 @@
+.section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .date {
+    margin: 0;
+  
+    color: var(--Text-Primary, #243130);
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+  }
+  
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
