@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import styles from "./RecordCard.module.css";
 
 export type RecordType = "saved" | "consume";
 
 interface RecordCardProps {
+  id: string;
   title: string;
   category: string;
   amount: number;
@@ -11,6 +13,7 @@ interface RecordCardProps {
 }
 
 export default function RecordCard({
+  id,
   title,
   category,
   amount,
@@ -18,7 +21,7 @@ export default function RecordCard({
   thumbnail,
 }: RecordCardProps) {
   return (
-    <div className={styles.card}>
+    <Link to={`/record/${id}`} className={styles.card}>
       <div className={styles.left}>
         {thumbnail ? (
           <img src={thumbnail} alt={title} className={styles.thumbnail} />
@@ -39,6 +42,6 @@ export default function RecordCard({
       >
         {type === "saved" ? "+" : "-"} {amount.toLocaleString()}원
       </p>
-    </div>
+    </Link>
   );
 }
