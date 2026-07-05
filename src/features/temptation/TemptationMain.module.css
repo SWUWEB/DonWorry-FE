@@ -1,0 +1,159 @@
+/* TemptationMain.tsx */
+.temptationMain {
+  min-width: 390px;
+  margin: 0 auto;
+  position: relative;
+  padding: 25px;
+  padding-bottom: 80px;
+}
+
+.topLine {
+  display: flex;
+  color: var(--Primary, #243130);
+  font-size: 16px;
+  margin: 7px 0 15px 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.addBtn {
+  position: fixed;
+  bottom: 20px;
+  right: calc(50% - 195px + 20px); 
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--Main-500, #2F7F82);
+  color: var(--White, #FEFEFE);
+  cursor: pointer;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+}
+
+.addBtn:hover {
+  background-color: var(--Main-600, #286A6D);
+}
+
+/* SortBar.tsx */
+.sortBar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--Primary, #243130);
+}
+
+.sortBar:hover {
+  font-weight: 500;
+}
+
+.active {
+  display: inline-block;
+  font-weight: 500;
+  border-bottom: 1.5px solid var(--Primary, #243130);
+  line-height: 1.2;
+  padding-bottom: 0px;
+  cursor: pointer;
+}
+
+/* CategoryFilterBar.tsx */
+.chipContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -13px;
+  gap: 4px;
+}
+
+.chip {
+  display: flex;
+  height: 30px;
+  border: 1.5px solid var(--Main-500, #2F7F82);
+  border-radius: 16px;
+  color: var(--Main-500, #2F7F82);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.chip:hover {
+  color: var(--Main-500, #2F7F82);
+  background-color: var(--Main-100, #E5F2F1);
+}
+
+.chipSelected {
+  color: var(--White, #fefefe);
+  background-color: var(--Main-500, #2F7F82);
+  font-weight: 500;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+}
+
+/* CategoryProductBox.tsx */
+.productCategory {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.category {
+  color: var(--Primary, #243130);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.productContainer {
+  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-radius: 12px;
+  padding: 0 15px;
+}
+
+/* ProductItem.tsx */
+.itemContainer {
+  padding: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.itemInfo {
+  display: flex;
+  color: var(--Primary, #243130);
+  font-size: 14px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.itemPrice {
+  font-size: 12px;
+  margin-top: -5px;
+}
+
+.deleteBtn {
+  color: var(--Primary, #243130);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.itemTimer {
+    padding: 3px 0 5px 0;
+    margin: 0;
+    text-align: right;
+    font-size: 12px;
+    color: var(--Gray-300, #5B6B6A);
+}
