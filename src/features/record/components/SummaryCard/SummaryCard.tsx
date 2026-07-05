@@ -2,6 +2,7 @@ import styles from "./SummaryCard.module.css";
 import legendBg from "@/assets/legend-bg.svg";
 
 export default function SummaryCard() {
+  // 하드코딩됨. API 연결 시 수정 예정
   return (
     <section className={styles.summary}>
       <div className={styles.card}>

@@ -19,6 +19,7 @@ interface RecordGroup {
   records: Record[];
 }
 
+// 하드코딩됨. API 연결 시 수정 예정
 const mockData: RecordGroup[] = [
   {
     date: "2026년 4월 17일",
