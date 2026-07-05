@@ -12,36 +12,38 @@ export interface FormData {
 }
 
 interface FormProps {
+  formId?: string;
   showTimeSelector?: boolean;
   onSubmit: (data: FormData) => void;
 }
 
-export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
+export function ProductForm({ formId = 'product-form', showTimeSelector = true, onSubmit }: FormProps) {
   const [data, setData] = useState<FormData>({
     link: '', price: 0, name: '', category: '패션', time: '1일', reason: ''
   });
 
-  // const [linkStatus, setLinkStatus] = useState<{
-  //   loading: boolean;
-  //   error: boolean;
-  // }>({ loading: false, error: false });
+  const [linkStatus, setLinkStatus] = useState<{
+    loading: boolean;
+    error: boolean;
+    success?: boolean;
+  }>({ loading: false, error: false, success: false });
 
-  // const handleLinkFetch = async () => {
-  //   if (!data.link.trim()) return;
-  //   setLinkStatus({ loading: true, error: false });
+  const handleLinkFetch = async () => {
+    if (!data.link.trim()) return;
+    setLinkStatus({ loading: true, error: false, success: false });
     
-  //   try {
-  //     const result = await ~~~(data.link);  // API 호출부
-  //     setData(prev => ({
-  //       ...prev,
-  //       name: result.name,
-  //       price: result.price,
-  //     }));
-  //     setLinkStatus({ loading: false, error: false });
-  //   } catch (err) {
-  //     setLinkStatus({ loading: false, error: true });
-  //   }
-  // };
+    try {
+      const result = await fetchProductData(data.link);  // API 호출부
+      setData(prev => ({
+        ...prev,
+        name: result.name,
+        price: result.price,
+      }));
+      setLinkStatus({ loading: false, error: false, success: true });
+    } catch {
+      setLinkStatus({ loading: false, error: true, success: false });
+    }
+  };
     
   const [touched, setTouched] = useState({ price: false, name: false });
   const handleBlur = (field: 'price' | 'name') => setTouched({ ...touched, [field]: true });
@@ -64,7 +66,7 @@ export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
   };
 
   return (
-    <form className={styles.formContainer} onSubmit={handleSubmit}>
+    <form id={formId} className={styles.formContainer} onSubmit={handleSubmit}>
       
       <div className={styles.field}>
         <label className={styles.label}>상품 링크 (선택)</label>
@@ -75,19 +77,26 @@ export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
             value={data.link}
             onChange={(e) => {
               setData({...data, link: e.target.value});
-              // if (linkStatus.error) setLinkStatus({ loading: false, error: false});
+              if (linkStatus.error || linkStatus.success) {
+                setLinkStatus({ loading: false, error: false, success: false });
+              }
+              
             }} />
           <button
             type="button"
             className={styles.button}
-            // disabled={linkStatus.loading || !data.link.trim()}
-            // onClick={handleLinkFetch}
-            // {linkStatus.loading ? '• • •' : '불러오기'}
-            >불러오기</button>
+            disabled={linkStatus.loading || !data.link.trim()}
+            onClick={handleLinkFetch}
+            >
+              {linkStatus.loading ? '• • •' : '불러오기'}
+            </button>
         </div>
-        {/* {linkStatus.error && ( */}
+        {linkStatus.error && (
           <p className={`${styles.message} ${styles.errorMessage}`}>URL을 불러오는 데 실패했습니다.</p>
-        {/* )} */}
+        )}
+        {linkStatus.success && (
+          <p className={`${styles.message} ${styles.successMessage}`}>URL을 성공적으로 불러왔습니다.</p>
+        )}
       </div>
 
       <div className={styles.field}>
@@ -123,10 +132,15 @@ export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
 
       <div className={styles.field}>
         <label className={styles.label}>카테고리</label>
-        <div className={styles.chipGroup}>
+        <div className={styles.chipGroup} role="radiogroup">
           {CATEGORIES.map(c => (
-            <div key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`} 
-                 onClick={() => setData({...data, category: c})}>{c}</div>
+            <label key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`}>
+              <input
+                type="radio" name="category" value={c} className={styles.hidden}
+                checked={data.category === c} onChange={() => setData({...data, category: c})}
+              />
+              {c}
+            </label>
           ))}
         </div>
       </div>
@@ -134,10 +148,16 @@ export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
       {showTimeSelector && (
         <div className={styles.field}>
           <label className={styles.label}>고민해볼 시간</label>
-          <div className={styles.chipGroup}>
+          <div className={styles.chipGroup} role="radiogroup">
             {TIME_OPTIONS.map(t => (
-              <div key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`} 
-                   onClick={() => setData({...data, time: t})}>{t}</div>
+              <label key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`}> 
+                <input
+                  type="radio" name="time" value={t} className={styles.hidden}
+                  checked={data.time === t}
+                  onChange={() => setData({...data, time: t})}
+                />   
+                {t}
+              </label>
             ))}
           </div>
         </div>
@@ -153,4 +173,10 @@ export function ProductForm({ showTimeSelector = true, onSubmit }: FormProps) {
       </div>
     </form>
   );
+}
+
+// 임시 코드: 실제 API 호출 로직 구현 필요
+async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
+  console.log('fetchProductData called with link:', link);
+  throw new Error('Not implemented');
 }
