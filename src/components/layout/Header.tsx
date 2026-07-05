@@ -28,9 +28,9 @@ export default function Header({
                 {left}
             </div>
 
-            <h1 className={styles.title}>
+            {title && <h1 className={styles.title}>
                 {title}
-            </h1>
+            </h1>}
 
             <div className={styles.right}>
                 {right}
