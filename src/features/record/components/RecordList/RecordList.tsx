@@ -3,6 +3,8 @@ import DateSection from "../DateSection";
 import RecordCard from "../RecordCard";
 import type { RecordType } from "../RecordCard";
 
+export type FilterValue = "all" | RecordType;
+
 interface Record {
   title: string;
   category: string;
@@ -47,10 +49,24 @@ const mockData: RecordGroup[] = [
   },
 ];
 
-export default function RecordList() {
+interface RecordListProps {
+  filter: FilterValue;
+}
+
+export default function RecordList({ filter }: RecordListProps) {
+  const filteredData = mockData
+    .map((group) => ({
+      ...group,
+      records:
+        filter === "all"
+          ? group.records
+          : group.records.filter((record) => record.type === filter),
+    }))
+    .filter((group) => group.records.length > 0);
+
   return (
     <div className={styles.container}>
-      {mockData.map((group) => (
+      {filteredData.map((group) => (
         <DateSection key={group.date} date={group.date}>
           {group.records.map((record, index) => (
             <RecordCard
