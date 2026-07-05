@@ -1,1 +1,1 @@
-export { default } from "./FilterChip";
+export { default } from './FilterChip'

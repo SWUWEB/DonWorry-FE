@@ -5,7 +5,7 @@
   padding: 24px 40px;
   box-sizing: border-box;
 
-  background: var(--color-main-000, #F7FBFA);
+  background: var(--color-main-000, #f7fbfa);
 
   border-radius: 0 0 20px 20px;
   box-shadow: 0px 4px 4px rgba(56, 150, 152, 0.25);
@@ -37,51 +37,50 @@
 }
 
 .price {
-
-    color: var(--Text-Primary, #243130);
-    font-family: Pretendard;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+  color: var(--Text-Primary, #243130);
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 
 .legendWrapper {
-    position: relative;
-  
-    width: 244px;
-    height: 73px;
-  
-    margin-top: 12px;
+  position: relative;
+
+  width: 244px;
+  height: 73px;
+
+  margin-top: 12px;
 }
 
 .legendBg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .legend {
-    position: relative;
-    z-index: 1;
-  
-    width: 100%;
-    height: 100%;
-  
-    padding: 13px 80px 14px 24px;
-    box-sizing: border-box;
-  
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
-  }
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 13px 80px 14px 24px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
 
 .legendItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   color: var(--Text-Primary, #243130);
   font-family: Pretendard;
@@ -92,22 +91,21 @@
 }
 
 .leftItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 .percent {
+  margin-left: auto;
+  margin-right: 20px;
 
-    margin-left: auto;
-    margin-right: 20px; 
-
-    color: var(--Text-Primary, #243130);
-    font-family: Pretendard;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+  color: var(--Text-Primary, #243130);
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .dot {
@@ -118,7 +116,7 @@
 }
 
 .consume {
-  background: var(--color-gray-300, #5B6B6A);
+  background: var(--color-gray-300, #5b6b6a);
 }
 
 .save {

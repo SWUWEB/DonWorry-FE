@@ -1,79 +1,78 @@
 .card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  
-    width: 100%;
-    padding: 8px;
-  
-    border-radius: 16px;
-    background: #fdfefe;
-    
-  }
-  
-  .left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .thumbnail,
-  .thumbnailPlaceholder {
-    width: 46px;
-    height: 46px;
-  
-    border-radius: 7px;
-  
-    background: #e4e4e4;
-  
-    flex-shrink: 0;
-  }
-  
-  .thumbnail {
-    object-fit: cover;
-  }
-  
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .title {
-    margin: 0;
-  
-    color: var(--Text-Primary, #243130);
-    font-family: Pretendard;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-  }
-  
-  .category {
-    color: var(--Text-Primary, #243130);
-    font-family: Pretendard;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  }
-  
-  .amount {
-    color: var(--Text-Primary, #243130);
-    text-align: right;
-    font-family: Pretendard;
-    font-size: 17.319px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-  }
-  
-  .saved {
-    color: #273233;
-  }
-  
-  .consume {
-    color: #a8afaf;
-    text-decoration-line: line-through;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  padding: 8px;
+
+  border-radius: 16px;
+  background: #fdfefe;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.thumbnail,
+.thumbnailPlaceholder {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 7px;
+
+  background: #e4e4e4;
+
+  flex-shrink: 0;
+}
+
+.thumbnail {
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+
+  color: var(--Text-Primary, #243130);
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.category {
+  color: var(--Text-Primary, #243130);
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.amount {
+  color: var(--Text-Primary, #243130);
+  text-align: right;
+  font-family: Pretendard;
+  font-size: 17.319px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.saved {
+  color: #273233;
+}
+
+.consume {
+  color: #a8afaf;
+  text-decoration-line: line-through;
+}

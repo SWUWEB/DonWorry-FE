@@ -1,5 +1,5 @@
-import styles from "./SummaryCard.module.css";
-import legendBg from "@/assets/legend-bg.svg";
+import styles from './SummaryCard.module.css'
+import legendBg from '@/assets/legend-bg.svg'
 
 export default function SummaryCard() {
   // 하드코딩됨. API 연결 시 수정 예정
@@ -12,11 +12,7 @@ export default function SummaryCard() {
           <h2 className={styles.price}>+96,500원</h2>
 
           <div className={styles.legendWrapper}>
-            <img
-              src={legendBg}
-              alt=""
-              className={styles.legendBg}
-            />
+            <img src={legendBg} alt="" className={styles.legendBg} />
 
             <div className={styles.legend}>
               <div className={styles.legendItem}>
@@ -40,10 +36,8 @@ export default function SummaryCard() {
           </div>
         </div>
 
-        <div className={styles.chart}>
-          Chart
-        </div>
+        <div className={styles.chart}>Chart</div>
       </div>
     </section>
-  );
+  )
 }
