@@ -9,7 +9,7 @@
     padding: 0 16px;
     box-sizing: border-box;
   
-    background: var(--Main-000, #F7FBFA);
+    background: var(--color-main-000, #F7FBFA);
   }
   
   .left,
