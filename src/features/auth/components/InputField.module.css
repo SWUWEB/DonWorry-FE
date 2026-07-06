@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+
+  color: #6B7280;
+}
+
+.input {
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid #E4E4E4;
+  border-radius: 10px;
+
+  background-color: #F8F8F8;
+
+  font-size: 16px;
+  color: #111111;
+
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.input::placeholder {
+  color: #B3B3B3;
+}
+
+.input:focus {
+  background-color: #FFFFFF;
+  border-color: #3D8C8B;
+}
