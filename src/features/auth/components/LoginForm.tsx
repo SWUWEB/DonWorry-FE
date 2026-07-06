@@ -1,8 +1,7 @@
 import InputField from './InputField'
 import PrimaryButton from './PrimaryButton'
 import KakaoButton from './KakaoButton'
-import SignUpLink from './SignUpLink'
-import ErrorMessage from './ErrorMessage'
+import LoginLink from './LoginLink'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './LoginForm.module.css'
@@ -47,9 +46,7 @@ const handleLogin = () => {
       onChange={(e) => setPassword(e.target.value)}
 />
       
-      <ErrorMessage
-    message="비밀번호가 일치하지 않습니다."
-/>
+     
 
       <div className={styles.buttonGroup}>
       <PrimaryButton onClick={handleLogin}>
@@ -58,7 +55,7 @@ const handleLogin = () => {
      <KakaoButton />
      </div>
 
-<SignUpLink />
+<LoginLink />
     </>
   )
 }
