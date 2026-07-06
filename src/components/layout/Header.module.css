@@ -1,0 +1,91 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  width: 100%;
+  height: 50px;
+  background: var(--Main-000, #F7FBFA);
+  padding: 0 16px;
+  align-items: center;
+  box-sizing: border-box;
+}
+  
+.left {
+  display: flex;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+  
+.right {
+  display: flex;
+  height: 100%;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+  
+.title {
+  color: var(--Primary, #243130);
+  text-align: center;  
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+}
+
+.subContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 138px;
+  border-radius: 0 0 20px 20px;
+  background: var(--Main-000, #F7FBFA);
+  padding: 0 16px;
+  gap: 16px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 4px 0 rgba(77, 158, 155, 0.25);
+}
+
+.subTop {
+  grid-template-columns: 32px 1fr 32px;
+  width: 100%;
+  display: grid;
+  align-items: center;
+  box-sizing: border-box;
+}
+.subLeft {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.subRight {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.right button,
+.subLeft button,
+.subRight button {
+  color: var(--Primary, #243130);
+}
+
+.right button:hover,
+.subLeft button:hover,
+.subRight button:hover {
+  color: var(--Gray-300, #5B6B6A);
+}
+
+.subMain {
+  flex: 1;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
