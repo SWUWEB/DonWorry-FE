@@ -1,0 +1,91 @@
+.buttonGroup {
+  margin-top: 28px;
+}
+
+.loginLink {
+  margin-top: 16px;
+
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+
+  color: #666666;
+}
+
+.loginLink span {
+  font-weight: 600;
+  color: #2F7F82;
+  cursor: pointer;
+}
+
+.inputWithButton {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  margin-bottom: 16px; 
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items:center;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 400;
+  color: #6B7280;
+}
+
+.input {
+  flex: 1;
+
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid #E4E4E4;
+  border-radius: 10px;
+
+  background: #F8F8F8;
+  font-size: 16px;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #B3B3B3;
+  font-weight: 400;
+
+}
+
+
+.smallButton {
+  width: 82px;
+  height: 48px;
+
+  border: 1px solid #D9D9D9;
+  border-radius: 10px;
+
+  background: #F8F8F8;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.confirmButton {
+  width: 55px;     
+  height: 48px;
+
+  border: 1px solid #D9D9D9;
+  border-radius: 10px;
+
+  background: #F8F8F8;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
