@@ -3,7 +3,7 @@ import styles from './ProductForm.module.css';
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
 
 export interface FormData {
-  link: string;
+  link?: string;
   price: number;
   name: string;
   category: string;
@@ -29,7 +29,7 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
   }>({ loading: false, error: false, success: false });
 
   const handleLinkFetch = async () => {
-    if (!data.link.trim()) return;
+    if (!data.link?.trim()) return;
     setLinkStatus({ loading: true, error: false, success: false });
     
     try {
@@ -69,9 +69,10 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
     <form id={formId} className={styles.formContainer} onSubmit={handleSubmit}>
       
       <div className={styles.field}>
-        <label className={styles.label}>상품 링크 (선택)</label>
+        <label htmlFor="link" className={styles.label}>상품 링크 (선택)</label>
         <div className={styles.inputWrapper}>
           <input
+            id="link"
             className={styles.textInput}
             placeholder="https://..."
             value={data.link}
@@ -85,7 +86,7 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
           <button
             type="button"
             className={styles.button}
-            disabled={linkStatus.loading || !data.link.trim()}
+            disabled={linkStatus.loading || !data.link?.trim()}
             onClick={handleLinkFetch}
             >
               {linkStatus.loading ? '• • •' : '불러오기'}
@@ -100,9 +101,10 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>상품 가격</label>
+        <label htmlFor="price" className={styles.label}>상품 가격</label>
         <div className={styles.priceWrapper}>
           <input 
+            id="price"
             className={styles.priceInput} 
             type="text" 
             inputMode="numeric"
@@ -120,8 +122,9 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>상품명</label>
+        <label htmlFor="name" className={styles.label}>상품명</label>
         <input
+          id="name"
           className={styles.textInput}
           placeholder="직접 입력하거나 수정할 수 있어요"
           value={data.name}
@@ -164,8 +167,9 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
       )}
 
       <div className={styles.field}>
-        <label className={styles.label}>사고 싶은 이유 (선택)</label>
+        <label htmlFor="reason" className={styles.label}>사고 싶은 이유 (선택)</label>
         <input
+          id="reason"
           className={styles.textInput}
           placeholder="스트레스 받아서? 진짜 필요해서?"
           value={data.reason}
