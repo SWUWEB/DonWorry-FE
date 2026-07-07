@@ -8,7 +8,11 @@ interface FilterChipProps {
 
 export default function FilterChip({ label, selected = false, onClick }: FilterChipProps) {
   return (
-    <button className={`${styles.chip} ${selected ? styles.selected : ''}`} onClick={onClick}>
+    <button
+      type="button"
+      className={`${styles.chip} ${selected ? styles.selected : ''}`}
+      onClick={onClick}
+    >
       {label}
     </button>
   )
