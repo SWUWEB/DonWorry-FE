@@ -5,7 +5,7 @@ import type { RecordType } from '../RecordCard'
 
 export type FilterValue = 'all' | RecordType
 
-interface Record {
+interface RecordItem {
   id: string
   title: string
   category: string
@@ -16,7 +16,7 @@ interface Record {
 
 interface RecordGroup {
   date: string
-  records: Record[]
+  records: RecordItem[]
 }
 
 // 하드코딩됨. API 연결 시 수정 예정
