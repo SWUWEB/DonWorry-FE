@@ -9,9 +9,7 @@ import { BsLightningFill, BsFillSuitcaseFill } from 'react-icons/bs';
 import { PiHeartbeatFill } from 'react-icons/pi';
 import { HiDotsHorizontal } from 'react-icons/hi';
 
-import { CATEGORIES } from '@/constants/product';
-
-type Category = typeof CATEGORIES[number];
+import type { Category } from '@/features/temptation/types';
 
 interface CategoryIconEntry {
   Icon: IconType;

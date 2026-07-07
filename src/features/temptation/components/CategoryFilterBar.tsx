@@ -1,7 +1,6 @@
 import { CATEGORIES } from '@/constants/product';
 import styles from '../TemptationMain.module.css';
-
-type FilterValue = '전체' | typeof CATEGORIES[number];
+import type { FilterValue } from '../types';
 
 interface CategoryFilterTabsProps {
   selected: FilterValue;
@@ -14,10 +13,13 @@ export const CategoryFilterTabs = ({ selected, onSelect }: CategoryFilterTabsPro
   return (
     <div className={styles.chipContainer}>
       {FILTER_OPTIONS.map((option) => {
+        const isSelected = selected === option;
+
         return (
           <button
-            className={`${styles.chip} ${selected === option ? styles.chipSelected : ''}`}
+            className={`${styles.chip} ${isSelected ? styles.chipSelected : ''}`}
             key={option}
+            aria-pressed={isSelected}
             onClick={() => onSelect(option)}>
             {option}
           </button>

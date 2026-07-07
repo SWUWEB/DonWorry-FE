@@ -1,7 +1,5 @@
 import { CATEGORY_ICON_MAP } from './CategoryIconMap.tsx';
-import { CATEGORIES } from '@/constants/product.ts';
-
-type Category = typeof CATEGORIES[number];
+import type { Category } from '@/features/temptation/types';
 
 interface CategoryIconProps {
   category: Category;

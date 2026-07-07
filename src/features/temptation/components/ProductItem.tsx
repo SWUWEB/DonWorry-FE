@@ -1,6 +1,6 @@
 import { formatRemainingTime } from '../utils/formatTimer';
 import type { Product } from '../types';
-import styles from '../TemptationMain.module.css'
+import styles from './ProductItem.module.css'
 
 interface ProductItemProps {
   product: Product;
@@ -17,7 +17,7 @@ export const ProductItem = ({ product, onDelete }: ProductItemProps) => {
           <p>{name}</p>
           <p className={styles.itemPrice}>{price.toLocaleString()}원</p>
         </div>
-        <button className={styles.deleteBtn} onClick={() => onDelete(id)}>
+        <button className={styles.deleteBtn} aria-label="상품 삭제" onClick={() => onDelete(id)}>
           ✕
         </button>
       </div>

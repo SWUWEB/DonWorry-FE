@@ -1,13 +1,9 @@
 import { useMemo, useState } from 'react';
 import { CATEGORIES } from '@/constants/product';
-import type { Category, Product } from '../types';
-import { MOCK_PRODUCTS } from '../mockData';
-
-type FilterValue = '전체' | Category;
-type SortValue = '가나다순' | '마감일순';
+import type { Category, Product, FilterValue, SortValue } from '../types';
 
 export const useWishlist = (keyword: string = '') => {
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState<FilterValue>('전체');
   const [sort, setSort] = useState<SortValue>('가나다순');
 

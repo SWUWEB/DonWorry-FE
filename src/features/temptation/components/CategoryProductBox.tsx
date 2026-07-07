@@ -13,7 +13,7 @@ export const CategoryProductBox = ({ category, products, onDelete }: CategoryPro
   if (products.length === 0) return null;
 
   return (
-    <div style={{ marginBottom: '20px' }}>
+    <div className={styles.productBox}>
       <div className={styles.productCategory}>
         <CategoryIcon category={category} />
         <span className={styles.category}>{category}</span>
@@ -21,7 +21,7 @@ export const CategoryProductBox = ({ category, products, onDelete }: CategoryPro
 
       <div className={styles.productContainer}>
         {products.map((product, index) => (
-          <div key={product.id} style={index > 0 ? { borderTop: '1.5px solid #DDDDDD' } : undefined}>
+          <div key={product.id} className={index > 0 ? styles.divider : undefined}>
             <ProductItem product={product} onDelete={onDelete} />
           </div>
         ))}

@@ -9,3 +9,6 @@ export interface Product {
   time: Date;
   category: Category;
 }
+
+export type FilterValue = '전체' | Category;
+export type SortValue = '가나다순' | '마감일순';
