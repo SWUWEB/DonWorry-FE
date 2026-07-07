@@ -14,7 +14,6 @@ export const CategoryFilterTabs = ({ selected, onSelect }: CategoryFilterTabsPro
     <div className={styles.chipContainer}>
       {FILTER_OPTIONS.map((option) => {
         const isSelected = selected === option;
-
         return (
           <button
             className={`${styles.chip} ${isSelected ? styles.chipSelected : ''}`}

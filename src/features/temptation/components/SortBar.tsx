@@ -13,7 +13,6 @@ export const SortTabs = ({ selected, onSelect }: SortTabsProps) => {
     <div style={{ display: 'flex', gap: '5px' }}>
       {SORT_OPTIONS.map((option) => {
         const isSelected = selected === option;
-
         return (
           <button
             className={`${styles.sortBar} ${isSelected ? styles.active : ''}`}
