@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
 import styles from './PrimaryButton.module.css'
 
+
 type PrimaryButtonProps = {
-  children: React.ReactNode
+  children: ReactNode
   onClick?: () => void
 }
 

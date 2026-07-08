@@ -22,7 +22,7 @@ const handleLogin = () => {
   }
 
   console.log('아이디:', id)
-  console.log('비밀번호:', password)
+  //console.log('비밀번호:', password)
 
   navigate('/')
 }
@@ -32,7 +32,7 @@ const handleLogin = () => {
   return (
     <>
       <InputField
-      label="이름"
+      label="아이디"
       placeholder="아이디를 입력해주세요"
       value={id}
       onChange={(e) => setId(e.target.value)}
