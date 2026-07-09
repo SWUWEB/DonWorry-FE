@@ -1,0 +1,47 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 80px;
+  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-radius: 15px;
+  padding: 10px 12px;
+  margin-bottom: 3px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  color: var(--Primary, #243130);
+  font-size: 14px;
+}
+
+.meta {
+  color: var(--Primary, #243130);
+  font-size: 12px;
+  margin-top: -6px;
+}
+
+.time {
+  text-align: right;
+  font-size: 12px;
+  color: var(--Gray-300, #5B6B6A);
+  margin: 0;
+}
+
+/* highlightMatch.tsx */
+:global(.highlight) {
+  background-color: transparent;
+  color: var(--Main-500, #2F7F82);
+  font-weight: 700;
+}
