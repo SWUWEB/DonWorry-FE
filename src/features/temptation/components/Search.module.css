@@ -1,5 +1,5 @@
 .search {
-  min-width: 390px;
+  width: 390px;
   margin: 0 auto;
   position: relative;
   padding: 25px;
@@ -7,7 +7,6 @@
 }
 
 .topLine {
-  display: flex;
   color: var(--Primary, #243130);
   margin: -10px 0 5px 0;
   font-size: 16px;
