@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { CATEGORIES } from '@/constants/product';
 import type { Category, Product, FilterValue, SortValue } from '../types';
+import { MOCK_PRODUCTS } from '../mockData';
 
 export const useWishlist = (keyword: string = '') => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [filter, setFilter] = useState<FilterValue>('전체');
   const [sort, setSort] = useState<SortValue>('가나다순');
 
