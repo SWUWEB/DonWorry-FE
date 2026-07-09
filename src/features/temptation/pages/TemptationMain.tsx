@@ -1,7 +1,7 @@
-import { useWishlist } from './hooks/useWishlist';
-import { CategoryFilterTabs } from './components/CategoryFilterBar';
-import { SortTabs } from './components/SortBar';
-import { CategoryProductBox } from './components/CategoryProductBox';
+import { useWishlist } from '../hooks/useWishlist';
+import { CategoryFilterTabs } from '../components/temptationMain/CategoryFilterBar';
+import { SortTabs } from '../components/temptationMain/SortBar';
+import { CategoryProductBox } from '../components/temptationMain/CategoryProductBox';
 import styles from './TemptationMain.module.css';
 import { BiPlus } from "react-icons/bi";
 

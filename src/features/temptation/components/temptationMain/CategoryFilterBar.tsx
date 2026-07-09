@@ -1,6 +1,6 @@
 import { CATEGORIES } from '@/constants/product';
-import styles from '../TemptationMain.module.css';
-import type { FilterValue } from '../types';
+import styles from '../../pages/TemptationMain.module.css';
+import type { FilterValue } from '@/features/temptation/types';
 
 interface CategoryFilterTabsProps {
   selected: FilterValue;

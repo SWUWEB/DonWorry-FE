@@ -2,7 +2,7 @@ import Header from '@/components/layout/Header'
 import { PiListBold } from "react-icons/pi";
 import { IoNotifications } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
-import TemptationMain from '@/features/temptation/TemptationMain';
+import TemptationMain from './pages/TemptationMain';
 import SearchBar from './components/SearchBar';
 import { useState } from 'react';
 import styles from './Temptation.module.css'

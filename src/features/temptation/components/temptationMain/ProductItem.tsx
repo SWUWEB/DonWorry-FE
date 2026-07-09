@@ -1,6 +1,6 @@
-import { formatRemainingTime } from '../utils/formatTimer';
-import type { Product } from '../types';
-import styles from './ProductItem.module.css'
+import { formatRemainingTime } from '../../utils/formatTimer';
+import type { Product } from '@/features/temptation/types';
+import styles from './ProductItem.module.css';
 
 interface ProductItemProps {
   product: Product;

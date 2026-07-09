@@ -1,7 +1,7 @@
 import { CategoryIcon } from '@/assets/icons/CategoryIcon';
 import { ProductItem } from './ProductItem';
-import type { Product, Category } from '../types';
-import styles from '../TemptationMain.module.css'
+import type { Product, Category } from '@/features/temptation/types';
+import styles from '../../pages/TemptationMain.module.css'
 
 interface CategoryProductBoxProps {
   category: Category;

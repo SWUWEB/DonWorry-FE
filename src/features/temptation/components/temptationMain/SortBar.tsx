@@ -1,5 +1,5 @@
-import styles from '../TemptationMain.module.css';
-import type { SortValue } from '../types';
+import styles from '../../pages/TemptationMain.module.css';
+import type { SortValue } from '@/features/temptation/types';
 
 interface SortTabsProps {
   selected: SortValue;
