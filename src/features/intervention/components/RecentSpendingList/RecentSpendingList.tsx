@@ -29,7 +29,7 @@ export default function RecentSpendingList({ count, records }: RecentSpendingLis
               </div>
             </div>
 
-            <p className={styles.amount}>- {record.amount.toLocaleString()} 원</p>
+            <p className={styles.amount}>- {record.amount.toLocaleString('ko-KR')} 원</p>
           </div>
         ))}
       </div>

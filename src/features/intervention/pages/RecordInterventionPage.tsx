@@ -67,8 +67,8 @@ export default function RecordInterventionPage() {
         </h2>
 
         <div className={styles.description}>
-          {question.description.map((line) => (
-            <p key={line}>{line}</p>
+          {question.description.map((line, index) => (
+            <p key={index}>{line}</p>
           ))}
         </div>
 
