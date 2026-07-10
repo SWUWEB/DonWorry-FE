@@ -7,6 +7,7 @@ import { Search } from './components/Search';
 import { useMemo, useState } from 'react';
 import styles from './Temptation.module.css'
 import type { Product } from './types';
+import { useNow } from './hooks/useNow';
 
 const hoursFromNow = (h: number) => new Date(Date.now() + h * 60 * 60 * 1000);
 const TEMP_TEST_PRODUCTS: Product[] = [
@@ -19,6 +20,7 @@ const TEMP_TEST_PRODUCTS: Product[] = [
 
 export default function Temptation() {
   const [keyword, setKeyword] = useState('');
+  useNow();
 
   const filteredProducts = useMemo(() => {
     const trimmed = keyword.trim().toLowerCase();

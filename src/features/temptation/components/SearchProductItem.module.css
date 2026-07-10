@@ -1,7 +1,8 @@
 .box {
   display: flex;
   flex-direction: column;
-  width: 350px;
+  width: 100%;
+  min-width: 350px;
   min-height: 80px;
   border: 1.5px solid var(--Gray-100, #DDDDDD);
   border-radius: 15px;
