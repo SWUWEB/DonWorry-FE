@@ -3,11 +3,12 @@ import { PiListBold } from "react-icons/pi";
 import { IoNotifications } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
 import SearchBar from './components/SearchBar';
-import { Search } from './pages/Search';
 import { useMemo, useState } from 'react';
 import styles from './Temptation.module.css'
-import { MOCK_PRODUCTS } from './mockData';
 import { useNow } from './hooks/useNow';
+import TemptationMain from './pages/TemptationMain';
+import { Search } from './pages/Search';
+import { MOCK_PRODUCTS } from './mockData';
 
 export default function Temptation() {
   const [keyword, setKeyword] = useState('');
@@ -41,6 +42,7 @@ export default function Temptation() {
           </>
         }
       />
+      <TemptationMain keyword={keyword} />
       <Search keyword={keyword} filteredProducts={filteredProducts} />
     </>
   )
