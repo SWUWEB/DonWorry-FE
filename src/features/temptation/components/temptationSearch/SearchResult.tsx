@@ -1,5 +1,5 @@
 import { SearchProductItem } from './SearchProductItem';
-import type { Product } from '../types';
+import type { Product } from '@/features/temptation/types';
 import styles from './SearchProductItem.module.css'
 
 interface SearchResultProps {

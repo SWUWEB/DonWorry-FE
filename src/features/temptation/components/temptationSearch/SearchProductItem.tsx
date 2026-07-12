@@ -1,7 +1,7 @@
 import { CategoryIcon } from '@/assets/icons/CategoryIcon';
-import { formatRemainingTime } from '../utils/formatTimer';
-import { highlightSearch } from '../utils/highlightSearch';
-import type { Product } from '../types';
+import { formatRemainingTime } from '../../utils/formatTimer';
+import { highlightSearch } from '../../utils/highlightSearch';
+import type { Product } from '@/features/temptation/types';
 import styles from './SearchProductItem.module.css';
 
 interface SearchProductItemProps {

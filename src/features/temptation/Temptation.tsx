@@ -3,7 +3,7 @@ import { PiListBold } from "react-icons/pi";
 import { IoNotifications } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
 import SearchBar from './components/SearchBar';
-import { Search } from './components/Search';
+import { Search } from './pages/Search';
 import { useMemo, useState } from 'react';
 import styles from './Temptation.module.css'
 import type { Product } from './types';

@@ -1,4 +1,4 @@
-import { SearchResult } from './SearchResult';
+import { SearchResult } from '../components/temptationSearch/SearchResult';
 import styles from './Search.module.css';
 import type { Product } from '../types';
 
