@@ -6,17 +6,8 @@ import SearchBar from './components/SearchBar';
 import { Search } from './pages/Search';
 import { useMemo, useState } from 'react';
 import styles from './Temptation.module.css'
-import type { Product } from './types';
+import { MOCK_PRODUCTS } from './mockData';
 import { useNow } from './hooks/useNow';
-
-const hoursFromNow = (h: number) => new Date(Date.now() + h * 60 * 60 * 1000);
-const TEMP_TEST_PRODUCTS: Product[] = [
-  { id: '1', name: '스탠다드 유넥 반팔티', price: 21000, time: hoursFromNow(13), category: '패션' },
-  { id: '2', name: '와이드 데님 팬츠', price: 30000, time: hoursFromNow(48), category: '패션' },
-  { id: '3', name: '생딸기 몽땅 요아정 (2인)', price: 14000, time: hoursFromNow(13), category: '카페/디저트' },
-  { id: '4', name: '두쫀쿠', price: 5000, time: hoursFromNow(24), category: '카페/디저트' },
-  { id: '5', name: '쏘내추럴 메이크업 세팅 픽서', price: 24000, time: hoursFromNow(72), category: '뷰티' },
-];
 
 export default function Temptation() {
   const [keyword, setKeyword] = useState('');
@@ -24,8 +15,8 @@ export default function Temptation() {
 
   const filteredProducts = useMemo(() => {
     const trimmed = keyword.trim().toLowerCase();
-    if (!trimmed) return TEMP_TEST_PRODUCTS;
-    return TEMP_TEST_PRODUCTS.filter((p) => p.name.toLowerCase().includes(trimmed));
+    if (!trimmed) return MOCK_PRODUCTS;
+    return MOCK_PRODUCTS.filter((p) => p.name.toLowerCase().includes(trimmed));
   }, [keyword]);
 
   return (
