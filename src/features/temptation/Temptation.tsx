@@ -14,6 +14,8 @@ export default function Temptation() {
   const [keyword, setKeyword] = useState('');
   useNow();
 
+  const trimmedKeyword = keyword.trim();
+
   const filteredProducts = useMemo(() => {
     const trimmed = keyword.trim().toLowerCase();
     if (!trimmed) return MOCK_PRODUCTS;
@@ -42,8 +44,11 @@ export default function Temptation() {
           </>
         }
       />
-      <TemptationMain keyword={keyword} />
-      <Search keyword={keyword} filteredProducts={filteredProducts} />
+      {trimmedKeyword ? (
+        <Search keyword={keyword} filteredProducts={filteredProducts} />
+      ) : (
+        <TemptationMain keyword={keyword} />
+      )}
     </>
   )
 }
