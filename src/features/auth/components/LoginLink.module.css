@@ -1,0 +1,11 @@
+.text {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+}
+.text span {
+  font-weight: 600;
+  cursor: pointer;
+}
