@@ -3,7 +3,10 @@ import KakaoIcon from '@/assets/Path.svg'
 
 export default function KakaoButton() {
   return (
-    <button className={styles.button}>
+    <button
+      type="button"
+      className={styles.button}
+    >
       <img
         src={KakaoIcon}
         alt="카카오"

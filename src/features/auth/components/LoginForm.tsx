@@ -2,7 +2,9 @@ import InputField from './InputField'
 import PrimaryButton from './PrimaryButton'
 import KakaoButton from './KakaoButton'
 import LoginLink from './LoginLink'
+import ErrorMessage from './ErrorMessage'
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './LoginForm.module.css'
 
@@ -10,7 +12,12 @@ import styles from './LoginForm.module.css'
 export default function LoginForm() {
 const [id, setId] = useState('')
 const [password, setPassword] = useState('')
-const handleLogin = () => {
+
+const navigate = useNavigate()
+
+const handleLogin = (e: FormEvent) => {
+  e.preventDefault()
+
   if (!id.trim()) {
     alert('아이디를 입력해주세요.')
     return
@@ -21,16 +28,16 @@ const handleLogin = () => {
     return
   }
 
-  console.log('아이디:', id)
-  console.log('비밀번호:', password)
 
   navigate('/')
 }
-  const navigate = useNavigate()
 
 
   return (
-    <div className={styles.container}>
+    <form
+      className={styles.container}
+      onSubmit={handleLogin}
+    >
       <InputField
       label="아이디"
       placeholder="아이디를 입력해주세요"
@@ -46,12 +53,13 @@ const handleLogin = () => {
       value={password}
       onChange={(e) => setPassword(e.target.value)}
     />
+    <ErrorMessage message="비밀번호가 일치하지 않습니다." />
   </div>
       
      
 
       <div className={styles.buttonGroup}>
-      <PrimaryButton onClick={handleLogin}>
+      <PrimaryButton type="submit">
           로그인
       </PrimaryButton>   
 
@@ -59,6 +67,6 @@ const handleLogin = () => {
      </div>
 
   <LoginLink />
-</div>
+</form>
   )
 }

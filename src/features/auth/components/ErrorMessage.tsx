@@ -16,6 +16,7 @@ export default function ErrorMessage({
           ? styles.success
           : styles.error
       }
+      role={type === 'error' ? 'alert' : undefined}
     >
       {message}
     </p>
