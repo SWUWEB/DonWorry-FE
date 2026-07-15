@@ -1,3 +1,5 @@
+import SignUp from '@/features/auth/SignUp'
+
 export default function SignUpPage() {
-  return <div>회원가입 페이지 준비 중.</div>
+  return <SignUp />
 }
