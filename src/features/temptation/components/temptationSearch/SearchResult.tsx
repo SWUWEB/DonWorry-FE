@@ -10,9 +10,13 @@ interface SearchResultProps {
 export const SearchResult = ({ products, keyword }: SearchResultProps) => {
   return (
     <div className={styles.list}>
-      {products.map((product) => (
-        <SearchProductItem key={product.id} product={product} keyword={keyword} />
-      ))}
+      {products.length === 0 ? (
+        <p className={styles.empty}>검색 결과가 없습니다</p>
+      ) : (
+        products.map((product) => (
+          <SearchProductItem key={product.id} product={product} keyword={keyword} />
+        ))
+      )}
     </div>
   );
 };

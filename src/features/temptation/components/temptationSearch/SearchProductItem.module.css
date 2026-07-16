@@ -48,6 +48,13 @@
   width: 100%;
 }
 
+.empty {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--Gray-200, #9CA4A3);
+  padding-top: 30px;
+}
+
 /* highlightMatch.tsx */
 :global(.highlight) {
   background-color: transparent;
