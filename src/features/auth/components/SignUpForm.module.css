@@ -10,10 +10,12 @@
   color: #666666;
 }
 
-.loginLink span {
+.loginLinkText {
+  margin-left: 4px;
   font-weight: 600;
   color: #2F7F82;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .inputWithButton {

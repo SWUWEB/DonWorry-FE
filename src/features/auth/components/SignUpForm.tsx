@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import InputField from './InputField'
 import PrimaryButton from './PrimaryButton'
 import { useState } from 'react'
@@ -21,8 +22,7 @@ export default function SignUpForm() {
   const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)
   const isPasswordMatch = password === passwordCheck
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  const isValidPhone = /^010-\d{4}-\d{4}$/.test(phone)
-
+  const isValidPhone = /^(01[016789])-?\d{3,4}-?\d{4}$/.test(phone)
 
 
   return (
@@ -50,7 +50,7 @@ export default function SignUpForm() {
     type={isValidId ? 'success' : 'error'}
     message={
       isValidId
-        ? '사용 가능한 아이디입니다.'
+        ? '올바른 아이디 형식입니다.'
         : '영문, 숫자 조합 6~12자로 입력해주세요.'
     }
   />
@@ -59,15 +59,21 @@ export default function SignUpForm() {
 
 
       <div className={styles.inputWithButton}>
-       <label className={styles.label}>이메일</label>
+       <label
+         htmlFor="email"
+         className={styles.label}
+       > 
+         이메일
+       </label>
 
        <div className={styles.row}>
         <input
-         className={styles.input}
-         placeholder="dontworry@google.com"
-         value={email}
-         onChange={(e) => setEmail(e.target.value)}
-       />
+          id="email"
+          className={styles.input}
+          placeholder="dontworry@google.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
        <button
         type="button"
@@ -93,10 +99,16 @@ export default function SignUpForm() {
 
 
       <div className={styles.inputWithButton}>
-       <label className={styles.label}>인증번호</label>
+       <label
+         htmlFor="verificationCode"
+         className={styles.label}
+       >
+         인증번호
+       </label>
 
        <div className={styles.row}>
          <input
+          id="verificationCode"
           className={styles.input}
           placeholder="인증번호를 입력해주세요"
           value={code}
@@ -106,8 +118,9 @@ export default function SignUpForm() {
     <button
       type="button"
       className={styles.confirmButton}
+      disabled={!code.trim()}
     >
-      확인
+     확인
     </button>
   </div>
 </div>
@@ -141,9 +154,6 @@ export default function SignUpForm() {
         value={passwordCheck}
         onChange={(e) => setPasswordCheck(e.target.value)}
       />
-      </div>
-
-
 
       {password.length > 0 && passwordCheck.length > 0 && (
         <ErrorMessage
@@ -155,6 +165,7 @@ export default function SignUpForm() {
           }
         />
       )}
+    </div>
 
 
     <div className={styles.formField}>
@@ -187,7 +198,12 @@ export default function SignUpForm() {
 
 <p className={styles.loginLink}>
   이미 계정이 있으신가요?
-  <span> 로그인</span>
+  <Link
+    to="/login"
+    className={styles.loginLinkText}
+  >
+    로그인
+  </Link>
 </p>
     </>
   )
