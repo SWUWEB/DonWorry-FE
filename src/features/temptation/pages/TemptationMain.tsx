@@ -7,6 +7,7 @@ import { BiPlus } from "react-icons/bi";
 import { useState } from 'react';
 import { BottomAdd } from '../components/temptationAdd/ProductAdd';
 import { ProductForm } from '@/components/layout/ProductForm';
+import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 
 interface TemptationMainProps {
   keyword?: string;
@@ -21,9 +22,14 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
     filteredProducts,
     categoriesToRender,
     handleDelete,
+    handleAdd,
   } = useWishlist(keyword);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const handleWishAdd = (data: WishFormData) => {
+    handleAdd(data);
+    setIsAddOpen(false);
+  }
 
   return (
     <div className={styles.temptationMain}>
@@ -52,12 +58,13 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
       <button className={styles.addBtn} onClick={() => setIsAddOpen(true)}>
         <BiPlus size={45} />
       </button>
+
       <BottomAdd isOpen={isAddOpen} onClose={() => setIsAddOpen(false)}>
         <div className={styles.bottomSheet}>
-          <ProductForm onSubmit={() => setIsAddOpen(false)} />
+          <ProductForm formId="add-wishlist-form" onSubmit={handleWishAdd} />
           <button
-            type="button"
-            form="product-form"
+            type="submit"
+            form="add-wishlist-form"
             className={styles.sheetBtn}
             >
             위시리스트에 저장하기
