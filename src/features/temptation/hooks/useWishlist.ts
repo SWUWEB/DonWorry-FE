@@ -42,7 +42,7 @@ export const useWishlist = (keyword: string = '') => {
 
   const handleAdd = (formData: WishFormData) => {
     const newProduct: Product = {
-      id: crypto.randomUUID(),  // 백엔드 연동 시 발급받은 고유 id 할당
+      id: globalThis.crypto?.randomUUID?.() ?? Date.now().toString(),  // 백엔드 연동 시 발급받은 고유 id 할당
       name: formData.name,
       price: formData.price,
       time: timeStringToDate(formData.time),
