@@ -34,6 +34,7 @@ export function BottomAdd({ isOpen, onClose, children }: Props) {
           />
           <motion.div 
             className={styles.sheet}
+            ref={sheetRef}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             drag="y"

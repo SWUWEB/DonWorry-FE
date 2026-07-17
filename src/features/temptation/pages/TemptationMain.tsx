@@ -57,9 +57,9 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
           <ProductForm onSubmit={() => setIsAddOpen(false)} />
           <button
             type="button"
+            form="product-form"
             className={styles.sheetBtn}
-            onClick={() => {setIsAddOpen(false);
-            }}>
+            >
             위시리스트에 저장하기
           </button>
         </div>
