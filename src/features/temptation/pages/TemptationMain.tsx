@@ -4,6 +4,9 @@ import { SortTabs } from '../components/temptationMain/SortBar';
 import { CategoryProductBox } from '../components/temptationMain/CategoryProductBox';
 import styles from './TemptationMain.module.css';
 import { BiPlus } from "react-icons/bi";
+import { useState } from 'react';
+import { BottomAdd } from '../components/temptationAdd/ProductAdd';
+import { ProductForm } from '@/components/layout/ProductForm';
 
 interface TemptationMainProps {
   keyword?: string;
@@ -20,9 +23,7 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
     handleDelete,
   } = useWishlist(keyword);
 
-  const handleAddClick = () => {
-    console.log('상품 추가 클릭');
-  };
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
     <div className={styles.temptationMain}>
@@ -48,9 +49,21 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
         />
       ))}
 
-      <button className={styles.addBtn} onClick={handleAddClick}>
+      <button className={styles.addBtn} onClick={() => setIsAddOpen(true)}>
         <BiPlus size={45} />
       </button>
+      <BottomAdd isOpen={isAddOpen} onClose={() => setIsAddOpen(false)}>
+        <div className={styles.bottomSheet}>
+          <ProductForm onSubmit={() => setIsAddOpen(false)} />
+          <button
+            type="button"
+            className={styles.sheetBtn}
+            onClick={() => {setIsAddOpen(false);
+            }}>
+            위시리스트에 저장하기
+          </button>
+        </div>
+      </BottomAdd>
     </div>
   );
 }
