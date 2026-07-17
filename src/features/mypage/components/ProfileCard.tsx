@@ -1,7 +1,16 @@
 import styles from './ProfileCard.module.css'
 import ProfileIcon from '@/assets/profile.svg'
 
-export default function ProfileCard() {
+type ProfileCardProps = {
+  name: string
+  email: string
+}
+
+export default function ProfileCard({
+  name,
+  email,
+}: ProfileCardProps) {
+
   return (
     <section className={styles.card}>
       <div className={styles.avatar}>
@@ -13,15 +22,18 @@ export default function ProfileCard() {
 
 </div>
 
-      <h2 className={styles.name}>000님</h2>
+      <h2 className={styles.name}>{name}</h2>
 
       <p className={styles.email}>
-        donworry@gmail.com
+        {email}
       </p>
 
-      <span className={styles.manageText}>
-       회원 정보 관리
-      </span>
+      <button
+        type="button"
+        className={styles.manageButton}
+      >
+        회원 정보 관리
+      </button>
     </section>
   )
 }

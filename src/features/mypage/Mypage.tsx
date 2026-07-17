@@ -14,6 +14,8 @@ export default function MyPage() {
         
       <header className={styles.header}>
         <button
+          type="button"
+          aria-label="뒤로가기"
           className={styles.backButton}
           onClick={() => navigate('/')}
         >
@@ -28,8 +30,15 @@ export default function MyPage() {
         </h1>
       </header>
 
-      <ProfileCard />
-      <BudgetCard />
+      <ProfileCard
+        name="000님"
+        email="donworry@gmail.com"
+      />
+
+      <BudgetCard
+        remainingBudget={155000}
+        achievementRate={69}
+      />
       <MenuSection />
     </main>
 
