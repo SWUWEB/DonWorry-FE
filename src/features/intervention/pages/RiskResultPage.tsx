@@ -41,9 +41,10 @@ export default function RiskResultPage() {
       </h1>
 
       <p className={styles.description}>
-        {ITEM_NAME}을 사기 위해서는{' '}
-        <strong className={styles.highlight}>아르바이트 {WORK_HOURS}시간</strong> 동안 근무해야
-        합니다
+        {ITEM_NAME}을
+        <br />
+        사기 위해서는 <strong className={styles.highlight}>아르바이트 {WORK_HOURS}시간</strong> 동안
+        근무해야 합니다
       </p>
 
       <div className={styles.timerWrapper}>
