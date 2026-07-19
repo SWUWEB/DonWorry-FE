@@ -1,0 +1,7 @@
+.time {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-main-500, #2f7f82);
+}
