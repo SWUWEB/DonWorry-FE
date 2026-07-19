@@ -1,9 +1,12 @@
+import { getFormattedDateLabel } from '@/shared/utils/date'
 import styles from './HomeBanner.module.css'
 
-export default function HomeBanner() {
-  const today = new Date()
-  const days = ['일', '월', '화', '수', '목', '금', '토']
-  const dateLabel = `${today.getMonth() + 1}월 ${today.getDate()}일 ${days[today.getDay()]}요일`
+interface HomeBannerProps {
+  achievementPercent: number
+}
+
+export default function HomeBanner({ achievementPercent }: HomeBannerProps) {
+  const dateLabel = getFormattedDateLabel()
 
   return (
     <section className={styles.section}>
@@ -15,7 +18,7 @@ export default function HomeBanner() {
       <div className={styles.body}>
         <p className={styles.date}>{dateLabel}</p>
         <p className={styles.achievement}>
-          이번 달 목표 70%<br />달성했어요 🎯
+          이번 달 목표 {achievementPercent}%<br />달성했어요 🎯
         </p>
         <p className={styles.sectionLabel}>이번 달 소비</p>
       </div>
