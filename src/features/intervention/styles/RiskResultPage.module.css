@@ -3,7 +3,7 @@
   flex-direction: column;
   min-height: 100svh;
   padding: 12px 27px 32px;
-  background: var(--color-text-white, #fefefe);
+  background: var(--color-main-000, #f7fbfa);
 }
 
 .heading {
@@ -18,13 +18,15 @@
 
 .description {
   margin: 0;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 1.6;
-  color: var(--color-text-primary, #243130);
+  color: var(--color-gray-300, #5b6b6a);
 }
 
 .highlight {
+  font-size: 20px;
+  font-weight: 800;
   color: var(--color-main-500, #2f7f82);
 }
 
