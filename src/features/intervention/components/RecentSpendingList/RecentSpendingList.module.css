@@ -27,6 +27,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .thumbnail {
@@ -41,10 +43,14 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .itemTitle {
   margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 14px;
   font-weight: 500;
   color: var(--color-gray-300, #5b6b6a);
@@ -58,6 +64,7 @@
 
 .amount {
   margin: 0;
+  flex-shrink: 0;
   font-size: 16px;
   font-weight: 500;
   text-align: right;
