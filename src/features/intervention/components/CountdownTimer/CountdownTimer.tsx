@@ -17,18 +17,14 @@ export default function CountdownTimer({ durationSeconds, onComplete }: Countdow
   const hasCompletedRef = useRef(false)
 
   useEffect(() => {
+    if (remaining <= 0) return
+
     const intervalId = setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(intervalId)
-          return 0
-        }
-        return prev - 1
-      })
+      setRemaining((prev) => prev - 1)
     }, 1000)
 
     return () => clearInterval(intervalId)
-  }, [])
+  }, [remaining])
 
   useEffect(() => {
     if (remaining === 0 && !hasCompletedRef.current) {

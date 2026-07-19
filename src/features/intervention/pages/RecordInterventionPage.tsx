@@ -63,11 +63,11 @@ export default function RecordInterventionPage() {
 
     if (step < TOTAL_STEPS) {
       setScore(nextScore)
-      setStep((prev) => prev + 1)
+      setStep(step + 1)
       return
     }
 
-    navigate(`/record/intervention/result?score=${nextScore}`)
+    navigate(`/record/intervention/result?score=${nextScore}`, { replace: true })
   }
 
   return (

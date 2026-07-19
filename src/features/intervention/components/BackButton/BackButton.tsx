@@ -1,14 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import styles from './BackButton.module.css'
 
-export default function BackButton() {
+interface BackButtonProps {
+  onClick?: () => void
+}
+
+export default function BackButton({ onClick }: BackButtonProps) {
   const navigate = useNavigate()
 
   return (
     <button
       type="button"
       className={styles.backButton}
-      onClick={() => navigate(-1)}
+      onClick={onClick ?? (() => navigate(-1))}
       aria-label="뒤로 가기"
     >
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
