@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--color-text-white, #fefefe);
+}
+
+.content {
+  flex: 1;
+  padding: 32px 27px 0;
+}
+
+.heading {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-text-primary, #243130);
+}
+
+.description {
+  margin: 0 0 24px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
+.description p {
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 27px 32px;
+}
