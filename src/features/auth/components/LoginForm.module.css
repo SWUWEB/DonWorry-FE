@@ -1,0 +1,17 @@
+.container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;  
+}
+
+.passwordSection {
+  margin-bottom: 20px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: -20px;
+}

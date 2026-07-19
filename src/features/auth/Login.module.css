@@ -1,0 +1,59 @@
+.authWrapper {
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+  transform: translateY(-30px);
+}
+
+.container {
+  min-height: 100vh;
+  background-color: #f5f7f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topSection {
+  width: 358px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 48px;
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 44px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.0;
+  margin: 0;
+}
+
+.description {
+  margin-top: 16px;
+  font-size: 17px;
+  line-height: 1.2;
+  color: #5C5C5C;
+  text-align: left;
+  white-space: pre-line;
+}
+
+.card {
+  width: 100%;
+  max-width: 358px;
+  margin-top: 30px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
