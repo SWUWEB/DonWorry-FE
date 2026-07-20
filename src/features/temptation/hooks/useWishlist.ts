@@ -1,20 +1,20 @@
 import { useMemo, useState } from 'react';
-import { CATEGORIES } from '@/constants/product';
+import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
 import type { Category, Product, FilterValue, SortValue } from '../types';
 import { MOCK_PRODUCTS } from '../mockData';
 import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 
-const TIME_TO_HOURS: Record<string, number> = {
+const TIME_TO_HOURS: Record<typeof TIME_OPTIONS[number], number> = {
   '1시간': 1,
   '1일': 24,
   '3일': 72,
   '7일': 168,
 };
 
-const timeStringToDate = (time: string): Date => {
-  const hours = TIME_TO_HOURS[time] ?? 24;
+const timeStringToDate = (time: typeof TIME_OPTIONS[number]): Date => {
+  const hours = TIME_TO_HOURS[time];
   return new Date(Date.now() + hours * 60 * 60 * 1000);
-}
+};
 
 export const useWishlist = (keyword: string = '') => {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
@@ -46,7 +46,9 @@ export const useWishlist = (keyword: string = '') => {
       name: formData.name,
       price: formData.price,
       time: timeStringToDate(formData.time),
-      category: formData.category as Category,
+      category: formData.category,
+      link: formData.link,
+      reason: formData.reason,
     };
     setProducts((prev) => [...prev, newProduct]);
   };

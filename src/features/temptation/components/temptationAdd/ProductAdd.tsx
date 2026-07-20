@@ -1,5 +1,4 @@
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import styles from './ProductAdd.module.css';
 
 interface Props {
@@ -9,19 +8,7 @@ interface Props {
 }
 
 export function BottomAdd({ isOpen, onClose, children }: Props) {
-  const sheetRef = useRef<HTMLDivElement>(null);
-
-  const handleDragEnd = (
-    _event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
-    const sheetHeight = sheetRef.current?.offsetHeight ?? 0;
-    const draggedRatio = info.offset.y / sheetHeight;
-
-    if (draggedRatio > 0.5) {
-      onClose();
-    }
-  }
+  const dragControls = useDragControls();
 
   return (
     <AnimatePresence>
@@ -34,15 +21,18 @@ export function BottomAdd({ isOpen, onClose, children }: Props) {
           />
           <motion.div 
             className={styles.sheet}
-            ref={sheetRef}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             drag="y"
+            dragListener={false}
+            dragControls={dragControls}
             dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0, bottom: 0.5 }}
-            onDragEnd={handleDragEnd}
+            onDragEnd={onClose}
           >
-            <div className={styles.handle} />
+            <div
+              className={styles.handle}
+              onPointerDown={(e) => dragControls.start(e)}
+            />
             <div className={styles.content}>{children}</div>
           </motion.div>
         </>
