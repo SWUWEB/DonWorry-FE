@@ -4,6 +4,7 @@
   inset: 0;
   z-index: 100;
 }
+
 .sheet {
   width: 100%;
   max-width: 390px; 
@@ -19,6 +20,14 @@
   overflow-y: auto;
   z-index: 101;
 }
+
+.handleArea{
+  display: flex;
+  justify-content: center;
+  padding: 5px 10px;
+  cursor: grab;
+}
+
 .handle {
   width: 50px;
   height: 5px;

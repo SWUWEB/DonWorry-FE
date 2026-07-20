@@ -30,9 +30,11 @@ export function BottomAdd({ isOpen, onClose, children }: Props) {
             onDragEnd={onClose}
           >
             <div
-              className={styles.handle}
+              className={styles.handleArea}
               onPointerDown={(e) => dragControls.start(e)}
-            />
+            >
+              <div className={styles.handle} />
+            </div>
             <div className={styles.content}>{children}</div>
           </motion.div>
         </>
