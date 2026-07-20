@@ -1,25 +1,25 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Pretendard */
   --font-sans: 'Pretendard', system-ui, sans-serif;
 
   /* Gray */
-  --color-gray-100: #DDDDDD;
-  --color-gray-200: #9CA4A3;
-  --color-gray-300: #5B6B6A;
+  --color-gray-100: #dddddd;
+  --color-gray-200: #9ca4a3;
+  --color-gray-300: #5b6b6a;
 
   /* Main */
-  --color-main-000: #F7FBFA;
-  --color-main-100: #E5F2F1;
-  --color-main-200: #C7E3E3;
-  --color-main-300: #389698;
+  --color-main-000: #f7fbfa;
+  --color-main-100: #e6f3f3;
+  --color-main-200: #cde7e7;
+  --color-main-300: #8fc4c0;
   --color-main-400: #389698;
-  --color-main-500: #2F7F82;
-  --color-main-600: #286A6D;
+  --color-main-500: #2f7f82;
+  --color-main-600: #246365;
 
   /* Text */
-  --color-text-white: #FEFEFE;
+  --color-text-white: #fefefe;
   --color-text-primary: #243130;
   --color-text-green: #389698;
   --color-text-blue: #2946D8;
