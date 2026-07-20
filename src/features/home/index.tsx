@@ -6,13 +6,22 @@ import EncouragementCard from './components/EncouragementCard'
 import SpendingQuestion from './components/SpendingQuestion'
 import styles from './Home.module.css'
 
+const mockHomeData = {
+  achievementPercent: 70,
+  monthlySpending: 350000,
+  comparisonPercent: 12,
+}
+
 export default function Home() {
   return (
     <main className={styles.main}>
-      <HomeBanner />
+      <HomeBanner achievementPercent={mockHomeData.achievementPercent} />
       <div className={styles.content}>
         <CategoryChart />
-        <SpendingSummary />
+        <SpendingSummary
+          monthlySpending={mockHomeData.monthlySpending}
+          comparisonPercent={mockHomeData.comparisonPercent}
+        />
         <GoalProgress />
         <EncouragementCard />
         <SpendingQuestion />
