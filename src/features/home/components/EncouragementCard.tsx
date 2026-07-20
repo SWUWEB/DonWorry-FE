@@ -1,6 +1,10 @@
 import styles from './EncouragementCard.module.css'
 
-export default function EncouragementCard() {
+interface EncouragementCardProps {
+  message: string
+}
+
+export default function EncouragementCard({ message }: EncouragementCardProps) {
   return (
     <div className={styles.card}>
       <div className={styles.iconWrapper}>
@@ -22,7 +26,7 @@ export default function EncouragementCard() {
       </div>
       <div>
         <p className={styles.cardLabel}>오늘의 응원 메시지</p>
-        <p className={styles.cardText}>아직 시작 단계예요! 지금부터 조금씩 줄여볼까요?</p>
+        <p className={styles.cardText}>{message}</p>
       </div>
     </div>
   )

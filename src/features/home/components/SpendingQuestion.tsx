@@ -1,6 +1,10 @@
 import styles from './SpendingQuestion.module.css'
 
-export default function SpendingQuestion() {
+interface SpendingQuestionProps {
+  question: string
+}
+
+export default function SpendingQuestion({ question }: SpendingQuestionProps) {
   return (
     <div className={styles.card}>
       <div className={styles.iconWrapper}>
@@ -17,7 +21,7 @@ export default function SpendingQuestion() {
       </div>
       <div>
         <p className={styles.cardLabel}>오늘의 소비 질문</p>
-        <p className={styles.cardText}>오늘 계획하지 않은 소비가 있었나요?</p>
+        <p className={styles.cardText}>{question}</p>
       </div>
     </div>
   )

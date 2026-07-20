@@ -1,16 +1,20 @@
 import styles from './CategoryChart.module.css'
 
-const categories = [
-  { label: '식비', height: 94, color: '#286A6D' },
-  { label: '교통', height: 59, color: '#C7E3E3' },
-  { label: '쇼핑', height: 78, color: '#E5F2F1' },
-  { label: '저축', height: 46, color: '#C7E3E3' },
-  { label: '기타', height: 55, color: '#2F7F82' },
-]
+interface Category {
+  label: string
+  amount: number
+  color: string
+}
+
+interface CategoryChartProps {
+  categories: Category[]
+}
 
 const MAX_BAR_HEIGHT = 94
 
-export default function CategoryChart() {
+export default function CategoryChart({ categories }: CategoryChartProps) {
+  const maxAmount = Math.max(...categories.map((c) => c.amount))
+
   return (
     <section className={styles.card}>
       <div className={styles.header}>
@@ -24,7 +28,7 @@ export default function CategoryChart() {
             <div
               className={styles.bar}
               style={{
-                height: `${(cat.height / MAX_BAR_HEIGHT) * 94}px`,
+                height: `${(cat.amount / maxAmount) * MAX_BAR_HEIGHT}px`,
                 backgroundColor: cat.color,
               }}
             />
