@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import BackButton from '@/features/intervention/components/BackButton'
 import AnswerButton from '@/features/intervention/components/AnswerButton'
 import CountdownTimer from '@/features/intervention/components/CountdownTimer'
-import { getRiskLevel } from '@/features/intervention/utils/riskLevel'
+import { getRiskLevel, parseRiskScore } from '@/features/intervention/utils/riskLevel'
 import type { RiskLevel } from '@/features/intervention/utils/riskLevel'
 import styles from '../styles/RiskResultPage.module.css'
 
@@ -24,11 +24,20 @@ export default function RiskResultPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const score = Number(searchParams.get('score')) || 0
-  const riskLevel = getRiskLevel(score)
+  const score = parseRiskScore(searchParams.get('score'))
+
+  useEffect(() => {
+    if (score === null) {
+      navigate('/record/intervention', { replace: true })
+    }
+  }, [score, navigate])
+
+  const riskLevel = score !== null ? getRiskLevel(score) : 'low'
   const { heading, timerSeconds } = RISK_CONTENT[riskLevel]
 
   const [waitComplete, setWaitComplete] = useState(timerSeconds === null)
+
+  if (score === null) return null
 
   return (
     <div className={styles.container}>

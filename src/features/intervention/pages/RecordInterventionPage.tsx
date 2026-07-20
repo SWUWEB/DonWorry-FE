@@ -55,24 +55,35 @@ const TOTAL_STEPS = QUESTIONS.length
 export default function RecordInterventionPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
-  const [score, setScore] = useState(0)
+  const [answers, setAnswers] = useState<number[]>([])
   const question = QUESTIONS[step - 1]
 
   const handleAnswer = (optionScore: number) => {
-    const nextScore = score + optionScore
+    const nextAnswers = [...answers, optionScore]
 
     if (step < TOTAL_STEPS) {
-      setScore(nextScore)
+      setAnswers(nextAnswers)
       setStep(step + 1)
       return
     }
 
-    navigate(`/record/intervention/result?score=${nextScore}`, { replace: true })
+    const totalScore = nextAnswers.reduce((sum, value) => sum + value, 0)
+    navigate(`/record/intervention/result?score=${totalScore}`, { replace: true })
+  }
+
+  const handleBack = () => {
+    if (step === 1) {
+      navigate(-1)
+      return
+    }
+
+    setAnswers((prev) => prev.slice(0, -1))
+    setStep((prev) => prev - 1)
   }
 
   return (
     <div className={styles.container}>
-      <InterventionHeader step={step} totalSteps={TOTAL_STEPS} />
+      <InterventionHeader step={step} totalSteps={TOTAL_STEPS} onBack={handleBack} />
 
       <div className={styles.content}>
         <h2 className={styles.heading}>

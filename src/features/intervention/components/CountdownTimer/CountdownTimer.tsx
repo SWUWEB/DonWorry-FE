@@ -14,6 +14,7 @@ function formatTime(totalSeconds: number) {
 
 export default function CountdownTimer({ durationSeconds, onComplete }: CountdownTimerProps) {
   const [remaining, setRemaining] = useState(durationSeconds)
+  const [announcement, setAnnouncement] = useState('')
   const hasCompletedRef = useRef(false)
 
   useEffect(() => {
@@ -29,13 +30,19 @@ export default function CountdownTimer({ durationSeconds, onComplete }: Countdow
   useEffect(() => {
     if (remaining === 0 && !hasCompletedRef.current) {
       hasCompletedRef.current = true
+      setAnnouncement('대기 시간이 종료되었습니다')
       onComplete?.()
     }
   }, [remaining, onComplete])
 
   return (
-    <p className={styles.time} aria-live="polite">
-      {formatTime(remaining)}
-    </p>
+    <>
+      <p className={styles.time} role="timer" aria-live="off">
+        {formatTime(remaining)}
+      </p>
+      <span className={styles.srOnly} aria-live="polite">
+        {announcement}
+      </span>
+    </>
   )
 }

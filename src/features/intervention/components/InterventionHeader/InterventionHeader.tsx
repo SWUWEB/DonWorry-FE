@@ -4,14 +4,15 @@ import styles from './InterventionHeader.module.css'
 interface InterventionHeaderProps {
   step: number
   totalSteps: number
+  onBack: () => void
 }
 
-export default function InterventionHeader({ step, totalSteps }: InterventionHeaderProps) {
+export default function InterventionHeader({ step, totalSteps, onBack }: InterventionHeaderProps) {
   const progress = ((step - 1) / totalSteps) * 100
 
   return (
     <div className={styles.card}>
-      <BackButton />
+      <BackButton onClick={onBack} />
 
       <h1 className={styles.title}>잠깐만요 👀</h1>
       <p className={styles.subtitle}>이 소비 정말 필요한가요?</p>
