@@ -5,14 +5,15 @@ import RecordDetailPage from '@/features/record/pages/RecordDetailPage'
 import LoginPage from '@/pages/LoginPage'
 import SignUpPage from '@/pages/SignUpPage'
 import MyPagePage from '@/pages/MyPagePage'
+import GoalAmountPage from '@/pages/GoalAmountPage'
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignUpPage /> },
   { path: '/mypage', element: <MyPagePage /> }, 
+  {path: '/goal-amount', element: <GoalAmountPage /> },
 
-  // TODO: 랜딩, 로그인, 유혹관리, 마이페이지 라우트 추가
   { path: '/record', element: <RecordMainPage /> },
   { path: '/record/:id', element: <RecordDetailPage /> },
 ])
