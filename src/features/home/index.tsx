@@ -10,6 +10,8 @@ const mockHomeData = {
   achievementPercent: 70,
   monthlySpending: 350000,
   comparisonPercent: 12,
+  goalCurrent: 350000,
+  goalTotal: 500000,
 }
 
 export default function Home() {
@@ -22,7 +24,7 @@ export default function Home() {
           monthlySpending={mockHomeData.monthlySpending}
           comparisonPercent={mockHomeData.comparisonPercent}
         />
-        <GoalProgress />
+        <GoalProgress current={mockHomeData.goalCurrent} goal={mockHomeData.goalTotal} />
         <EncouragementCard />
         <SpendingQuestion />
       </div>
