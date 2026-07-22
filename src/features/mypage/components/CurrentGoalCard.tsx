@@ -9,7 +9,10 @@ interface CurrentGoalCardProps {
    achievedAmount,
  }: CurrentGoalCardProps) {
 
-    const progress = goalAmount === 0 ? 0 : (achievedAmount / goalAmount) * 100
+    const progress =
+      goalAmount === 0
+        ? 0
+        : Math.min(100, Math.max(0, (achievedAmount / goalAmount) * 100))
 
   return (
     <section className={styles.card}>
