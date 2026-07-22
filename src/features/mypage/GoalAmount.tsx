@@ -61,7 +61,10 @@ export default function GoalAmount() {
       />
 
       <main className={styles.container}>
-        <CurrentGoalCard />
+        <CurrentGoalCard
+          goalAmount={1000000}
+          achievedAmount={600000}
+        />
 
         <GoalSettingCard />
       </main>

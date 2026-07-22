@@ -4,6 +4,15 @@ import styles from './GoalSettingCard.module.css'
 
 export default function GoalSettingCard() {
   const [goalAmount, setGoalAmount] = useState('')
+  const [showGoal, setShowGoal] = useState(true)
+
+  const handleSave = () => {
+    if (!goalAmount.trim()) {
+      alert('목표 금액을 입력해주세요.')
+      return
+    }
+    alert('저장되었습니다.')
+  }
 
   return (
     <section className={styles.card}>
@@ -40,12 +49,13 @@ export default function GoalSettingCard() {
           type="button"
           className={styles.toggle}
           aria-label="목표 달성 표시"
+          onClick={() => setShowGoal(!showGoal)}
         >
           <div className={styles.toggleCircle} />
         </button>
       </div>
 
-      <PrimaryButton>
+      <PrimaryButton onClick={handleSave}>
         저장하기
       </PrimaryButton>
     </section>
