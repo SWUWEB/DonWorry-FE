@@ -1,8 +1,12 @@
 import styles from './SummaryCard.module.css'
 import legendBg from '@/assets/legend-bg.svg'
+import DonutChart from '@/features/record/components/DonutChart'
+
+// 하드코딩됨. API 연결 시 수정 예정
+const SAVED_PERCENT = 65
+const CONSUME_PERCENT = 35
 
 export default function SummaryCard() {
-  // 하드코딩됨. API 연결 시 수정 예정
   return (
     <section className={styles.summary}>
       <div className={styles.card}>
@@ -21,7 +25,7 @@ export default function SummaryCard() {
                   <span>참았어요</span>
                 </div>
 
-                <span className={styles.percent}>65%</span>
+                <span className={styles.percent}>{SAVED_PERCENT}%</span>
               </div>
 
               <div className={styles.legendItem}>
@@ -30,13 +34,23 @@ export default function SummaryCard() {
                   <span>샀어요</span>
                 </div>
 
-                <span className={styles.percent}>35%</span>
+                <span className={styles.percent}>{CONSUME_PERCENT}%</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className={styles.chart}>Chart</div>
+        <div className={styles.chartWrapper}>
+          <DonutChart
+            centerLabel={`${SAVED_PERCENT}%`}
+            size={130}
+            strokeWidth={26}
+            segments={[
+              { percent: SAVED_PERCENT, fill: 'var(--color-main-400, #389698)' },
+              { percent: CONSUME_PERCENT, fill: 'var(--color-gray-300, #5b6b6a)' },
+            ]}
+          />
+        </div>
       </div>
     </section>
   )
