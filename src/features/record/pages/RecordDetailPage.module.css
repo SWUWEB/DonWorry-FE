@@ -1,7 +1,9 @@
 .summary {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  margin-top: 19px;
+  padding-bottom: 40px;
 }
 
 .title {
@@ -32,14 +34,25 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 24px 37px 32px;
+  padding: 27px 37px 32px;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+}
+
+.categorySection {
+  margin-bottom: 24px;
+}
+
+.categorySection .sectionLabel {
+  margin-bottom: 8px;
+}
+
+.reasonSection .sectionLabel {
+  margin-bottom: 16px;
+  font-size: 12px;
 }
 
 .sectionLabel {
@@ -71,6 +84,8 @@
   color: var(--color-main-500, #2f7f82);
   background: var(--color-text-white, #fefefe);
   white-space: nowrap;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .chipSelected {
@@ -79,10 +94,13 @@
 }
 
 .reason {
-  margin: 0;
-  padding-bottom: 16px;
+  margin: 0 0 16px;
+  padding-bottom: 7px;
   border-bottom: 1px solid var(--color-gray-100, #dddddd);
-  font-size: 16px;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
   font-weight: 600;
+  line-height: normal;
   color: var(--color-text-primary, #243130);
 }

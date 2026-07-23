@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { IoChevronBack, IoNotifications, IoPencilOutline } from 'react-icons/io5'
 import { PiListBold } from 'react-icons/pi'
@@ -52,6 +53,7 @@ export default function RecordDetailPage() {
   const navigate = useNavigate()
 
   const record = (id && MOCK_RECORDS[id]) || MOCK_RECORDS['1']
+  const [selectedCategory, setSelectedCategory] = useState(record.category)
 
   return (
     <div>
@@ -93,21 +95,23 @@ export default function RecordDetailPage() {
       />
 
       <div className={styles.content}>
-        <section className={styles.section}>
+        <section className={`${styles.section} ${styles.categorySection}`}>
           <h2 className={styles.sectionLabel}>카테고리</h2>
           <div className={styles.chipGroup}>
             {CATEGORIES.map((category) => (
-              <span
+              <button
                 key={category}
-                className={`${styles.chip} ${category === record.category ? styles.chipSelected : ''}`}
+                type="button"
+                className={`${styles.chip} ${category === selectedCategory ? styles.chipSelected : ''}`}
+                onClick={() => setSelectedCategory(category)}
               >
                 {category}
-              </span>
+              </button>
             ))}
           </div>
         </section>
 
-        <section className={styles.section}>
+        <section className={`${styles.section} ${styles.reasonSection}`}>
           <h2 className={styles.sectionLabel}>사고 싶은 이유</h2>
           <p className={styles.reason}>{record.reason}</p>
         </section>
