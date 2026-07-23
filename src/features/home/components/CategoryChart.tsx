@@ -13,7 +13,7 @@ interface CategoryChartProps {
 const MAX_BAR_HEIGHT = 94
 
 export default function CategoryChart({ categories }: CategoryChartProps) {
-  const maxAmount = Math.max(...categories.map((c) => c.amount))
+  const maxAmount = Math.max(...categories.map((c) => c.amount)) || 1
 
   return (
     <section className={styles.card}>
