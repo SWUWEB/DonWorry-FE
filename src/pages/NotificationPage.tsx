@@ -17,13 +17,12 @@ export default function NotificationPage() {
   return (
     <>
       <Header
-        unreadCount={unreadCount}
+        title="알림"
         subLeft={
           <button className={styles.iconBtn} aria-label="뒤로가기" onClick={() => navigate(-1)}>
             <IoChevronBack size={20} />
           </button>
         }
-        subTitle="알림"
         subRight={
           <button className={styles.iconBtn} aria-label="설정" onClick={() => setSheetOpen(true)}>
             <IoSettingsOutline size={20} />
