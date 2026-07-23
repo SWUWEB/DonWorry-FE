@@ -24,7 +24,7 @@ const SETTINGS_LIST = [
   {
     id: 'retrial' as const,
     label: '재판단 알림',
-    description: '대기 시간이 끝난 상품의 재단판 알림',
+    description: '대기 시간이 끝난 상품의 재판단 알림',
     dotColor: '#F5E7A2',
   },
 ]
@@ -48,8 +48,7 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
   const toggle = (id: keyof typeof enabled) => {
     const next = { ...enabled, [id]: !enabled[id] }
     setEnabled(next)
-    // TODO: API 연결 시 주석 해제
-    // updateSettings(next)
+    updateSettings(next)
   }
 
   return (

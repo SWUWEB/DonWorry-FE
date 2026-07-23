@@ -90,7 +90,7 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
           </li>
         ))}
         {sorted.length === 0 && (
-          <p className={styles.empty}>알림이 없습니다.</p>
+          <li className={styles.empty}>알림이 없습니다.</li>
         )}
       </ul>
     </main>
