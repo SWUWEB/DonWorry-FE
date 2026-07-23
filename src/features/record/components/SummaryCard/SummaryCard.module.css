@@ -54,6 +54,14 @@
   margin-top: 12px;
 }
 
+.note {
+  margin: 0;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
 .legendBg {
   position: absolute;
   inset: 0;

@@ -38,6 +38,8 @@ export default function SummaryCard() {
               </div>
             </div>
           </div>
+
+          <p className={styles.note}>*28일간 데이터를 기준으로 보여드립니다</p>
         </div>
 
         <div className={styles.chartWrapper}>
