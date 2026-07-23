@@ -13,9 +13,11 @@ export default function ProfileForm() {
   return (
     <section className={styles.form}>
       <div className={styles.inputGroup}>
-        <label className={styles.label}>이름</label>
+
+        <label htmlFor="name" className={styles.label}>이름</label>
 
         <input
+          id="name"
           className={styles.input}
           placeholder="이름을 입력해주세요."
           value={name}
@@ -24,9 +26,10 @@ export default function ProfileForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label className={styles.label}>전화번호</label>
+        <label htmlFor="phone" className={styles.label}>전화번호</label>
 
         <input
+          id="phone"
           className={styles.input}
           placeholder="- 없이 입력해주세요."
           value={phone}
@@ -35,10 +38,11 @@ export default function ProfileForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label className={styles.label}>생년월일</label>
+        <label htmlFor="birth" className={styles.label}>생년월일</label>
 
         <div className={styles.dateInput}>
           <input
+            id="birth"
             className={styles.input}
             type="text"
             placeholder="생년월일을 선택해주세요."
@@ -56,6 +60,7 @@ export default function ProfileForm() {
         <div className={styles.genderGroup}>
           <label className={styles.genderItem}>
             <input
+              id="female"
               type="radio"
               value="female"
               checked={gender === 'female'}
@@ -66,6 +71,7 @@ export default function ProfileForm() {
 
           <label className={styles.genderItem}>
             <input
+              id="male"
               type="radio"
               value="male"
               checked={gender === 'male'}

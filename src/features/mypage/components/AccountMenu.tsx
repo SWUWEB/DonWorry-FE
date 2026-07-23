@@ -5,15 +5,12 @@ import styles from './AccountMenu.module.css'
 const menus = [
   {
     title: '이메일 변경',
-    onClick: () => {},
   },
   {
     title: '비밀번호 변경',
-    onClick: () => {},
   },
   {
     title: '회원 탈퇴', 
-    onClick: () => {},
   },
 ]
 
