@@ -10,6 +10,7 @@ const mockHomeData = {
   achievementPercent: 70,
   monthlySpending: 350000,
   comparisonPercent: 12,
+  // TODO: API 연결 시 소비 데이터 기반 자동 생성 메시지로 교체
   encouragementMessage: '아직 시작 단계예요! 지금부터 조금씩 줄여볼까요?',
   spendingQuestion: '오늘 계획하지 않은 소비가 있었나요?',
   categories: [

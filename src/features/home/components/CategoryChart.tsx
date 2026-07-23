@@ -19,7 +19,8 @@ export default function CategoryChart({ categories }: CategoryChartProps) {
     <section className={styles.card}>
       <div className={styles.header}>
         <span className={styles.title}>카테고리별 지출</span>
-        <button className={styles.detailButton}>상세 보기 &gt;</button>
+        {/* TODO: 상세 화면 연결 후 button으로 교체 */}
+        <span className={styles.detailButton}>상세 보기 &gt;</span>
       </div>
 
       <div className={styles.chartArea}>
@@ -31,6 +32,8 @@ export default function CategoryChart({ categories }: CategoryChartProps) {
                 height: `${(cat.amount / maxAmount) * MAX_BAR_HEIGHT}px`,
                 backgroundColor: cat.color,
               }}
+              aria-label={`${cat.label} ${cat.amount.toLocaleString('ko-KR')}원`}
+              role="img"
             />
             <span className={styles.barLabel}>{cat.label}</span>
           </div>

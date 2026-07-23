@@ -19,24 +19,25 @@ export interface NotificationSettingsResponse {
 }
 
 // ─── Mock 데이터 (API 연결 후 제거) ────────────────────────────────────────
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
+// id가 클수록 최신 알림 (최신순 정렬 기준: b.id - a.id)
+let mockNotifications: NotificationItem[] = [
   {
     id: 1,
     type: '재판단',
-    iconVariant: 'lightning',
-    title: '결단의 시간이 왔어요!',
-    description: "'아이폰 17 Pro' 대기 시간이 끝났어요. 아직도 사고 싶으신가요?",
-    time: '방금 전',
-    isRead: false,
+    iconVariant: 'heart',
+    title: '새로운 유혹이 추가됨',
+    description: "'미스치프 후드티'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
+    time: '4월 28일',
+    isRead: true,
   },
   {
     id: 2,
-    type: '목표현황',
-    iconVariant: 'check',
-    title: '목표 달성률 70% 돌파!',
-    description: '제주도 항공권까지 얼마 남지 않았어요! 조금만 더 힘내세요.',
-    time: '방금 전',
-    isRead: false,
+    type: '재판단',
+    iconVariant: 'heart',
+    title: '새로운 유혹이 추가됨',
+    description: "'스타벅스 텀블러'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
+    time: '4월 30일',
+    isRead: true,
   },
   {
     id: 3,
@@ -49,50 +50,54 @@ const MOCK_NOTIFICATIONS: NotificationItem[] = [
   },
   {
     id: 4,
-    type: '재판단',
-    iconVariant: 'heart',
-    title: '새로운 유혹이 추가됨',
-    description: "'스타벅스 텀블러'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
-    time: '4월 30일',
-    isRead: true,
+    type: '목표현황',
+    iconVariant: 'check',
+    title: '목표 달성률 70% 돌파!',
+    description: '제주도 항공권까지 얼마 남지 않았어요! 조금만 더 힘내세요.',
+    time: '방금 전',
+    isRead: false,
   },
   {
     id: 5,
     type: '재판단',
-    iconVariant: 'heart',
-    title: '새로운 유혹이 추가됨',
-    description: "'미스치프 후드티'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
-    time: '4월 28일',
-    isRead: true,
+    iconVariant: 'lightning',
+    title: '결단의 시간이 왔어요!',
+    description: "'아이폰 17 Pro' 대기 시간이 끝났어요. 아직도 사고 싶으신가요?",
+    time: '방금 전',
+    isRead: false,
   },
 ]
 
-const MOCK_SETTINGS: NotificationSettingsResponse = {
+let mockSettings: NotificationSettingsResponse = {
   all: true, general: true, goal: true, retrial: true,
 }
 // ──────────────────────────────────────────────────────────────────────────
 
 export const notificationApi = {
   getList: async (): Promise<NotificationItem[]> => {
-    // TODO: API 연결 시 아래 두 줄로 교체하고 MOCK_NOTIFICATIONS 제거
+    // TODO: API 연결 시 아래 두 줄로 교체하고 mockNotifications 제거
     // const { data } = await client.get<NotificationResponse[]>('/notifications')
     // return data.map(adaptNotification)
-    return MOCK_NOTIFICATIONS
+    return mockNotifications
   },
 
   deleteOne: async (id: number): Promise<void> => {
-    await client.delete(`/notifications/${id}`)
+    // TODO: API 연결 시 아래 줄로 교체하고 mock 제거
+    // await client.delete(`/notifications/${id}`)
+    mockNotifications = mockNotifications.filter((n) => n.id !== id)
   },
 
   getSettings: async (): Promise<NotificationSettingsResponse> => {
-    // TODO: API 연결 시 아래 두 줄로 교체하고 MOCK_SETTINGS 제거
+    // TODO: API 연결 시 아래 두 줄로 교체하고 mockSettings 제거
     // const { data } = await client.get<NotificationSettingsResponse>('/notifications/settings')
     // return data
-    return MOCK_SETTINGS
+    return { ...mockSettings }
   },
 
   updateSettings: async (settings: NotificationSettingsResponse): Promise<void> => {
-    await client.put('/notifications/settings', settings)
+    // TODO: API 연결 시 아래 줄로 교체하고 mock 제거
+    // await client.put('/notifications/settings', settings)
+    mockSettings = { ...settings }
   },
 }
 

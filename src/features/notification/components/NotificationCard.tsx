@@ -68,6 +68,9 @@ export default function NotificationCard({ id, title, description, time, iconVar
     <div
       className={`${styles.card} ${isRead ? styles.read : ''}`}
       onClick={() => onRead(id)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRead(id) }}
     >
       <div className={styles.iconWrap} style={{ background: bg }}>
         <Icon size={20} color={color} />
