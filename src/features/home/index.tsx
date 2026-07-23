@@ -19,6 +19,8 @@ const mockHomeData = {
     { label: '저축', amount: 60000, color: '#C7E3E3' },
     { label: '기타', amount: 85000, color: '#2F7F82' },
   ],
+  goalCurrent: 350000,
+  goalTotal: 500000,
 }
 
 export default function Home() {
@@ -31,7 +33,7 @@ export default function Home() {
           monthlySpending={mockHomeData.monthlySpending}
           comparisonPercent={mockHomeData.comparisonPercent}
         />
-        <GoalProgress />
+        <GoalProgress current={mockHomeData.goalCurrent} goal={mockHomeData.goalTotal} />
         <EncouragementCard message={mockHomeData.encouragementMessage} />
         <SpendingQuestion question={mockHomeData.spendingQuestion} />
       </div>

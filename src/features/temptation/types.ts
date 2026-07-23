@@ -8,6 +8,8 @@ export interface Product {
   price: number;
   time: Date;
   category: Category;
+  link?: string;
+  reason?: string;
 }
 
 export type FilterValue = '전체' | Category;
