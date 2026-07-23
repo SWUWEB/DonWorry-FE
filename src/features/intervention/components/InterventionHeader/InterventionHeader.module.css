@@ -1,0 +1,50 @@
+.card {
+  position: relative;
+  padding: 16px 27px 20px;
+  background: var(--color-main-000, #f7fbfa);
+  box-shadow: 2px 4px 4px rgba(77, 158, 155, 0.25);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 29px;
+  color: var(--color-text-primary, #243130);
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  color: var(--color-text-primary, #243130);
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-main-300, #8fc4c0);
+  overflow: hidden;
+}
+
+.progressLabel {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-main-500, #2f7f82);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-main-500, #2f7f82);
+  transition: width 0.3s ease;
+}

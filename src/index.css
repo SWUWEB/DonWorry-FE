@@ -5,30 +5,30 @@
   --font-sans: 'Pretendard', system-ui, sans-serif;
 
   /* Gray */
-  --color-gray-100: #PLACEHOLDER;
-  --color-gray-200: #PLACEHOLDER;
+  --color-gray-100: #dddddd;
+  --color-gray-200: #9ca4a3;
   --color-gray-300: #5b6b6a;
 
   /* Main */
   --color-main-000: #f7fbfa;
   --color-main-100: #e6f3f3;
   --color-main-200: #cde7e7;
-  --color-main-300: #a3d4d4;
+  --color-main-300: #8fc4c0;
   --color-main-400: #389698;
   --color-main-500: #2f7f82;
   --color-main-600: #246365;
 
   /* Text */
-  --color-text-white: #ffffff;
-  --color-text-primary: #PLACEHOLDER;
-  --color-text-green: #PLACEHOLDER;
-  --color-text-blue: #PLACEHOLDER;
-  --color-text-red: #PLACEHOLDER;
+  --color-text-white: #fefefe;
+  --color-text-primary: #243130;
+  --color-text-green: #389698;
+  --color-text-blue: #2946D8;
+  --color-text-red: #EB0000;
 
   /* Sub */
-  --color-sub-000: #PLACEHOLDER;
-  --color-sub-100: #PLACEHOLDER;
-  --color-sub-200: #PLACEHOLDER;
+  --color-sub-000: #F7FBFA;
+  --color-sub-100: #E5F2F1;
+  --color-sub-200: #C7E3E3;
 }
 
 * {

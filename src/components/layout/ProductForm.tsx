@@ -6,8 +6,8 @@ export interface FormData {
   link?: string;
   price: number;
   name: string;
-  category: string;
-  time: string;
+  category: typeof CATEGORIES[number];
+  time: typeof TIME_OPTIONS[number];
   reason: string;
 }
 
