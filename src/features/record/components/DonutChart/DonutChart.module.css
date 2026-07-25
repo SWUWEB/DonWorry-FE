@@ -1,10 +1,21 @@
 .wrapper {
   position: relative;
   flex-shrink: 0;
+  width: var(--donut-size);
+  height: var(--donut-size);
 }
 
-.chart {
-  display: block;
+.wrapper :global(.recharts-wrapper),
+.wrapper svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 360px) {
+  .wrapper {
+    width: calc(var(--donut-size) * 0.77);
+    height: calc(var(--donut-size) * 0.77);
+  }
 }
 
 .centerFill {
@@ -26,4 +37,10 @@
   font-size: 20px;
   font-weight: 700;
   color: var(--color-text-primary, #243130);
+}
+
+@media (max-width: 360px) {
+  .centerLabel {
+    font-size: 16px;
+  }
 }

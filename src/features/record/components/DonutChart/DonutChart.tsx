@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Pie, PieChart } from 'recharts'
 import styles from './DonutChart.module.css'
 
@@ -22,8 +23,10 @@ export default function DonutChart({
   const outerRadius = size / 2
   const innerRadius = outerRadius - strokeWidth
 
+  const centerFillPercent = ((innerRadius * 2) / size) * 100
+
   return (
-    <div className={styles.wrapper} style={{ width: size, height: size }}>
+    <div className={styles.wrapper} style={{ '--donut-size': `${size}px` } as CSSProperties}>
       <PieChart width={size} height={size}>
         <Pie
           data={segments}
@@ -41,7 +44,7 @@ export default function DonutChart({
 
       <div
         className={styles.centerFill}
-        style={{ width: innerRadius * 2, height: innerRadius * 2 }}
+        style={{ width: `${centerFillPercent}%`, height: `${centerFillPercent}%` }}
       />
 
       {centerLabel && <span className={styles.centerLabel}>{centerLabel}</span>}
