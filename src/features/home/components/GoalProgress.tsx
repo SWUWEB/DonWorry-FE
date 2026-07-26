@@ -1,12 +1,9 @@
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './GoalProgress.module.css'
 
 interface GoalProgressProps {
   goalAmount: number | null
   goalCurrent: number
-}
-
-function formatKRW(amount: number) {
-  return amount.toLocaleString('ko-KR') + '원'
 }
 
 export default function GoalProgress({ goalAmount, goalCurrent }: GoalProgressProps) {

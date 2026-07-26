@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { getDayIndex } from '@/shared/utils/date'
 import styles from './SpendingQuestion.module.css'
 
 const QUESTIONS = [
@@ -11,13 +12,6 @@ const QUESTIONS = [
   '오늘 예산 내에서 소비했나요?',
 ]
 
-function getDayIndex(length: number): number {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 0)
-  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000)
-  return dayOfYear % length
-}
-
 export default function SpendingQuestion() {
   const navigate = useNavigate()
   const question = QUESTIONS[getDayIndex(QUESTIONS.length)]
@@ -28,7 +22,12 @@ export default function SpendingQuestion() {
       onClick={() => navigate('/record')}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && navigate('/record')}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          navigate('/record')
+        }
+      }}
       style={{ cursor: 'pointer' }}
     >
       <div className={styles.iconWrapper}>

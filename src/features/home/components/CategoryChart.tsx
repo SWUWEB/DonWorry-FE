@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { formatKRW } from '@/shared/utils/currency'
 import type { CategoryData } from '../types'
 import styles from './CategoryChart.module.css'
 
@@ -49,7 +50,7 @@ export default function CategoryChart({ categories, hasRecords, topCategoryLabel
                     height: `${(cat.amount / maxAmount) * MAX_BAR_HEIGHT}px`,
                     backgroundColor: cat.color,
                   }}
-                  aria-label={`${cat.label} ${cat.amount.toLocaleString('ko-KR')}원`}
+                  aria-label={`${cat.label} ${formatKRW(cat.amount)}`}
                 />
                 <span className={styles.barLabel}>{cat.label}</span>
               </div>

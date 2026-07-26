@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './SpendingSummary.module.css'
 
 interface SpendingSummaryProps {
@@ -48,16 +49,17 @@ export default function SpendingSummary({ monthlySpending, lastMonthSpending, bu
   const remaining = budget !== null ? budget - monthlySpending : null
   const isOverBudget = remaining !== null && remaining < 0
 
-  let budgetAmount = ''
-  let budgetSub = ''
+  let budgetAmount: string
+  let budgetSub: string
 
   if (isBudgetUnset) {
+    budgetAmount = ''
     budgetSub = '이번 달 예산을 설정해주세요.'
   } else if (isOverBudget) {
-    budgetAmount = `${Math.abs(remaining!).toLocaleString()}원`
-    budgetSub = `예산을 ${Math.abs(remaining!).toLocaleString()}원 초과했어요`
+    budgetAmount = formatKRW(Math.abs(remaining!))
+    budgetSub = `예산을 ${formatKRW(Math.abs(remaining!))} 초과했어요`
   } else {
-    budgetAmount = `${remaining!.toLocaleString()}원`
+    budgetAmount = formatKRW(remaining!)
     budgetSub = '목표까지 남았어요'
   }
 
@@ -69,7 +71,7 @@ export default function SpendingSummary({ monthlySpending, lastMonthSpending, bu
         <div className={styles.amountRow}>
           {spendingTrend === 'up' && <UpArrowIcon color="#EB0000" />}
           {spendingTrend === 'down' && <DownArrowIcon color="#2946D8" />}
-          <p className={styles.amountRed}>{monthlySpending.toLocaleString()}원</p>
+          <p className={styles.amountRed}>{formatKRW(monthlySpending)}</p>
         </div>
         {comparisonLabel && <p className={styles.sub}>{comparisonLabel}</p>}
       </div>
@@ -79,6 +81,8 @@ export default function SpendingSummary({ monthlySpending, lastMonthSpending, bu
         className={styles.card}
         onClick={isBudgetUnset ? () => navigate('/budget') : undefined}
         role={isBudgetUnset ? 'button' : undefined}
+        tabIndex={isBudgetUnset ? 0 : undefined}
+        onKeyDown={isBudgetUnset ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/budget') } } : undefined}
         style={isBudgetUnset ? { cursor: 'pointer' } : undefined}
       >
         <p className={styles.label}>남은 예산</p>

@@ -1,3 +1,4 @@
+import { getDayIndex } from '@/shared/utils/date'
 import styles from './EncouragementCard.module.css'
 
 const MESSAGES = [
@@ -9,13 +10,6 @@ const MESSAGES = [
   '목표를 세운 것 자체가 이미 훌륭한 시작이에요.',
   '오늘 하루도 현명한 소비를 위해 노력하고 있어요.',
 ]
-
-function getDayIndex(length: number): number {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 0)
-  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000)
-  return dayOfYear % length
-}
 
 export default function EncouragementCard() {
   const message = MESSAGES[getDayIndex(MESSAGES.length)]
