@@ -1,4 +1,5 @@
 import { IoNotifications } from 'react-icons/io5'
+import { useDrawer } from '@/features/drawer/DrawerContext'
 import styles from "./Header.module.css";
 
 interface HeaderProps {
@@ -35,6 +36,7 @@ export default function Header({
   subMain
 }: HeaderProps) {
   const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle);
+  const { open: openDrawer } = useDrawer()
 
   const defaultRight = (
     <>
@@ -44,7 +46,7 @@ export default function Header({
           {unreadCount > 0 && <span className={styles.badge} />}
         </span>
       </button>
-      <button className={styles.iconBtn} aria-label="메뉴">
+      <button className={styles.iconBtn} aria-label="메뉴" onClick={openDrawer}>
         <TwoLineMenu />
       </button>
     </>
