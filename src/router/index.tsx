@@ -12,6 +12,7 @@ import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
 import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
 import OnboardingGoalPage from '@/pages/OnboardingGoalPage'
+import OnboardingCompletePage from '@/pages/OnboardingCompletePage'
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
 
   { path: '/onboarding', element: <OnboardingInterestPage /> },
   { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
+  { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
 
   { path: '/record', element: <RecordMainPage /> },
   { path: '/record/:id', element: <RecordDetailPage /> },

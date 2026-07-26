@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import styles from './OnboardingGoalPage.module.css'
 
 const PURPOSES = [
@@ -26,6 +26,9 @@ function getAmountError(raw: string, value: number): string {
 
 export default function OnboardingGoalPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const step1State = (location.state ?? {}) as { interests?: { emoji: string; label: string }[] }
+
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [amountInput, setAmountInput] = useState('')
   const [amountTouched, setAmountTouched] = useState(false)
@@ -56,7 +59,14 @@ export default function OnboardingGoalPage() {
     try {
       // TODO: API 호출 - 1·2단계 설정값 저장
       await Promise.resolve()
-      navigate('/onboarding/step3')
+      navigate('/onboarding/step3', {
+        state: {
+          interests: step1State.interests ?? [],
+          purpose: selectedPurpose?.label ?? '',
+          purposeEmoji: selectedPurpose?.emoji ?? '',
+          amount,
+        },
+      })
     } catch {
       setSaveError('설정을 저장하지 못했습니다. 다시 시도해주세요.')
     } finally {

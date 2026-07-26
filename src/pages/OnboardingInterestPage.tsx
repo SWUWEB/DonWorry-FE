@@ -48,8 +48,9 @@ export default function OnboardingInterestPage() {
 
   const handleNext = () => {
     if (!hasSelected) return
-    // TODO: 선택값 전달 후 2단계로 이동
-    navigate('/onboarding/step2')
+    navigate('/onboarding/step2', {
+      state: { interests: selectedList.map(c => ({ emoji: c.emoji, label: c.label })) },
+    })
   }
 
   return (
