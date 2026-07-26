@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNotificationSettings, useUpdateNotificationSettings } from '../hooks/useNotifications'
 import styles from './NotificationSettingsSheet.module.css'
 
@@ -39,8 +39,11 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
 
   const [enabled, setEnabled] = useState({
     all: true, general: true, goal: true, retrial: true,
-    ...serverSettings,  // API 연결 시 서버값으로 초기화됨
   })
+
+  useEffect(() => {
+    if (serverSettings) setEnabled(prev => ({ ...prev, ...serverSettings }))
+  }, [serverSettings])
 
   const toggle = (id: keyof typeof enabled) => {
     const next = { ...enabled, [id]: !enabled[id] }
