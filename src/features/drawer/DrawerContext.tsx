@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useState } from 'react'
 import type { ReactNode } from 'react'
 
 interface DrawerContextValue {
@@ -7,7 +7,7 @@ interface DrawerContextValue {
   close: () => void
 }
 
-const DrawerContext = createContext<DrawerContextValue | null>(null)
+export const DrawerContext = createContext<DrawerContextValue | null>(null)
 
 export function DrawerProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,10 +16,4 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
       {children}
     </DrawerContext.Provider>
   )
-}
-
-export function useDrawer() {
-  const ctx = useContext(DrawerContext)
-  if (!ctx) throw new Error('useDrawer must be used within DrawerProvider')
-  return ctx
 }

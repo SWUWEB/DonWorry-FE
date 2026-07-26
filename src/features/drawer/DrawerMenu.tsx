@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { IoCloseOutline } from 'react-icons/io5'
-import { useDrawer } from './DrawerContext'
+import { useDrawer } from './useDrawer'
 import styles from './DrawerMenu.module.css'
 
 function LogoutIcon() {
@@ -63,23 +63,20 @@ export default function DrawerMenu() {
   const { isOpen, close } = useDrawer()
   const navigate = useNavigate()
   const location = useLocation()
-  const [mounted, setMounted] = useState(false)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
-    if (isOpen) {
-      setMounted(true)
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
+    if (!isOpen) {
       setShowLogoutConfirm(false)
-      const timer = setTimeout(() => setMounted(false), 250)
-      return () => clearTimeout(timer)
+      return
+    }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
     }
   }, [isOpen])
-
-  if (!mounted) return null
 
   const handleNav = (path: string) => {
     close()
@@ -98,6 +95,7 @@ export default function DrawerMenu() {
   }
 
   const handleLogout = () => {
+    // TODO: 로그아웃 API 호출 및 토큰/세션 정리 후 이동
     setShowLogoutConfirm(false)
     close()
     navigate('/login')
@@ -105,7 +103,10 @@ export default function DrawerMenu() {
 
   return createPortal(
     <>
-      <div className={styles.overlay} onClick={close}>
+      <div
+        className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`}
+        onClick={close}
+      >
         <div
           className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ''}`}
           onClick={(e) => e.stopPropagation()}
@@ -119,7 +120,7 @@ export default function DrawerMenu() {
             <div className={styles.profileRow}>
               <div className={styles.avatar} />
               <div className={styles.userInfo}>
-                {/* TODO: 실제 사용자 이름으로 교체 */}
+                {/* TODO: 실제 사용자 이름 및 프로필 이미지 연결 */}
                 <p className={styles.userName}>000님,</p>
                 <p className={styles.greeting}>오늘도 알뜰한 하루<br />시작해 보세요! 💰</p>
               </div>
