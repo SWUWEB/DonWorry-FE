@@ -73,3 +73,9 @@
   color: #9CA3AF;
   pointer-events: none;
 }
+
+.buttonWrapper {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+}

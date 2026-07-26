@@ -61,6 +61,7 @@ export default function ProfileForm() {
           <label className={styles.genderItem}>
             <input
               id="female"
+              name="gender"
               type="radio"
               value="female"
               checked={gender === 'female'}
@@ -72,6 +73,7 @@ export default function ProfileForm() {
           <label className={styles.genderItem}>
             <input
               id="male"
+              name="gender"
               type="radio"
               value="male"
               checked={gender === 'male'}
