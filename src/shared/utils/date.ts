@@ -7,10 +7,9 @@ export function getFormattedDateLabel(date: Date = new Date()): string {
   return `${month}월 ${day}일 ${dayOfWeek}요일`
 }
 
-export function getDayIndex(length: number): number {
-  const now = new Date()
-  const start = Date.UTC(now.getUTCFullYear(), 0, 1)
-  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
-  const dayOfYear = Math.floor((today - start) / 86400000)
+export function getDayIndex(length: number, date: Date = new Date()): number {
+  const start = new Date(date.getFullYear(), 0, 1)
+  const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const dayOfYear = Math.floor((today.getTime() - start.getTime()) / 86400000)
   return dayOfYear % length
 }

@@ -79,10 +79,10 @@ export default function SpendingSummary({ monthlySpending, lastMonthSpending, bu
       {/* 남은 예산 */}
       <div
         className={styles.card}
-        onClick={isBudgetUnset ? () => navigate('/budget') : undefined}
+        onClick={isBudgetUnset ? () => navigate('/goal-amount') : undefined}
         role={isBudgetUnset ? 'button' : undefined}
         tabIndex={isBudgetUnset ? 0 : undefined}
-        onKeyDown={isBudgetUnset ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/budget') } } : undefined}
+        onKeyDown={isBudgetUnset ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/goal-amount') } } : undefined}
         style={isBudgetUnset ? { cursor: 'pointer' } : undefined}
       >
         <p className={styles.label}>남은 예산</p>
