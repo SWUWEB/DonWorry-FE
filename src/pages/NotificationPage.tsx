@@ -12,7 +12,6 @@ export default function NotificationPage() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState<FilterType>('전체')
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
 
   return (
     <>
@@ -30,7 +29,7 @@ export default function NotificationPage() {
         }
         subMain={<FilterTabs active={filter} onChange={setFilter} />}
       />
-      <Notification filter={filter} onUnreadCountChange={setUnreadCount} />
+      <Notification filter={filter} />
       {sheetOpen && <NotificationSettingsSheet onClose={() => setSheetOpen(false)} />}
     </>
   )

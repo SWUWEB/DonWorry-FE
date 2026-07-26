@@ -1,4 +1,3 @@
-import client from '@/api/client'
 import type { NotificationItem } from '../components/NotificationCard'
 
 // TODO: 백엔드 응답 타입으로 교체
