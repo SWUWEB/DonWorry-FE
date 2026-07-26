@@ -1,0 +1,46 @@
+.wrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--donut-size);
+  height: var(--donut-size);
+}
+
+.wrapper :global(.recharts-wrapper),
+.wrapper svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 360px) {
+  .wrapper {
+    width: calc(var(--donut-size) * 0.77);
+    height: calc(var(--donut-size) * 0.77);
+  }
+}
+
+.centerFill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--color-main-000, #f7fbfa);
+}
+
+.centerLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary, #243130);
+}
+
+@media (max-width: 360px) {
+  .centerLabel {
+    font-size: 16px;
+  }
+}
