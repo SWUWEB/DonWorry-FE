@@ -1,10 +1,25 @@
 import styles from './EncouragementCard.module.css'
 
-interface EncouragementCardProps {
-  message: string
+const MESSAGES = [
+  '아직 시작 단계예요. 지금부터 조금씩 줄여볼까요?',
+  '작은 소비를 한 번 참는 것도 좋은 변화예요.',
+  '오늘도 목표를 향해 한 걸음 나아가고 있어요.',
+  '절약은 작은 습관에서 시작돼요. 오늘도 잘 하고 있어요!',
+  '지출을 돌아보는 것만으로도 충분히 잘 하고 있어요.',
+  '목표를 세운 것 자체가 이미 훌륭한 시작이에요.',
+  '오늘 하루도 현명한 소비를 위해 노력하고 있어요.',
+]
+
+function getDayIndex(length: number): number {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), 0, 0)
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000)
+  return dayOfYear % length
 }
 
-export default function EncouragementCard({ message }: EncouragementCardProps) {
+export default function EncouragementCard() {
+  const message = MESSAGES[getDayIndex(MESSAGES.length)]
+
   return (
     <div className={styles.card}>
       <div className={styles.iconWrapper}>

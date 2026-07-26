@@ -1,49 +1,74 @@
+import { useNavigate } from 'react-router-dom'
+import type { CategoryData } from '../types'
 import styles from './CategoryChart.module.css'
 
-interface Category {
-  label: string
-  amount: number
-  color: string
-}
-
 interface CategoryChartProps {
-  categories: Category[]
+  categories: CategoryData[]
+  hasRecords: boolean
+  topCategoryLabel: string
 }
 
-const MAX_BAR_HEIGHT = 94
+const MAX_BAR_HEIGHT = 62
 
-export default function CategoryChart({ categories }: CategoryChartProps) {
-  const maxAmount = Math.max(...categories.map((c) => c.amount)) || 1
+export default function CategoryChart({ categories, hasRecords, topCategoryLabel }: CategoryChartProps) {
+  const navigate = useNavigate()
+  const maxAmount = Math.max(...categories.map((c) => c.amount), 1)
+  const totalAmount = categories.reduce((sum, c) => sum + c.amount, 0)
+  const topPercent = totalAmount > 0
+    ? Math.round((categories[0]?.amount ?? 0) / totalAmount * 100)
+    : 0
 
   return (
     <section className={styles.card}>
       <div className={styles.header}>
         <span className={styles.title}>카테고리별 지출</span>
-        {/* TODO: 상세 화면 연결 후 button으로 교체 */}
-        <span className={styles.detailButton}>상세 보기 &gt;</span>
+        <button className={styles.detailButton} onClick={() => navigate('/report')}>
+          상세 보기 &gt;
+        </button>
       </div>
 
-      <div className={styles.chartArea}>
-        {categories.map((cat) => (
-          <div key={cat.label} className={styles.barWrapper}>
-            <div
-              className={styles.bar}
-              style={{
-                height: `${(cat.amount / maxAmount) * MAX_BAR_HEIGHT}px`,
-                backgroundColor: cat.color,
-              }}
-              aria-label={`${cat.label} ${cat.amount.toLocaleString('ko-KR')}원`}
-              role="img"
-            />
-            <span className={styles.barLabel}>{cat.label}</span>
+      {hasRecords ? (
+        <>
+          <div className={styles.chartArea}>
+            {categories.map((cat) => (
+              <div
+                key={cat.label}
+                className={styles.barWrapper}
+                onClick={() =>
+                  cat.isOther
+                    ? navigate('/record?filter=other')
+                    : navigate(`/record?category=${encodeURIComponent(cat.label)}`)
+                }
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.click()}
+              >
+                <div
+                  className={styles.bar}
+                  style={{
+                    height: `${(cat.amount / maxAmount) * MAX_BAR_HEIGHT}px`,
+                    backgroundColor: cat.color,
+                  }}
+                  aria-label={`${cat.label} ${cat.amount.toLocaleString('ko-KR')}원`}
+                />
+                <span className={styles.barLabel}>{cat.label}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <p className={styles.message}>
-        이번 달은 절약이 목적이셨네요.{' '}
-        <strong className={styles.messageBold}>식비</strong> 지출이 조금 많았어요
-      </p>
+          <p className={styles.message}>
+            이번 달에는{' '}
+            <strong className={styles.messageBold}>{topCategoryLabel}</strong>
+            {' '}소비가 전체 지출의 {topPercent}%를 차지했어요.
+          </p>
+        </>
+      ) : (
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>이번 달 소비 기록이 아직 없어요.</p>
+          <button className={styles.recordButton} onClick={() => navigate('/record')}>
+            소비 기록하기
+          </button>
+        </div>
+      )}
     </section>
   )
 }
