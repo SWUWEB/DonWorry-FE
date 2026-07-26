@@ -9,7 +9,7 @@
   grid-template-columns: auto 1fr auto;
   width: 100%;
   height: 50px;
-  background: var(--Main-000, #F7FBFA);
+  background: var(--Main-000, #f7fbfa);
   padding: 0 16px;
   align-items: center;
   box-sizing: border-box;
@@ -43,8 +43,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-height: 138px;
   border-radius: 0 0 20px 20px;
-  background: var(--Main-000, #F7FBFA);
+  background: var(--Main-000, #f7fbfa);
   padding: 8px 16px 16px;
   gap: 12px;
   box-sizing: border-box;
@@ -90,7 +91,7 @@
 .right button:hover,
 .subLeft button:hover,
 .subRight button:hover {
-  color: var(--Gray-300, #5B6B6A);
+  color: var(--Gray-300, #5b6b6a);
 }
 
 .subTitle {
@@ -120,7 +121,7 @@
   right: -2px;
   width: 7px;
   height: 7px;
-  background: #E05353;
+  background: #e05353;
   border-radius: 50%;
-  border: 1.5px solid #F7FBFA;
+  border: 1.5px solid #f7fbfa;
 }
