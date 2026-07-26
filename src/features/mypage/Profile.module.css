@@ -7,6 +7,25 @@
   background: transparent; 
   min-height: calc(100vh - 180px);
   position: relative;
+  z-index: 1;
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--color-text-primary);
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #243130;
 }
 
 .headerContent {
@@ -29,14 +48,6 @@
   font-weight: 300;
   line-height: 1.0;
   color: #898989;
-}
-
-
-.logo {
-  font-size: 14px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--color-text-primary);
 }
 
 .iconButton {
