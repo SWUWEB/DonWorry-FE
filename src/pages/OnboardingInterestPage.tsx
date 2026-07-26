@@ -91,6 +91,7 @@ export default function OnboardingInterestPage() {
                 key={id}
                 className={`${styles.chip} ${isSelected ? styles.chipSelected : ''} ${isDimmed ? styles.chipDimmed : ''}`}
                 onClick={() => toggle(id)}
+                aria-pressed={isSelected}
               >
                 <span className={styles.chipEmoji}>{emoji}</span>
                 <span className={styles.chipLabel}>{label}</span>
