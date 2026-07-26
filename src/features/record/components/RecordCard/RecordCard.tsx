@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
+import type { RecordType } from '@/features/record/mockRecords'
 import styles from './RecordCard.module.css'
-
-export type RecordType = 'saved' | 'consume'
 
 interface RecordCardProps {
   id: string

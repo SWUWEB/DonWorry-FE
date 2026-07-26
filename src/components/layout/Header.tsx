@@ -1,17 +1,17 @@
 import { IoNotifications } from 'react-icons/io5'
-import styles from "./Header.module.css";
+import styles from './Header.module.css'
 
 interface HeaderProps {
-  title?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
-  onBellClick?: () => void;
-  unreadCount?: number;
+  title?: string
+  left?: React.ReactNode
+  right?: React.ReactNode
+  onBellClick?: () => void
+  unreadCount?: number
 
-  subLeft?: React.ReactNode;
-  subTitle?: string;
-  subRight?: React.ReactNode;
-  subMain?: React.ReactNode;
+  subLeft?: React.ReactNode
+  subTitle?: string
+  subRight?: React.ReactNode
+  subMain?: React.ReactNode
 }
 
 function TwoLineMenu() {
@@ -32,7 +32,7 @@ export default function Header({
   subLeft,
   subTitle,
   subRight,
-  subMain
+  subMain,
 }: HeaderProps) {
   const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle);
 
