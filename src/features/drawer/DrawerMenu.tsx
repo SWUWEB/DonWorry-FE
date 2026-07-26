@@ -5,9 +5,9 @@ import { IoCloseOutline } from 'react-icons/io5'
 import { useDrawer } from './useDrawer'
 import styles from './DrawerMenu.module.css'
 
-function LogoutIcon() {
+function LogoutIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
       <path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M10.667 11.3333L14.0003 7.99996L10.667 4.66663" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M14 8H6" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
@@ -160,8 +160,11 @@ export default function DrawerMenu() {
       {showLogoutConfirm && (
         <div className={styles.confirmOverlay}>
           <div className={styles.confirmDialog}>
+            <div className={styles.confirmIconWrap}>
+              <LogoutIcon size={24} />
+            </div>
             <p className={styles.confirmTitle}>로그아웃</p>
-            <p className={styles.confirmMessage}>정말 로그아웃 하시겠어요?</p>
+            <p className={styles.confirmMessage}>정말 로그아웃 하시겠습니까?</p>
             <div className={styles.confirmButtons}>
               <button className={styles.confirmCancel} onClick={() => setShowLogoutConfirm(false)}>취소</button>
               <button className={styles.confirmLogout} onClick={handleLogout}>로그아웃</button>
