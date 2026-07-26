@@ -6,6 +6,8 @@ import RecordInterventionPage from '@/features/intervention/pages/RecordInterven
 import LoginPage from '@/pages/LoginPage'
 import SignUpPage from '@/pages/SignUpPage'
 import MyPagePage from '@/pages/MyPagePage'
+import Temptation from '@/features/temptation/Temptation'
+import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
@@ -17,6 +19,9 @@ const router = createBrowserRouter([
   { path: '/record', element: <RecordMainPage /> },
   { path: '/record/:id', element: <RecordDetailPage /> },
   { path: '/record/intervention', element: <RecordInterventionPage /> },
+
+  { path: '/temptation', element: <Temptation />},
+  { path: '/temptation/:id', element: <TemptationInfo />},
 ])
 
 export default router

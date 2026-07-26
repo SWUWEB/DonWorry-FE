@@ -24,13 +24,21 @@
 }
 
 .textInput {
-  flex: 1;
+  width: 100%;
   border: none;
-  border-bottom: 2px solid #dddddd;
+  border-bottom: 2px solid var(--Gray-100, #DDDDDD);
   font-size: 14px;
   font-weight: bold;
+  font-family: inherit;
   padding: 4px 0;
   outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.textInput::placeholder {
+  font-weight: normal;
+  color: var(--Gray-300, #5B6B6A);
 }
 
 .priceWrapper {
