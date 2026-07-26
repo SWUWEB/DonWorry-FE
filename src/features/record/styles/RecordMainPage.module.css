@@ -8,3 +8,25 @@
   gap: 8px;
   padding: 30px 37px 32px;
 }
+
+.addBtn {
+  position: fixed;
+  bottom: 20px;
+  right: calc(50% - 195px + 20px);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  background: var(--color-main-600, #246365);
+}
