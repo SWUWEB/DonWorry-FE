@@ -17,7 +17,7 @@ export default function NotificationPage() {
   return (
     <>
       <Header
-        title="알림"
+        subTitle="알림"
         subLeft={
           <button className={styles.iconBtn} aria-label="뒤로가기" onClick={() => navigate(-1)}>
             <IoChevronBack size={20} />
