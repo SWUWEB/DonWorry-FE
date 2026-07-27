@@ -17,9 +17,11 @@ export const InfoBox = ({ price, reason, link }: InfoBoxProps) => {
     try {
       await navigator.clipboard.writeText(link);
       setCopied(true);
+      setLinkError(false);
       setTimeout(() => setCopied(false), 1500);
     } catch {
       setLinkError(true);
+      setCopied(false);
     }
   };
 

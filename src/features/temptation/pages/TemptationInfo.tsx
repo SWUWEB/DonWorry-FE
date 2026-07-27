@@ -48,7 +48,6 @@ export default function TemptationInfo() {
 
     try {
       // 백엔드 연동 시 실제 삭제 요청으로 교체 필요
-      // 삭제 성공 시 참은 소비 기록에 반영하는 로직 추가 필요
       await new Promise((resolve) => setTimeout(resolve, 400));
       removeMockProduct(product.id);
       navigate('/temptation');

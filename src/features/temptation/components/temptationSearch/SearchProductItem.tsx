@@ -19,7 +19,7 @@ export const SearchProductItem = ({ product, keyword }: SearchProductItemProps) 
   }
 
   return (
-    <div className={styles.box} onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <button type="button" className={styles.box} onClick={handleClick} aria-label={`${name} 상세 보기`}>
       <div className={styles.top}>
         <CategoryIcon category={category} size={34} />
         <div className={styles.info}>
@@ -28,6 +28,6 @@ export const SearchProductItem = ({ product, keyword }: SearchProductItemProps) 
         </div>
       </div>
       <p className={styles.time}>남은 대기 시간 {formatRemainingTime(time)}</p>
-    </div>
+    </button>
   );
 };

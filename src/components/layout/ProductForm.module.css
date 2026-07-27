@@ -56,8 +56,7 @@
   outline: none;
 }
 
-.priceInput::placeholder,
-.textInput::placeholder {
+.priceInput::placeholder {
   color: #dddddd;
   font-weight: bold;
 }
