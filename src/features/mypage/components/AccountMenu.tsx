@@ -1,4 +1,5 @@
 import { HiChevronRight } from 'react-icons/hi'
+import { useNavigate } from 'react-router-dom'
 
 import styles from './AccountMenu.module.css'
 
@@ -15,6 +16,8 @@ const menus = [
 ]
 
 export default function AccountMenu() {
+    const navigate = useNavigate()
+
   return (
     <section className={styles.card}>
       {menus.map((menu) => (
@@ -22,6 +25,11 @@ export default function AccountMenu() {
           key={menu.title}
           type="button"
           className={`${styles.menuButton} ${menu.title === '회원 탈퇴' ? styles.withdraw : ''}`}
+          onClick={() => {
+            if (menu.title === '이메일 변경') {
+              navigate('/mypage/email')
+            }
+          }}
         >
           <span>{menu.title}</span>
 

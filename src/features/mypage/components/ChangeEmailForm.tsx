@@ -11,6 +11,9 @@ export default function ChangeEmailForm() {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
 
+  const isVerificationSent = false
+  const isExpired = false
+
   return (
     <section className={styles.form}>
       <div className={styles.currentEmailCard}>
@@ -53,23 +56,31 @@ export default function ChangeEmailForm() {
         <div className={styles.codeWrapper}>
           <input
             id="code"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={6}
+            autoComplete="one-time-code"
             className={styles.input}
             placeholder="인증번호 6자리"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
           />
 
-          <span className={styles.expireText}>
-            만료됨
-          </span>
+          {isExpired && (
+           <span className={styles.expireText}>
+             만료됨
+           </span>
+          )}
         </div>
 
-        <p className={styles.helper}>
-          인증번호가 이메일로 발송되었습니다.
-        </p>
+        {isVerificationSent && (
+            <p className={styles.helper}>
+              인증번호가 이메일로 발송되었습니다.
+            </p>
+          )}
       </div>
 
-      {/* 안내 */}
       <div className={styles.noticeBox}>
         <ul>
           <li>인증 메일이 오지 않았나요?</li>
@@ -78,7 +89,6 @@ export default function ChangeEmailForm() {
         </ul>
       </div>
 
-      {/* 재발송 */}
       <button
         type="button"
         className={styles.resendButton}
