@@ -10,6 +10,7 @@ import SignUpPage from '@/pages/SignUpPage'
 import MyPagePage from '@/pages/MyPagePage'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
+import ChangeEmailPage from '@/pages/ChangeEmailPage'
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
   {path: '/goal-amount', element: <GoalAmountPage /> },
   { path: '/notification', element: <NotificationPage /> },
   {path: '/profile', element: <ProfilePage />,},
+  {path: '/changeemail', element: <ChangeEmailPage />,},
 
   { path: '/record', element: <RecordMainPage /> },
   { path: '/record/:id', element: <RecordDetailPage /> },

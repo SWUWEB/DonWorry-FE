@@ -1,0 +1,168 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+}
+
+.currentEmailCard {
+  margin-top: 15px;
+  width: 342px;
+  height: 68px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:18px 22px 18px 18px;
+  border-radius: 13px;
+  background: #E8F4F4;
+}
+
+.cardLabel {
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #2F7F82;
+}
+
+.currentEmail {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E2939;
+}
+
+.checkIcon {
+  font-size: 34px;
+  color: #2F7F82;
+}
+
+.inputGroup {
+  margin-top: -10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #364153;
+}
+
+.codeWrapper {
+  position: relative;
+}
+
+.input {
+  margin-top: -5px;
+  width: 342px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 13px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #D1D5DC;
+}
+
+.expireText {
+  position: absolute;
+
+  right: 24px;
+  top: 50%;
+
+  transform: translateY(-60%);
+
+  font-size: 13px;
+  font-weight: 700;
+  color: #AAAAAA;
+}
+
+.helper {
+  margin: 0;
+  margin-top: -10px;
+  font-weight: 300;
+  font-size: 12px;
+  color: #ADADAD;
+}
+
+.noticeBox {
+  margin-top: -10px;
+  width: 342px;
+  height: 86px;
+
+  padding: 14px 18px;
+
+  border-radius: 13px;
+  background: #F7FBFA;
+
+  box-sizing: border-box;
+}
+
+.noticeBox ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.noticeBox li {
+  position: relative;
+  padding-left: 14px;
+  margin-top: -2px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #898989;
+}
+.noticeBox li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 14px;
+  color: #C7CED1;
+}
+
+.noticeBox li:last-child {
+  margin-bottom: 0;
+}
+
+.noticeBox li:last-child {
+  margin-bottom: 0;
+}
+
+.resendButton {
+  margin-top: -25px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: #2F7F82;
+  cursor: pointer;
+}
+
+.buttonWrapper{
+    margin-top:18px;
+
+    width:100%;
+
+    display:flex;
+    justify-content:center;
+}
+
+.buttonWrapper button {
+  width: 342px;
+  height: 54px;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 600;
+}
