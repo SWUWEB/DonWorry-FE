@@ -27,7 +27,7 @@ export default function AccountMenu() {
           className={`${styles.menuButton} ${menu.title === '회원 탈퇴' ? styles.withdraw : ''}`}
           onClick={() => {
             if (menu.title === '이메일 변경') {
-              navigate('/mypage/email')
+              navigate('/changeemail')
             }
           }}
         >
