@@ -79,7 +79,7 @@ export const ConfirmDialog = ({
       className={styles.card}
       ref={cardRef}
       role="dialog"
-      aria-model="true"
+      aria-modal="true"
       aria-labelledby="confirm-dialog-title"
       aria-describedby={description ? 'confirm-dialog-description' : undefined}>
         <IoWarningOutline size={48} className={styles.icon} aria-hidden="true" />

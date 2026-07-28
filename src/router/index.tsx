@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
+import { WishlistProvider } from '@/features/temptation/hooks/WishlistProvider'
 import HomePage from '@/pages/HomePage'
 import RecordMainPage from '@/features/record/pages/RecordMainPage'
 import RecordDetailPage from '@/features/record/pages/RecordDetailPage'
@@ -20,8 +21,13 @@ const router = createBrowserRouter([
   { path: '/record/:id', element: <RecordDetailPage /> },
   { path: '/record/intervention', element: <RecordInterventionPage /> },
 
-  { path: '/temptation', element: <Temptation />},
-  { path: '/temptation/:id', element: <TemptationInfo />},
+  {
+    element: <WishlistProvider />,
+    children: [
+      { path: '/temptation', element: <Temptation />},
+      { path: '/temptation/:id', element: <TemptationInfo />},
+    ],
+  },
 ])
 
 export default router
