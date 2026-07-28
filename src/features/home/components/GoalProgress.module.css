@@ -1,54 +1,53 @@
-.section {
-  display: flex;
-  flex-direction: column;
-}
-
 .sectionLabel {
   margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 12px;
+  color: var(--color-gray-300);
 }
 
 .card {
   background: white;
   border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 17px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.1), 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .cardTitle {
-  margin: 0;
   font-size: 13px;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .badge {
   font-size: 11px;
-  font-weight: 600;
-  color: var(--color-text-green);
-  background-color: var(--color-main-100);
+  font-weight: 700;
+  color: var(--color-main-500);
+  background-color: #e8f4f4;
   padding: 2px 8px;
   border-radius: 999px;
 }
 
+.progressTrackWrap {
+  padding-top: 8px;
+}
+
 .progressTrack {
-  height: 16px;
-  background-color: #e0e0e0;
+  height: 12px;
+  background-color: #e0eeee;
   border-radius: 999px;
   overflow: hidden;
 }
 
 .progressBar {
   height: 100%;
-  background-color: var(--color-main-300);
+  background: linear-gradient(to right, var(--color-main-500), var(--color-main-400));
   border-radius: 999px;
   transition: width 0.5s ease;
 }
@@ -60,13 +59,18 @@
 }
 
 .amount {
-  margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-gray-300);
 }
 
 .remaining {
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   font-size: 12px;
-  color: var(--color-gray-200);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.remainingAmount {
+  font-weight: 700;
+  color: var(--color-main-500);
 }

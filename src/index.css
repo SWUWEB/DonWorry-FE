@@ -21,14 +21,14 @@
   /* Text */
   --color-text-white: #fefefe;
   --color-text-primary: #243130;
-  --color-text-green: #PLACEHOLDER;
-  --color-text-blue: #PLACEHOLDER;
-  --color-text-red: #PLACEHOLDER;
+  --color-text-green: #389698;
+  --color-text-blue: #2946D8;
+  --color-text-red: #EB0000;
 
   /* Sub */
-  --color-sub-000: #PLACEHOLDER;
-  --color-sub-100: #PLACEHOLDER;
-  --color-sub-200: #PLACEHOLDER;
+  --color-sub-000: #F7FBFA;
+  --color-sub-100: #E5F2F1;
+  --color-sub-200: #C7E3E3;
 }
 
 * {

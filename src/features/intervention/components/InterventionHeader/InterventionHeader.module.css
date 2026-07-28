@@ -5,20 +5,6 @@
   box-shadow: 2px 4px 4px rgba(77, 158, 155, 0.25);
 }
 
-.backButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  margin: -13px 0 16px -13px;
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--color-text-primary, #243130);
-  cursor: pointer;
-}
-
 .title {
   margin: 0 0 8px;
   font-size: 24px;

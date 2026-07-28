@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;      
+  padding: 0 20px 40px;   
+  background: transparent; 
+  min-height: calc(100vh - 180px);
+  position: relative;
+}
+
+.headerContent {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.pageDescription {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.0;
+  color: #898989;
+}
+
+
+.logo {
+  font-size: 14px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--color-text-primary);
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #243130;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #243130;
+}

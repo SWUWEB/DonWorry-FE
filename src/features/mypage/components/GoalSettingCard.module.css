@@ -1,0 +1,103 @@
+.card {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #F3F4F6;
+  border-radius: 20px; 
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+
+.toggleSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggleTitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #364153;
+}
+
+.toggleDescription {
+  font-weight: 400;
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-size: 11px;
+  color: #99A1AF;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  width: 46px;
+  height: 26px;
+  padding: 3px;
+  border: none;
+  border-radius: 999px;
+  background-color: #2F7F82;
+  cursor: pointer;
+}
+
+.toggleCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  margin-left: auto;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #364153;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 40px 0 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #C4C4C4;
+}
+
+
+.unit {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: #C0C0C0;
+  pointer-events: none;
+}

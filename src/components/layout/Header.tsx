@@ -1,60 +1,88 @@
-import styles from "./Header.module.css";
+import { IoNotifications } from 'react-icons/io5'
+import styles from './Header.module.css'
 
 interface HeaderProps {
-  title?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+  title?: string
+  left?: React.ReactNode
+  right?: React.ReactNode
+  onBellClick?: () => void
+  unreadCount?: number
 
-  subLeft?: React.ReactNode;
-  subRight?: React.ReactNode;
-  subMain?: React.ReactNode;
+  subLeft?: React.ReactNode
+  subTitle?: string
+  subRight?: React.ReactNode
+  subMain?: React.ReactNode
+}
+
+function TwoLineMenu() {
+  return (
+    <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+      <line x1="0" y1="1" x2="20" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="0" y1="11" x2="20" y2="11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  )
 }
 
 export default function Header({
   title,
   left,
   right,
+  onBellClick,
+  unreadCount = 0,
   subLeft,
+  subTitle,
   subRight,
-  subMain
+  subMain,
 }: HeaderProps) {
-  const hasSubContent = Boolean(subLeft || subRight || subMain);
-    
+  const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle);
+
+  const defaultRight = (
+    <>
+      <button className={styles.iconBtn} aria-label="알림" onClick={onBellClick}>
+        <span className={styles.bellWrap}>
+          <IoNotifications size={20} />
+          {unreadCount > 0 && <span className={styles.badge} />}
+        </span>
+      </button>
+      <button className={styles.iconBtn} aria-label="메뉴">
+        <TwoLineMenu />
+      </button>
+    </>
+  )
+
   return (
     <header className={styles.header}>
-        {/* topBar: 최상단 헤더(Logo, 알림 아이콘, 햄버거 메뉴 등) */}
         <div className={styles.topBar}>
             <div className={styles.left}>
                 {left}
             </div>
 
-            {title && <h1 className={styles.title}>
-                {title}
-            </h1>}
+            {title && <h1 className={styles.title}>{title}</h1>}
 
             <div className={styles.right}>
-                {right}
+                {right ?? defaultRight}
             </div>
-        </div>  
-      
-        {/* subContent: 하위 헤더(뒤로가기 아이콘, 페이지별 내용 등) */}
+        </div>
+
         { hasSubContent && (
            <div className={styles.subContent}>
                 <div className={styles.subTop}>
                     <div className={styles.subLeft}>
                         {subLeft}
                     </div>
-                    <div />
-                    {/* subRight: 필요할 경우 넣을 우측 요소 */}
+                    {subTitle
+                      ? <h2 className={styles.subTitle}>{subTitle}</h2>
+                      : <div />
+                    }
                     <div className={styles.subRight}>
                         {subRight}
                     </div>
                 </div>
-                
+
                 <div className={styles.subMain}>
                     {subMain}
                 </div>
-            </div> 
+            </div>
         )}
     </header>
   );
