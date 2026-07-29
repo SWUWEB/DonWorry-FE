@@ -14,12 +14,17 @@ export interface FormData {
 interface FormProps {
   formId?: string;
   showTimeSelector?: boolean;
+  initialData?: Partial<FormData>;
   onSubmit: (data: FormData) => void;
 }
 
-export function ProductForm({ formId = 'product-form', showTimeSelector = true, onSubmit }: FormProps) {
+const DEFAULT_FORM_DATA: FormData = {
+  link: '', price: 0, name: '', category: '패션', time: '1일', reason: ''
+};
+
+export function ProductForm({ formId = 'product-form', showTimeSelector = true, initialData, onSubmit }: FormProps) {
   const [data, setData] = useState<FormData>({
-    link: '', price: 0, name: '', category: '패션', time: '1일', reason: ''
+    ...DEFAULT_FORM_DATA, ...initialData
   });
 
   const [linkStatus, setLinkStatus] = useState<{

@@ -55,6 +55,24 @@ export const useWishlist = () => {
     setProducts((prev) => [...prev, newProduct]);
   };
 
+  const handleEdit = (id: string, formData: WishFormData) => {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === id
+        ? {
+          ...p,
+          name: formData.name,
+          price: formData.price,
+          time: timeStringToDate(formData.time),
+          category: formData.category,
+          link: formData.link,
+          reason: formData.reason,
+        }
+      : p
+    )
+  );
+  };
+
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter];
 
   return {
@@ -68,5 +86,6 @@ export const useWishlist = () => {
     categoriesToRender,
     handleDelete,
     handleAdd,
+    handleEdit,
   };
 };

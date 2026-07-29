@@ -13,6 +13,7 @@ import Temptation from '@/features/temptation/Temptation'
 import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
+import TemptationEdit from '@/features/temptation/pages/TemptationEdit'
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
@@ -30,8 +31,9 @@ const router = createBrowserRouter([
   {
     element: <WishlistProvider />,
     children: [
-      { path: '/temptation', element: <Temptation />},
-      { path: '/temptation/:id', element: <TemptationInfo />},
+      { path: '/temptation', element: <Temptation /> },
+      { path: '/temptation/:id', element: <TemptationInfo /> },
+      { path: '/temptation/:id/edit', element: <TemptationEdit /> },
     ],
   },
   { path: '/record/intervention/result', element: <RiskResultPage /> },
