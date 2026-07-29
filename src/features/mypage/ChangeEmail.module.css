@@ -39,24 +39,26 @@
   color: var(--color-text-primary);
 }
 
-.iconButton {
+.iconButton,
+.backButton {
+  position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+
+  width: 20px;   /* 아이콘 크기 정도 */
+  height: 20px;
+
   border: none;
   background: transparent;
   cursor: pointer;
   color: #243130;
 }
 
-.backButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #243130;
+.iconButton::after,
+.backButton::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
 }
