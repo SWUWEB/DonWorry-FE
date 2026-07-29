@@ -10,6 +10,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   isLoading?: boolean;
   errorMessage?: string;
+  onlyConfirm?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -22,6 +23,7 @@ export const ConfirmDialog = ({
   confirmText = '확인',
   isLoading = false,
   errorMessage,
+  onlyConfirm = false,
   onCancel,
   onConfirm,
 }: ConfirmDialogProps) => {
@@ -88,6 +90,11 @@ export const ConfirmDialog = ({
         {errorMessage && <p className={styles.errorText} role="alert">{errorMessage}</p>}
 
         <div className={styles.buttonRow}>
+          {!onlyConfirm && (
+            <button className={styles.cancelBtn} onClick={onCancel} disabled={isLoading}>
+              {cancelText}
+            </button>
+          )}
           <button
           className={styles.cancelBtn}
           ref={cancelBtnRef}
