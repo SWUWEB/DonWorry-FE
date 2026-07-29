@@ -168,12 +168,14 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
 
       <div className={styles.field}>
         <label htmlFor="reason" className={styles.label}>사고 싶은 이유 (선택)</label>
-        <input
+        <textarea
           id="reason"
           className={styles.textInput}
           placeholder="스트레스 받아서? 진짜 필요해서?"
           value={data.reason}
-          onChange={(e) => setData({...data, reason: e.target.value})} />
+          onChange={(e) => setData({...data, reason: e.target.value})}
+          rows={3}
+          />
       </div>
     </form>
   );
