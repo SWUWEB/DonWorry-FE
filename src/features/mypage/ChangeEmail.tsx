@@ -1,6 +1,5 @@
 import Header from '@/components/layout/Header'
-import { IoChevronBack, IoNotifications } from 'react-icons/io5'
-import { HiOutlineBars2 } from 'react-icons/hi2'
+import { IoChevronBack, IoNotifications, IoMenu } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
 
 import ChangeEmailForm from './components/ChangeEmailForm'
@@ -32,7 +31,7 @@ export default function ChangeEmail() {
               className={styles.iconButton}
               aria-label="메뉴"
             >
-              <HiOutlineBars2 size={22} />
+              <IoMenu size={20} />
             </button>
           </>
         }
