@@ -1,4 +1,4 @@
-import { useWishlist } from '../hooks/useWishlist';
+import { useWishlistContext } from '../hooks/WishlistContext';
 import { CategoryFilterTabs } from '../components/temptationMain/CategoryFilterBar';
 import { SortTabs } from '../components/temptationMain/SortBar';
 import { CategoryProductBox } from '../components/temptationMain/CategoryProductBox';
@@ -9,11 +9,7 @@ import { BottomAdd } from '../components/temptationAdd/ProductAdd';
 import { ProductForm } from '@/components/layout/ProductForm';
 import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 
-interface TemptationMainProps {
-  keyword?: string;
-}
-
-export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
+export default function TemptationMain() {
   const {
     filter,
     setFilter,
@@ -23,7 +19,7 @@ export default function TemptationMain({ keyword = '' }: TemptationMainProps) {
     categoriesToRender,
     handleDelete,
     handleAdd,
-  } = useWishlist(keyword);
+  } = useWishlistContext();
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const handleWishAdd = (data: WishFormData) => {

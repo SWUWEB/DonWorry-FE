@@ -10,6 +10,7 @@ export interface Product {
   category: Category;
   link?: string;
   reason?: string;
+  createdAt: Date;
 }
 
 export type FilterValue = '전체' | Category;
