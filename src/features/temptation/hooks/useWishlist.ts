@@ -55,22 +55,27 @@ export const useWishlist = () => {
     setProducts((prev) => [...prev, newProduct]);
   };
 
-  const handleEdit = (id: string, formData: WishFormData) => {
+  const handleEdit = (id: string, formData: WishFormData, timeChanged: boolean) => {
     setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id
-        ? {
+      prev.map((p) => {
+        if (p.id !== id) return p;
+
+        // 남은 고민 시간 수정 로직
+        const newTime = timeChanged
+          ? new Date(Date.now() + TIME_TO_HOURS[formData.time] * 60 * 60 * 1000)
+          : p.time;
+
+        return {
           ...p,
           name: formData.name,
           price: formData.price,
-          time: timeStringToDate(formData.time),
+          time: newTime,
           category: formData.category,
           link: formData.link,
           reason: formData.reason,
-        }
-      : p
-    )
-  );
+        };
+      })
+    );
   };
 
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter];

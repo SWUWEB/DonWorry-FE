@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './ProductForm.module.css';
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
+import { ConfirmDialog } from '@/features/temptation/components/ConfirmDialog';
 
 export interface FormData {
   link?: string;
@@ -15,17 +16,35 @@ interface FormProps {
   formId?: string;
   showTimeSelector?: boolean;
   initialData?: Partial<FormData>;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData, meta: { timeChanged: boolean }) => void;
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
 const DEFAULT_FORM_DATA: FormData = {
   link: '', price: 0, name: '', category: '패션', time: '1일', reason: ''
 };
 
-export function ProductForm({ formId = 'product-form', showTimeSelector = true, initialData, onSubmit }: FormProps) {
-  const [data, setData] = useState<FormData>({
-    ...DEFAULT_FORM_DATA, ...initialData
-  });
+const NAME_MAX_LENGTH = 50;
+const REASON_MAX_LENGTH = 100;
+const URL_PATTERN = /^https?:\/\/.+/i;
+
+export function ProductForm({
+  formId = 'product-form',
+  showTimeSelector = true,
+  initialData,
+  onSubmit,
+  onDirtyChange, }: FormProps) {
+    const mergedInitial: FormData = {
+    link: initialData?.link ?? DEFAULT_FORM_DATA.link,
+    price: initialData?.price ?? DEFAULT_FORM_DATA.price,
+    name: initialData?.name ?? DEFAULT_FORM_DATA.name,
+    category: initialData?.category ?? DEFAULT_FORM_DATA.category,
+    time: initialData?.time ?? DEFAULT_FORM_DATA.time,
+    reason: initialData?.reason ?? DEFAULT_FORM_DATA.reason,
+  };
+  
+  const initialSnapshotRef = useRef<FormData>(mergedInitial);
+  const [data, setData] = useState<FormData>(mergedInitial);
 
   const [linkStatus, setLinkStatus] = useState<{
     loading: boolean;
@@ -33,156 +52,219 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
     success?: boolean;
   }>({ loading: false, error: false, success: false });
 
+  const [urlFormatError, setUrlFormatError] = useState(false);
+  const [pendingFetchResult, setPendingFetchResult] = useState<{ name: string; price: number } | null>(null);
+  const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
+
+  // 입력 데이터 변경 여부(dirty) 계산 및 알림
+  useEffect(() => {
+    const isDirty = JSON.stringify(data) !== JSON.stringify(initialSnapshotRef.current);
+    onDirtyChange?.(isDirty);
+  }, [data, onDirtyChange]);
+
+  // URL 형식 검사
+  const isValidUrl = (value: string) => URL_PATTERN.test(value.trim());
+  
+  const applyFetchedResult = (result: { name: string; price: number }) => {
+    setData(prev => ({ ...prev, name: result.name, price: result.price }));
+    setLinkStatus({ loading: false, error: false, success: true });
+  };
+
   const handleLinkFetch = async () => {
-    if (!data.link?.trim()) return;
+    const trimmedLink = data.link?.trim() ?? '';
+    if (!trimmedLink || !isValidUrl(trimmedLink)) {
+      setUrlFormatError(true);
+      return;
+    }
     setLinkStatus({ loading: true, error: false, success: false });
     
     try {
-      const result = await fetchProductData(data.link);  // API 호출부
-      setData(prev => ({
-        ...prev,
-        name: result.name,
-        price: result.price,
-      }));
-      setLinkStatus({ loading: false, error: false, success: true });
+      const result = await fetchProductData(trimmedLink);  // API 호출부
+      const hasExistingInput = data.name.trim() !== '' || data.price > 0;
+      if (hasExistingInput) {
+        setPendingFetchResult(result);
+        setShowOverwriteConfirm(true);
+        setLinkStatus({ loading: false, error: false, success: false });
+      } else {
+        applyFetchedResult(result);
+      }
     } catch {
       setLinkStatus({ loading: false, error: true, success: false });
     }
+  };
+
+  const handleOverwriteConfirm = () => {
+    if (pendingFetchResult) {
+      applyFetchedResult(pendingFetchResult);
+    }
+    setPendingFetchResult(null);
+    setShowOverwriteConfirm(false);
+  };
+
+  const handleOverwriteCancel = () => {
+    setPendingFetchResult(null);
+    setShowOverwriteConfirm(false);
+    setLinkStatus({ loading: false, error: false, success: false });
   };
     
   const [touched, setTouched] = useState({ price: false, name: false });
   const handleBlur = (field: 'price' | 'name') => setTouched({ ...touched, [field]: true });
   
   const priceError = touched.price && data.price === 0;
-  const nameError = touched.name && data.name.trim() === '';
+  const nameEmptyError = touched.name && data.name.trim() === '';
+  const nameLengthError = data.name.length > NAME_MAX_LENGTH;
+  const reasonLengthError = data.reason.length > REASON_MAX_LENGTH;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const isPriceEmpty = data.price === 0;
     const isNameEmpty = data.name.trim() === '';
+    const isNameTooLong = data.name.length > NAME_MAX_LENGTH;
+    const isReasonTooLong = data.reason.length > REASON_MAX_LENGTH;
 
-    if (isPriceEmpty || isNameEmpty) {
+    if (isPriceEmpty || isNameEmpty || isNameTooLong || isReasonTooLong) {
       setTouched({ price: true, name: true });
       return;
     }
     
-    onSubmit(data);
+    const timeChanged = data.time !== initialSnapshotRef.current.time;
+    onSubmit(data, { timeChanged });
   };
 
   return (
-    <form id={formId} className={styles.formContainer} onSubmit={handleSubmit}>
-      
-      <div className={styles.field}>
-        <label htmlFor="link" className={styles.label}>상품 링크 (선택)</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="link"
-            className={styles.textInput}
-            placeholder="https://..."
-            value={data.link}
-            onChange={(e) => {
-              setData({...data, link: e.target.value});
-              if (linkStatus.error || linkStatus.success) {
-                setLinkStatus({ loading: false, error: false, success: false });
-              }
-              
-            }} />
-          <button
-            type="button"
-            className={styles.button}
-            disabled={linkStatus.loading || !data.link?.trim()}
-            onClick={handleLinkFetch}
-            >
-              {linkStatus.loading ? '• • •' : '불러오기'}
-            </button>
-        </div>
-        {linkStatus.error && (
-          <p className={`${styles.message} ${styles.errorMessage}`}>URL을 불러오는 데 실패했습니다.</p>
-        )}
-        {linkStatus.success && (
-          <p className={`${styles.message} ${styles.successMessage}`}>URL을 성공적으로 불러왔습니다.</p>
-        )}
-      </div>
-
-      <div className={styles.field}>
-        <label htmlFor="price" className={styles.label}>상품 가격</label>
-        <div className={styles.priceWrapper}>
-          <input 
-            id="price"
-            className={styles.priceInput} 
-            type="text" 
-            inputMode="numeric"
-            placeholder="0"
-            value={data.price === 0 ? '' : data.price.toLocaleString('ko-KR')}
-            onBlur={() => handleBlur('price')}
-            onChange={(e) => {
-                const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                setData({...data, price: rawValue === '' ? 0 : Number(rawValue)});
-            }} 
-          />
-          <span className={styles.currency}>원</span>
-        </div>
-        {priceError && <p className={`${styles.message} ${styles.errorMessage}`}>상품 가격은 필수 입력 사항입니다.</p>}
-      </div>
-
-      <div className={styles.field}>
-        <label htmlFor="name" className={styles.label}>상품명</label>
-        <input
-          id="name"
-          className={styles.textInput}
-          placeholder="직접 입력하거나 수정할 수 있어요"
-          value={data.name}
-          onBlur={() => handleBlur('name')}
-          onChange={(e) => setData({...data, name: e.target.value})} />
-        {nameError && <p className={`${styles.message} ${styles.errorMessage}`}>상품명은 필수 입력 사항입니다.</p>}
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label}>카테고리</label>
-        <div className={styles.chipGroup} role="radiogroup">
-          {CATEGORIES.map(c => (
-            <label key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`}>
-              <input
-                type="radio" name="category" value={c} className={styles.hidden}
-                checked={data.category === c} onChange={() => setData({...data, category: c})}
-              />
-              {c}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {showTimeSelector && (
+    <>
+      <form id={formId} className={styles.formContainer} onSubmit={handleSubmit}>
+        
         <div className={styles.field}>
-          <label className={styles.label}>고민해볼 시간</label>
+          <label htmlFor="link" className={styles.label}>상품 링크 (선택)</label>
+          <div className={styles.inputWrapper}>
+            <input
+              id="link"
+              className={styles.textInput}
+              placeholder="https://..."
+              value={data.link}
+              onChange={(e) => {
+                setData({ ...data, link: e.target.value });
+                setUrlFormatError(false);
+                if (linkStatus.error || linkStatus.success) {
+                  setLinkStatus({ loading: false, error: false, success: false });
+                }
+              }} />
+            <button
+              type="button"
+              className={styles.button}
+              disabled={linkStatus.loading || !data.link?.trim() || !isValidUrl(data.link ?? '')}
+              onClick={handleLinkFetch}
+              >
+                {linkStatus.loading ? '• • •' : '불러오기'}
+              </button>
+          </div>
+          {urlFormatError && (
+              <p className={`${styles.message} ${styles.errorMessage}`}>올바른 상품 URL을 입력해주세요.</p>
+            )}
+          {linkStatus.error && (
+            <p className={`${styles.message} ${styles.errorMessage}`}>URL을 불러오는 데 실패했습니다.</p>
+          )}
+          {linkStatus.success && (
+            <p className={`${styles.message} ${styles.successMessage}`}>상품 정보를 불러왔습니다.</p>
+          )}
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="price" className={styles.label}>상품 가격</label>
+          <div className={styles.priceWrapper}>
+            <input 
+              id="price"
+              className={styles.priceInput} 
+              type="text" 
+              inputMode="numeric"
+              placeholder="0"
+              value={data.price === 0 ? '' : data.price.toLocaleString('ko-KR')}
+              onBlur={() => handleBlur('price')}
+              onChange={(e) => {
+                  const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                  setData({...data, price: rawValue === '' ? 0 : Number(rawValue)});
+              }} 
+            />
+            <span className={styles.currency}>원</span>
+          </div>
+          {priceError && <p className={`${styles.message} ${styles.errorMessage}`}>상품 가격을 입력해주세요.</p>}
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="name" className={styles.label}>상품명</label>
+          <input
+            id="name"
+            className={styles.textInput}
+            placeholder="상품명을 입력해주세요."
+            value={data.name}
+            onBlur={() => handleBlur('name')}
+            onChange={(e) => setData({...data, name: e.target.value})} />
+            {nameEmptyError && <p className={`${styles.message} ${styles.errorMessage}`}>상품명을 입력해주세요.</p>}
+            {!nameEmptyError && nameLengthError && (
+              <p className={`${styles.message} ${styles.errorMessage}`}>상품명은 {NAME_MAX_LENGTH}자 이내로 입력해주세요. ({data.name.length}/{NAME_MAX_LENGTH})</p>
+            )}
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label}>카테고리</label>
           <div className={styles.chipGroup} role="radiogroup">
-            {TIME_OPTIONS.map(t => (
-              <label key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`}> 
+            {CATEGORIES.map(c => (
+              <label key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`}>
                 <input
-                  type="radio" name="time" value={t} className={styles.hidden}
-                  checked={data.time === t}
-                  onChange={() => setData({...data, time: t})}
-                />   
-                {t}
+                  type="radio" name="category" value={c} className={styles.hidden}
+                  checked={data.category === c} onChange={() => setData({...data, category: c})}
+                />
+                {c}
               </label>
             ))}
           </div>
         </div>
-      )}
 
-      <div className={styles.field}>
-        <label htmlFor="reason" className={styles.label}>사고 싶은 이유 (선택)</label>
-        <textarea
-          id="reason"
-          className={styles.textInput}
-          placeholder="스트레스 받아서? 진짜 필요해서?"
-          value={data.reason}
-          onChange={(e) => setData({...data, reason: e.target.value})}
-          rows={3}
-          />
-      </div>
-    </form>
+        {showTimeSelector && (
+          <div className={styles.field}>
+            <label className={styles.label}>고민해볼 시간</label>
+            <div className={styles.chipGroup} role="radiogroup">
+              {TIME_OPTIONS.map(t => (
+                <label key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`}> 
+                  <input
+                    type="radio" name="time" value={t} className={styles.hidden}
+                    checked={data.time === t}
+                    onChange={() => setData({...data, time: t})}
+                  />   
+                  {t}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className={styles.field}>
+          <label htmlFor="reason" className={styles.label}>사고 싶은 이유 (선택)</label>
+          <textarea
+            id="reason"
+            className={styles.textInput}
+            placeholder="사고 싶은 이유를 입력해주세요."
+            value={data.reason}
+            onChange={(e) => setData({...data, reason: e.target.value})}
+            rows={3}
+            />
+          {reasonLengthError && (
+            <p className={`${styles.message} ${styles.errorMessage}`}>사고 싶은 이유는 {REASON_MAX_LENGTH}자 이내로 입력해주세요. ({data.reason.length}/{REASON_MAX_LENGTH})</p>
+          )}
+        </div>
+      </form>
+
+      <ConfirmDialog
+          isOpen={showOverwriteConfirm}
+          title="기존 상품명과 가격을 불러온 정보로 변경할까요?"
+          cancelText="취소하기"
+          confirmText="변경하기"
+          onCancel={handleOverwriteCancel}
+          onConfirm={handleOverwriteConfirm}
+        />
+    </>
   );
 }
 

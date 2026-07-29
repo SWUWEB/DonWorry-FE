@@ -10,6 +10,7 @@ import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 import { useWishlistContext } from '../hooks/WishlistContext';
 import { TIME_OPTIONS } from '@/constants/product';
 import styles from './TemptationEdit.module.css';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 
 const TIME_TO_HOURS: Record<typeof TIME_OPTIONS[number], number> = {
   '1시간': 1,
@@ -40,17 +41,48 @@ export default function TemptationEdit() {
 
   const product = filteredProducts.find((p) => p.id === id);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [isFailOpen, setIsFailOpen] = useState(false);
 
   const handleBack = () => {
+    if (isDirty) {
+      setIsLeaveConfirmOpen(true);
+    } else {
+      navigate(`/temptation/${id}`);
+    }
+  };
+
+  const handleLeaveCancel = () => setIsLeaveConfirmOpen(false);
+  const handleLeaveConfirm = () => {
+    setIsLeaveConfirmOpen(false);
     navigate(`/temptation/${id}`);
   };
 
-  const handleSave = (data: WishFormData) => {
-    if (!product) return;
+  const handleSave = async (data: WishFormData, meta: { timeChanged: boolean }) => {
+    if (!product || isSubmitting) return;
     setIsSubmitting(true);
-    // 백엔드 연동 시 실제 수정 요청으로 교체
-    handleEdit(product.id, data);
+    try {
+      // 백엔드 연동 시 실제 수정 요청으로 교체
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      handleEdit(product.id, data, meta.timeChanged);
+      setIsSubmitting(false);
+      setIsSuccessOpen(true);
+    } catch {
+      setIsSubmitting(false);
+      setIsFailOpen(true);
+    }
+  };
+
+  const handleSuccessConfirm = () => {
+    setIsSuccessOpen(false);
     navigate(`/temptation/${id}`);
+  };
+
+  const handleFailConfirm = () => {
+    setIsFailOpen(false);
   };
 
   if (!product) {
@@ -86,6 +118,7 @@ export default function TemptationEdit() {
             reason: product.reason,
           }}
           onSubmit={handleSave}
+          onDirtyChange={setIsDirty}
         />
       </div>
 
@@ -96,9 +129,39 @@ export default function TemptationEdit() {
           className={styles.saveBtn}
           disabled={isSubmitting}
         >
-          수정사항 저장하기
+          {isSubmitting ? '•  •  •' : '수정사항 저장하기'}
         </button>
       </div>
+
+      <ConfirmDialog
+        isOpen={isLeaveConfirmOpen}
+        title="수정한 내용이 저장되지 않습니다."
+        description="나가시겠습니까?"
+        cancelText="취소"
+        confirmText="확인"
+        onCancel={handleLeaveCancel}
+        onConfirm={handleLeaveConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isSuccessOpen}
+        title="수정사항이 저장되었습니다."
+        onlyConfirm
+        variant="success"
+        confirmText="확인"
+        onCancel={handleSuccessConfirm}
+        onConfirm={handleSuccessConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isFailOpen}
+        title="수정사항을 저장하지 못했습니다."
+        description="다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleFailConfirm}
+        onConfirm={handleFailConfirm}
+      />
     </>
   );
 }

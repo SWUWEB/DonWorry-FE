@@ -10,7 +10,7 @@
 
 .card {
   width: 320px;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-radius: 20px;
   padding: 32px 24px 24px;
   display: flex;
@@ -19,29 +19,34 @@
   text-align: center;
 }
 
-.icon {
-  color: var(--Red, #EB0000);
+.iconWarning {
+  color: var(--color-text-red);
+  margin-bottom: 20px;
+}
+
+.iconSuccess {
+  color: var(--color-text-green);
   margin-bottom: 20px;
 }
 
 .title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   margin: 0;
   line-height: 1.5;
 }
 
 .description {
   font-size: 14px;
-  color: var(--Gray-300, #5B6B6A);
+  color: var(--color-gray-300);
   margin: 8px 0 0;
   line-height: 1.5;
 }
 
 .errorText {
   font-size: 13px;
-  color: var(--Red, #EB0000);
+  color: var(--color-text-red);
   margin: 12px 0 0;
 }
 
@@ -64,14 +69,22 @@
 }
 
 .cancelBtn {
-  background-color: #fff;
-  border: 1.5px solid var(--Main-400, #389698);
-  color: var(--Main-400, #389698);
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-main-400);
+  color: var(--color-main-400);
 }
 
 .confirmBtn {
-  background-color: var(--Main-400, #389698);
-  color: #fff;
+  background-color: var(--color-main-400);
+  color: var(--color-white);
+}
+
+.confirmBtn:hover {
+  background-color: var(--color-main-500);
+}
+
+.cancelBtn:hover {
+  background-color: var(--color-main-100);
 }
 
 .cancelBtn:disabled,
