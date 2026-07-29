@@ -46,6 +46,12 @@
   color: var(--color-gray-100, #dddddd);
 }
 
+.textInput:focus-visible,
+.amountInput:focus-visible {
+  outline: 2px solid var(--color-main-500, #2f7f82);
+  outline-offset: 2px;
+}
+
 .amountWrapper {
   display: flex;
   align-items: baseline;
