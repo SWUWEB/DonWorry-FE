@@ -55,6 +55,16 @@ export const useWishlist = () => {
     setProducts((prev) => [...prev, newProduct]);
   };
 
+  const handleExtend = (id: string, timeOption: typeof TIME_OPTIONS[number]) => {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? { ...p, time: new Date(Date.now() + TIME_TO_HOURS[timeOption] * 60 * 60 * 1000) }
+          : p
+      )
+    );
+  };
+
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter];
 
   return {
@@ -68,5 +78,6 @@ export const useWishlist = () => {
     categoriesToRender,
     handleDelete,
     handleAdd,
+    handleExtend,
   };
 };

@@ -1,0 +1,38 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  background-color: var(--color-main-100);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.categoryChip {
+  background-color: var(--color-main-500);
+  color: var(--color-text-white);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.price {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+
+.savedPrice {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-main-400);
+}
