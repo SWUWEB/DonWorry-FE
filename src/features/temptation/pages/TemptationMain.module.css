@@ -9,7 +9,7 @@
 
 .topLine {
   display: flex;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   font-size: 16px;
   margin: 7px 0 15px 0;
   align-items: center;
@@ -29,8 +29,8 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: var(--Main-500, #2F7F82);
-  color: var(--White, #FEFEFE);
+  background-color: var(--color-main-500);
+  color: var(--color-text-white);
   cursor: pointer;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.25);
   display: flex;
@@ -41,7 +41,7 @@
 }
 
 .addBtn:hover {
-  background-color: var(--Main-600, #286A6D);
+  background-color: var(--color-main-600);
 }
 
 .bottomSheet {
@@ -58,8 +58,8 @@
   width: 100%;
   height: 60px;
   border-radius: 50px;
-  background-color: var(--Main-500, #2F7F82);
-  color: var(--White, #FEFEFE);
+  background-color: var(--color-main-500);
+  color: var(--color-text-white);
   font-size: 18px;
   font-weight: 500;
   border: none;
@@ -69,7 +69,7 @@
 }
 
 .sheetBtn:hover {
-  background-color: var(--Main-600, #286A6D);
+  background-color: var(--color-main-600);
 }
 
 /* SortBar.tsx */
@@ -78,7 +78,7 @@
   border: none;
   cursor: pointer;
   font-size: 12px;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
 }
 
 .sortBar:hover {
@@ -88,7 +88,7 @@
 .active {
   display: inline-block;
   font-weight: 500;
-  border-bottom: 1.5px solid var(--Primary, #243130);
+  border-bottom: 1.5px solid var(--color-text-primary);
   line-height: 1.2;
   padding-bottom: 0px;
   cursor: pointer;
@@ -105,9 +105,9 @@
 .chip {
   display: flex;
   height: 30px;
-  border: 1.5px solid var(--Main-500, #2F7F82);
+  border: 1.5px solid var(--color-main-500);
   border-radius: 16px;
-  color: var(--Main-500, #2F7F82);
+  color: var(--color-main-500);
   font-size: 12px;
   font-weight: 500;
   padding: 0 10px;
@@ -118,13 +118,13 @@
 }
 
 .chip:hover {
-  color: var(--Main-500, #2F7F82);
-  background-color: var(--Main-100, #E5F2F1);
+  color: var(--color-main-500);
+  background-color: var(--color-main-100);
 }
 
 .chipSelected {
-  color: var(--White, #fefefe);
-  background-color: var(--Main-500, #2F7F82);
+  color: var(--color-text-white);
+  background-color: var(--color-main-500);
   font-weight: 500;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 }
@@ -142,17 +142,17 @@
 }
 
 .category {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   font-size: 18px;
   font-weight: bold;
 }
 
 .productContainer {
-  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  border: 1.5px solid var(--color-gray-100);
   border-radius: 12px;
   padding: 0 15px;
 }
 
 .divider {
-  border-top: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-top: 1.5px solid var(--color-gray-100);
 }

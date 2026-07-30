@@ -22,11 +22,11 @@
 
 .editBtn {
   background-color: var(--Main-000, #E5F2F1);
-  color: var(--Main-500, #2F7F82);
-  border: 1.5px solid var(--Main-300, #8FC4C0);
+  color: var(--color-main-500);
+  border: 1.5px solid var(--color-main-300);
 }
 
 .giveUpBtn {
-  background-color: var(--Main-500, #2F7F82);
+  background-color: var(--color-main-500);
   color: #fff;
 }

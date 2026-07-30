@@ -10,7 +10,7 @@
 
 .card {
   width: 320px;
-  background-color: var(--color-white);
+  background-color: var(--color-text-white);
   border-radius: 20px;
   padding: 32px 24px 24px;
   display: flex;
@@ -69,14 +69,14 @@
 }
 
 .cancelBtn {
-  background-color: var(--color-white);
+  background-color: var(--color-text-white);
   border: 1.5px solid var(--color-main-400);
   color: var(--color-main-400);
 }
 
 .confirmBtn {
   background-color: var(--color-main-400);
-  color: var(--color-white);
+  color: var(--color-text-white);
 }
 
 .confirmBtn:hover {
