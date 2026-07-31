@@ -129,7 +129,7 @@ export default function DrawerMenu() {
 
           <nav className={styles.nav}>
             {NAV_ITEMS.map(({ label, icon, path }) => {
-              const isActive = location.pathname === path
+              const isActive = path === '/' ? location.pathname === path : location.pathname.startsWith(path)
               return (
                 <button
                   key={label}

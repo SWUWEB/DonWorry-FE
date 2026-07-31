@@ -7,11 +7,13 @@
   align-items: flex-start;
   visibility: hidden;
   pointer-events: none;
+  transition: visibility 0s linear 0.25s;
 }
 
 .overlayVisible {
   visibility: visible;
   pointer-events: auto;
+  transition-delay: 0s;
 }
 
 .drawer {
