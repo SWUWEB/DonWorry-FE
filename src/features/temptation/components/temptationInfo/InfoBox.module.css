@@ -1,0 +1,96 @@
+.box {
+  width: 360px;
+  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  padding: 15px 0;
+}
+
+.section:first-child {
+  padding-top: 0;
+}
+
+.divider {
+  border-top: 1.5px solid var(--Gray-100, #DDDDDD);
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.sectionLabel {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--Gray-300, #5B6B6A);
+  margin: 0 0 3px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--Primary, #243130);
+  margin: 0;
+}
+
+.priceUnit {
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.reasonText {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--Primary, #243130);
+  min-height: 60px;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.linkText {
+  flex: 1;
+  min-width: 0;
+  color: var(--Primary, #243130);
+  font-size: 14px;
+  text-decoration: underline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyBtn {
+  display: flex;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 5px;
+  color: var(--Gray-300, #5B6B6A);
+  background-color: var(--Gray-100, #DDDDDD);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.copyBtn:hover {
+  background-color: var(--Gray-200, #9CA4A3);
+}
+
+.errorText {
+  color: #EB0000;
+  font-size: 12px;
+  margin: 4px 0 0;
+}

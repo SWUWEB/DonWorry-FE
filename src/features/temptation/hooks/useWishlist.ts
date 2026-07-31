@@ -16,10 +16,11 @@ const timeStringToDate = (time: typeof TIME_OPTIONS[number]): Date => {
   return new Date(Date.now() + hours * 60 * 60 * 1000);
 };
 
-export const useWishlist = (keyword: string = '') => {
+export const useWishlist = () => {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [filter, setFilter] = useState<FilterValue>('전체');
   const [sort, setSort] = useState<SortValue>('가나다순');
+  const [keyword, setKeyword] = useState('');
 
   const filteredProducts = useMemo(() => {
     let target = filter === '전체' ? products : products.filter((p) => p.category === filter);
@@ -49,6 +50,7 @@ export const useWishlist = (keyword: string = '') => {
       category: formData.category,
       link: formData.link,
       reason: formData.reason,
+      createdAt: new Date(),
     };
     setProducts((prev) => [...prev, newProduct]);
   };
@@ -56,6 +58,8 @@ export const useWishlist = (keyword: string = '') => {
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter];
 
   return {
+    keyword,
+    setKeyword,
     filter,
     setFilter,
     sort,

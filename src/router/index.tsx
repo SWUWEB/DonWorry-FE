@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import AppLayout from '@/components/layout/AppLayout'
+import { WishlistProvider } from '@/features/temptation/hooks/WishlistProvider'
 import HomePage from '@/pages/HomePage'
 import NotificationPage from '@/pages/NotificationPage'
 import RecordMainPage from '@/features/record/pages/RecordMainPage'
@@ -9,8 +10,11 @@ import RiskResultPage from '@/features/intervention/pages/RiskResultPage'
 import LoginPage from '@/pages/LoginPage'
 import SignUpPage from '@/pages/SignUpPage'
 import MyPagePage from '@/pages/MyPagePage'
+import Temptation from '@/features/temptation/Temptation'
+import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
+import ChangeEmailPage from '@/pages/ChangeEmailPage'
 
 const router = createBrowserRouter([
   {
@@ -23,10 +27,18 @@ const router = createBrowserRouter([
       { path: '/goal-amount', element: <GoalAmountPage /> },
       { path: '/notification', element: <NotificationPage /> },
       { path: '/profile', element: <ProfilePage /> },
+      { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
       { path: '/record/intervention', element: <RecordInterventionPage /> },
       { path: '/record/intervention/result', element: <RiskResultPage /> },
+      {
+        element: <WishlistProvider />,
+        children: [
+          { path: '/temptation', element: <Temptation /> },
+          { path: '/temptation/:id', element: <TemptationInfo /> },
+        ],
+      },
     ],
   },
 ])
