@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styles from './ProductForm.module.css';
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
+import AmountInput from './AmountInput';
+import CategorySelector from './CategorySelector';
 
 export interface FormData {
   link?: string;
@@ -102,22 +104,13 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
 
       <div className={styles.field}>
         <label htmlFor="price" className={styles.label}>상품 가격</label>
-        <div className={styles.priceWrapper}>
-          <input 
-            id="price"
-            className={styles.priceInput} 
-            type="text" 
-            inputMode="numeric"
-            placeholder="0"
-            value={data.price === 0 ? '' : data.price.toLocaleString('ko-KR')}
-            onBlur={() => handleBlur('price')}
-            onChange={(e) => {
-                const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                setData({...data, price: rawValue === '' ? 0 : Number(rawValue)});
-            }} 
-          />
-          <span className={styles.currency}>원</span>
-        </div>
+        <AmountInput
+          id="price"
+          className={styles.priceWrapper}
+          value={data.price}
+          onChange={(price) => setData({ ...data, price })}
+          onBlur={() => handleBlur('price')}
+        />
         {priceError && <p className={`${styles.message} ${styles.errorMessage}`}>상품 가격은 필수 입력 사항입니다.</p>}
       </div>
 
@@ -135,17 +128,7 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
 
       <div className={styles.field}>
         <label className={styles.label}>카테고리</label>
-        <div className={styles.chipGroup} role="radiogroup">
-          {CATEGORIES.map(c => (
-            <label key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`}>
-              <input
-                type="radio" name="category" value={c} className={styles.hidden}
-                checked={data.category === c} onChange={() => setData({...data, category: c})}
-              />
-              {c}
-            </label>
-          ))}
-        </div>
+        <CategorySelector value={data.category} onChange={(category) => setData({ ...data, category })} />
       </div>
 
       {showTimeSelector && (
@@ -168,12 +151,14 @@ export function ProductForm({ formId = 'product-form', showTimeSelector = true, 
 
       <div className={styles.field}>
         <label htmlFor="reason" className={styles.label}>사고 싶은 이유 (선택)</label>
-        <input
+        <textarea
           id="reason"
           className={styles.textInput}
           placeholder="스트레스 받아서? 진짜 필요해서?"
           value={data.reason}
-          onChange={(e) => setData({...data, reason: e.target.value})} />
+          onChange={(e) => setData({...data, reason: e.target.value})}
+          rows={3}
+          />
       </div>
     </form>
   );

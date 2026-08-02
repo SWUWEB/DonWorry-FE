@@ -46,39 +46,14 @@
   color: var(--color-gray-100, #dddddd);
 }
 
-.textInput:focus-visible,
-.amountInput:focus-visible {
+.textInput:focus-visible {
   outline: 2px solid var(--color-main-500, #2f7f82);
   outline-offset: 2px;
 }
 
 .amountWrapper {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
   border-bottom: 1.5px solid var(--color-gray-100, #dddddd);
   padding-bottom: 4px;
-}
-
-.amountInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-family: Pretendard;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--color-text-primary, #243130);
-}
-
-.amountInput::placeholder {
-  color: var(--color-gray-100, #dddddd);
-}
-
-.currency {
-  font-family: Pretendard;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-primary, #243130);
 }
 
 .submitBtn {

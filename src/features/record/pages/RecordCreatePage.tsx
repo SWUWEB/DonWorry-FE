@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { IoChevronBack } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
 import FilterChip from '@/features/record/components/FilterChip'
+import AmountInput from '@/components/layout/AmountInput'
+import CategorySelector from '@/components/layout/CategorySelector'
+import type { Category } from '@/components/layout/CategorySelector'
 import { CATEGORIES } from '@/constants/product'
-import type { RecordType } from '@/features/record/components/RecordCard'
+import type { RecordType } from '@/features/record/mockRecords'
 import styles from './RecordCreatePage.module.css'
 
 export default function RecordCreatePage() {
@@ -13,7 +16,7 @@ export default function RecordCreatePage() {
   const [type, setType] = useState<RecordType>('consume')
   const [title, setTitle] = useState('')
   const [amount, setAmount] = useState(0)
-  const [category, setCategory] = useState<string>(CATEGORIES[0])
+  const [category, setCategory] = useState<Category>(CATEGORIES[0])
   const [reason, setReason] = useState('')
 
   const isValid = title.trim() !== '' && amount > 0
@@ -81,35 +84,17 @@ export default function RecordCreatePage() {
           <label htmlFor="amount" className={styles.label}>
             금액
           </label>
-          <div className={styles.amountWrapper}>
-            <input
-              id="amount"
-              className={styles.amountInput}
-              type="text"
-              inputMode="numeric"
-              placeholder="0"
-              value={amount === 0 ? '' : amount.toLocaleString('ko-KR')}
-              onChange={(event) => {
-                const raw = event.target.value.replace(/[^0-9]/g, '')
-                setAmount(raw === '' ? 0 : Number(raw))
-              }}
-            />
-            <span className={styles.currency}>원</span>
-          </div>
+          <AmountInput
+            id="amount"
+            className={styles.amountWrapper}
+            value={amount}
+            onChange={setAmount}
+          />
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>카테고리</label>
-          <div className={styles.chipGroup}>
-            {CATEGORIES.map((item) => (
-              <FilterChip
-                key={item}
-                label={item}
-                selected={category === item}
-                onClick={() => setCategory(item)}
-              />
-            ))}
-          </div>
+          <CategorySelector value={category} onChange={setCategory} />
         </div>
 
         <div className={styles.field}>
