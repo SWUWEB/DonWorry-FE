@@ -12,12 +12,11 @@ export default function NotificationPage() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState<FilterType>('전체')
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
 
   return (
     <>
       <Header
-        title="알림"
+        subTitle="알림"
         subLeft={
           <button className={styles.iconBtn} aria-label="뒤로가기" onClick={() => navigate(-1)}>
             <IoChevronBack size={20} />
@@ -30,7 +29,7 @@ export default function NotificationPage() {
         }
         subMain={<FilterTabs active={filter} onChange={setFilter} />}
       />
-      <Notification filter={filter} onUnreadCountChange={setUnreadCount} />
+      <Notification filter={filter} />
       {sheetOpen && <NotificationSettingsSheet onClose={() => setSheetOpen(false)} />}
     </>
   )

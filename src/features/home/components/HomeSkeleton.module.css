@@ -1,0 +1,64 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px 20px 32px;
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.line {
+  height: 22px;
+  background: #e8e8e8;
+  border-radius: 4px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.lineShort { width: 45%; }
+.lineLong { width: 65%; }
+
+.card {
+  height: 160px;
+  background: #e8e8e8;
+  border-radius: 16px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+.halfCard {
+  flex: 1;
+  height: 100px;
+  background: #e8e8e8;
+  border-radius: 16px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.smallCard {
+  height: 68px;
+  background: #e8e8e8;
+  border-radius: 16px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line,
+  .card,
+  .halfCard,
+  .smallCard {
+    animation: none;
+  }
+}

@@ -1,17 +1,18 @@
 import { IoNotifications } from 'react-icons/io5'
-import styles from "./Header.module.css";
+import { useDrawer } from '@/features/drawer/useDrawer'
+import styles from './Header.module.css'
 
 interface HeaderProps {
-  title?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
-  onBellClick?: () => void;
-  unreadCount?: number;
+  title?: string
+  left?: React.ReactNode
+  right?: React.ReactNode
+  onBellClick?: () => void
+  unreadCount?: number
 
-  subLeft?: React.ReactNode;
-  subTitle?: string;
-  subRight?: React.ReactNode;
-  subMain?: React.ReactNode;
+  subLeft?: React.ReactNode
+  subTitle?: string
+  subRight?: React.ReactNode
+  subMain?: React.ReactNode
 }
 
 function TwoLineMenu() {
@@ -32,9 +33,10 @@ export default function Header({
   subLeft,
   subTitle,
   subRight,
-  subMain
+  subMain,
 }: HeaderProps) {
-  const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle);
+  const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle)
+  const { open: openDrawer } = useDrawer()
 
   const defaultRight = (
     <>
@@ -44,7 +46,7 @@ export default function Header({
           {unreadCount > 0 && <span className={styles.badge} />}
         </span>
       </button>
-      <button className={styles.iconBtn} aria-label="메뉴">
+      <button className={styles.iconBtn} aria-label="메뉴" onClick={openDrawer}>
         <TwoLineMenu />
       </button>
     </>
@@ -52,38 +54,38 @@ export default function Header({
 
   return (
     <header className={styles.header}>
-        <div className={styles.topBar}>
-            <div className={styles.left}>
-                {left}
-            </div>
-
-            {title && <h1 className={styles.title}>{title}</h1>}
-
-            <div className={styles.right}>
-                {right ?? defaultRight}
-            </div>
+      <div className={styles.topBar}>
+        <div className={styles.left}>
+          {left}
         </div>
 
-        { hasSubContent && (
-           <div className={styles.subContent}>
-                <div className={styles.subTop}>
-                    <div className={styles.subLeft}>
-                        {subLeft}
-                    </div>
-                    {subTitle
-                      ? <h2 className={styles.subTitle}>{subTitle}</h2>
-                      : <div />
-                    }
-                    <div className={styles.subRight}>
-                        {subRight}
-                    </div>
-                </div>
+        {title && <h1 className={styles.title}>{title}</h1>}
 
-                <div className={styles.subMain}>
-                    {subMain}
-                </div>
+        <div className={styles.right}>
+          {right ?? defaultRight}
+        </div>
+      </div>
+
+      {hasSubContent && (
+        <div className={styles.subContent}>
+          <div className={styles.subTop}>
+            <div className={styles.subLeft}>
+              {subLeft}
             </div>
-        )}
+            {subTitle
+              ? <h2 className={styles.subTitle}>{subTitle}</h2>
+              : <div />
+            }
+            <div className={styles.subRight}>
+              {subRight}
+            </div>
+          </div>
+
+          <div className={styles.subMain}>
+            {subMain}
+          </div>
+        </div>
+      )}
     </header>
-  );
+  )
 }

@@ -7,7 +7,6 @@
   background: transparent; 
   min-height: calc(100vh - 180px);
   position: relative;
-  z-index: 1;
 }
 
 .headerContent {
