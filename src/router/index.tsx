@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
+import AppLayout from '@/components/layout/AppLayout'
 import { WishlistProvider } from '@/features/temptation/hooks/WishlistProvider'
 import HomePage from '@/pages/HomePage'
 import NotificationPage from '@/pages/NotificationPage'
@@ -17,28 +18,34 @@ import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 
 const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> },
-  { path: '/login', element: <LoginPage /> },
-  { path: '/signup', element: <SignUpPage /> },
-  { path: '/mypage', element: <MyPagePage /> }, 
-  {path: '/goal-amount', element: <GoalAmountPage /> },
-  { path: '/notification', element: <NotificationPage /> },
-  {path: '/profile', element: <ProfilePage />,},
-  {path: '/changeemail', element: <ChangeEmailPage />,},
-  { path: '/changepassword', element: <ChangePasswordPage /> },
-
-  { path: '/record', element: <RecordMainPage /> },
-  { path: '/record/:id', element: <RecordDetailPage /> },
-  { path: '/record/intervention', element: <RecordInterventionPage /> },
-
   {
-    element: <WishlistProvider />,
+    element: <AppLayout />,
     children: [
-      { path: '/temptation', element: <Temptation />},
-      { path: '/temptation/:id', element: <TemptationInfo />},
+      { path: '/', element: <HomePage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/signup', element: <SignUpPage /> },
+      { path: '/mypage', element: <MyPagePage /> },
+      { path: '/goal-amount', element: <GoalAmountPage /> },
+      { path: '/notification', element: <NotificationPage /> },
+      { path: '/profile', element: <ProfilePage /> },
+      { path: '/changeemail', element: <ChangeEmailPage /> },
+      { path: '/changepassword', element: <ChangePasswordPage /> },
+      { path: '/record', element: <RecordMainPage /> },
+      { path: '/record/:id', element: <RecordDetailPage /> },
+      { path: '/record/intervention', element: <RecordInterventionPage /> },
+      {
+        path: '/record/intervention/result',
+        element: <RiskResultPage />,
+      },
+      {
+        element: <WishlistProvider />,
+        children: [
+          { path: '/temptation', element: <Temptation /> },
+          { path: '/temptation/:id', element: <TemptationInfo /> },
+        ],
+      },
     ],
   },
-  { path: '/record/intervention/result', element: <RiskResultPage /> },
 ])
 
 export default router
