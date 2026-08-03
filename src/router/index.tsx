@@ -16,6 +16,7 @@ import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
+import WithdrawPage from '@/pages/WithdrawPage'
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { path: '/profile', element: <ProfilePage /> },
       { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/changepassword', element: <ChangePasswordPage /> },
+      { path: '/withdraw', element: <WithdrawPage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
       { path: '/record/intervention', element: <RecordInterventionPage /> },

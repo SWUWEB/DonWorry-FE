@@ -23,15 +23,20 @@ export default function ChangePasswordForm() {
     <form
       className={styles.form}
       onSubmit={handleSubmit}
-    >
+     >
       <div className={styles.inputGroup}>
-        <label className={styles.label}>
+        <label
+          htmlFor="current-password"
+          className={styles.label}
+        >
           현재 비밀번호
         </label>
 
         <div className={styles.inputWrapper}>
           <input
+            id="current-password"
             type={showCurrent ? 'text' : 'password'}
+            autoComplete="current-password"
             className={styles.input}
             placeholder="현재 비밀번호를 입력하세요"
             value={currentPassword}
@@ -54,13 +59,18 @@ export default function ChangePasswordForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label className={styles.label}>
+        <label
+          htmlFor="new-password"
+          className={styles.label}
+        >
           새 비밀번호
         </label>
 
         <div className={styles.inputWrapper}>
           <input
+            id="new-password"
             type={showNew ? 'text' : 'password'}
+            autoComplete="new-password"
             className={styles.input}
             placeholder="새 비밀번호를 입력하세요"
             value={newPassword}
@@ -87,13 +97,18 @@ export default function ChangePasswordForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label className={styles.label}>
+        <label
+          htmlFor="confirm-password"
+          className={styles.label}
+        >
           새 비밀번호 확인
         </label>
 
         <div className={styles.inputWrapper}>
           <input
+            id="confirm-password"
             type={showConfirm ? 'text' : 'password'}
+            autoComplete="new-password"
             className={styles.input}
             placeholder="새 비밀번호를 다시 입력하세요"
             value={confirmPassword}
