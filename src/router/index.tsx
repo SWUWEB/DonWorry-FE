@@ -15,6 +15,7 @@ import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
+import ChangePasswordPage from '@/pages/ChangePasswordPage'
 
 const router = createBrowserRouter([
   {
@@ -28,10 +29,14 @@ const router = createBrowserRouter([
       { path: '/notification', element: <NotificationPage /> },
       { path: '/profile', element: <ProfilePage /> },
       { path: '/changeemail', element: <ChangeEmailPage /> },
+      { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
       { path: '/record/intervention', element: <RecordInterventionPage /> },
-      { path: '/record/intervention/result', element: <RiskResultPage /> },
+      {
+        path: '/record/intervention/result',
+        element: <RiskResultPage />,
+      },
       {
         element: <WishlistProvider />,
         children: [
