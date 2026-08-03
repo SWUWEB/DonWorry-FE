@@ -15,8 +15,15 @@ export default function ChangePasswordForm() {
   const [showNew, setShowNew] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault()
+}
+
   return (
-    <form className={styles.form}>
+    <form
+      className={styles.form}
+      onSubmit={handleSubmit}
+    >
       <div className={styles.inputGroup}>
         <label className={styles.label}>
           현재 비밀번호
