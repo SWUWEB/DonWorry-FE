@@ -132,21 +132,17 @@ export default function WithdrawForm() {
           <button
             type="button"
             className={styles.eyeButton}
-            onClick={() =>
-              setShowPassword(
-                !showPassword,
-              )
+            onClick={() => setShowPassword(!showPassword,)}
+            aria-label={
+              showPassword
+                ? '비밀번호 숨기기'
+                : '비밀번호 보기'
             }
-            aria-label="비밀번호 보기"
           >
             {showPassword ? (
-              <IoEyeOffOutline
-                size={18}
-              />
+              <IoEyeOffOutline size={18} />
             ) : (
-              <IoEyeOutline
-                size={18}
-              />
+              <IoEyeOutline size={18} />
             )}
           </button>
         </div>
