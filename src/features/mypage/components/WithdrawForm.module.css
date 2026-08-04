@@ -39,7 +39,7 @@
   margin-bottom: 14px;
   color: #898989;
   font-size: 12px;
-  font-weight: 400px;
+  font-weight: 400;
   line-height: 15px;
 }
 
@@ -77,26 +77,28 @@
 
 .selectWrapper {
   position: relative;
+  width: 100%;
 }
 
 .select {
-  width: 342px;
+  width: 100%;
   max-width: 342px;
   height: 48px;
   padding: 0 46px 0 18px;
   border: 1.5px solid #E5E7EB;
   border-radius: 11px;
   font-size: 14px;
-  color: #AAAAAA;
+  color: #243130;
   appearance: none;
   outline: none;
   background: white;
   box-sizing: border-box;
 }
 
-.select:invalid {
+.placeholder {
   color: #D1D5DC;
 }
+
 
 .selectIcon {
   position: absolute;
@@ -109,10 +111,11 @@
 
 .inputWrapper {
   position: relative;
+  width: 100%;
 }
 
 .input {
-  width: 342px;
+  width: 100%;
   max-width: 342px;
   height: 48px;
   padding: 0 48px 0 18px;

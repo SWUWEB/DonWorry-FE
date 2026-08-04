@@ -68,11 +68,12 @@ export default function WithdrawForm() {
 
         <div className={styles.selectWrapper}>
           <select
-            id="reason"
-            className={styles.select}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-          >
+            className={`${styles.select} ${
+            reason === '' ? styles.placeholder : ''
+            }`}
+           >
             <option
               value=""
               disabled
