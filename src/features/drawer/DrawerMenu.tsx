@@ -65,6 +65,17 @@ export default function DrawerMenu() {
   const location = useLocation()
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
+  const cancelBtnRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!showLogoutConfirm) return
+    cancelBtnRef.current?.focus()
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowLogoutConfirm(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showLogoutConfirm])
 
   useEffect(() => {
     if (!isOpen) {
@@ -159,14 +170,19 @@ export default function DrawerMenu() {
 
       {showLogoutConfirm && (
         <div className={styles.confirmOverlay}>
-          <div className={styles.confirmDialog}>
+          <div
+            className={styles.confirmDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-dialog-title"
+          >
             <div className={styles.confirmIconWrap}>
               <LogoutIcon size={24} />
             </div>
-            <p className={styles.confirmTitle}>로그아웃</p>
+            <p id="logout-dialog-title" className={styles.confirmTitle}>로그아웃</p>
             <p className={styles.confirmMessage}>정말 로그아웃 하시겠습니까?</p>
             <div className={styles.confirmButtons}>
-              <button className={styles.confirmCancel} onClick={() => setShowLogoutConfirm(false)}>취소</button>
+              <button ref={cancelBtnRef} className={styles.confirmCancel} onClick={() => setShowLogoutConfirm(false)}>취소</button>
               <button className={styles.confirmLogout} onClick={handleLogout}>로그아웃</button>
             </div>
           </div>
