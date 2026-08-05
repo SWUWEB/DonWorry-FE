@@ -1,5 +1,5 @@
 import { IoNotifications } from 'react-icons/io5'
-import { useDrawer } from '@/features/drawer/DrawerContext'
+import { useDrawer } from '@/features/drawer/useDrawer'
 import styles from './Header.module.css'
 
 interface HeaderProps {
