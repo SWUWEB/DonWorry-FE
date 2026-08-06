@@ -47,6 +47,7 @@ export const useWishlist = () => {
       name: formData.name,
       price: formData.price,
       time: timeStringToDate(formData.time),
+      timeOption: formData.time,
       category: formData.category,
       link: formData.link,
       reason: formData.reason,
@@ -62,6 +63,30 @@ export const useWishlist = () => {
           ? { ...p, time: new Date(Date.now() + TIME_TO_HOURS[timeOption] * 60 * 60 * 1000) }
           : p
       )
+    )
+  };
+
+  const handleEdit = (id: string, formData: WishFormData, timeChanged: boolean) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+
+        // 남은 고민 시간 수정 로직
+        const newTime = timeChanged
+          ? new Date(Date.now() + TIME_TO_HOURS[formData.time] * 60 * 60 * 1000)
+          : p.time;
+
+        return {
+          ...p,
+          name: formData.name,
+          price: formData.price,
+          time: newTime,
+          timeOption: formData.time,
+          category: formData.category,
+          link: formData.link,
+          reason: formData.reason,
+        };
+      })
     );
   };
 
@@ -79,5 +104,6 @@ export const useWishlist = () => {
     handleDelete,
     handleAdd,
     handleExtend,
+    handleEdit,
   };
 };

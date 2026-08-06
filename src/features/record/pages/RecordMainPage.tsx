@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { BiPlus } from 'react-icons/bi'
 import Header from '@/components/Header'
 import SummaryCard from '@/features/record/components/SummaryCard'
 import FilterChip from '@/features/record/components/FilterChip'
@@ -14,6 +16,7 @@ const FILTERS: { label: string; value: FilterValue }[] = [
 
 export default function RecordMainPage() {
   const [filter, setFilter] = useState<FilterValue>('all')
+  const navigate = useNavigate()
 
   return (
     <div className={styles.container}>
@@ -34,6 +37,15 @@ export default function RecordMainPage() {
 
       {/* Record List */}
       <RecordList filter={filter} />
+
+      <button
+        type="button"
+        className={styles.addBtn}
+        aria-label="소비 기록 추가"
+        onClick={() => navigate('/record/new')}
+      >
+        <BiPlus size={32} />
+      </button>
     </div>
   )
 }

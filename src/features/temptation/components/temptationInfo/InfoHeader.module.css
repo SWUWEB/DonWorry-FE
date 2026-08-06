@@ -14,8 +14,8 @@
   display: flex;
   min-width: 55px;
   height: 24px;
-  color: var(--White, #FEFEFE);
-  background-color: var(--Main-500, #2F7F82);
+  color: var(--color-text-white);
+  background-color: var(--color-main-500);
   font-size: 12px;
   font-weight: 600;
   border-radius: 10px;
@@ -35,5 +35,5 @@
   margin: 0;
   font-size: 20px;
   font-weight: bold;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
 }
