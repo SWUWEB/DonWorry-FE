@@ -1,28 +1,42 @@
-import { Link } from 'react-router-dom'
-import InputField from './InputField'
-import PrimaryButton from './PrimaryButton'
+import { Link, useNavigate } from 'react-router-dom'
+import InputField from '@/shared/components/InputField'
+import Button from '@/shared/components/Button'
 import { useState } from 'react'
 import styles from './SignUpForm.module.css'
 import ErrorMessage from './ErrorMessage'
 
 
 export default function SignUpForm() {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [id, setId] = useState('')
-  
+
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
 
   const [password, setPassword] = useState('')
   const [passwordCheck, setPasswordCheck] = useState('')
 
-  const [phone, setPhone] = useState('') 
+  const [phone, setPhone] = useState('')
 
   const isValidId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,12}$/.test(id)
   const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)
   const isPasswordMatch = password === passwordCheck
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const isValidPhone = /^(01[016789])-?\d{3,4}-?\d{4}$/.test(phone)
+
+  const canSubmit =
+    name.trim() !== '' &&
+    isValidId &&
+    isValidEmail &&
+    isValidPassword &&
+    isPasswordMatch &&
+    isValidPhone
+
+  const handleSubmit = () => {
+    if (!canSubmit) return
+    navigate('/onboarding')
+  }
 
 
   return (
@@ -191,9 +205,9 @@ export default function SignUpForm() {
       </div>
 
       <div className={styles.buttonGroup}>
-  <PrimaryButton>
+  <Button onClick={handleSubmit} disabled={!canSubmit}>
     회원가입
-  </PrimaryButton>
+  </Button>
 </div>
 
 <p className={styles.loginLink}>

@@ -1,5 +1,5 @@
-import InputField from './InputField'
-import PrimaryButton from './PrimaryButton'
+import InputField from '@/shared/components/InputField'
+import Button from '@/shared/components/Button'
 import KakaoButton from './KakaoButton'
 import LoginLink from './LoginLink'
 import ErrorMessage from './ErrorMessage'
@@ -59,9 +59,9 @@ const handleLogin = (e: FormEvent) => {
      
 
       <div className={styles.buttonGroup}>
-      <PrimaryButton type="submit">
+      <Button type="submit">
           로그인
-      </PrimaryButton>   
+      </Button>
 
      <KakaoButton />
      </div>
