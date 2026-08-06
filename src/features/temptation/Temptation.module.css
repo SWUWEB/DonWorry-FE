@@ -1,5 +1,5 @@
 .subHeading {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   text-align: center;
   font-size: 24px;
   font-weight: bold;

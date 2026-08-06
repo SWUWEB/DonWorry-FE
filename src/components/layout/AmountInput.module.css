@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: Pretendard;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--color-text-primary, #243130);
+}
+
+.input::placeholder {
+  color: var(--color-gray-100, #dddddd);
+  font-weight: bold;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-main-500, #2f7f82);
+  outline-offset: 2px;
+}
+
+.currency {
+  font-family: Pretendard;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--color-text-primary, #243130);
+}

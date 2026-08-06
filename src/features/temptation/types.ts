@@ -1,4 +1,4 @@
-import { CATEGORIES } from '@/constants/product';
+import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
 
 export type Category = typeof CATEGORIES[number];
 
@@ -7,9 +7,11 @@ export interface Product {
   name: string;
   price: number;
   time: Date;
+  timeOption: typeof TIME_OPTIONS[number];
   category: Category;
   link?: string;
   reason?: string;
+  createdAt: Date;
 }
 
 export type FilterValue = '전체' | Category;
