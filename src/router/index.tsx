@@ -18,6 +18,7 @@ import ProfilePage from '@/pages/ProfilePage'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
+import ConsumptionReportPage from '@/pages/ConsumptionReportPage'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
+      { path: '/consumption-report', element: <ConsumptionReportPage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },

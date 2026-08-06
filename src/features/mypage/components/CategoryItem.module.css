@@ -1,0 +1,48 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  flex: 1;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  color: #D9D9D9;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #000000;
+  white-space: nowrap;
+}
+
+.amount {
+  font-size: 12px;
+  font-weight: 300;
+  color: #747474;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.percent {
+  font-size: 12px;
+  color: #747474;
+  font-weight: 300;
+  white-space: nowrap;
+}
