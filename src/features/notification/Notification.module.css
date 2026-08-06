@@ -1,6 +1,6 @@
 .main {
   flex: 1;
-  padding: 8px 24px 32px;
+  padding: 8px 20px 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -38,20 +38,23 @@
   right: 0;
   top: calc(100% + 6px);
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border: 1px solid var(--color-gray-100);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   z-index: 10;
-  min-width: 140px;
+  min-width: 150px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
   overflow: hidden;
 }
 
 .sortOption {
   background: none;
   border: none;
-  padding: 10px 16px;
+  border-radius: 8px;
+  padding: 10px 12px;
   text-align: left;
   font-size: 12px;
   cursor: pointer;
@@ -59,7 +62,7 @@
 }
 
 .sortOption:hover {
-  background: #f5f5f5;
+  background: var(--color-main-100);
 }
 
 .sortOptionActive {
@@ -73,7 +76,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .empty {
