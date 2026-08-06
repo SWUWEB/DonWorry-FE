@@ -20,10 +20,12 @@ import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
 import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
+import NotFoundPage from '@/pages/NotFoundPage'
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginPage /> },
@@ -52,6 +54,7 @@ const router = createBrowserRouter([
           { path: '/temptation/:id/edit', element: <TemptationEdit /> },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])

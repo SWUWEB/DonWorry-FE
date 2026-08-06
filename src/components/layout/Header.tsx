@@ -15,11 +15,12 @@ interface HeaderProps {
   subMain?: React.ReactNode
 }
 
-function TwoLineMenu() {
+function ThreeLineMenu() {
   return (
-    <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+    <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
       <line x1="0" y1="1" x2="20" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="0" y1="11" x2="20" y2="11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="0" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="0" y1="13" x2="20" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -47,7 +48,7 @@ export default function Header({
         </span>
       </button>
       <button className={styles.iconBtn} aria-label="메뉴" onClick={openDrawer}>
-        <TwoLineMenu />
+        <ThreeLineMenu />
       </button>
     </>
   )

@@ -9,7 +9,6 @@
   width: 100%;
   border: none;
   outline: none;
-  font-family: Pretendard;
   font-size: 32px;
   font-weight: bold;
   color: var(--color-text-primary, #243130);
@@ -26,7 +25,6 @@
 }
 
 .currency {
-  font-family: Pretendard;
   font-size: 32px;
   font-weight: bold;
   color: var(--color-text-primary, #243130);

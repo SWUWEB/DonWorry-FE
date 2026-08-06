@@ -83,7 +83,7 @@
   border: 1.5px solid var(--color-main-500);
   border-radius: 16px;
   color: var(--color-main-500);
-  background: var(--color-white);
+  background: var(--color-text-white);
   font-size: 14px;
   padding: 0 12px;
   align-items: center;
@@ -96,7 +96,7 @@
   flex-shrink: 0;
   width: 80px;
   border-radius: 5px;
-  color: var(--color-white);
+  color: var(--color-text-white);
   border-color: var(--color-text-primary);
   background-color: var(--color-text-primary);
 }

@@ -9,7 +9,7 @@
   grid-template-columns: auto 1fr auto;
   width: 100%;
   height: 50px;
-  background: var(--Main-000, #f7fbfa);
+  background: var(--color-main-000);
   padding: 0 16px;
   align-items: center;
   box-sizing: border-box;
@@ -31,7 +31,7 @@
 }
 
 .title {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   text-align: center;
   font-size: 18px;
   font-weight: 600;
@@ -45,7 +45,7 @@
   width: 100%;
   min-height: 138px;
   border-radius: 0 0 20px 20px;
-  background: var(--Main-000, #f7fbfa);
+  background: var(--color-main-000);
   padding: 8px 16px 16px;
   gap: 12px;
   box-sizing: border-box;
@@ -85,19 +85,19 @@
 .right button,
 .subLeft button,
 .subRight button {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
 }
 
 .right button:hover,
 .subLeft button:hover,
 .subRight button:hover {
-  color: var(--Gray-300, #5b6b6a);
+  color: var(--color-gray-300);
 }
 
 .subTitle {
   text-align: center;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
 }
