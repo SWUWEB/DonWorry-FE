@@ -1,12 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { IoChevronBack, IoNotifications, IoPencilOutline } from 'react-icons/io5'
 import { PiListBold } from 'react-icons/pi'
 import Header from '@/components/layout/Header'
 import RecentSpendingList from '@/features/intervention/components/RecentSpendingList'
 import { MOCK_RECORDS } from '@/features/record/mockRecords'
-import { CATEGORIES } from '@/constants/product'
 import styles from './RecordDetailPage.module.css'
+
+// 목데이터의 날짜가 "2026년 4월 17일" 형식이라 상세 화면 표기(YYYY.MM.DD)로 변환합니다.
+// API 연결 시 서버에서 포맷된 날짜를 받도록 수정 예정입니다.
+function formatDateCompact(dateLabel: string) {
+  const match = dateLabel.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/)
+  if (!match) return dateLabel
+
+  const [, year, month, day] = match
+  return `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`
+}
 
 export default function RecordDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -20,16 +29,14 @@ export default function RecordDetailPage() {
     }
   }, [record, navigate])
 
-  const [selectedCategory, setSelectedCategory] = useState(record?.category)
-
   if (!record) return null
 
   const recentRecords = MOCK_RECORDS.filter(
-    (item) => item.category === selectedCategory && item.id !== record.id,
+    (item) => item.category === record.category && item.id !== record.id,
   )
 
   return (
-    <div key={record.id}>
+    <div>
       <Header
         left={
           <button type="button" aria-label="로고">
@@ -59,31 +66,22 @@ export default function RecordDetailPage() {
         }
         subMain={
           <div className={styles.summary}>
-            <p className={styles.title}>{record.title}</p>
-            <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
-              {record.type === 'saved' ? '+' : '-'} {record.amount.toLocaleString('ko-KR')} 원
-            </p>
+            <div className={styles.titleRow}>
+              <span className={styles.categoryBadge}>{record.category}</span>
+              <p className={styles.title}>{record.title}</p>
+            </div>
+
+            <div className={styles.amountRow}>
+              <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
+                {record.type === 'saved' ? '+' : '-'} {record.amount.toLocaleString('ko-KR')} 원
+              </p>
+              <p className={styles.date}>{formatDateCompact(record.date)}</p>
+            </div>
           </div>
         }
       />
 
       <div className={styles.content}>
-        <section className={`${styles.section} ${styles.categorySection}`}>
-          <h2 className={styles.sectionLabel}>카테고리</h2>
-          <div className={styles.chipGroup}>
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                type="button"
-                className={`${styles.chip} ${category === selectedCategory ? styles.chipSelected : ''}`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </section>
-
         {record.reason && (
           <section className={`${styles.section} ${styles.reasonSection}`}>
             <h2 className={styles.sectionLabel}>사고 싶은 이유</h2>

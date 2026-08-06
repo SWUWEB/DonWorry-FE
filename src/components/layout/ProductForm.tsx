@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './ProductForm.module.css';
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
 import { ConfirmDialog } from '@/features/temptation/components/ConfirmDialog';
+import AmountInput from './AmountInput';
+import CategorySelector from './CategorySelector';
 
 export interface FormData {
   link?: string;
@@ -33,8 +35,9 @@ export function ProductForm({
   showTimeSelector = true,
   initialData,
   onSubmit,
-  onDirtyChange, }: FormProps) {
-    const mergedInitial: FormData = {
+  onDirtyChange,
+}: FormProps) {
+  const mergedInitial: FormData = {
     link: initialData?.link ?? DEFAULT_FORM_DATA.link,
     price: initialData?.price ?? DEFAULT_FORM_DATA.price,
     name: initialData?.name ?? DEFAULT_FORM_DATA.name,
@@ -42,7 +45,7 @@ export function ProductForm({
     time: initialData?.time ?? DEFAULT_FORM_DATA.time,
     reason: initialData?.reason ?? DEFAULT_FORM_DATA.reason,
   };
-  
+
   const initialSnapshotRef = useRef<FormData>(mergedInitial);
   const [data, setData] = useState<FormData>(mergedInitial);
 
@@ -56,15 +59,13 @@ export function ProductForm({
   const [pendingFetchResult, setPendingFetchResult] = useState<{ name: string; price: number } | null>(null);
   const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
 
-  // 입력 데이터 변경 여부(dirty) 계산 및 알림
   useEffect(() => {
     const isDirty = JSON.stringify(data) !== JSON.stringify(initialSnapshotRef.current);
     onDirtyChange?.(isDirty);
   }, [data, onDirtyChange]);
 
-  // URL 형식 검사
   const isValidUrl = (value: string) => URL_PATTERN.test(value.trim());
-  
+
   const applyFetchedResult = (result: { name: string; price: number }) => {
     setData(prev => ({ ...prev, name: result.name, price: result.price }));
     setLinkStatus({ loading: false, error: false, success: true });
@@ -77,9 +78,9 @@ export function ProductForm({
       return;
     }
     setLinkStatus({ loading: true, error: false, success: false });
-    
+
     try {
-      const result = await fetchProductData(trimmedLink);  // API 호출부
+      const result = await fetchProductData(trimmedLink);
       const hasExistingInput = data.name.trim() !== '' || data.price > 0;
       if (hasExistingInput) {
         setPendingFetchResult(result);
@@ -106,10 +107,10 @@ export function ProductForm({
     setShowOverwriteConfirm(false);
     setLinkStatus({ loading: false, error: false, success: false });
   };
-    
+
   const [touched, setTouched] = useState({ price: false, name: false });
   const handleBlur = (field: 'price' | 'name') => setTouched({ ...touched, [field]: true });
-  
+
   const priceError = touched.price && data.price === 0;
   const nameEmptyError = touched.name && data.name.trim() === '';
   const nameLengthError = data.name.length > NAME_MAX_LENGTH;
@@ -127,7 +128,7 @@ export function ProductForm({
       setTouched({ price: true, name: true });
       return;
     }
-    
+
     const timeChanged = data.time !== initialSnapshotRef.current.time;
     onSubmit(data, { timeChanged });
   };
@@ -135,7 +136,7 @@ export function ProductForm({
   return (
     <>
       <form id={formId} className={styles.formContainer} onSubmit={handleSubmit}>
-        
+
         <div className={styles.field}>
           <label htmlFor="link" className={styles.label}>상품 링크 (선택)</label>
           <div className={styles.inputWrapper}>
@@ -156,13 +157,13 @@ export function ProductForm({
               className={styles.button}
               disabled={linkStatus.loading || !data.link?.trim() || !isValidUrl(data.link ?? '')}
               onClick={handleLinkFetch}
-              >
-                {linkStatus.loading ? '• • •' : '불러오기'}
-              </button>
+            >
+              {linkStatus.loading ? '• • •' : '불러오기'}
+            </button>
           </div>
           {urlFormatError && (
-              <p className={`${styles.message} ${styles.errorMessage}`}>올바른 상품 URL을 입력해주세요.</p>
-            )}
+            <p className={`${styles.message} ${styles.errorMessage}`}>올바른 상품 URL을 입력해주세요.</p>
+          )}
           {linkStatus.error && (
             <p className={`${styles.message} ${styles.errorMessage}`}>URL을 불러오는 데 실패했습니다.</p>
           )}
@@ -173,22 +174,13 @@ export function ProductForm({
 
         <div className={styles.field}>
           <label htmlFor="price" className={styles.label}>상품 가격</label>
-          <div className={styles.priceWrapper}>
-            <input 
-              id="price"
-              className={styles.priceInput} 
-              type="text" 
-              inputMode="numeric"
-              placeholder="0"
-              value={data.price === 0 ? '' : data.price.toLocaleString('ko-KR')}
-              onBlur={() => handleBlur('price')}
-              onChange={(e) => {
-                  const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                  setData({...data, price: rawValue === '' ? 0 : Number(rawValue)});
-              }} 
-            />
-            <span className={styles.currency}>원</span>
-          </div>
+          <AmountInput
+            id="price"
+            className={styles.priceWrapper}
+            value={data.price}
+            onChange={(price) => setData({ ...data, price })}
+            onBlur={() => handleBlur('price')}
+          />
           {priceError && <p className={`${styles.message} ${styles.errorMessage}`}>상품 가격을 입력해주세요.</p>}
         </div>
 
@@ -201,25 +193,15 @@ export function ProductForm({
             value={data.name}
             onBlur={() => handleBlur('name')}
             onChange={(e) => setData({...data, name: e.target.value})} />
-            {nameEmptyError && <p className={`${styles.message} ${styles.errorMessage}`}>상품명을 입력해주세요.</p>}
-            {!nameEmptyError && nameLengthError && (
-              <p className={`${styles.message} ${styles.errorMessage}`}>상품명은 {NAME_MAX_LENGTH}자 이내로 입력해주세요. ({data.name.length}/{NAME_MAX_LENGTH})</p>
-            )}
+          {nameEmptyError && <p className={`${styles.message} ${styles.errorMessage}`}>상품명을 입력해주세요.</p>}
+          {!nameEmptyError && nameLengthError && (
+            <p className={`${styles.message} ${styles.errorMessage}`}>상품명은 {NAME_MAX_LENGTH}자 이내로 입력해주세요. ({data.name.length}/{NAME_MAX_LENGTH})</p>
+          )}
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>카테고리</label>
-          <div className={styles.chipGroup} role="radiogroup">
-            {CATEGORIES.map(c => (
-              <label key={c} className={`${styles.chip} ${data.category === c ? styles.chipSelected : ''}`}>
-                <input
-                  type="radio" name="category" value={c} className={styles.hidden}
-                  checked={data.category === c} onChange={() => setData({...data, category: c})}
-                />
-                {c}
-              </label>
-            ))}
-          </div>
+          <CategorySelector value={data.category} onChange={(category) => setData({ ...data, category })} />
         </div>
 
         {showTimeSelector && (
@@ -227,12 +209,12 @@ export function ProductForm({
             <label className={styles.label}>고민해볼 시간</label>
             <div className={styles.chipGroup} role="radiogroup">
               {TIME_OPTIONS.map(t => (
-                <label key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`}> 
+                <label key={t} className={`${styles.chip} ${data.time === t ? styles.chipSelected : ''}`}>
                   <input
                     type="radio" name="time" value={t} className={styles.hidden}
                     checked={data.time === t}
                     onChange={() => setData({...data, time: t})}
-                  />   
+                  />
                   {t}
                 </label>
               ))}
@@ -249,7 +231,7 @@ export function ProductForm({
             value={data.reason}
             onChange={(e) => setData({...data, reason: e.target.value})}
             rows={3}
-            />
+          />
           {reasonLengthError && (
             <p className={`${styles.message} ${styles.errorMessage}`}>사고 싶은 이유는 {REASON_MAX_LENGTH}자 이내로 입력해주세요. ({data.reason.length}/{REASON_MAX_LENGTH})</p>
           )}
@@ -257,18 +239,17 @@ export function ProductForm({
       </form>
 
       <ConfirmDialog
-          isOpen={showOverwriteConfirm}
-          title="기존 상품명과 가격을 불러온 정보로 변경할까요?"
-          cancelText="취소하기"
-          confirmText="변경하기"
-          onCancel={handleOverwriteCancel}
-          onConfirm={handleOverwriteConfirm}
-        />
+        isOpen={showOverwriteConfirm}
+        title="기존 상품명과 가격을 불러온 정보로 변경할까요?"
+        cancelText="취소하기"
+        confirmText="변경하기"
+        onCancel={handleOverwriteCancel}
+        onConfirm={handleOverwriteConfirm}
+      />
     </>
   );
 }
 
-// 임시 코드: 실제 API 호출 로직 구현 필요
 async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
   console.log('fetchProductData called with link:', link);
   throw new Error('Not implemented');
