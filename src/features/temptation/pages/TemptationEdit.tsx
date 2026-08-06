@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useBlocker, useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { PiListBold } from 'react-icons/pi';
 import { IoNotifications } from 'react-icons/io5';
@@ -8,31 +8,8 @@ import { InfoHeader } from '../components/temptationInfo/InfoHeader';
 import { ProductForm } from '@/components/layout/ProductForm';
 import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 import { useWishlistContext } from '../hooks/WishlistContext';
-import { TIME_OPTIONS } from '@/constants/product';
 import styles from './TemptationEdit.module.css';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-
-const TIME_TO_HOURS: Record<typeof TIME_OPTIONS[number], number> = {
-  '1시간': 1,
-  '1일': 24,
-  '3일': 72,
-  '7일': 168,
-};
-
-const findClosestTimeOption = (deadline: Date, createdAt: Date): typeof TIME_OPTIONS[number] => {
-  const totalHours = (deadline.getTime() - createdAt.getTime()) / (60 * 60 * 1000);
-  let closest: typeof TIME_OPTIONS[number] = TIME_OPTIONS[0];
-  let minDiff = Infinity;
-
-  for (const option of TIME_OPTIONS) {
-    const diff = Math.abs(TIME_TO_HOURS[option] - totalHours);
-    if (diff < minDiff) {
-      minDiff = diff;
-      closest = option;
-    }
-  }
-  return closest;
-};
 
 export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>();
@@ -43,22 +20,49 @@ export default function TemptationEdit() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
-  const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [isFailOpen, setIsFailOpen] = useState(false);
 
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      isDirty && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isDirty) return;
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
+  const [isManualLeaveOpen, setIsManualLeaveOpen] = useState(false);
+
   const handleBack = () => {
     if (isDirty) {
-      setIsLeaveConfirmOpen(true);
+      setIsManualLeaveOpen(true);
     } else {
       navigate(`/temptation/${id}`);
     }
   };
 
-  const handleLeaveCancel = () => setIsLeaveConfirmOpen(false);
+  const isLeaveConfirmOpen = blocker.state === 'blocked' || isManualLeaveOpen;
+
+  const handleLeaveCancel = () => {
+    setIsManualLeaveOpen(false);
+    blocker.reset?.();
+  };
+
   const handleLeaveConfirm = () => {
-    setIsLeaveConfirmOpen(false);
-    navigate(`/temptation/${id}`);
+    setIsManualLeaveOpen(false);
+    if (blocker.state === 'blocked') {
+      blocker.proceed?.();
+    } else {
+      navigate(`/temptation/${id}`);
+    }
   };
 
   const handleSave = async (data: WishFormData, meta: { timeChanged: boolean }) => {
@@ -69,6 +73,7 @@ export default function TemptationEdit() {
       await new Promise((resolve) => setTimeout(resolve, 400));
       handleEdit(product.id, data, meta.timeChanged);
       setIsSubmitting(false);
+      setIsDirty(false); // 저장 성공 후에는 dirty 해제 (상세 페이지 이동 시 재차단 방지)
       setIsSuccessOpen(true);
     } catch {
       setIsSubmitting(false);
@@ -114,7 +119,7 @@ export default function TemptationEdit() {
             price: product.price,
             name: product.name,
             category: product.category,
-            time: findClosestTimeOption(product.time, product.createdAt),
+            time: product.timeOption,
             reason: product.reason,
           }}
           onSubmit={handleSave}
