@@ -64,7 +64,7 @@
 
 .sortOptionActive {
   font-weight: 700;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
 }
 
 .list {

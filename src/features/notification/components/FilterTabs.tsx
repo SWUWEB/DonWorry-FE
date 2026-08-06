@@ -1,4 +1,4 @@
-import styles from './FilterTabs.module.css'
+import TabGroup from '@/shared/components/TabGroup'
 
 export type FilterType = '전체' | '일반' | '목표현황' | '재판단'
 
@@ -15,17 +15,5 @@ interface FilterTabsProps {
 }
 
 export default function FilterTabs({ active, onChange }: FilterTabsProps) {
-  return (
-    <div className={styles.tabs}>
-      {TABS.map(tab => (
-        <button
-          key={tab.value}
-          className={`${styles.tab} ${active === tab.value ? styles.active : ''}`}
-          onClick={() => onChange(tab.value)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  )
+  return <TabGroup variant="segment" options={TABS} value={active} onChange={onChange} />
 }
