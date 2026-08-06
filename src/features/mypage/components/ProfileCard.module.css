@@ -35,10 +35,19 @@
 
 .manageButton {
   margin-top: 13px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--color-main-500);
+  border-radius: 20px;
+  background: var(--color-text-white);
   font-size: 12px;
-  font-weight: 500;
-  color: #374151;
+  font-weight: 600;
+  color: var(--color-main-500);
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.manageButton:hover {
+  background: var(--color-main-100);
 }
 .avatarIcon {
   width: 36px;

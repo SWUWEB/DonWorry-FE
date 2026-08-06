@@ -1,5 +1,6 @@
 import styles from './MenuItem.module.css'
 import { Icon } from '@iconify/react'
+import { IoChevronForward } from 'react-icons/io5'
 
 type MenuItemProps = {
   title: string
@@ -30,7 +31,7 @@ export default function MenuItem({
         </span>
       </div>
 
-      <span className={styles.arrow}>›</span>
+      <IoChevronForward className={styles.arrow} size={18} />
     </button>
   )
 }

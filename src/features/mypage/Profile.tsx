@@ -11,11 +11,6 @@ export default function Profile() {
   return (
     <>
       <Header
-        left={
-          <span className={styles.logo}>
-            Logo
-          </span>
-        }
         onBellClick={() => navigate('/notification')}
         subLeft={<HeaderBackButton />}
         subMain={

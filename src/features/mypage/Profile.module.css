@@ -10,12 +10,6 @@
   z-index: 1;
 }
 
-.logo {
-  font-size: 14px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--color-text-primary);
-}
 
 .headerContent {
   margin-top: 12px;

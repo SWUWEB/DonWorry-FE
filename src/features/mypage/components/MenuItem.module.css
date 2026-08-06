@@ -31,7 +31,7 @@
 }
 
 .arrow {
-  font-size: 22px;
+  flex-shrink: 0;
   color: #9CA3AF;
 }
 
