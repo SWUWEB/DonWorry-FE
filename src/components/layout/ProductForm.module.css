@@ -24,39 +24,25 @@
 }
 
 .textInput {
-  flex: 1;
+  width: 100%;
   border: none;
-  border-bottom: 2px solid #dddddd;
+  border-bottom: 2px solid var(--Gray-100, #DDDDDD);
   font-size: 14px;
   font-weight: bold;
+  font-family: inherit;
   padding: 4px 0;
   outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.textInput::placeholder {
+  font-weight: normal;
+  color: var(--Gray-300, #5B6B6A);
 }
 
 .priceWrapper {
-  display: flex;
-  gap: 4px;
   margin: -8px 0 -4px 0;
-  align-items: baseline;
-}
-
-.priceInput {
-  width: 100%;
-  border: none;
-  font-size: 32px;
-  font-weight: bold;
-  outline: none;
-}
-
-.priceInput::placeholder,
-.textInput::placeholder {
-  color: #dddddd;
-  font-weight: bold;
-}
-
-.currency {
-  font-size: 32px;
-  font-weight: bold;
 }
 
 .message {
