@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { IoChevronBack, IoNotifications, IoPencilOutline } from 'react-icons/io5'
-import { PiListBold } from 'react-icons/pi'
+import { IoPencilOutline } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import RecentSpendingList from '@/features/intervention/components/RecentSpendingList'
 import { MOCK_RECORDS } from '@/features/record/mockRecords'
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './RecordDetailPage.module.css'
 
 // 목데이터의 날짜가 "2026년 4월 17일" 형식이라 상세 화면 표기(YYYY.MM.DD)로 변환합니다.
@@ -43,21 +44,8 @@ export default function RecordDetailPage() {
             Logo
           </button>
         }
-        right={
-          <>
-            <button type="button" aria-label="알림">
-              <IoNotifications />
-            </button>
-            <button type="button" aria-label="메뉴 열기">
-              <PiListBold />
-            </button>
-          </>
-        }
-        subLeft={
-          <button type="button" aria-label="뒤로 가기" onClick={() => navigate(-1)}>
-            <IoChevronBack size={20} />
-          </button>
-        }
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton />}
         subTitle="소비 상세"
         subRight={
           <button type="button" aria-label="수정">
@@ -73,7 +61,7 @@ export default function RecordDetailPage() {
 
             <div className={styles.amountRow}>
               <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
-                {record.type === 'saved' ? '+' : '-'} {record.amount.toLocaleString('ko-KR')} 원
+                {record.type === 'saved' ? '+' : '-'} {formatKRW(record.amount)}
               </p>
               <p className={styles.date}>{formatDateCompact(record.date)}</p>
             </div>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { RecordType } from '@/features/record/mockRecords'
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './RecordCard.module.css'
 
 interface RecordCardProps {
@@ -35,7 +36,7 @@ export default function RecordCard({
       </div>
 
       <p className={`${styles.amount} ${type === 'saved' ? styles.saved : styles.consume}`}>
-        {type === 'saved' ? '+' : '-'} {amount.toLocaleString()}원
+        {type === 'saved' ? '+' : '-'} {formatKRW(amount)}
       </p>
     </Link>
   )

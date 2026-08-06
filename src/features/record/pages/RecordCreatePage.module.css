@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px 37px 32px;
+  padding: 24px 20px 32px;
 }
 
 .field {
@@ -19,7 +19,6 @@
 
 .label {
   margin: 0;
-  font-family: Pretendard;
   font-size: 14px;
   font-weight: 600;
   color: var(--color-gray-300, #5b6b6a);
@@ -35,7 +34,6 @@
   border: none;
   border-bottom: 1.5px solid var(--color-gray-100, #dddddd);
   padding: 4px 0 8px;
-  font-family: Pretendard;
   font-size: 16px;
   font-weight: 500;
   color: var(--color-text-primary, #243130);
@@ -62,7 +60,6 @@
   border: none;
   border-radius: 12px;
   background: var(--color-main-500, #2f7f82);
-  font-family: Pretendard;
   font-size: 16px;
   font-weight: 600;
   color: var(--color-main-000, #f7fbfa);

@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IoChevronBack } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
-import FilterChip from '@/features/record/components/FilterChip'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
+import TabGroup from '@/shared/components/TabGroup'
 import AmountInput from '@/components/layout/AmountInput'
 import CategorySelector from '@/components/layout/CategorySelector'
 import type { Category } from '@/components/layout/CategorySelector'
 import { CATEGORIES } from '@/constants/product'
 import type { RecordType } from '@/features/record/mockRecords'
 import styles from './RecordCreatePage.module.css'
+
+const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
+  { label: '참은 소비', value: 'saved' },
+  { label: '소비', value: 'consume' },
+]
 
 export default function RecordCreatePage() {
   const navigate = useNavigate()
@@ -42,29 +47,19 @@ export default function RecordCreatePage() {
             Logo
           </button>
         }
-        subLeft={
-          <button type="button" aria-label="뒤로 가기" onClick={() => navigate(-1)}>
-            <IoChevronBack size={20} />
-          </button>
-        }
+        subLeft={<HeaderBackButton />}
         subTitle="소비 기록 추가"
       />
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>
           <label className={styles.label}>기록 유형</label>
-          <div className={styles.chipGroup}>
-            <FilterChip
-              label="참은 소비"
-              selected={type === 'saved'}
-              onClick={() => setType('saved')}
-            />
-            <FilterChip
-              label="소비"
-              selected={type === 'consume'}
-              onClick={() => setType('consume')}
-            />
-          </div>
+          <TabGroup<RecordType>
+            className={styles.chipGroup}
+            options={RECORD_TYPE_OPTIONS}
+            value={type}
+            onChange={setType}
+          />
         </div>
 
         <div className={styles.field}>
