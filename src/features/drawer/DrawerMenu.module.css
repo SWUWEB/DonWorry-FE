@@ -48,8 +48,17 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background-color: #c7e3e3;
+  background-color: #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+}
+
+.avatarIcon {
+  width: 32px;
+  height: 32px;
+  display: block;
 }
 
 .userInfo {

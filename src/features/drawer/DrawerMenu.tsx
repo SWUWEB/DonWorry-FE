@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { IoCloseOutline } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useDrawer } from './useDrawer'
+import ProfileIcon from '@/assets/profile.svg'
 import styles from './DrawerMenu.module.css'
 
 function LogoutIcon({ size = 16 }: { size?: number }) {
@@ -55,9 +56,9 @@ function TemptationIcon() {
 
 const NAV_ITEMS = [
   { label: '홈', icon: <HomeIcon />, path: '/' },
-  { label: '마이페이지', icon: <MypageIcon />, path: '/mypage' },
   { label: '소비 기록 페이지', icon: <RecordIcon />, path: '/record' },
   { label: '유혹 관리 페이지', icon: <TemptationIcon />, path: '/temptation' },
+  { label: '마이페이지', icon: <MypageIcon />, path: '/mypage' },
 ]
 
 export default function DrawerMenu() {
@@ -68,10 +69,7 @@ export default function DrawerMenu() {
   const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
-    if (!isOpen) {
-      setShowLogoutConfirm(false)
-      return
-    }
+    if (!isOpen) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
@@ -79,8 +77,13 @@ export default function DrawerMenu() {
     }
   }, [isOpen])
 
-  const handleNav = (path: string) => {
+  const handleClose = () => {
+    setShowLogoutConfirm(false)
     close()
+  }
+
+  const handleNav = (path: string) => {
+    handleClose()
     navigate(path)
   }
 
@@ -91,7 +94,7 @@ export default function DrawerMenu() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
     const diff = e.changedTouches[0].clientX - touchStartX.current
-    if (diff > 50) close()
+    if (diff > 50) handleClose()
     touchStartX.current = null
   }
 
@@ -106,7 +109,7 @@ export default function DrawerMenu() {
     <>
       <div
         className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`}
-        onClick={close}
+        onClick={handleClose}
       >
         <div
           className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ''}`}
@@ -115,11 +118,13 @@ export default function DrawerMenu() {
           onTouchEnd={handleTouchEnd}
         >
           <div className={styles.profileSection}>
-            <button className={styles.closeBtn} onClick={close} aria-label="닫기">
+            <button className={styles.closeBtn} onClick={handleClose} aria-label="닫기">
               <IoCloseOutline size={20} />
             </button>
             <div className={styles.profileRow}>
-              <div className={styles.avatar} />
+              <div className={styles.avatar}>
+                <img src={ProfileIcon} alt="프로필" className={styles.avatarIcon} />
+              </div>
               <div className={styles.userInfo}>
                 {/* TODO: 실제 사용자 이름 및 프로필 이미지 연결 */}
                 <p className={styles.userName}>000님,</p>

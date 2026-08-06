@@ -24,8 +24,10 @@
 }
 
 .logo {
-  font-size: 14px;
-  font-weight: 700;
+  height: 40px;
+  width: auto;
+  display: block;
+  border-radius: 10px;
   margin-bottom: 36px;
 }
 

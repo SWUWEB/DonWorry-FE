@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom'
 import { IoNotifications } from 'react-icons/io5'
 import { useDrawer } from '@/features/drawer/useDrawer'
+import logo from '@/assets/logos/donworry_logo.svg'
 import styles from './Header.module.css'
 
 interface HeaderProps {
@@ -38,6 +40,13 @@ export default function Header({
 }: HeaderProps) {
   const hasSubContent = Boolean(subLeft || subRight || subMain || subTitle)
   const { open: openDrawer } = useDrawer()
+  const navigate = useNavigate()
+
+  const defaultLeft = (
+    <button type="button" className={styles.logoBtn} aria-label="홈으로" onClick={() => navigate('/')}>
+      <img src={logo} alt="DonWorry" className={styles.logoImg} />
+    </button>
+  )
 
   const defaultRight = (
     <>
@@ -57,7 +66,7 @@ export default function Header({
     <header className={styles.header}>
       <div className={styles.topBar}>
         <div className={styles.left}>
-          {left}
+          {left ?? defaultLeft}
         </div>
 
         {title && <h1 className={styles.title}>{title}</h1>}
