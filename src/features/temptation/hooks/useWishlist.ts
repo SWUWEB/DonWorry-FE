@@ -16,10 +16,11 @@ const timeStringToDate = (time: typeof TIME_OPTIONS[number]): Date => {
   return new Date(Date.now() + hours * 60 * 60 * 1000);
 };
 
-export const useWishlist = (keyword: string = '') => {
+export const useWishlist = () => {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [filter, setFilter] = useState<FilterValue>('전체');
   const [sort, setSort] = useState<SortValue>('가나다순');
+  const [keyword, setKeyword] = useState('');
 
   const filteredProducts = useMemo(() => {
     let target = filter === '전체' ? products : products.filter((p) => p.category === filter);
@@ -46,16 +47,44 @@ export const useWishlist = (keyword: string = '') => {
       name: formData.name,
       price: formData.price,
       time: timeStringToDate(formData.time),
+      timeOption: formData.time,
       category: formData.category,
       link: formData.link,
       reason: formData.reason,
+      createdAt: new Date(),
     };
     setProducts((prev) => [...prev, newProduct]);
+  };
+
+  const handleEdit = (id: string, formData: WishFormData, timeChanged: boolean) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+
+        // 남은 고민 시간 수정 로직
+        const newTime = timeChanged
+          ? new Date(Date.now() + TIME_TO_HOURS[formData.time] * 60 * 60 * 1000)
+          : p.time;
+
+        return {
+          ...p,
+          name: formData.name,
+          price: formData.price,
+          time: newTime,
+          timeOption: formData.time,
+          category: formData.category,
+          link: formData.link,
+          reason: formData.reason,
+        };
+      })
+    );
   };
 
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter];
 
   return {
+    keyword,
+    setKeyword,
     filter,
     setFilter,
     sort,
@@ -64,5 +93,6 @@ export const useWishlist = (keyword: string = '') => {
     categoriesToRender,
     handleDelete,
     handleAdd,
+    handleEdit,
   };
 };

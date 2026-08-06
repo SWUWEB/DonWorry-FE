@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingInterestPage.module.css'
+import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 
 const CATEGORIES = [
   { id: 'food', emoji: '🍔', label: '음식' },
@@ -21,14 +22,18 @@ const MAX_SELECT = 3
 
 export default function OnboardingInterestPage() {
   const navigate = useNavigate()
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const draft = getOnboardingDraft()
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(draft.interests?.map(i => i.id) ?? [])
+  )
   const [showMaxMsg, setShowMaxMsg] = useState(false)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    if (!showMaxMsg) return
-    const timer = setTimeout(() => setShowMaxMsg(false), 2000)
-    return () => clearTimeout(timer)
-  }, [showMaxMsg])
+  const triggerToast = () => {
+    setShowMaxMsg(true)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setShowMaxMsg(false), 2000)
+  }
 
   const toggle = (id: string) => {
     if (selected.has(id)) {
@@ -36,7 +41,7 @@ export default function OnboardingInterestPage() {
     } else if (selected.size < MAX_SELECT) {
       setSelected(prev => new Set([...prev, id]))
     } else {
-      setShowMaxMsg(true)
+      triggerToast()
     }
   }
 
@@ -48,9 +53,10 @@ export default function OnboardingInterestPage() {
 
   const handleNext = () => {
     if (!hasSelected) return
-    navigate('/onboarding/step2', {
-      state: { interests: selectedList.map(c => ({ emoji: c.emoji, label: c.label })) },
+    saveOnboardingDraft({
+      interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
     })
+    navigate('/onboarding/step2')
   }
 
   return (
@@ -92,6 +98,7 @@ export default function OnboardingInterestPage() {
                 key={id}
                 className={`${styles.chip} ${isSelected ? styles.chipSelected : ''} ${isDimmed ? styles.chipDimmed : ''}`}
                 onClick={() => toggle(id)}
+                aria-pressed={isSelected}
               >
                 <span className={styles.chipEmoji}>{emoji}</span>
                 <span className={styles.chipLabel}>{label}</span>
@@ -103,7 +110,9 @@ export default function OnboardingInterestPage() {
 
       {/* 최대 선택 토스트 */}
       {showMaxMsg && (
-        <div className={styles.toast}>관심 영역은 최대 3개까지 선택할 수 있습니다.</div>
+        <div className={styles.toast} role="status" aria-live="polite">
+          관심 영역은 최대 3개까지 선택할 수 있습니다.
+        </div>
       )}
 
       {/* 하단 버튼 영역 */}

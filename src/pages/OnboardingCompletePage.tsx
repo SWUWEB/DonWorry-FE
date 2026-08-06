@@ -1,27 +1,26 @@
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import styles from './OnboardingCompletePage.module.css'
-
-interface OnboardingState {
-  interests: { emoji: string; label: string }[]
-  purpose: string
-  purposeEmoji: string
-  amount: number
-}
+import { getOnboardingDraft, clearOnboardingDraft } from './onboardingSession'
 
 export default function OnboardingCompletePage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const {
-    interests = [],
-    purpose = '',
-    purposeEmoji = '➕',
-    amount = 0,
-  } = (location.state ?? {}) as Partial<OnboardingState>
+  const draft = getOnboardingDraft()
 
-  const interestsText = interests.map(i => i.label).join(' · ') || '-'
+  const interests = draft.interests ?? []
+  const purpose = draft.purposeLabel ?? ''
+  const purposeEmoji = draft.purposeEmoji ?? '➕'
+  const amount = draft.amount ?? 0
+
+  if (interests.length === 0 || !purpose || amount <= 0) {
+    return <Navigate to="/onboarding" replace />
+  }
+
+  const interestsText = interests.map(i => i.label).join(' · ')
 
   const handleHome = () => {
     localStorage.setItem('onboardingComplete', 'true')
+    localStorage.setItem('onboardingData', JSON.stringify({ interests, purpose, purposeEmoji, amount }))
+    clearOnboardingDraft()
     navigate('/')
   }
 
@@ -61,7 +60,7 @@ export default function OnboardingCompletePage() {
             <div className={styles.card}>
               <span className={styles.cardEmoji}>{purposeEmoji}</span>
               <span className={styles.cardLabel}>저축 목적</span>
-              <span className={styles.cardValue}>{purpose || '-'}</span>
+              <span className={styles.cardValue}>{purpose}</span>
             </div>
           </div>
         </div>

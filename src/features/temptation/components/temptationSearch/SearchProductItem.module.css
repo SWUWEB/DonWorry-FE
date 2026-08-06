@@ -4,10 +4,15 @@
   width: 100%;
   max-width: 350px;
   min-height: 80px;
-  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  border: 1.5px solid var(--color-gray-100);
   border-radius: 15px;
   padding: 10px 12px;
   margin-bottom: 3px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
 }
 
 .top {
@@ -23,12 +28,12 @@
 }
 
 .name {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .meta {
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   font-size: 12px;
   margin-top: -6px;
 }
@@ -36,7 +41,7 @@
 .time {
   text-align: right;
   font-size: 12px;
-  color: var(--Gray-300, #5B6B6A);
+  color: var(--color-gray-300);
   margin: 0;
 }
 
@@ -51,13 +56,13 @@
 .empty {
   font-size: 20px;
   font-weight: bold;
-  color: var(--Gray-200, #9CA4A3);
+  color: var(--color-gray-200);
   padding-top: 30px;
 }
 
 /* highlightMatch.tsx */
 :global(.highlight) {
   background-color: transparent;
-  color: var(--Main-500, #2F7F82);
+  color: var(--color-main-500);
   font-weight: 700;
 }

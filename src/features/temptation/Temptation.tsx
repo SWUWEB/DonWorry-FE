@@ -3,24 +3,17 @@ import { PiListBold } from "react-icons/pi";
 import { IoNotifications } from "react-icons/io5";
 import { IoIosArrowBack } from "react-icons/io";
 import SearchBar from './components/SearchBar';
-import { useMemo, useState } from 'react';
 import styles from './Temptation.module.css'
 import { useNow } from './hooks/useNow';
 import TemptationMain from './pages/TemptationMain';
 import { Search } from './pages/Search';
-import { MOCK_PRODUCTS } from './mockData';
+import { useWishlistContext } from './hooks/WishlistContext';
 
 export default function Temptation() {
-  const [keyword, setKeyword] = useState('');
+  const { keyword, setKeyword, filteredProducts } = useWishlistContext();
   useNow();
 
   const trimmedKeyword = keyword.trim();
-
-  const filteredProducts = useMemo(() => {
-    const trimmed = keyword.trim().toLowerCase();
-    if (!trimmed) return MOCK_PRODUCTS;
-    return MOCK_PRODUCTS.filter((p) => p.name.toLowerCase().includes(trimmed));
-  }, [keyword]);
 
   return (
     <>
@@ -47,7 +40,7 @@ export default function Temptation() {
       {trimmedKeyword ? (
         <Search keyword={keyword} filteredProducts={filteredProducts} />
       ) : (
-        <TemptationMain keyword={keyword} />
+        <TemptationMain />
       )}
     </>
   )

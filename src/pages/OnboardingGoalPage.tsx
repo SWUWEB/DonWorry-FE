@@ -1,17 +1,18 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingGoalPage.module.css'
+import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 
 const PURPOSES = [
-  { id: 'invest', emoji: '📊', label: '투자' },
-  { id: 'travel', emoji: '✈️', label: '여행' },
-  { id: 'hobby', emoji: '🎯', label: '취미' },
-  { id: 'car', emoji: '🚗', label: '자동차' },
-  { id: 'lumpsum', emoji: '💰', label: '목돈 마련' },
-  { id: 'house', emoji: '🏠', label: '내 집 마련' },
-  { id: 'retire', emoji: '👴', label: '노후 준비' },
-  { id: 'selfdev', emoji: '📖', label: '자기계발' },
-  { id: 'etc', emoji: '➕', label: '기타' },
+  { id: 'invest', emoji: '📊', label: '투자', description: '미래를 위한 투자 습관을 만들어요.' },
+  { id: 'travel', emoji: '✈️', label: '여행', description: '꿈꾸는 여행을 위해 차곡차곡 모아요.' },
+  { id: 'hobby', emoji: '🎯', label: '취미', description: '좋아하는 취미 생활을 마음껏 즐겨요.' },
+  { id: 'car', emoji: '🚗', label: '자동차', description: '내 차 마련을 위해 저축해요.' },
+  { id: 'lumpsum', emoji: '💰', label: '목돈 마련', description: '목돈을 만들어 재정적 안정을 높여요.' },
+  { id: 'house', emoji: '🏠', label: '내 집 마련', description: '내 집 마련의 꿈을 향해 나아가요.' },
+  { id: 'retire', emoji: '👴', label: '노후 준비', description: '편안한 노후를 위해 미리 준비해요.' },
+  { id: 'selfdev', emoji: '📖', label: '자기계발', description: '나에게 투자하는 가장 가치 있는 소비예요.' },
+  { id: 'etc', emoji: '➕', label: '기타', description: '나만의 목표를 향해 저축해요.' },
 ]
 
 const MIN_AMOUNT = 1_000
@@ -26,11 +27,10 @@ function getAmountError(raw: string, value: number): string {
 
 export default function OnboardingGoalPage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const step1State = (location.state ?? {}) as { interests?: { emoji: string; label: string }[] }
+  const draft = getOnboardingDraft()
 
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [amountInput, setAmountInput] = useState('')
+  const [selectedId, setSelectedId] = useState<string | null>(draft.purposeId ?? null)
+  const [amountInput, setAmountInput] = useState(draft.amountInput ?? '')
   const [amountTouched, setAmountTouched] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -47,7 +47,7 @@ export default function OnboardingGoalPage() {
     const raw = e.target.value.replace(/[^0-9]/g, '')
     setSaveError('')
     if (raw === '') { setAmountInput(''); return }
-    if (Number(raw) > MAX_AMOUNT) return
+    if (Number(raw) > MAX_AMOUNT) setAmountTouched(true)
     setAmountInput(Number(raw).toLocaleString('ko-KR'))
   }
 
@@ -57,16 +57,16 @@ export default function OnboardingGoalPage() {
     setSaving(true)
     setSaveError('')
     try {
-      // TODO: API 호출 - 1·2단계 설정값 저장
+      // TODO: API 호출 - 1·2단계 설정값 저장 (selectedId, amount 전달)
       await Promise.resolve()
-      navigate('/onboarding/step3', {
-        state: {
-          interests: step1State.interests ?? [],
-          purpose: selectedPurpose?.label ?? '',
-          purposeEmoji: selectedPurpose?.emoji ?? '',
-          amount,
-        },
+      saveOnboardingDraft({
+        purposeId: selectedId,
+        purposeLabel: selectedPurpose?.label ?? '',
+        purposeEmoji: selectedPurpose?.emoji ?? '',
+        amount,
+        amountInput,
       })
+      navigate('/onboarding/step3')
     } catch {
       setSaveError('설정을 저장하지 못했습니다. 다시 시도해주세요.')
     } finally {
@@ -109,6 +109,7 @@ export default function OnboardingGoalPage() {
             <button
               key={id}
               className={`${styles.chip} ${selectedId === id ? styles.chipSelected : ''}`}
+              aria-pressed={selectedId === id}
               onClick={() => setSelectedId(prev => prev === id ? null : id)}
             >
               <span className={styles.chipEmoji}>{emoji}</span>
@@ -119,9 +120,10 @@ export default function OnboardingGoalPage() {
 
         {/* 월 목표 금액 */}
         <div className={styles.amountSection}>
-          <p className={styles.amountLabel}>월 목표 금액</p>
+          <label htmlFor="amount-input" className={styles.amountLabel}>월 목표 금액</label>
           <div className={`${styles.inputWrap} ${amountError ? styles.inputWrapError : ''}`}>
             <input
+              id="amount-input"
               className={styles.amountInput}
               type="text"
               inputMode="numeric"
@@ -129,11 +131,13 @@ export default function OnboardingGoalPage() {
               onChange={handleAmountChange}
               onBlur={() => setAmountTouched(true)}
               placeholder="0"
+              aria-invalid={!!amountError}
+              aria-describedby={amountError ? 'amount-error' : undefined}
             />
             <span className={`${styles.wonLabel} ${amountInput ? styles.wonLabelActive : ''}`}>원</span>
           </div>
           {amountError ? (
-            <p className={styles.errorMsg}>{amountError}</p>
+            <p id="amount-error" className={styles.errorMsg}>{amountError}</p>
           ) : isAmountValid ? (
             <p className={styles.amountHint}>월 {amount.toLocaleString('ko-KR')}원 목표</p>
           ) : null}
@@ -146,6 +150,7 @@ export default function OnboardingGoalPage() {
         {selectedPurpose && !saveError && (
           <div className={styles.selectedTags}>
             <span className={styles.tag}>{selectedPurpose.emoji} {selectedPurpose.label}</span>
+            <p className={styles.purposeDesc}>{selectedPurpose.description}</p>
           </div>
         )}
         <div className={styles.btnRow}>
@@ -153,6 +158,7 @@ export default function OnboardingGoalPage() {
           <button
             className={`${styles.nextBtn} ${isActive && !saving ? styles.nextBtnActive : ''}`}
             onClick={handleNext}
+            disabled={!isActive || saving}
           >
             {saving ? '저장 중...' : '다음'}
           </button>
