@@ -6,12 +6,15 @@ import styles from './AccountMenu.module.css'
 const menus = [
   {
     title: '이메일 변경',
+    path: '/changeemail',
   },
   {
     title: '비밀번호 변경',
+    path: '/changepassword',
   },
   {
-    title: '회원 탈퇴', 
+    title: '회원 탈퇴',
+    path: '/withdraw',
   },
 ]
 
@@ -25,11 +28,7 @@ export default function AccountMenu() {
           key={menu.title}
           type="button"
           className={`${styles.menuButton} ${menu.title === '회원 탈퇴' ? styles.withdraw : ''}`}
-          onClick={() => {
-            if (menu.title === '이메일 변경') {
-              navigate('/changeemail')
-            }
-          }}
+          onClick={() => navigate(menu.path)}
         >
           <span>{menu.title}</span>
 

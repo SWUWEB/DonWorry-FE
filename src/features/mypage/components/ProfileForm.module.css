@@ -6,27 +6,9 @@
 
 .label {
   font-size: 13px;
-  font-weight: 700;
-  color: #364153;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
-
-.input {
-  margin-top: -5px;
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  border: 1px solid #E5E7EB;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 300;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.input::placeholder {
-  color: #D1D5DC;
-}
-
 
 .genderGroup {
   display: flex;
@@ -59,16 +41,7 @@
   box-sizing: border-box;
 }
 
-.dateInput {
-  position: relative;
-  width: 100%;
-}
-
 .calendarIcon {
-  position: absolute;
-  top: 45%;
-  right: 16px;
-  transform: translateY(-50%);
   font-size: 22px;
   color: #9CA3AF;
   pointer-events: none;

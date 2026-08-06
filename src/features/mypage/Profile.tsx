@@ -1,6 +1,5 @@
 import Header from '@/components/layout/Header'
-import { IoChevronBack, IoNotifications } from 'react-icons/io5'
-import { HiOutlineBars2 } from 'react-icons/hi2'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import ProfileForm from './components/ProfileForm'
 import AccountMenu from './components/AccountMenu'
 
@@ -8,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import styles from './Profile.module.css'
 
 export default function Profile() {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
   return (
     <>
       <Header
@@ -17,38 +16,8 @@ export default function Profile() {
             Logo
           </span>
         }
-
-        right={
-          <>
-            <button
-              type="button"
-              className={styles.iconButton}
-              aria-label="알림"
-            >
-              <IoNotifications size={20} />
-            </button>
-
-            <button
-              type="button"
-              className={styles.iconButton}
-              aria-label="메뉴"
-            >
-              <HiOutlineBars2 size={22} />
-            </button>
-          </>
-        }
-
-        subLeft={
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => navigate(-1)}
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack size={20} />
-          </button>
-        }
-
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
             <h1 className={styles.pageTitle}>

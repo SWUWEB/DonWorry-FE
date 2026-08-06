@@ -65,8 +65,8 @@
 
 .label {
   font-size: 13px;
-  font-weight: 700;
-  color: #364153;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .optional {
@@ -109,43 +109,6 @@
   pointer-events: none;
 }
 
-.inputWrapper {
-  position: relative;
-  width: 100%;
-}
-
-.input {
-  width: 100%;
-  max-width: 342px;
-  height: 48px;
-  padding: 0 48px 0 18px;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 11px;
-  font-size: 14px;
-  color: #243130;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.input::placeholder {
-  color: #D1D5DC;
-}
-
-.eyeButton {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #99A1AF;
-}
-
 .withdrawButton {
   margin-top: 80px;
   width: 100%;
@@ -162,14 +125,5 @@
 
 .cancelButton {
   margin-top: 15px;
-  width: 100%;
   max-width: 342px;
-  height: 54px;
-  border-radius: 13px;
-  border: 1.5px solid #C7E3E3;
-  background: white;
-  color: #2F7F82;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
 }

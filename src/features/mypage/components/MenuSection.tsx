@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import styles from './MenuSection.module.css'
 import MenuItem from './MenuItem'
 
 
 export default function MenuSection() {
+  const navigate = useNavigate()
+
   return (
     <>
       <h3 className={styles.heading}>
@@ -18,6 +21,7 @@ export default function MenuSection() {
         <MenuItem
           icon="mynaui:target"
           title="목표 금액 설정"
+          onClick={() => navigate('/goal-amount')}
         />
 
         <MenuItem
@@ -34,6 +38,7 @@ export default function MenuSection() {
         <MenuItem
           icon="lucide:bell"
           title="알림 설정"
+          onClick={() => navigate('/notification')}
         />
 
         <MenuItem

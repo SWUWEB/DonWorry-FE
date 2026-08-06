@@ -1,5 +1,5 @@
 import Header from '@/components/layout/Header'
-import { IoChevronBack, IoNotifications, IoMenu } from 'react-icons/io5'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import ChangeEmailForm from './components/ChangeEmailForm'
@@ -16,35 +16,8 @@ export default function ChangeEmail() {
             Logo
           </span>
         }
-        right={
-          <>
-            <button
-              type="button"
-              className={styles.iconButton}
-              aria-label="알림"
-            >
-              <IoNotifications size={20} />
-            </button>
-
-            <button
-              type="button"
-              className={styles.iconButton}
-              aria-label="메뉴"
-            >
-              <IoMenu size={20} />
-            </button>
-          </>
-        }
-        subLeft={
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => navigate(-1)}
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack size={20} />
-          </button>
-        }
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
             <h1 className={styles.pageTitle}>

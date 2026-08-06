@@ -1,3 +1,4 @@
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './BudgetCard.module.css'
 
 type BudgetCardProps = {
@@ -14,8 +15,8 @@ export default function BudgetCard({
     <section className={styles.card}>
       <div>
         <p className={styles.label}>이번 달 남은 예산</p>
-        <h2 className={styles.amount}>  
-            ₩ {remainingBudget.toLocaleString('ko-KR')}
+        <h2 className={styles.amount}>
+            {formatKRW(remainingBudget)}
         </h2>
       </div>
 

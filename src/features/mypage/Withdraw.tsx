@@ -1,8 +1,5 @@
 import Header from '@/components/layout/Header'
-import {
-  IoChevronBack,
-
-} from 'react-icons/io5'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import WithdrawForm from './components/WithdrawForm'
@@ -19,20 +16,8 @@ export default function Withdraw() {
             Logo
           </span>
         }
-
-
-
-        subLeft={
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => navigate(-1)}
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack size={20} />
-          </button>
-        }
-
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
             <h1 className={styles.pageTitle}>

@@ -4,14 +4,21 @@ import { Icon } from '@iconify/react'
 type MenuItemProps = {
   title: string
   icon: string
+  onClick?: () => void
 }
 
 export default function MenuItem({
   title,
   icon,
+  onClick,
 }: MenuItemProps) {
   return (
-    <button className={styles.item}>
+    <button
+      type="button"
+      className={`${styles.item} ${!onClick ? styles.itemDisabled : ''}`}
+      onClick={onClick}
+      disabled={!onClick}
+    >
       <div className={styles.left}>
         <Icon
           icon={icon}

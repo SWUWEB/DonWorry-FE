@@ -1,6 +1,5 @@
 .container {
-  width: 390px;
-  margin: 0 auto;
+  width: 100%;
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
@@ -20,21 +19,11 @@
 .backButton {
   position: absolute;
   left: 0;
-  border: none;
-  background: transparent;
-  font-size: 24px;
-  cursor: pointer;
+  color: #1F2937;
 }
 
 .title {
   font-size: 18px;
   font-weight: 600;
   color: #1F2937;
-}
-
-.backIcon {
-  width: 24px;
-  height: 24px;
-  color: #1F2937;
-  flex-shrink: 0;
 }
