@@ -2,6 +2,7 @@ import { CategoryIcon } from '@/assets/icons/CategoryIcon';
 import { formatRemainingTime } from '../../utils/formatTimer';
 import { highlightSearch } from '../../utils/highlightSearch';
 import type { Product } from '@/features/temptation/types';
+import { formatKRW } from '@/shared/utils/currency';
 import styles from './SearchProductItem.module.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +25,7 @@ export const SearchProductItem = ({ product, keyword }: SearchProductItemProps) 
         <CategoryIcon category={category} size={34} />
         <div className={styles.info}>
           <p className={styles.name}>{highlightSearch(name, keyword)}</p>
-          <p className={styles.meta}>{category} · {price.toLocaleString()}원</p>
+          <p className={styles.meta}>{category} · {formatKRW(price)}</p>
         </div>
       </div>
       <p className={styles.time}>남은 대기 시간 {formatRemainingTime(time)}</p>

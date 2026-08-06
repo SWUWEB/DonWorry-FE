@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useBlocker, useNavigate, useParams } from 'react-router-dom';
-import { IoIosArrowBack } from 'react-icons/io';
-import { PiListBold } from 'react-icons/pi';
-import { IoNotifications } from 'react-icons/io5';
 import Header from '@/components/layout/Header';
+import HeaderBackButton from '@/shared/components/HeaderBackButton';
 import { InfoHeader } from '../components/temptationInfo/InfoHeader';
 import { ProductForm } from '@/components/layout/ProductForm';
 import type { FormData as WishFormData } from '@/components/layout/ProductForm';
 import { useWishlistContext } from '../hooks/WishlistContext';
 import styles from './TemptationEdit.module.css';
-import { ConfirmDialog } from '../components/ConfirmDialog';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 
 export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>();
@@ -86,17 +84,8 @@ export default function TemptationEdit() {
     <>
       <Header
         left={<button type="button" aria-label="로고">Logo</button>}
-        right={
-          <>
-            <button type="button" aria-label="알림"><IoNotifications /></button>
-            <button type="button" aria-label="메뉴 열기"><PiListBold /></button>
-          </>
-        }
-        subLeft={
-          <button type="button" aria-label="뒤로가기" onClick={handleBack}>
-            <IoIosArrowBack size={25} />
-          </button>
-        }
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton onClick={handleBack} />}
         subMain={<InfoHeader category={product.category} name={product.name} />}
       />
       <div className={styles.wrapper}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaCopy } from "react-icons/fa";
+import { formatKRW } from '@/shared/utils/currency';
 import styles from './InfoBox.module.css';
 
 interface InfoBoxProps {
@@ -30,8 +31,7 @@ export const InfoBox = ({ price, reason, link }: InfoBoxProps) => {
       <div className={styles.section}>
         <p className={styles.sectionLabel}>상품 가격</p>
         <p className={styles.price}>
-          {price.toLocaleString()}
-          <span className={styles.priceUnit}>원</span>
+          {formatKRW(price)}
         </p>
       </div>
 
