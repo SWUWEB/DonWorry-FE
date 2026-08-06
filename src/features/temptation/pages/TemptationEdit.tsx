@@ -39,30 +39,18 @@ export default function TemptationEdit() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isDirty]);
 
-  const [isManualLeaveOpen, setIsManualLeaveOpen] = useState(false);
-
   const handleBack = () => {
-    if (isDirty) {
-      setIsManualLeaveOpen(true);
-    } else {
-      navigate(`/temptation/${id}`);
-    }
+    navigate(`/temptation/${id}`);
   };
 
-  const isLeaveConfirmOpen = blocker.state === 'blocked' || isManualLeaveOpen;
+  const isLeaveConfirmOpen = blocker.state === 'blocked';
 
   const handleLeaveCancel = () => {
-    setIsManualLeaveOpen(false);
     blocker.reset?.();
   };
 
   const handleLeaveConfirm = () => {
-    setIsManualLeaveOpen(false);
-    if (blocker.state === 'blocked') {
-      blocker.proceed?.();
-    } else {
-      navigate(`/temptation/${id}`);
-    }
+    blocker.proceed?.();
   };
 
   const handleSave = async (data: WishFormData, meta: { timeChanged: boolean }) => {
