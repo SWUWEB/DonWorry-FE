@@ -44,7 +44,7 @@ export default function OnboardingGoalPage() {
     const raw = e.target.value.replace(/[^0-9]/g, '')
     setSaveError('')
     if (raw === '') { setAmountInput(''); return }
-    if (Number(raw) > MAX_AMOUNT) return
+    if (Number(raw) > MAX_AMOUNT) setAmountTouched(true)
     setAmountInput(Number(raw).toLocaleString('ko-KR'))
   }
 
