@@ -25,10 +25,29 @@
   color: var(--color-gray-300, #5b6b6a);
 }
 
-.chipGroup {
+.typeToggle {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
+  width: 100%;
+}
+
+.typeButton {
+  flex: 1;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-main-100, #e6f3f3);
+  color: var(--color-main-500, #2f7f82);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.typeButtonSelected {
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
 }
 
 .textInput {
@@ -51,9 +70,9 @@
   outline-offset: 2px;
 }
 
-.amountWrapper {
-  border-bottom: 1.5px solid var(--color-gray-100, #dddddd);
-  padding-bottom: 4px;
+.amountWrapper input,
+.amountWrapper span {
+  font-weight: 600;
 }
 
 .submitBtn {

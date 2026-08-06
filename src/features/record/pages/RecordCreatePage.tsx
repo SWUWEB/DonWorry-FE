@@ -3,7 +3,6 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IoChevronBack } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
-import FilterChip from '@/features/record/components/FilterChip'
 import AmountInput from '@/components/layout/AmountInput'
 import CategorySelector from '@/components/layout/CategorySelector'
 import type { Category } from '@/components/layout/CategorySelector'
@@ -47,26 +46,30 @@ export default function RecordCreatePage() {
             <IoChevronBack size={20} />
           </button>
         }
-        subTitle="소비 기록 추가"
+        subTitle="소비 기록 입력"
+        subMain={
+          <div className={styles.typeToggle}>
+            <button
+              type="button"
+              className={`${styles.typeButton} ${type === 'saved' ? styles.typeButtonSelected : ''}`}
+              aria-pressed={type === 'saved'}
+              onClick={() => setType('saved')}
+            >
+              참았어요
+            </button>
+            <button
+              type="button"
+              className={`${styles.typeButton} ${type === 'consume' ? styles.typeButtonSelected : ''}`}
+              aria-pressed={type === 'consume'}
+              onClick={() => setType('consume')}
+            >
+              샀어요
+            </button>
+          </div>
+        }
       />
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.field}>
-          <label className={styles.label}>기록 유형</label>
-          <div className={styles.chipGroup}>
-            <FilterChip
-              label="참은 소비"
-              selected={type === 'saved'}
-              onClick={() => setType('saved')}
-            />
-            <FilterChip
-              label="소비"
-              selected={type === 'consume'}
-              onClick={() => setType('consume')}
-            />
-          </div>
-        </div>
-
         <div className={styles.field}>
           <label htmlFor="title" className={styles.label}>
             이름
