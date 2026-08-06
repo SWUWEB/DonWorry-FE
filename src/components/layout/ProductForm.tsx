@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './ProductForm.module.css';
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product';
-import { ConfirmDialog } from '@/features/temptation/components/ConfirmDialog';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import AmountInput from './AmountInput';
 import CategorySelector from './CategorySelector';
 

@@ -1,0 +1,156 @@
+.group {
+  display: flex;
+}
+
+/* chip: 알약 모양 토글 (필터/카테고리 선택) */
+.group.chip {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.group.chip .item {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--color-main-500);
+  color: var(--color-main-500);
+  background: var(--color-text-white);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.group.chip .item:hover {
+  background: var(--color-main-100);
+}
+
+.group.chip .itemSelected {
+  background: var(--color-main-500);
+  color: var(--color-text-white);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+}
+
+/* chipScroll: chip과 같은 모양이지만 줄바꿈 없이 가로 스크롤 */
+.group.chipScroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 8px;
+  scrollbar-width: none;
+}
+
+.group.chipScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.group.chipScroll .item {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--color-main-500);
+  color: var(--color-main-500);
+  background: var(--color-text-white);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.group.chipScroll .item:hover {
+  background: var(--color-main-100);
+}
+
+.group.chipScroll .itemSelected {
+  background: var(--color-main-500);
+  color: var(--color-text-white);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+}
+
+/* segmentPill: 둥근 알약 안에 선택 항목만 흰 배경으로 떠 보이는 토글 (정렬 기준 등) */
+.group.segmentPill {
+  display: inline-flex;
+  background: var(--color-main-100);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.group.segmentPill .item {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray-300);
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+.group.segmentPill .itemSelected {
+  background: var(--color-text-white);
+  color: var(--color-main-500);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* segment: 균등폭 박스형 탭 (알림 필터 등) */
+.group.segment {
+  gap: 8px;
+  width: 100%;
+}
+
+.group.segment .item {
+  flex: 1;
+  height: 40px;
+  padding: 0 4px;
+  border-radius: 10px;
+  border: none;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  background: var(--color-main-100);
+  color: var(--color-text-primary);
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group.segment .itemSelected {
+  background: var(--color-main-500);
+  color: var(--color-text-white);
+}
+
+/* underline: 텍스트 + 밑줄 (정렬 기준 등) */
+.group.underline {
+  gap: 5px;
+}
+
+.group.underline .item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-text-primary);
+  padding: 0;
+}
+
+.group.underline .item:hover {
+  font-weight: 500;
+}
+
+.group.underline .itemSelected {
+  font-weight: 500;
+  border-bottom: 1.5px solid var(--color-text-primary);
+  line-height: 1.2;
+}
