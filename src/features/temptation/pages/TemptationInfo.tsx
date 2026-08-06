@@ -28,7 +28,7 @@ export default function TemptationInfo() {
   };
 
   const handleEdit = () => {
-    console.log('수정하기 클릭');
+    navigate(`/temptation/${id}/edit`);
   };
 
   const handleGiveUpOpen = () => {

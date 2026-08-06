@@ -15,6 +15,7 @@ import Temptation from '@/features/temptation/Temptation'
 import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
+import TemptationEdit from '@/features/temptation/pages/TemptationEdit'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/temptation', element: <Temptation /> },
           { path: '/temptation/:id', element: <TemptationInfo /> },
+          { path: '/temptation/:id/edit', element: <TemptationEdit /> },
         ],
       },
     ],

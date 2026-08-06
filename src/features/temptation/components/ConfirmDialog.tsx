@@ -1,6 +1,8 @@
-import { IoWarningOutline } from 'react-icons/io5';
+import { IoCheckmarkCircleOutline, IoWarningOutline } from 'react-icons/io5';
 import styles from './ConfirmDialog.module.css';
 import { useRef, useEffect } from 'react';
+
+type DialogVariant = 'warning' | 'success' | 'none';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -10,9 +12,17 @@ interface ConfirmDialogProps {
   confirmText?: string;
   isLoading?: boolean;
   errorMessage?: string;
+  onlyConfirm?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
+  variant?: DialogVariant;
 }
+
+const VARIANT_ICON = {
+  warning: { Icon: IoWarningOutline, className: styles.iconWarning },
+  success: { Icon: IoCheckmarkCircleOutline, className: styles.iconSuccess },
+  none: null,
+};
 
 export const ConfirmDialog = ({
   isOpen,
@@ -22,17 +32,19 @@ export const ConfirmDialog = ({
   confirmText = '확인',
   isLoading = false,
   errorMessage,
+  onlyConfirm = false,
+  variant = 'warning',
   onCancel,
   onConfirm,
 }: ConfirmDialogProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const cancelBtnRef = useRef<HTMLButtonElement>(null);
+  const primaryBtnRef = useRef<HTMLButtonElement>(null);
   const triggerElementRef = useRef<HTMLElement | null>(null);
-  
+
   useEffect(() => {
     if (isOpen) {
       triggerElementRef.current = document.activeElement as HTMLElement;
-      cancelBtnRef.current?.focus();
+      primaryBtnRef.current?.focus();
     } else if (triggerElementRef.current) {
       triggerElementRef.current.focus();
       triggerElementRef.current = null;
@@ -70,35 +82,45 @@ export const ConfirmDialog = ({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, isLoading, onCancel]);
-  
+
   if (!isOpen) return null;
+
+  const iconConfig = VARIANT_ICON[variant];
 
   return (
     <div className={styles.overlay}>
       <div
-      className={styles.card}
-      ref={cardRef}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-dialog-title"
-      aria-describedby={description ? 'confirm-dialog-description' : undefined}>
-        <IoWarningOutline size={48} className={styles.icon} aria-hidden="true" />
+        className={styles.card}
+        ref={cardRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby={description ? 'confirm-dialog-description' : undefined}
+      >
+        {iconConfig && (
+          <iconConfig.Icon size={48} className={iconConfig.className} aria-hidden="true" />
+        )}
         <p className={styles.title} id="confirm-dialog-title">{title}</p>
         {description && <p className={styles.description} id="confirm-dialog-description">{description}</p>}
         {errorMessage && <p className={styles.errorText} role="alert">{errorMessage}</p>}
 
         <div className={styles.buttonRow}>
+          {!onlyConfirm && (
+            <button
+              className={styles.cancelBtn}
+              ref={primaryBtnRef}
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              {cancelText}
+            </button>
+          )}
           <button
-          className={styles.cancelBtn}
-          ref={cancelBtnRef}
-          onClick={onCancel}
-          disabled={isLoading}>
-            {cancelText}
-          </button>
-          <button
-          className={styles.confirmBtn}
-          onClick={onConfirm}
-          disabled={isLoading}>
+            className={styles.confirmBtn}
+            ref={onlyConfirm ? primaryBtnRef : undefined}
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
             {confirmText}
           </button>
         </div>

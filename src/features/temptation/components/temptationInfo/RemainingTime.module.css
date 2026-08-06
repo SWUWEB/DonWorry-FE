@@ -12,7 +12,7 @@
   text-align: left;
   font-size: 14px;
   font-weight: bold;
-  color: var(--Gray-300, #5B6B6A);
+  color: var(--color-gray-300);
 }
 
 .time {
@@ -25,13 +25,13 @@
   width: 340px;
   height: 15px;
   border-radius: 999px;
-  background-color: var(--Main-100, #E5F2F1);
+  background-color: var(--color-main-100);
   overflow: hidden;
 }
 
 .barFill {
   height: 100%;
-  background-color: var(--Main-400, #389698);
+  background-color: var(--color-main-400);
   border-radius: 300px;
   transition: width 1s linear;
 }
