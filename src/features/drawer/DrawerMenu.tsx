@@ -66,12 +66,34 @@ export default function DrawerMenu() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
   const cancelBtnRef = useRef<HTMLButtonElement>(null)
+  const confirmLogoutBtnRef = useRef<HTMLButtonElement>(null)
+  const logoutTriggerBtnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!showLogoutConfirm) return
     cancelBtnRef.current?.focus()
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowLogoutConfirm(false)
+      if (e.key === 'Escape') {
+        setShowLogoutConfirm(false)
+        logoutTriggerBtnRef.current?.focus()
+        return
+      }
+      if (e.key === 'Tab') {
+        const focusable = [cancelBtnRef.current, confirmLogoutBtnRef.current].filter(Boolean) as HTMLElement[]
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault()
+            last?.focus()
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault()
+            first?.focus()
+          }
+        }
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
@@ -156,6 +178,7 @@ export default function DrawerMenu() {
             <div className={styles.divider} />
 
             <button
+              ref={logoutTriggerBtnRef}
               className={`${styles.navItem} ${styles.logoutItem}`}
               onClick={() => setShowLogoutConfirm(true)}
             >
@@ -182,8 +205,15 @@ export default function DrawerMenu() {
             <p id="logout-dialog-title" className={styles.confirmTitle}>로그아웃</p>
             <p className={styles.confirmMessage}>정말 로그아웃 하시겠습니까?</p>
             <div className={styles.confirmButtons}>
-              <button ref={cancelBtnRef} className={styles.confirmCancel} onClick={() => setShowLogoutConfirm(false)}>취소</button>
-              <button className={styles.confirmLogout} onClick={handleLogout}>로그아웃</button>
+              <button
+                ref={cancelBtnRef}
+                className={styles.confirmCancel}
+                onClick={() => {
+                  setShowLogoutConfirm(false)
+                  logoutTriggerBtnRef.current?.focus()
+                }}
+              >취소</button>
+              <button ref={confirmLogoutBtnRef} className={styles.confirmLogout} onClick={handleLogout}>로그아웃</button>
             </div>
           </div>
         </div>
