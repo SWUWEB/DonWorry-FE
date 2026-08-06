@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingInterestPage.module.css'
 
@@ -23,12 +23,13 @@ export default function OnboardingInterestPage() {
   const navigate = useNavigate()
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [showMaxMsg, setShowMaxMsg] = useState(false)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    if (!showMaxMsg) return
-    const timer = setTimeout(() => setShowMaxMsg(false), 2000)
-    return () => clearTimeout(timer)
-  }, [showMaxMsg])
+  const triggerToast = () => {
+    setShowMaxMsg(true)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setShowMaxMsg(false), 2000)
+  }
 
   const toggle = (id: string) => {
     if (selected.has(id)) {
@@ -36,7 +37,7 @@ export default function OnboardingInterestPage() {
     } else if (selected.size < MAX_SELECT) {
       setSelected(prev => new Set([...prev, id]))
     } else {
-      setShowMaxMsg(true)
+      triggerToast()
     }
   }
 
@@ -48,8 +49,11 @@ export default function OnboardingInterestPage() {
 
   const handleNext = () => {
     if (!hasSelected) return
-    // TODO: 선택값 전달 후 2단계로 이동
-    navigate('/onboarding/step2')
+    navigate('/onboarding/step2', {
+      state: {
+        interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
+      },
+    })
   }
 
   return (
@@ -103,7 +107,9 @@ export default function OnboardingInterestPage() {
 
       {/* 최대 선택 토스트 */}
       {showMaxMsg && (
-        <div className={styles.toast}>관심 영역은 최대 3개까지 선택할 수 있습니다.</div>
+        <div className={styles.toast} role="status" aria-live="polite">
+          관심 영역은 최대 3개까지 선택할 수 있습니다.
+        </div>
       )}
 
       {/* 하단 버튼 영역 */}
