@@ -24,6 +24,8 @@ const ChangeEmailPage = lazy(() => import('@/pages/ChangeEmailPage'))
 const ChangePasswordPage = lazy(() => import('@/pages/ChangePasswordPage'))
 const WithdrawPage = lazy(() => import('@/pages/WithdrawPage'))
 const OnboardingInterestPage = lazy(() => import('@/pages/OnboardingInterestPage'))
+const OnboardingGoalPage = lazy(() => import('@/pages/OnboardingGoalPage'))
+const OnboardingCompletePage = lazy(() => import('@/pages/OnboardingCompletePage'))
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
       { path: '/onboarding', element: <OnboardingInterestPage /> },
+      { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
+      { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
