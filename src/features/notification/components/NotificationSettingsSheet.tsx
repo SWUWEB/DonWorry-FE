@@ -38,8 +38,10 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
   })
 
   useEffect(() => {
+    // 서버에서 저장된 알림 설정을 최초 로드 시 로컬 편집 상태로 반영 (사용자가 토글하는 별도 상태이므로 여기서만 동기화)
     if (serverSettings) {
       const { general, goal, retrial } = serverSettings
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEnabled({ general, goal, retrial })
     }
   }, [serverSettings])
