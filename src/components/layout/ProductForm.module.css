@@ -42,28 +42,7 @@
 }
 
 .priceWrapper {
-  display: flex;
-  gap: 4px;
   margin: -8px 0 -4px 0;
-  align-items: baseline;
-}
-
-.priceInput {
-  width: 100%;
-  border: none;
-  font-size: 32px;
-  font-weight: bold;
-  outline: none;
-}
-
-.priceInput::placeholder {
-  color: #dddddd;
-  font-weight: bold;
-}
-
-.currency {
-  font-size: 32px;
-  font-weight: bold;
 }
 
 .message {

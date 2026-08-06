@@ -5,6 +5,7 @@ import HomePage from '@/pages/HomePage'
 import NotificationPage from '@/pages/NotificationPage'
 import RecordMainPage from '@/features/record/pages/RecordMainPage'
 import RecordDetailPage from '@/features/record/pages/RecordDetailPage'
+import RecordCreatePage from '@/features/record/pages/RecordCreatePage'
 import RecordInterventionPage from '@/features/intervention/pages/RecordInterventionPage'
 import RiskResultPage from '@/features/intervention/pages/RiskResultPage'
 import LoginPage from '@/pages/LoginPage'
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
       { path: '/record', element: <RecordMainPage /> },
+      { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
       { path: '/record/intervention', element: <RecordInterventionPage /> },
       {

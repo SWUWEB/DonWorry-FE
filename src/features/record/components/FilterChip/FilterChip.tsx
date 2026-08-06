@@ -11,6 +11,7 @@ export default function FilterChip({ label, selected = false, onClick }: FilterC
     <button
       type="button"
       className={`${styles.chip} ${selected ? styles.selected : ''}`}
+      aria-pressed={selected}
       onClick={onClick}
     >
       {label}
