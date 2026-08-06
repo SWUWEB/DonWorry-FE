@@ -18,6 +18,7 @@ import ProfilePage from '@/pages/ProfilePage'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
+import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
+      { path: '/onboarding', element: <OnboardingInterestPage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
