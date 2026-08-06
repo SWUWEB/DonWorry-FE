@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingInterestPage.module.css'
+import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 
 const CATEGORIES = [
   { id: 'food', emoji: '🍔', label: '음식' },
@@ -21,7 +22,10 @@ const MAX_SELECT = 3
 
 export default function OnboardingInterestPage() {
   const navigate = useNavigate()
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const draft = getOnboardingDraft()
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(draft.interests?.map(i => i.id) ?? [])
+  )
   const [showMaxMsg, setShowMaxMsg] = useState(false)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -49,11 +53,10 @@ export default function OnboardingInterestPage() {
 
   const handleNext = () => {
     if (!hasSelected) return
-    navigate('/onboarding/step2', {
-      state: {
-        interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
-      },
+    saveOnboardingDraft({
+      interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
     })
+    navigate('/onboarding/step2')
   }
 
   return (

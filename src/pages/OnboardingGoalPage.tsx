@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingGoalPage.module.css'
+import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 
 const PURPOSES = [
   { id: 'invest', emoji: '📊', label: '투자', description: '미래를 위한 투자 습관을 만들어요.' },
@@ -26,8 +27,10 @@ function getAmountError(raw: string, value: number): string {
 
 export default function OnboardingGoalPage() {
   const navigate = useNavigate()
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [amountInput, setAmountInput] = useState('')
+  const draft = getOnboardingDraft()
+
+  const [selectedId, setSelectedId] = useState<string | null>(draft.purposeId ?? null)
+  const [amountInput, setAmountInput] = useState(draft.amountInput ?? '')
   const [amountTouched, setAmountTouched] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -56,6 +59,13 @@ export default function OnboardingGoalPage() {
     try {
       // TODO: API 호출 - 1·2단계 설정값 저장 (selectedId, amount 전달)
       await Promise.resolve()
+      saveOnboardingDraft({
+        purposeId: selectedId,
+        purposeLabel: selectedPurpose?.label ?? '',
+        purposeEmoji: selectedPurpose?.emoji ?? '',
+        amount,
+        amountInput,
+      })
       navigate('/onboarding/step3')
     } catch {
       setSaveError('설정을 저장하지 못했습니다. 다시 시도해주세요.')

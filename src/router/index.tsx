@@ -21,6 +21,7 @@ import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
 import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
 import OnboardingGoalPage from '@/pages/OnboardingGoalPage'
+import OnboardingCompletePage from '@/pages/OnboardingCompletePage'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: '/withdraw', element: <WithdrawPage /> },
       { path: '/onboarding', element: <OnboardingInterestPage /> },
       { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
+      { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
