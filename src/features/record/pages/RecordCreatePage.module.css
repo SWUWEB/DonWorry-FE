@@ -38,19 +38,18 @@
   font-weight: 500;
   color: var(--color-text-primary, #243130);
   outline: none;
+  transition: border-color 0.15s ease;
 }
 
 .textInput::placeholder {
   color: var(--color-gray-100, #dddddd);
 }
 
-.textInput:focus-visible {
-  outline: 2px solid var(--color-main-500, #2f7f82);
-  outline-offset: 2px;
+.textInput:focus {
+  border-bottom-color: var(--color-main-500, #2f7f82);
 }
 
 .amountWrapper {
-  border-bottom: 1.5px solid var(--color-gray-100, #dddddd);
   padding-bottom: 4px;
 }
 

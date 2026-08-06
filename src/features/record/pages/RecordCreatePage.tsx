@@ -42,11 +42,6 @@ export default function RecordCreatePage() {
   return (
     <div className={styles.container}>
       <Header
-        left={
-          <button type="button" aria-label="로고">
-            Logo
-          </button>
-        }
         subLeft={<HeaderBackButton />}
         subTitle="소비 기록 추가"
       />

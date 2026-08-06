@@ -2,6 +2,12 @@
   display: flex;
   align-items: baseline;
   gap: 4px;
+  border-bottom: 2px solid var(--color-gray-100, #dddddd);
+  transition: border-color 0.15s ease;
+}
+
+.wrapper:focus-within {
+  border-color: var(--color-main-500, #2f7f82);
 }
 
 .input {
@@ -17,11 +23,6 @@
 .input::placeholder {
   color: var(--color-gray-100, #dddddd);
   font-weight: bold;
-}
-
-.input:focus-visible {
-  outline: 2px solid var(--color-main-500, #2f7f82);
-  outline-offset: 2px;
 }
 
 .currency {

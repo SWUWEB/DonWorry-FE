@@ -39,11 +39,6 @@ export default function RecordDetailPage() {
   return (
     <div>
       <Header
-        left={
-          <button type="button" aria-label="로고">
-            Logo
-          </button>
-        }
         onBellClick={() => navigate('/notification')}
         subLeft={<HeaderBackButton />}
         subTitle="소비 상세"
