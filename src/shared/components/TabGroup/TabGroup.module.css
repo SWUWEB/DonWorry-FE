@@ -39,6 +39,8 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 8px;
+  padding: 5px 2px;
+  margin: -5px -2px;
   scrollbar-width: none;
 }
 
@@ -47,13 +49,13 @@
 }
 
 .group.chipScroll .item {
-  height: 30px;
+  height: 36px;
   padding: 0 12px;
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1.5px solid var(--color-main-500);
   color: var(--color-main-500);
   background: var(--color-text-white);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
@@ -111,12 +113,12 @@
 
 .group.segment .item {
   flex: 1;
-  height: 40px;
-  padding: 0 4px;
+  height: 35px;
+  padding: 0 8px;
   border-radius: 10px;
   border: none;
-  font-size: 11px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   background: var(--color-main-100);
   color: var(--color-text-primary);

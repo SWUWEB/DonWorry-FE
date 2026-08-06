@@ -83,7 +83,6 @@ export default function TemptationEdit() {
   return (
     <>
       <Header
-        left={<button type="button" aria-label="로고">Logo</button>}
         onBellClick={() => navigate('/notification')}
         subLeft={<HeaderBackButton onClick={handleBack} />}
         subMain={<InfoHeader category={product.category} name={product.name} />}

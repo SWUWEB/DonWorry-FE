@@ -18,9 +18,6 @@ export default function Temptation() {
   return (
     <>
       <Header
-        left={
-          <button type="button" aria-label="로고">Logo</button>
-        }
         onBellClick={() => navigate('/notification')}
         subLeft={<HeaderBackButton />}
         subMain={

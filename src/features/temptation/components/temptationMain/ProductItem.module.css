@@ -1,29 +1,30 @@
 .itemContainer {
-  padding: 13px 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
+  position: relative;
+  padding: 10px 0;
+}
+
+/* 아이템 사이 구분선 */
+.itemContainer + .itemContainer {
+  border-top: 1px solid var(--color-gray-100);
 }
 
 .itemMain {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   background: none;
   border: none;
   padding: 0;
   margin: 0;
   font: inherit;
-  color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
 }
 
 .itemName {
   margin: 0;
+  padding-right: 32px;
   font-size: 15px;
   font-weight: 500;
   color: var(--color-text-primary);
@@ -31,27 +32,30 @@
 
 .itemBottom {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 8px;
 }
 
 .itemPrice {
-  font-size: 13px;
-  color: var(--color-gray-300);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
 .itemTimer {
-  font-size: 12px;
-  color: var(--color-gray-300);
+  font-size: 13px;
+  color: var(--color-gray-400);
 }
 
 .deleteBtn {
-  flex-shrink: 0;
+  position: absolute;
+  top: 16px;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-gray-300);
+  color: var(--color-gray-400);
   background: none;
   border: none;
   padding: 0;
