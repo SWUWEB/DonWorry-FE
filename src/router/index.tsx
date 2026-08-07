@@ -10,7 +10,9 @@ const NotificationPage = lazy(() => import('@/pages/NotificationPage'))
 const RecordMainPage = lazy(() => import('@/features/record/pages/RecordMainPage'))
 const RecordDetailPage = lazy(() => import('@/features/record/pages/RecordDetailPage'))
 const RecordCreatePage = lazy(() => import('@/features/record/pages/RecordCreatePage'))
-const RecordInterventionPage = lazy(() => import('@/features/intervention/pages/RecordInterventionPage'))
+const RecordInterventionPage = lazy(
+  () => import('@/features/intervention/pages/RecordInterventionPage'),
+)
 const RiskResultPage = lazy(() => import('@/features/intervention/pages/RiskResultPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignUpPage = lazy(() => import('@/pages/SignUpPage'))

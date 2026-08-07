@@ -33,9 +33,7 @@ export default function GoalSettingCard() {
         <div>
           <p className={styles.toggleTitle}>목표 달성 표시</p>
 
-          <p className={styles.toggleDescription}>
-            마이페이지에서 목표 달성률을 표시합니다
-          </p>
+          <p className={styles.toggleDescription}>마이페이지에서 목표 달성률을 표시합니다</p>
         </div>
 
         <button
@@ -48,9 +46,7 @@ export default function GoalSettingCard() {
         </button>
       </div>
 
-      <Button onClick={handleSave}>
-        저장하기
-      </Button>
+      <Button onClick={handleSave}>저장하기</Button>
     </section>
   )
 }

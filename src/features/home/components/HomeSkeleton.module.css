@@ -19,8 +19,12 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-.lineShort { width: 45%; }
-.lineLong { width: 65%; }
+.lineShort {
+  width: 45%;
+}
+.lineLong {
+  width: 65%;
+}
 
 .card {
   height: 160px;
@@ -50,8 +54,13 @@
 }
 
 @keyframes shimmer {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

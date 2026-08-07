@@ -104,7 +104,9 @@
   background: #fafafa;
   box-shadow: 0px 1px 1.5px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .chipSelected {
@@ -275,7 +277,9 @@
   font-size: 16px;
   font-weight: 700;
   cursor: default;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .nextBtnActive {

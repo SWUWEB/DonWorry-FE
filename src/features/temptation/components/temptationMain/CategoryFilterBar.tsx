@@ -1,14 +1,14 @@
-import { CATEGORIES } from '@/constants/product';
-import TabGroup from '@/shared/components/TabGroup';
-import type { FilterValue } from '@/features/temptation/types';
+import { CATEGORIES } from '@/constants/product'
+import TabGroup from '@/shared/components/TabGroup'
+import type { FilterValue } from '@/features/temptation/types'
 
 interface CategoryFilterTabsProps {
-  selected: FilterValue;
-  onSelect: (value: FilterValue) => void;
-  className?: string;
+  selected: FilterValue
+  onSelect: (value: FilterValue) => void
+  className?: string
 }
 
-const FILTER_OPTIONS: FilterValue[] = ['전체', ...CATEGORIES];
+const FILTER_OPTIONS: FilterValue[] = ['전체', ...CATEGORIES]
 
 export const CategoryFilterTabs = ({ selected, onSelect, className }: CategoryFilterTabsProps) => {
   return (
@@ -19,5 +19,5 @@ export const CategoryFilterTabs = ({ selected, onSelect, className }: CategoryFi
       value={selected}
       onChange={onSelect}
     />
-  );
-};
+  )
+}

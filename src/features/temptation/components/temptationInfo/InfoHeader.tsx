@@ -1,10 +1,10 @@
-import { CategoryIcon } from '@/assets/icons/CategoryIcon';
-import type { Category } from '../../types';
-import styles from './InfoHeader.module.css';
+import { CategoryIcon } from '@/assets/icons/CategoryIcon'
+import type { Category } from '../../types'
+import styles from './InfoHeader.module.css'
 
 interface InfoHeaderProps {
-  category: Category;
-  name: string;
+  category: Category
+  name: string
 }
 
 export const InfoHeader = ({ category, name }: InfoHeaderProps) => {
@@ -16,5 +16,5 @@ export const InfoHeader = ({ category, name }: InfoHeaderProps) => {
         <h2 className={styles.productName}>{name}</h2>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,17 +1,17 @@
-import { useNow } from '../../hooks/useNow';
-import { formatDetailTimer } from '../../utils/formatDetailTimer';
-import { remainPercent } from '../../utils/remainPercent';
-import styles from './RemainingTime.module.css';
+import { useNow } from '../../hooks/useNow'
+import { formatDetailTimer } from '../../utils/formatDetailTimer'
+import { remainPercent } from '../../utils/remainPercent'
+import styles from './RemainingTime.module.css'
 
 interface RemainingTimeProps {
-  deadline: Date;
-  createdAt?: Date;
+  deadline: Date
+  createdAt?: Date
 }
 
 export const RemainingTime = ({ deadline, createdAt }: RemainingTimeProps) => {
-  useNow(1000);
+  useNow(1000)
 
-  const percent = remainPercent(deadline, createdAt ?? null);
+  const percent = remainPercent(deadline, createdAt ?? null)
 
   return (
     <div className={styles.wrapper}>
@@ -21,5 +21,5 @@ export const RemainingTime = ({ deadline, createdAt }: RemainingTimeProps) => {
         <div className={styles.barFill} style={{ width: `${percent}%` }} />
       </div>
     </div>
-  );
-};
+  )
+}

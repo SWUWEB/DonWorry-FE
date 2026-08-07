@@ -27,12 +27,12 @@
 .title {
   font-size: 14px;
   font-weight: 500;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .arrow {
   flex-shrink: 0;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 .itemDisabled {
@@ -41,11 +41,11 @@
 }
 
 .item::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 20px;
   right: 20px;
   bottom: 0;
   height: 1px;
-  background: #ECECEC;
+  background: #ececec;
 }

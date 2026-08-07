@@ -14,10 +14,7 @@ export default function ChangePasswordForm() {
   }
 
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit}
-     >
+    <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.inputGroup}>
         <InputField
           label="현재 비밀번호"
@@ -53,9 +50,7 @@ export default function ChangePasswordForm() {
       </div>
 
       <div className={styles.submitButtonWrapper}>
-        <Button type="submit">
-          변경하기
-        </Button>
+        <Button type="submit">변경하기</Button>
       </div>
     </form>
   )

@@ -1,10 +1,10 @@
-import { SearchResult } from '../components/temptationSearch/SearchResult';
-import styles from './Search.module.css';
-import type { Product } from '@/features/temptation/types';
+import { SearchResult } from '../components/temptationSearch/SearchResult'
+import styles from './Search.module.css'
+import type { Product } from '@/features/temptation/types'
 
 interface SearchProps {
-  keyword: string;
-  filteredProducts: Product[];
+  keyword: string
+  filteredProducts: Product[]
 }
 
 export const Search = ({ keyword, filteredProducts }: SearchProps) => {
@@ -12,11 +12,12 @@ export const Search = ({ keyword, filteredProducts }: SearchProps) => {
     <div className={styles.search}>
       <div className={styles.topLine}>
         <p className={styles.wishlistCount}>
-          참고 있는 유혹 <strong className={styles.wishlistCountNumber}>{filteredProducts.length}</strong>
+          참고 있는 유혹{' '}
+          <strong className={styles.wishlistCountNumber}>{filteredProducts.length}</strong>
         </p>
       </div>
 
       <SearchResult products={filteredProducts} keyword={keyword} />
     </div>
-  );
-};
+  )
+}

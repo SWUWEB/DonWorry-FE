@@ -1,83 +1,83 @@
-import { useEffect, useState } from 'react';
-import { useBlocker, useNavigate, useParams } from 'react-router-dom';
-import Header from '@/components/layout/Header';
-import HeaderBackButton from '@/shared/components/HeaderBackButton';
-import { InfoHeader } from '../components/temptationInfo/InfoHeader';
-import { ProductForm } from '@/components/layout/ProductForm';
-import type { FormData as WishFormData } from '@/components/layout/ProductForm';
-import { useWishlistContext } from '../hooks/WishlistContext';
-import styles from './TemptationEdit.module.css';
-import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
+import { useEffect, useState } from 'react'
+import { useBlocker, useNavigate, useParams } from 'react-router-dom'
+import Header from '@/components/layout/Header'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
+import { InfoHeader } from '../components/temptationInfo/InfoHeader'
+import { ProductForm } from '@/components/layout/ProductForm'
+import type { FormData as WishFormData } from '@/components/layout/ProductForm'
+import { useWishlistContext } from '../hooks/WishlistContext'
+import styles from './TemptationEdit.module.css'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 
 export default function TemptationEdit() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { filteredProducts, handleEdit } = useWishlistContext();
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { filteredProducts, handleEdit } = useWishlistContext()
 
-  const product = filteredProducts.find((p) => p.id === id);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
+  const product = filteredProducts.find((p) => p.id === id)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDirty, setIsDirty] = useState(false)
 
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [isFailOpen, setIsFailOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [isFailOpen, setIsFailOpen] = useState(false)
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
-      isDirty && currentLocation.pathname !== nextLocation.pathname
-  );
+      isDirty && currentLocation.pathname !== nextLocation.pathname,
+  )
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!isDirty) return;
-      e.preventDefault();
-      e.returnValue = '';
-    };
+      if (!isDirty) return
+      e.preventDefault()
+      e.returnValue = ''
+    }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isDirty]);
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [isDirty])
 
   const handleBack = () => {
-    navigate(`/temptation/${id}`);
-  };
+    navigate(`/temptation/${id}`)
+  }
 
-  const isLeaveConfirmOpen = blocker.state === 'blocked';
+  const isLeaveConfirmOpen = blocker.state === 'blocked'
 
   const handleLeaveCancel = () => {
-    blocker.reset?.();
-  };
+    blocker.reset?.()
+  }
 
   const handleLeaveConfirm = () => {
-    blocker.proceed?.();
-  };
+    blocker.proceed?.()
+  }
 
   const handleSave = async (data: WishFormData, meta: { timeChanged: boolean }) => {
-    if (!product || isSubmitting) return;
-    setIsSubmitting(true);
+    if (!product || isSubmitting) return
+    setIsSubmitting(true)
     try {
       // 백엔드 연동 시 실제 수정 요청으로 교체
-      await new Promise((resolve) => setTimeout(resolve, 400));
-      handleEdit(product.id, data, meta.timeChanged);
-      setIsSubmitting(false);
-      setIsDirty(false); // 저장 성공 후에는 dirty 해제 (상세 페이지 이동 시 재차단 방지)
-      setIsSuccessOpen(true);
+      await new Promise((resolve) => setTimeout(resolve, 400))
+      handleEdit(product.id, data, meta.timeChanged)
+      setIsSubmitting(false)
+      setIsDirty(false) // 저장 성공 후에는 dirty 해제 (상세 페이지 이동 시 재차단 방지)
+      setIsSuccessOpen(true)
     } catch {
-      setIsSubmitting(false);
-      setIsFailOpen(true);
+      setIsSubmitting(false)
+      setIsFailOpen(true)
     }
-  };
+  }
 
   const handleSuccessConfirm = () => {
-    setIsSuccessOpen(false);
-    navigate(`/temptation/${id}`);
-  };
+    setIsSuccessOpen(false)
+    navigate(`/temptation/${id}`)
+  }
 
   const handleFailConfirm = () => {
-    setIsFailOpen(false);
-  };
+    setIsFailOpen(false)
+  }
 
   if (!product) {
-    return <p>상품을 찾을 수 없습니다.</p>;
+    return <p>상품을 찾을 수 없습니다.</p>
   }
 
   return (
@@ -144,5 +144,5 @@ export default function TemptationEdit() {
         onConfirm={handleFailConfirm}
       />
     </>
-  );
+  )
 }

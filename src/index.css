@@ -22,13 +22,13 @@
   --color-text-white: #fefefe;
   --color-text-primary: #243130;
   --color-text-green: #389698;
-  --color-text-blue: #2946D8;
-  --color-text-red: #EB0000;
+  --color-text-blue: #2946d8;
+  --color-text-red: #eb0000;
 
   /* Sub */
-  --color-sub-000: #F7FBFA;
-  --color-sub-100: #E5F2F1;
-  --color-sub-200: #C7E3E3;
+  --color-sub-000: #f7fbfa;
+  --color-sub-100: #e5f2f1;
+  --color-sub-200: #c7e3e3;
 }
 
 * {

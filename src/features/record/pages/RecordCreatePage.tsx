@@ -41,10 +41,7 @@ export default function RecordCreatePage() {
 
   return (
     <div className={styles.container}>
-      <Header
-        subLeft={<HeaderBackButton />}
-        subTitle="소비 기록 추가"
-      />
+      <Header subLeft={<HeaderBackButton />} subTitle="소비 기록 추가" />
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>

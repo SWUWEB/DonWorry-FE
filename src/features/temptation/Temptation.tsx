@@ -1,19 +1,19 @@
 import { useNavigate } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import HeaderBackButton from '@/shared/components/HeaderBackButton'
-import SearchBar from './components/SearchBar';
+import SearchBar from './components/SearchBar'
 import styles from './Temptation.module.css'
-import { useNow } from './hooks/useNow';
-import TemptationMain from './pages/TemptationMain';
-import { Search } from './pages/Search';
-import { useWishlistContext } from './hooks/WishlistContext';
+import { useNow } from './hooks/useNow'
+import TemptationMain from './pages/TemptationMain'
+import { Search } from './pages/Search'
+import { useWishlistContext } from './hooks/WishlistContext'
 
 export default function Temptation() {
   const navigate = useNavigate()
-  const { keyword, setKeyword, filteredProducts } = useWishlistContext();
-  useNow();
+  const { keyword, setKeyword, filteredProducts } = useWishlistContext()
+  useNow()
 
-  const trimmedKeyword = keyword.trim();
+  const trimmedKeyword = keyword.trim()
 
   return (
     <>

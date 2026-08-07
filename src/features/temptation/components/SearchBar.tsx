@@ -1,10 +1,10 @@
-import { IoMdSearch } from "react-icons/io";
-import styles from './SearchBar.module.css';
+import { IoMdSearch } from 'react-icons/io'
+import styles from './SearchBar.module.css'
 
 interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
 }
 
 export default function SearchBar({ value, onChange, placeholder = '검색' }: SearchBarProps) {
@@ -20,5 +20,5 @@ export default function SearchBar({ value, onChange, placeholder = '검색' }: S
         aria-label={placeholder}
       />
     </div>
-  );
+  )
 }

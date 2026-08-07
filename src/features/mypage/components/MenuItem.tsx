@@ -8,11 +8,7 @@ type MenuItemProps = {
   onClick?: () => void
 }
 
-export default function MenuItem({
-  title,
-  icon,
-  onClick,
-}: MenuItemProps) {
+export default function MenuItem({ title, icon, onClick }: MenuItemProps) {
   return (
     <button
       type="button"
@@ -21,14 +17,9 @@ export default function MenuItem({
       disabled={!onClick}
     >
       <div className={styles.left}>
-        <Icon
-          icon={icon}
-          className={styles.icon}
-        />
+        <Icon icon={icon} className={styles.icon} />
 
-        <span className={styles.title}>
-          {title}
-        </span>
+        <span className={styles.title}>{title}</span>
       </div>
 
       <IoChevronForward className={styles.arrow} size={18} />

@@ -5,8 +5,8 @@
   gap: 24px;
   padding: 24px;
   background-color: #ffffff;
-  border: 1px solid #F3F4F6;
-  border-radius: 20px; 
+  border: 1px solid #f3f4f6;
+  border-radius: 20px;
 }
 
 .title {
@@ -15,7 +15,6 @@
   font-weight: 700;
   color: #111827;
 }
-
 
 .toggleSection {
   display: flex;
@@ -35,7 +34,7 @@
   margin-top: 4px;
   margin-bottom: 0;
   font-size: 11px;
-  color: #99A1AF;
+  color: #99a1af;
 }
 
 .toggle {
@@ -46,7 +45,7 @@
   padding: 3px;
   border: none;
   border-radius: 999px;
-  background-color: #2F7F82;
+  background-color: #2f7f82;
   cursor: pointer;
 }
 
@@ -67,6 +66,6 @@
 .unit {
   font-size: 13px;
   font-weight: 600;
-  color: #C0C0C0;
+  color: #c0c0c0;
   pointer-events: none;
 }

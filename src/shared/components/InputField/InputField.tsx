@@ -56,7 +56,9 @@ export default function InputField({
     >
       {showPassword ? <IoEyeOffOutline size={16} /> : <IoEyeOutline size={16} />}
     </button>
-  ) : rightElement
+  ) : (
+    rightElement
+  )
 
   return (
     <div className={`${styles.container} ${className ?? ''}`}>

@@ -23,10 +23,7 @@ export default function ChangeEmailForm() {
           <p className={styles.currentEmail}>{currentEmail}</p>
         </div>
 
-        <HiOutlineCheckCircle
-          size={20}
-          className={styles.checkIcon}
-        />
+        <HiOutlineCheckCircle size={20} className={styles.checkIcon} />
       </div>
 
       <div className={styles.inputGroup}>
@@ -62,18 +59,13 @@ export default function ChangeEmailForm() {
         </ul>
       </div>
 
-      <button
-        type="button"
-        className={styles.resendButton}
-      >
+      <button type="button" className={styles.resendButton}>
         <HiOutlineArrowPath size={16} />
         인증번호 재발송
       </button>
 
       <div className={styles.buttonWrapper}>
-        <Button>
-          저장하기
-        </Button>
+        <Button>저장하기</Button>
       </div>
     </section>
   )

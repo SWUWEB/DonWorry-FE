@@ -26,17 +26,15 @@
   border-bottom: none;
 }
 
-
-
 .icon {
-  color: #C0C0C0;
+  color: #c0c0c0;
   flex-shrink: 0;
 }
 
 .withdraw {
-  color: #FF8484;
+  color: #ff8484;
 }
 
 .withdraw .icon {
-  color: #FFB4B4;
+  color: #ffb4b4;
 }

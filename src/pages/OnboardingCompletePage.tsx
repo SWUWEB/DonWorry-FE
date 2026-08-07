@@ -15,11 +15,14 @@ export default function OnboardingCompletePage() {
     return <Navigate to="/onboarding" replace />
   }
 
-  const interestsText = interests.map(i => i.label).join(' · ')
+  const interestsText = interests.map((i) => i.label).join(' · ')
 
   const handleHome = () => {
     localStorage.setItem('onboardingComplete', 'true')
-    localStorage.setItem('onboardingData', JSON.stringify({ interests, purpose, purposeEmoji, amount }))
+    localStorage.setItem(
+      'onboardingData',
+      JSON.stringify({ interests, purpose, purposeEmoji, amount }),
+    )
     clearOnboardingDraft()
     navigate('/')
   }
@@ -42,7 +45,9 @@ export default function OnboardingCompletePage() {
           <h1 className={styles.title}>준비 완료됐어요!</h1>
 
           <p className={styles.subtitle}>
-            즐거운 소비관리를<br />지금 시작해보세요.
+            즐거운 소비관리를
+            <br />
+            지금 시작해보세요.
           </p>
 
           {/* 설정 요약 카드 */}
@@ -68,7 +73,9 @@ export default function OnboardingCompletePage() {
 
       {/* 홈으로 가기 버튼 */}
       <div className={styles.bottom}>
-        <button className={styles.homeBtn} onClick={handleHome}>홈으로 가기</button>
+        <button className={styles.homeBtn} onClick={handleHome}>
+          홈으로 가기
+        </button>
       </div>
     </div>
   )

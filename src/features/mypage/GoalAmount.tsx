@@ -18,18 +18,13 @@ export default function GoalAmount() {
           <div className={styles.headerContent}>
             <h1 className={styles.pageTitle}>목표 금액 설정</h1>
 
-            <p className={styles.pageDescription}>
-              목표 금액을 설정하고 달성 현황을 확인하세요.
-            </p>
+            <p className={styles.pageDescription}>목표 금액을 설정하고 달성 현황을 확인하세요.</p>
           </div>
         }
       />
 
       <main className={styles.container}>
-        <CurrentGoalCard
-          goalAmount={1000000}
-          achievedAmount={600000}
-        />
+        <CurrentGoalCard goalAmount={1000000} achievedAmount={600000} />
 
         <GoalSettingCard />
       </main>

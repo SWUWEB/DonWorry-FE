@@ -26,7 +26,15 @@ export default function Home() {
 
   if (!data) return null
 
-  const { monthlySpending, lastMonthSpending, budget, goalAmount, goalCurrent, categories, hasRecords } = data
+  const {
+    monthlySpending,
+    lastMonthSpending,
+    budget,
+    goalAmount,
+    goalCurrent,
+    categories,
+    hasRecords,
+  } = data
 
   const achievementPercent = goalAmount
     ? Math.min(100, Math.round((goalCurrent / goalAmount) * 100))

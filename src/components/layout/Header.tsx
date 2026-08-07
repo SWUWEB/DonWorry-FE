@@ -20,9 +20,33 @@ interface HeaderProps {
 function ThreeLineMenu() {
   return (
     <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
-      <line x1="0" y1="1" x2="20" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="0" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="0" y1="13" x2="20" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <line
+        x1="0"
+        y1="1"
+        x2="20"
+        y2="1"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <line
+        x1="0"
+        y1="7"
+        x2="20"
+        y2="7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <line
+        x1="0"
+        y1="13"
+        x2="20"
+        y2="13"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }
@@ -43,7 +67,12 @@ export default function Header({
   const navigate = useNavigate()
 
   const defaultLeft = (
-    <button type="button" className={styles.logoBtn} aria-label="홈으로" onClick={() => navigate('/')}>
+    <button
+      type="button"
+      className={styles.logoBtn}
+      aria-label="홈으로"
+      onClick={() => navigate('/')}
+    >
       <img src={logo} alt="DonWorry" className={styles.logoImg} />
     </button>
   )
@@ -65,35 +94,22 @@ export default function Header({
   return (
     <header className={styles.header}>
       <div className={styles.topBar}>
-        <div className={styles.left}>
-          {left ?? defaultLeft}
-        </div>
+        <div className={styles.left}>{left ?? defaultLeft}</div>
 
         {title && <h1 className={styles.title}>{title}</h1>}
 
-        <div className={styles.right}>
-          {right ?? defaultRight}
-        </div>
+        <div className={styles.right}>{right ?? defaultRight}</div>
       </div>
 
       {hasSubContent && (
         <div className={styles.subContent}>
           <div className={styles.subTop}>
-            <div className={styles.subLeft}>
-              {subLeft}
-            </div>
-            {subTitle
-              ? <h2 className={styles.subTitle}>{subTitle}</h2>
-              : <div />
-            }
-            <div className={styles.subRight}>
-              {subRight}
-            </div>
+            <div className={styles.subLeft}>{subLeft}</div>
+            {subTitle ? <h2 className={styles.subTitle}>{subTitle}</h2> : <div />}
+            <div className={styles.subRight}>{subRight}</div>
           </div>
 
-          <div className={styles.subMain}>
-            {subMain}
-          </div>
+          <div className={styles.subMain}>{subMain}</div>
         </div>
       )}
     </header>
