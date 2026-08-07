@@ -5,10 +5,7 @@ export default function DonutChart() {
     <div className={styles.chart}>
       <div className={styles.innerCircle}>
         <div className={styles.text}>
-          <p className={styles.amount}>
-            750,000원
-          </p>
-
+          <p className={styles.amount}>750,000원</p>
         </div>
       </div>
     </div>

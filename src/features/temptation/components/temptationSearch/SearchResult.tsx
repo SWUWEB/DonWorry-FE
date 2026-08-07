@@ -1,10 +1,10 @@
-import { SearchProductItem } from './SearchProductItem';
-import type { Product } from '@/features/temptation/types';
+import { SearchProductItem } from './SearchProductItem'
+import type { Product } from '@/features/temptation/types'
 import styles from './SearchProductItem.module.css'
 
 interface SearchResultProps {
-  products: Product[];
-  keyword: string;
+  products: Product[]
+  keyword: string
 }
 
 export const SearchResult = ({ products, keyword }: SearchResultProps) => {
@@ -18,5 +18,5 @@ export const SearchResult = ({ products, keyword }: SearchResultProps) => {
         ))
       )}
     </div>
-  );
-};
+  )
+}

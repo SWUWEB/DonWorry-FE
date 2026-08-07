@@ -13,7 +13,7 @@
 .label {
   font-size: 14px;
   font-weight: bold;
-  color: #5B6B6A;
+  color: #5b6b6a;
   margin-bottom: 4px;
 }
 
@@ -73,8 +73,12 @@
   font-size: 12px;
   margin-top: 0;
 }
-.errorMessage { color: var(--color-text-red); }
-.successMessage { color: #008d02; }
+.errorMessage {
+  color: var(--color-text-red);
+}
+.successMessage {
+  color: #008d02;
+}
 
 .chipGroup {
   display: flex;
@@ -82,7 +86,8 @@
   gap: 6px;
 }
 
-.chip, .button {
+.chip,
+.button {
   display: flex;
   height: 32px;
   border: 1.5px solid var(--color-main-500);
@@ -108,12 +113,12 @@
 
 .chip:hover {
   color: var(--color-main-500);
-  background-color: #E5F2F1;
+  background-color: #e5f2f1;
 }
 
 .button:hover {
-  border-color: #5B6B6A;
-  background-color: #5B6B6A;
+  border-color: #5b6b6a;
+  background-color: #5b6b6a;
 }
 
 .chipSelected {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
-import { HiOutlineCalendarDays } from 'react-icons/hi2';
+import { HiOutlineCalendarDays } from 'react-icons/hi2'
 
 import styles from './ProfileForm.module.css'
 
@@ -73,9 +73,7 @@ export default function ProfileForm() {
       </div>
 
       <div className={styles.buttonWrapper}>
-        <Button>
-          저장하기
-        </Button>
+        <Button>저장하기</Button>
       </div>
     </section>
   )

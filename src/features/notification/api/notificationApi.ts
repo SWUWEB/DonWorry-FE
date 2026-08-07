@@ -68,7 +68,10 @@ let mockNotifications: NotificationItem[] = [
 ]
 
 let mockSettings: NotificationSettingsResponse = {
-  all: true, general: true, goal: true, retrial: true,
+  all: true,
+  general: true,
+  goal: true,
+  retrial: true,
 }
 // ──────────────────────────────────────────────────────────────────────────
 

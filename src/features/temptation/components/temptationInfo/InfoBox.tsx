@@ -1,38 +1,36 @@
-import { useState } from 'react';
-import { FaCopy } from "react-icons/fa";
-import { formatKRW } from '@/shared/utils/currency';
-import styles from './InfoBox.module.css';
+import { useState } from 'react'
+import { FaCopy } from 'react-icons/fa'
+import { formatKRW } from '@/shared/utils/currency'
+import styles from './InfoBox.module.css'
 
 interface InfoBoxProps {
-  price: number;
-  reason?: string;
-  link?: string;
+  price: number
+  reason?: string
+  link?: string
 }
 
 export const InfoBox = ({ price, reason, link }: InfoBoxProps) => {
-  const [copied, setCopied] = useState(false);
-  const [linkError, setLinkError] = useState(false);
+  const [copied, setCopied] = useState(false)
+  const [linkError, setLinkError] = useState(false)
 
   const handleCopy = async () => {
-    if (!link) return;
+    if (!link) return
     try {
-      await navigator.clipboard.writeText(link);
-      setCopied(true);
-      setLinkError(false);
-      setTimeout(() => setCopied(false), 1500);
+      await navigator.clipboard.writeText(link)
+      setCopied(true)
+      setLinkError(false)
+      setTimeout(() => setCopied(false), 1500)
     } catch {
-      setLinkError(true);
-      setCopied(false);
+      setLinkError(true)
+      setCopied(false)
     }
-  };
+  }
 
   return (
     <div className={styles.box}>
       <div className={styles.section}>
         <p className={styles.sectionLabel}>상품 가격</p>
-        <p className={styles.price}>
-          {formatKRW(price)}
-        </p>
+        <p className={styles.price}>{formatKRW(price)}</p>
       </div>
 
       <div className={styles.section}>
@@ -52,9 +50,13 @@ export const InfoBox = ({ price, reason, link }: InfoBoxProps) => {
             </button>
           </div>
           {linkError && <p className={styles.errorText}>상품 링크를 복사하지 못했습니다.</p>}
-          {copied && <p className={styles.errorText} style={{ color: '#008D02' }}>상품 링크가 복사되었습니다.</p>}
+          {copied && (
+            <p className={styles.errorText} style={{ color: '#008D02' }}>
+              상품 링크가 복사되었습니다.
+            </p>
+          )}
         </div>
       )}
     </div>
-  );
-};
+  )
+}

@@ -6,7 +6,6 @@ export default function Login() {
   return (
     <main className={styles.container}>
       <div className={styles.authWrapper}>
-
         <LoginHeader
           className={styles.topSection}
           title="환영합니다!"
@@ -17,7 +16,6 @@ export default function Login() {
         <section className={styles.card}>
           <LoginForm />
         </section>
-
       </div>
     </main>
   )

@@ -14,23 +14,13 @@ export default function MyPage() {
           <HeaderBackButton onClick={() => navigate('/')} />
         </div>
 
-        <h1 className={styles.title}>
-          마이페이지
-        </h1>
+        <h1 className={styles.title}>마이페이지</h1>
       </header>
 
-      <ProfileCard
-        name="000님"
-        email="donworry@gmail.com"
-      />
+      <ProfileCard name="000님" email="donworry@gmail.com" />
 
-      <BudgetCard
-        remainingBudget={155000}
-        achievementRate={69}
-      />
+      <BudgetCard remainingBudget={155000} achievementRate={69} />
       <MenuSection />
     </main>
-
-    
   )
 }

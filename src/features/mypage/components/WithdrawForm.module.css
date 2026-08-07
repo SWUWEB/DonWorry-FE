@@ -8,7 +8,7 @@
   margin-top: 13px;
   padding: 20px;
   border-radius: 11px;
-  background: #F7FBFA;
+  background: #f7fbfa;
 }
 
 .warningHeader {
@@ -18,7 +18,7 @@
 }
 
 .warningIcon {
-  color: #E5484D;
+  color: #e5484d;
 }
 
 .warningTitle {
@@ -44,11 +44,11 @@
 }
 
 .warningList li::before {
-  content: "•";
+  content: '•';
   position: absolute;
   left: 0;
   top: 0;
-  color: #C0CECE;
+  color: #c0cece;
   font-size: 18px;
 }
 
@@ -72,7 +72,7 @@
 .optional {
   margin-left: 4px;
   font-weight: 400;
-  color: #A1A1AA;
+  color: #a1a1aa;
 }
 
 .selectWrapper {
@@ -85,7 +85,7 @@
   max-width: 342px;
   height: 48px;
   padding: 0 46px 0 18px;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid #e5e7eb;
   border-radius: 11px;
   font-size: 14px;
   color: #243130;
@@ -96,16 +96,15 @@
 }
 
 .placeholder {
-  color: #D1D5DC;
+  color: #d1d5dc;
 }
-
 
 .selectIcon {
   position: absolute;
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: #2F7F82;
+  color: #2f7f82;
   pointer-events: none;
 }
 
@@ -116,8 +115,8 @@
   height: 52px;
   border: none;
   border-radius: 13px;
-  background: #FFBEBE;
-  color: #EE0000;
+  background: #ffbebe;
+  color: #ee0000;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;

@@ -14,16 +14,23 @@ const mockedUseUpdateNotificationSettings = vi.mocked(useUpdateNotificationSetti
 
 const mutate = vi.fn()
 
-function mockServerSettings(data: { all: boolean; general: boolean; goal: boolean; retrial: boolean }) {
-  mockedUseNotificationSettings.mockReturnValue({ data } as unknown as ReturnType<typeof useNotificationSettings>)
+function mockServerSettings(data: {
+  all: boolean
+  general: boolean
+  goal: boolean
+  retrial: boolean
+}) {
+  mockedUseNotificationSettings.mockReturnValue({ data } as unknown as ReturnType<
+    typeof useNotificationSettings
+  >)
 }
 
 describe('NotificationSettingsSheet 전체 알림 마스터 토글', () => {
   beforeEach(() => {
     mutate.mockClear()
-    mockedUseUpdateNotificationSettings.mockReturnValue(
-      { mutate } as unknown as ReturnType<typeof useUpdateNotificationSettings>,
-    )
+    mockedUseUpdateNotificationSettings.mockReturnValue({ mutate } as unknown as ReturnType<
+      typeof useUpdateNotificationSettings
+    >)
     mockServerSettings({ all: true, general: true, goal: true, retrial: true })
   })
 

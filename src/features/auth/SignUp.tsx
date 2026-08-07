@@ -6,7 +6,6 @@ export default function SignUp() {
   return (
     <main className={styles.container}>
       <div className={styles.authWrapper}>
-
         <section className={styles.topSection}>
           <img src={logo} alt="DonWorry" className={styles.logo} />
 
@@ -22,7 +21,6 @@ export default function SignUp() {
         <section className={styles.card}>
           <SignUpForm />
         </section>
-
       </div>
     </main>
   )

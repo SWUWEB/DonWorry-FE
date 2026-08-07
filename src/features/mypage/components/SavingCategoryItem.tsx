@@ -21,14 +21,10 @@ export default function SavingCategoryItem({
         <div className={styles.left}>
           <span className={styles.icon}>{icon}</span>
 
-          <span className={styles.name}>
-            {name}
-          </span>
+          <span className={styles.name}>{name}</span>
         </div>
 
-        <span className={styles.badge}>
-          방어율 {defense}%
-        </span>
+        <span className={styles.badge}>방어율 {defense}%</span>
       </div>
 
       <div className={styles.amountRow}>
@@ -44,10 +40,7 @@ export default function SavingCategoryItem({
       </div>
 
       <div className={styles.progress}>
-        <div
-          className={styles.progressFill}
-          style={{ width: `${defense}%` }}
-        />
+        <div className={styles.progressFill} style={{ width: `${defense}%` }} />
       </div>
     </div>
   )

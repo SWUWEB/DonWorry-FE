@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
-  background: #F7FAF9;
+  background: #f7faf9;
 }
 
 .header {
@@ -19,11 +19,11 @@
 .backButton {
   position: absolute;
   left: 0;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .title {
   font-size: 18px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
 }

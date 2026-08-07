@@ -19,7 +19,7 @@ const menus = [
 ]
 
 export default function AccountMenu() {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <section className={styles.card}>
@@ -32,10 +32,7 @@ export default function AccountMenu() {
         >
           <span>{menu.title}</span>
 
-          <HiChevronRight
-            size={20}
-            className={styles.icon}
-          />
+          <HiChevronRight size={20} className={styles.icon} />
         </button>
       ))}
     </section>

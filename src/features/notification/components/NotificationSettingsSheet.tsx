@@ -34,7 +34,9 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
   const { mutate: updateSettings } = useUpdateNotificationSettings()
 
   const [enabled, setEnabled] = useState<SubSettings>({
-    general: true, goal: true, retrial: true,
+    general: true,
+    goal: true,
+    retrial: true,
   })
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.sheet} onClick={e => e.stopPropagation()}>
+      <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <div className={styles.handle} />
         <h2 className={styles.title}>어떤 알림을 받을까요?</h2>
 
@@ -80,7 +82,7 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
         </div>
 
         <ul className={styles.list}>
-          {SETTINGS_LIST.map(item => (
+          {SETTINGS_LIST.map((item) => (
             <li key={item.id} className={styles.item}>
               <span className={styles.dot} style={{ background: item.dotColor }} />
               <div className={styles.textWrap}>

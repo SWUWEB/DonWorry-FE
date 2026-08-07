@@ -15,13 +15,9 @@ export default function Profile() {
         subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
-            <h1 className={styles.pageTitle}>
-              회원 정보 관리
-            </h1>
+            <h1 className={styles.pageTitle}>회원 정보 관리</h1>
 
-            <p className={styles.pageDescription}>
-              프로필 및 계정 정보를 관리하세요.
-            </p>
+            <p className={styles.pageDescription}>프로필 및 계정 정보를 관리하세요.</p>
           </div>
         }
       />

@@ -8,14 +8,20 @@ interface SpendingSummaryProps {
   budget: number | null
 }
 
-function getComparisonLabel(monthlySpending: number, lastMonthSpending: number | null): string | null {
+function getComparisonLabel(
+  monthlySpending: number,
+  lastMonthSpending: number | null,
+): string | null {
   if (lastMonthSpending === null || lastMonthSpending === 0) return null
   const percent = Math.round(((monthlySpending - lastMonthSpending) / lastMonthSpending) * 100)
   if (percent === 0) return '지난달과 같아요'
   return `지난 달보다 ${percent > 0 ? '+' : ''}${percent}%`
 }
 
-function getSpendingTrend(monthlySpending: number, lastMonthSpending: number | null): 'up' | 'down' | 'none' {
+function getSpendingTrend(
+  monthlySpending: number,
+  lastMonthSpending: number | null,
+): 'up' | 'down' | 'none' {
   if (lastMonthSpending === null || lastMonthSpending === 0) return 'none'
   if (monthlySpending > lastMonthSpending) return 'up'
   if (monthlySpending < lastMonthSpending) return 'down'
@@ -25,8 +31,20 @@ function getSpendingTrend(monthlySpending: number, lastMonthSpending: number | n
 function UpArrowIcon({ color }: { color: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M12.8337 4.08334L7.87533 9.04168L4.95866 6.12501L1.16699 9.91668" stroke={color} strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.33301 4.08334H12.833V7.58334" stroke={color} strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M12.8337 4.08334L7.87533 9.04168L4.95866 6.12501L1.16699 9.91668"
+        stroke={color}
+        strokeWidth="1.16667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.33301 4.08334H12.833V7.58334"
+        stroke={color}
+        strokeWidth="1.16667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -34,13 +52,29 @@ function UpArrowIcon({ color }: { color: string }) {
 function DownArrowIcon({ color }: { color: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M12.8337 9.91668L7.87533 4.95834L4.95866 7.87501L1.16699 4.08334" stroke={color} strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.33301 9.91666H12.833V6.41666" stroke={color} strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M12.8337 9.91668L7.87533 4.95834L4.95866 7.87501L1.16699 4.08334"
+        stroke={color}
+        strokeWidth="1.16667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.33301 9.91666H12.833V6.41666"
+        stroke={color}
+        strokeWidth="1.16667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
 
-export default function SpendingSummary({ monthlySpending, lastMonthSpending, budget }: SpendingSummaryProps) {
+export default function SpendingSummary({
+  monthlySpending,
+  lastMonthSpending,
+  budget,
+}: SpendingSummaryProps) {
   const navigate = useNavigate()
   const comparisonLabel = getComparisonLabel(monthlySpending, lastMonthSpending)
   const spendingTrend = getSpendingTrend(monthlySpending, lastMonthSpending)
@@ -82,18 +116,25 @@ export default function SpendingSummary({ monthlySpending, lastMonthSpending, bu
         onClick={isBudgetUnset ? () => navigate('/goal-amount') : undefined}
         role={isBudgetUnset ? 'button' : undefined}
         tabIndex={isBudgetUnset ? 0 : undefined}
-        onKeyDown={isBudgetUnset ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/goal-amount') } } : undefined}
+        onKeyDown={
+          isBudgetUnset
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  navigate('/goal-amount')
+                }
+              }
+            : undefined
+        }
         style={isBudgetUnset ? { cursor: 'pointer' } : undefined}
       >
         <p className={styles.label}>남은 예산</p>
         {!isBudgetUnset && (
           <div className={styles.amountRow}>
-            {isOverBudget
-              ? <UpArrowIcon color="#EB0000" />
-              : <DownArrowIcon color="#2946D8" />
-            }
+            {isOverBudget ? <UpArrowIcon color="#EB0000" /> : <DownArrowIcon color="#2946D8" />}
             <p className={isOverBudget ? styles.amountRed : styles.amountBlue}>
-              {isOverBudget ? '-' : ''}{budgetAmount}
+              {isOverBudget ? '-' : ''}
+              {budgetAmount}
             </p>
           </div>
         )}

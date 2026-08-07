@@ -22,7 +22,7 @@
   gap: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #B4B4B4;
+  color: #b4b4b4;
   cursor: pointer;
 }
 
@@ -43,7 +43,7 @@
 
 .calendarIcon {
   font-size: 22px;
-  color: #9CA3AF;
+  color: #9ca3af;
   pointer-events: none;
 }
 

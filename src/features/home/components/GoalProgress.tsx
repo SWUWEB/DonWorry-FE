@@ -45,8 +45,8 @@ export default function GoalProgress({ goalAmount, goalCurrent }: GoalProgressPr
       ) : (
         <p className={styles.remaining}>
           목표까지{' '}
-          <strong className={styles.remainingAmount}>{formatKRW(goalAmount - goalCurrent)}</strong>
-          {' '}남았어요
+          <strong className={styles.remainingAmount}>{formatKRW(goalAmount - goalCurrent)}</strong>{' '}
+          남았어요
         </p>
       )}
     </div>

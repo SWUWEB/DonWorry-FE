@@ -15,7 +15,7 @@
   align-items: center;
   padding: 18px 22px 18px 18px;
   border-radius: 13px;
-  background: #E8F4F4;
+  background: #e8f4f4;
   box-sizing: border-box;
 }
 
@@ -23,19 +23,19 @@
   margin: 0 0 2px;
   font-size: 11px;
   font-weight: 500;
-  color: #2F7F82;
+  color: #2f7f82;
 }
 
 .currentEmail {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #1E2939;
+  color: #1e2939;
 }
 
 .checkIcon {
   font-size: 34px;
-  color: #2F7F82;
+  color: #2f7f82;
 }
 
 .inputGroup {
@@ -52,7 +52,7 @@
   transform: translateY(-60%);
   font-size: 13px;
   font-weight: 700;
-  color: #AAAAAA;
+  color: #aaaaaa;
 }
 
 .helper {
@@ -60,7 +60,7 @@
   margin-top: -10px;
   font-weight: 300;
   font-size: 12px;
-  color: #ADADAD;
+  color: #adadad;
 }
 
 .noticeBox {
@@ -70,7 +70,7 @@
   height: 86px;
   padding: 14px 18px;
   border-radius: 13px;
-  background: #F7FBFA;
+  background: #f7fbfa;
   box-sizing: border-box;
 }
 
@@ -90,18 +90,17 @@
   color: #898989;
 }
 .noticeBox li::before {
-  content: "•";
+  content: '•';
   position: absolute;
   left: 0;
   top: 0;
   font-size: 14px;
-  color: #C7CED1;
+  color: #c7ced1;
 }
 
 .noticeBox li:last-child {
   margin-bottom: 0;
 }
-
 
 .resendButton {
   margin-top: -25px;
@@ -114,15 +113,15 @@
   background: none;
   font-size: 12px;
   font-weight: 500;
-  color: #2F7F82;
+  color: #2f7f82;
   cursor: pointer;
 }
 
-.buttonWrapper{
-    margin-top:18px;
-    width:100%;
-    display:flex;
-    justify-content:center;
+.buttonWrapper {
+  margin-top: 18px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .buttonWrapper button {

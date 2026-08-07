@@ -15,13 +15,9 @@ export default function Withdraw() {
         subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
-            <h1 className={styles.pageTitle}>
-              회원 탈퇴
-            </h1>
+            <h1 className={styles.pageTitle}>회원 탈퇴</h1>
 
-            <p className={styles.pageDescription}>
-              탈퇴 전 아래 내용을 꼭 확인해주세요.
-            </p>
+            <p className={styles.pageDescription}>탈퇴 전 아래 내용을 꼭 확인해주세요.</p>
           </div>
         }
       />

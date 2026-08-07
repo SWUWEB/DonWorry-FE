@@ -5,7 +5,9 @@ import { DrawerContext } from './drawer-context'
 export function DrawerProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <DrawerContext.Provider value={{ isOpen, open: () => setIsOpen(true), close: () => setIsOpen(false) }}>
+    <DrawerContext.Provider
+      value={{ isOpen, open: () => setIsOpen(true), close: () => setIsOpen(false) }}
+    >
       {children}
     </DrawerContext.Provider>
   )
