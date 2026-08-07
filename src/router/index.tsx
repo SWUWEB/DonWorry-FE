@@ -23,6 +23,7 @@ const TemptationEdit = lazy(() => import('@/features/temptation/pages/Temptation
 const ChangeEmailPage = lazy(() => import('@/pages/ChangeEmailPage'))
 const ChangePasswordPage = lazy(() => import('@/pages/ChangePasswordPage'))
 const WithdrawPage = lazy(() => import('@/pages/WithdrawPage'))
+const ConsumptionReportPage = lazy(() => import('@/pages/ConsumptionReportPage'))
 const OnboardingInterestPage = lazy(() => import('@/pages/OnboardingInterestPage'))
 const OnboardingGoalPage = lazy(() => import('@/pages/OnboardingGoalPage'))
 const OnboardingCompletePage = lazy(() => import('@/pages/OnboardingCompletePage'))
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
+      { path: '/consumption-report', element: <ConsumptionReportPage /> },
       { path: '/onboarding', element: <OnboardingInterestPage /> },
       { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
       { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
