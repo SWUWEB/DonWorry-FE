@@ -26,7 +26,7 @@
 .textInput {
   width: 100%;
   border: none;
-  border-bottom: 2px solid var(--Gray-100, #DDDDDD);
+  border-bottom: 2px solid var(--color-gray-100);
   font-size: 14px;
   font-weight: bold;
   font-family: inherit;
@@ -38,18 +38,37 @@
 
 .textInput::placeholder {
   font-weight: normal;
-  color: var(--Gray-300, #5B6B6A);
+  color: var(--color-gray-200);
 }
 
 .priceWrapper {
   margin: -8px 0 -4px 0;
+  align-items: baseline;
+}
+
+.priceInput {
+  width: 100%;
+  border: none;
+  font-size: 32px;
+  font-weight: bold;
+  outline: none;
+}
+
+.priceInput::placeholder {
+  color: var(--color-gray-100);
+  font-weight: bold;
+}
+
+.currency {
+  font-size: 32px;
+  font-weight: bold;
 }
 
 .message {
   font-size: 12px;
   margin-top: 0;
 }
-.errorMessage { color: #eb0000; }
+.errorMessage { color: var(--color-text-red); }
 .successMessage { color: #008d02; }
 
 .chipGroup {
@@ -61,10 +80,10 @@
 .chip, .button {
   display: flex;
   height: 32px;
-  border: 1.5px solid #2F7F82;
+  border: 1.5px solid var(--color-main-500);
   border-radius: 16px;
-  color: #2F7F82;
-  background: white;
+  color: var(--color-main-500);
+  background: var(--color-white);
   font-size: 14px;
   padding: 0 12px;
   align-items: center;
@@ -77,13 +96,13 @@
   flex-shrink: 0;
   width: 80px;
   border-radius: 5px;
-  color: white;
-  border-color: #243130;
-  background-color: #243130;
+  color: var(--color-white);
+  border-color: var(--color-text-primary);
+  background-color: var(--color-text-primary);
 }
 
 .chip:hover {
-  color: #2F7F82;
+  color: var(--color-main-500);
   background-color: #E5F2F1;
 }
 
@@ -93,8 +112,8 @@
 }
 
 .chipSelected {
-  color: #fefefe;
-  background-color: #2F7F82;
+  color: var(--color-text-white);
+  background-color: var(--color-main-500);
   font-weight: 500;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 }

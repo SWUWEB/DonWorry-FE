@@ -15,10 +15,14 @@ import Temptation from '@/features/temptation/Temptation'
 import TemptationInfo from '@/features/temptation/pages/TemptationInfo'
 import GoalAmountPage from '@/pages/GoalAmountPage'
 import ProfilePage from '@/pages/ProfilePage'
+import TemptationEdit from '@/features/temptation/pages/TemptationEdit'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
 import ConsumptionReportPage from '@/pages/ConsumptionReportPage'
+import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
+import OnboardingGoalPage from '@/pages/OnboardingGoalPage'
+import OnboardingCompletePage from '@/pages/OnboardingCompletePage'
 
 const router = createBrowserRouter([
   {
@@ -35,6 +39,9 @@ const router = createBrowserRouter([
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
       { path: '/consumption-report', element: <ConsumptionReportPage /> },
+      { path: '/onboarding', element: <OnboardingInterestPage /> },
+      { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
+      { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
@@ -48,6 +55,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/temptation', element: <Temptation /> },
           { path: '/temptation/:id', element: <TemptationInfo /> },
+          { path: '/temptation/:id/edit', element: <TemptationEdit /> },
         ],
       },
     ],
