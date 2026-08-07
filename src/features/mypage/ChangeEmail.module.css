@@ -32,30 +32,4 @@
 }
 
 
-.logo {
-  font-size: 14px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--color-text-primary);
-}
 
-.iconButton,
-.backButton {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;  
-  height: 20px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #243130;
-}
-
-.iconButton::after,
-.backButton::after {
-  content: "";
-  position: absolute;
-  inset: -12px;
-}

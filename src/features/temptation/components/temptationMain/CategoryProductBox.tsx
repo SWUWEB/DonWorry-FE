@@ -15,7 +15,7 @@ export const CategoryProductBox = ({ category, products, onDelete }: CategoryPro
   return (
     <div className={styles.productBox}>
       <div className={styles.productCategory}>
-        <CategoryIcon category={category} />
+        <CategoryIcon category={category} size={36} />
         <span className={styles.category}>{category}</span>
       </div>
 

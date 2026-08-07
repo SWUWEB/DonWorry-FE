@@ -1,3 +1,4 @@
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './CurrentGoalCard.module.css'
 
 interface CurrentGoalCardProps {
@@ -19,7 +20,7 @@ interface CurrentGoalCardProps {
       <div className={styles.header}>
         <span className={styles.title}>현재 목표 금액</span>
         <span className={styles.amount}>
-            {goalAmount.toLocaleString()}원
+            {formatKRW(goalAmount)}
         </span>
       </div>
 
@@ -38,8 +39,8 @@ interface CurrentGoalCardProps {
       </div>
 
       <div className={styles.amountRow}>
-        <span>{achievedAmount.toLocaleString()}원</span>
-        <span>{goalAmount.toLocaleString()}원</span>
+        <span>{formatKRW(achievedAmount)}</span>
+        <span>{formatKRW(goalAmount)}</span>
       </div>
     </section>
   )

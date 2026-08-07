@@ -1,5 +1,6 @@
 .box {
-  width: 360px;
+  width: 100%;
+  box-sizing: border-box;
   border: 1.5px solid var(--color-gray-100);
   border-radius: 15px;
   padding: 20px;
@@ -25,21 +26,21 @@
 
 .sectionLabel {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
   color: var(--color-gray-300);
   margin: 0 0 3px;
 }
 
 .price {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 700;
   color: var(--color-text-primary);
   margin: 0;
 }
 
 .priceUnit {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
   margin-left: 4px;
 }
 

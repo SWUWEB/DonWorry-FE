@@ -45,33 +45,6 @@
   gap: 14px;
 }
 
-.label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #364153;
-}
-
-.codeWrapper {
-  position: relative;
-}
-
-.input {
-  margin-top: -5px;
-  width: 100%;
-  max-width: 342px;
-  height: 48px;
-  padding: 0 20px;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 13px;
-  font-size: 14px;
-  box-sizing: border-box;
-  outline: none;
-}
-
-.input::placeholder {
-  color: #D1D5DC;
-}
-
 .expireText {
   position: absolute;
   right: 24px;

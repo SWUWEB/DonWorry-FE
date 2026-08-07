@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import PrimaryButton from '@/features/auth/components/PrimaryButton'
+import Button from '@/shared/components/Button'
+import InputField from '@/shared/components/InputField'
 import styles from './GoalSettingCard.module.css'
 
 export default function GoalSettingCard() {
@@ -19,21 +20,13 @@ export default function GoalSettingCard() {
       <h2 className={styles.title}>목표 설정</h2>
 
       <div className={styles.inputGroup}>
-        <label htmlFor="goalAmount" className={styles.label}>
-          목표 금액
-        </label>
-
-        <div className={styles.inputWrapper}>
-          <input
-            id="goalAmount"
-            type="text"
-            className={styles.input}
-            placeholder="금액을 입력하세요"
-            value={goalAmount}
-            onChange={(e) => setGoalAmount(e.target.value)}
-          />
-          <span className={styles.unit}>원</span>
-        </div>
+        <InputField
+          label="목표 금액"
+          placeholder="금액을 입력하세요"
+          value={goalAmount}
+          onChange={(e) => setGoalAmount(e.target.value)}
+          rightElement={<span className={styles.unit}>원</span>}
+        />
       </div>
 
       <div className={styles.toggleSection}>
@@ -55,9 +48,9 @@ export default function GoalSettingCard() {
         </button>
       </div>
 
-      <PrimaryButton onClick={handleSave}>
+      <Button onClick={handleSave}>
         저장하기
-      </PrimaryButton>
+      </Button>
     </section>
   )
 }

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import styles from './ProfileCard.module.css'
 import ProfileIcon from '@/assets/profile.svg'
 
@@ -10,6 +11,7 @@ export default function ProfileCard({
   name,
   email,
 }: ProfileCardProps) {
+  const navigate = useNavigate()
 
   return (
     <section className={styles.card}>
@@ -31,6 +33,7 @@ export default function ProfileCard({
       <button
         type="button"
         className={styles.manageButton}
+        onClick={() => navigate('/profile')}
       >
         회원 정보 관리
       </button>

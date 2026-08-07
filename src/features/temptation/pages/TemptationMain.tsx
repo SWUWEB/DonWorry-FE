@@ -32,12 +32,11 @@ export default function TemptationMain() {
       <CategoryFilterTabs selected={filter} onSelect={setFilter} />
 
       <div className={styles.topLine}>
-        <p style={{ margin: 0 }}>
-          참고 있는 유혹 <strong style={{ color: '#389698', fontWeight: 'bold' }}>
-            {filteredProducts.length}</strong>
+        <p className={styles.countText}>
+          참고 있는 유혹 <strong className={styles.countHighlight}>{filteredProducts.length}</strong>
         </p>
         <div className={styles.sortContainer}>
-          <span style={{ fontSize: '12px', fontWeight: 'bold' }}>정렬 기준</span>
+          <span className={styles.sortLabel}>정렬 기준</span>
           <SortTabs selected={sort} onSelect={setSort} />
         </div>
       </div>

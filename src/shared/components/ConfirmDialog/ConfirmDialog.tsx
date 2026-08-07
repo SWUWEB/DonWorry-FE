@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
 import { IoCheckmarkCircleOutline, IoWarningOutline } from 'react-icons/io5';
-import styles from './ConfirmDialog.module.css';
 import { useRef, useEffect } from 'react';
+import styles from './ConfirmDialog.module.css';
 
 type DialogVariant = 'warning' | 'success' | 'none';
 
@@ -16,6 +17,8 @@ interface ConfirmDialogProps {
   onCancel: () => void;
   onConfirm: () => void;
   variant?: DialogVariant;
+  /** variant 아이콘 대신 사용할 커스텀 아이콘 (예: 로그아웃 아이콘) */
+  icon?: ReactNode;
 }
 
 const VARIANT_ICON = {
@@ -34,6 +37,7 @@ export const ConfirmDialog = ({
   errorMessage,
   onlyConfirm = false,
   variant = 'warning',
+  icon,
   onCancel,
   onConfirm,
 }: ConfirmDialogProps) => {
@@ -97,9 +101,9 @@ export const ConfirmDialog = ({
         aria-labelledby="confirm-dialog-title"
         aria-describedby={description ? 'confirm-dialog-description' : undefined}
       >
-        {iconConfig && (
+        {icon ?? (iconConfig && (
           <iconConfig.Icon size={48} className={iconConfig.className} aria-hidden="true" />
-        )}
+        ))}
         <p className={styles.title} id="confirm-dialog-title">{title}</p>
         {description && <p className={styles.description} id="confirm-dialog-description">{description}</p>}
         {errorMessage && <p className={styles.errorText} role="alert">{errorMessage}</p>}

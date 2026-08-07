@@ -1,13 +1,6 @@
-import { createContext, useState } from 'react'
+import { useState } from 'react'
 import type { ReactNode } from 'react'
-
-interface DrawerContextValue {
-  isOpen: boolean
-  open: () => void
-  close: () => void
-}
-
-export const DrawerContext = createContext<DrawerContextValue | null>(null)
+import { DrawerContext } from './drawer-context'
 
 export function DrawerProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)

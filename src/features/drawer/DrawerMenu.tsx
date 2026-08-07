@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { IoCloseOutline } from 'react-icons/io5'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useDrawer } from './useDrawer'
+import ProfileIcon from '@/assets/profile.svg'
 import styles from './DrawerMenu.module.css'
 
 function LogoutIcon({ size = 16 }: { size?: number }) {
@@ -54,9 +56,9 @@ function TemptationIcon() {
 
 const NAV_ITEMS = [
   { label: '홈', icon: <HomeIcon />, path: '/' },
-  { label: '마이페이지', icon: <MypageIcon />, path: '/mypage' },
   { label: '소비 기록 페이지', icon: <RecordIcon />, path: '/record' },
   { label: '유혹 관리 페이지', icon: <TemptationIcon />, path: '/temptation' },
+  { label: '마이페이지', icon: <MypageIcon />, path: '/mypage' },
 ]
 
 export default function DrawerMenu() {
@@ -65,45 +67,9 @@ export default function DrawerMenu() {
   const location = useLocation()
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
-  const cancelBtnRef = useRef<HTMLButtonElement>(null)
-  const confirmLogoutBtnRef = useRef<HTMLButtonElement>(null)
-  const logoutTriggerBtnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    if (!showLogoutConfirm) return
-    cancelBtnRef.current?.focus()
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setShowLogoutConfirm(false)
-        logoutTriggerBtnRef.current?.focus()
-        return
-      }
-      if (e.key === 'Tab') {
-        const focusable = [cancelBtnRef.current, confirmLogoutBtnRef.current].filter(Boolean) as HTMLElement[]
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault()
-            last?.focus()
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault()
-            first?.focus()
-          }
-        }
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [showLogoutConfirm])
-
-  useEffect(() => {
-    if (!isOpen) {
-      setShowLogoutConfirm(false)
-      return
-    }
+    if (!isOpen) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
@@ -111,8 +77,13 @@ export default function DrawerMenu() {
     }
   }, [isOpen])
 
-  const handleNav = (path: string) => {
+  const handleClose = () => {
+    setShowLogoutConfirm(false)
     close()
+  }
+
+  const handleNav = (path: string) => {
+    handleClose()
     navigate(path)
   }
 
@@ -122,8 +93,8 @@ export default function DrawerMenu() {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
-    const diff = touchStartX.current - e.changedTouches[0].clientX
-    if (diff > 50) close()
+    const diff = e.changedTouches[0].clientX - touchStartX.current
+    if (diff > 50) handleClose()
     touchStartX.current = null
   }
 
@@ -138,7 +109,7 @@ export default function DrawerMenu() {
     <>
       <div
         className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`}
-        onClick={close}
+        onClick={handleClose}
       >
         <div
           className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ''}`}
@@ -147,11 +118,13 @@ export default function DrawerMenu() {
           onTouchEnd={handleTouchEnd}
         >
           <div className={styles.profileSection}>
-            <button className={styles.closeBtn} onClick={close} aria-label="닫기">
+            <button className={styles.closeBtn} onClick={handleClose} aria-label="닫기">
               <IoCloseOutline size={20} />
             </button>
             <div className={styles.profileRow}>
-              <div className={styles.avatar} />
+              <div className={styles.avatar}>
+                <img src={ProfileIcon} alt="프로필" className={styles.avatarIcon} />
+              </div>
               <div className={styles.userInfo}>
                 {/* TODO: 실제 사용자 이름 및 프로필 이미지 연결 */}
                 <p className={styles.userName}>000님,</p>
@@ -178,7 +151,6 @@ export default function DrawerMenu() {
             <div className={styles.divider} />
 
             <button
-              ref={logoutTriggerBtnRef}
               className={`${styles.navItem} ${styles.logoutItem}`}
               onClick={() => setShowLogoutConfirm(true)}
             >
@@ -191,33 +163,16 @@ export default function DrawerMenu() {
         </div>
       </div>
 
-      {showLogoutConfirm && (
-        <div className={styles.confirmOverlay}>
-          <div
-            className={styles.confirmDialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="logout-dialog-title"
-          >
-            <div className={styles.confirmIconWrap}>
-              <LogoutIcon size={24} />
-            </div>
-            <p id="logout-dialog-title" className={styles.confirmTitle}>로그아웃</p>
-            <p className={styles.confirmMessage}>정말 로그아웃 하시겠습니까?</p>
-            <div className={styles.confirmButtons}>
-              <button
-                ref={cancelBtnRef}
-                className={styles.confirmCancel}
-                onClick={() => {
-                  setShowLogoutConfirm(false)
-                  logoutTriggerBtnRef.current?.focus()
-                }}
-              >취소</button>
-              <button ref={confirmLogoutBtnRef} className={styles.confirmLogout} onClick={handleLogout}>로그아웃</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        isOpen={showLogoutConfirm}
+        title="로그아웃"
+        description="정말 로그아웃 하시겠습니까?"
+        cancelText="취소"
+        confirmText="로그아웃"
+        icon={<LogoutIcon size={24} />}
+        onCancel={() => setShowLogoutConfirm(false)}
+        onConfirm={handleLogout}
+      />
     </>,
     document.body,
   )

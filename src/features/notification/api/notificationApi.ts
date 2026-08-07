@@ -22,7 +22,7 @@ export interface NotificationSettingsResponse {
 let mockNotifications: NotificationItem[] = [
   {
     id: 1,
-    type: '재판단',
+    type: '유혹관리',
     iconVariant: 'heart',
     title: '새로운 유혹이 추가됨',
     description: "'미스치프 후드티'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
@@ -31,7 +31,7 @@ let mockNotifications: NotificationItem[] = [
   },
   {
     id: 2,
-    type: '재판단',
+    type: '유혹관리',
     iconVariant: 'heart',
     title: '새로운 유혹이 추가됨',
     description: "'스타벅스 텀블러'를 위시리스트에 담았습니다. 1일 뒤에 다시 물어볼게요!",
@@ -58,7 +58,7 @@ let mockNotifications: NotificationItem[] = [
   },
   {
     id: 5,
-    type: '재판단',
+    type: '유혹관리',
     iconVariant: 'lightning',
     title: '결단의 시간이 왔어요!',
     description: "'아이폰 17 Pro' 대기 시간이 끝났어요. 아직도 사고 싶으신가요?",
@@ -102,7 +102,7 @@ export const notificationApi = {
 
 // TODO: 백엔드 타입 → 프론트 타입 변환 (API 연결 시 주석 해제)
 // function adaptNotification(item: NotificationResponse): NotificationItem {
-//   const TYPE_MAP = { GENERAL: '일반', GOAL: '목표현황', RETRIAL: '재판단' } as const
+//   const TYPE_MAP = { GENERAL: '일반', GOAL: '목표현황', RETRIAL: '유혹관리' } as const
 //   const ICON_MAP = { GENERAL: 'calendar', GOAL: 'check', RETRIAL: 'lightning' } as const
 //   return {
 //     id: item.id,

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import {
-  IoEyeOutline,
-  IoEyeOffOutline,
   IoWarningOutline,
   IoChevronDown,
 } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
 
+import Button from '@/shared/components/Button'
+import InputField from '@/shared/components/InputField'
 import styles from './WithdrawForm.module.css'
 
 export default function WithdrawForm() {
@@ -14,7 +14,6 @@ export default function WithdrawForm() {
 
   const [reason, setReason] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = (
     event: React.FormEvent<HTMLFormElement>,
@@ -106,47 +105,14 @@ export default function WithdrawForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="password"
-          className={styles.label}
-        >
-          비밀번호 확인
-        </label>
-
-        <div className={styles.inputWrapper}>
-          <input
-            id="password"
-            type={
-              showPassword
-                ? 'text'
-                : 'password'
-            }
-            autoComplete="current-password"
-            className={styles.input}
-            placeholder="비밀번호를 입력해주세요"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
-
-          <button
-            type="button"
-            className={styles.eyeButton}
-            onClick={() => setShowPassword(!showPassword,)}
-            aria-label={
-              showPassword
-                ? '비밀번호 숨기기'
-                : '비밀번호 보기'
-            }
-          >
-            {showPassword ? (
-              <IoEyeOffOutline size={18} />
-            ) : (
-              <IoEyeOutline size={18} />
-            )}
-          </button>
-        </div>
+        <InputField
+          label="비밀번호 확인"
+          type="password"
+          autoComplete="current-password"
+          placeholder="비밀번호를 입력해주세요"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
 
       <button
@@ -156,13 +122,14 @@ export default function WithdrawForm() {
         탈퇴하기
       </button>
 
-      <button
+      <Button
         type="button"
+        variant="outline"
         className={styles.cancelButton}
         onClick={() => navigate(-1)}
       >
         취소
-      </button>
+      </Button>
     </form>
   )
 }

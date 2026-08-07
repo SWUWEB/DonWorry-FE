@@ -21,7 +21,7 @@
 }
 
 .editBtn {
-  background-color: var(--Main-000, #E5F2F1);
+  background-color: var(--color-sub-100);
   color: var(--color-main-500);
   border: 1.5px solid var(--color-main-300);
 }
