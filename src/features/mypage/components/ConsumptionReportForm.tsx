@@ -3,22 +3,53 @@ import CategoryItem from './CategoryItem'
 import styles from './ConsumptionReportForm.module.css'
 import SavingStatusCard from './SavingStatusCard'
 import SavingCategoryItem from './SavingCategoryItem'
+import { useState } from 'react'
 
-export default function ConsumptionReportForm() {
+   export default function ConsumptionReportForm() {
+     const months = [
+       '2026년 5월',
+       '2026년 4월',
+       '2026년 3월',
+     ]
+
+     const [selectedMonth, setSelectedMonth] = useState(months[0])
+     const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className={styles.wrapper}>
 
       {/* 월 선택 */}
-      <button
-        type="button"
-        className={styles.monthButton}
-      >
-        <span>2026년 5월</span>
+      <div className={styles.monthWrapper}>
+        <button
+          type="button"
+          className={styles.monthButton}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>{selectedMonth}</span>
 
-        <span className={styles.arrow}>
-          ▼
-        </span>
-      </button>
+          <span className={styles.arrow}>
+            ▼
+          </span>
+        </button>
+
+       {isOpen && (
+          <div className={styles.monthDropdown}>
+            {months.map((month) => (
+              <button
+                key={month}
+                type="button"
+                className={styles.monthItem}
+                onClick={() => {
+                  setSelectedMonth(month)
+                  setIsOpen(false)
+                }}
+              >
+                {month}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* 총 소비 요약 */}
       <section className={styles.card}>

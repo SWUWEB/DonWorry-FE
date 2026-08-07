@@ -93,3 +93,33 @@
   flex-direction: column;
   flex: 1;
 }
+
+.monthWrapper {
+  position: relative;
+  width: fit-content;
+}
+
+.monthDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 10;
+}
+
+.monthItem {
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.monthItem:hover {
+  background: #F4F4F4;
+}
