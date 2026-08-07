@@ -19,6 +19,7 @@ import TemptationEdit from '@/features/temptation/pages/TemptationEdit'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
+import ConsumptionReportPage from '@/pages/ConsumptionReportPage'
 import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
 import OnboardingGoalPage from '@/pages/OnboardingGoalPage'
 import OnboardingCompletePage from '@/pages/OnboardingCompletePage'
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: '/changeemail', element: <ChangeEmailPage /> },
       { path: '/changepassword', element: <ChangePasswordPage /> },
       { path: '/withdraw', element: <WithdrawPage /> },
+      { path: '/consumption-report', element: <ConsumptionReportPage /> },
       { path: '/onboarding', element: <OnboardingInterestPage /> },
       { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
       { path: '/onboarding/step3', element: <OnboardingCompletePage /> },

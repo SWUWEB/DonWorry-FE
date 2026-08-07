@@ -1,0 +1,126 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  margin: 0;
+  margin-top: -10px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.count {
+  margin-top: -5px;
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+.summary {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.leftCard {
+  width: 155px;
+  height: 87px;
+  margin-top: -13px;
+  padding: 18px;
+  border: 1px solid #2F7F82;
+  border-radius: 13px;
+  background: #F9FAFB;
+  box-sizing: border-box;
+}
+
+.rightInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.label {
+  margin: 0;
+  margin-top: -10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #667085;
+}
+
+.leftCard .money {
+  margin: 3px 0 -3px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #2F7F82;
+}
+
+.rightInfo .money {
+  margin: 8px 0 2px;
+  transform: translateY(-5px);
+  font-size: 18px;
+  font-weight: 500;
+  color: #2F7F82;
+}
+
+.desc {
+  font-weight: 300;
+  font-size: 10px;
+  color: #6B7280;
+}
+
+.divider {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid #8F8F8F;
+}
+
+.goalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goalTitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: #121212;
+}
+
+
+.goalPercent {
+  font-size: 12px;
+  font-weight: 400;
+  color: #121212;
+}
+
+.progress {
+  margin-top: 7px;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #8FC4C0;
+  overflow: hidden;
+}
+
+.progressFill {
+  width: 69%;
+  height: 100%;
+  border-radius: 999px;
+  background: #2F7F82;
+}
+
+.remain {
+    margin: 8px 0 0;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 500;
+    color: #9CA3AF;
+}
