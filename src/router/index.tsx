@@ -36,6 +36,7 @@ const router = createBrowserRouter([
       { path: '/record', element: <RecordMainPage /> },
       { path: '/record/new', element: <RecordCreatePage /> },
       { path: '/record/:id', element: <RecordDetailPage /> },
+      { path: '/record/:id/edit', element: <RecordCreatePage /> },
       { path: '/record/intervention', element: <RecordInterventionPage /> },
       {
         path: '/record/intervention/result',

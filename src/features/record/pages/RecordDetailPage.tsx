@@ -60,7 +60,11 @@ export default function RecordDetailPage() {
         }
         subTitle="소비 상세"
         subRight={
-          <button type="button" aria-label="수정">
+          <button
+            type="button"
+            aria-label="수정"
+            onClick={() => navigate(`/record/${record.id}/edit`)}
+          >
             <IoPencilOutline size={20} />
           </button>
         }
