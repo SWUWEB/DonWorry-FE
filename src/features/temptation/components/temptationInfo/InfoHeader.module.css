@@ -14,8 +14,8 @@
   display: flex;
   min-width: 55px;
   height: 24px;
-  color: var(--White, #FEFEFE);
-  background-color: var(--Main-500, #2F7F82);
+  color: var(--color-text-white);
+  background-color: var(--color-main-500);
   font-size: 12px;
   font-weight: 600;
   border-radius: 10px;
@@ -23,7 +23,7 @@
   align-self: flex-start;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .productName {
@@ -34,6 +34,6 @@
   text-overflow: ellipsis;
   margin: 0;
   font-size: 20px;
-  font-weight: bold;
-  color: var(--Primary, #243130);
+  font-weight: 700;
+  color: var(--color-text-primary);
 }

@@ -41,8 +41,7 @@
 .title {
   margin: 0;
 
-  color: var(--Text-Primary, #243130);
-  font-family: Pretendard;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -50,8 +49,7 @@
 }
 
 .category {
-  color: var(--Text-Primary, #243130);
-  font-family: Pretendard;
+  color: var(--color-text-primary);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -59,10 +57,9 @@
 }
 
 .amount {
-  color: var(--Text-Primary, #243130);
+  color: var(--color-text-primary);
   text-align: right;
-  font-family: Pretendard;
-  font-size: 17.319px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;

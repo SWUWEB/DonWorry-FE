@@ -1,0 +1,125 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.monthButton {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 400;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.card {
+  padding: 24px;
+  border-radius: 17px;
+  background: #f7fbfa;
+}
+
+.cardTitle {
+  margin: 0 0 20px;
+  margin-top: -10px;
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.summaryContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.arrow {
+  font-size: 14px;
+}
+
+.patternBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.patternTitle {
+  margin: -7px 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #121212;
+}
+
+.patternCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 82px;
+  padding: 16px 12px;
+  border-radius: 14px;
+  background: white;
+}
+
+.patternIcon {
+  font-size: 18px;
+  margin-top: -7px;
+  flex-shrink: 0;
+}
+
+.patternDescription {
+  margin: 0;
+  margin-top: -4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #9ca3af;
+}
+
+.patternContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.monthWrapper {
+  position: relative;
+  width: fit-content;
+}
+
+.monthDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.monthItem {
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.monthItem:hover {
+  background: #f4f4f4;
+}

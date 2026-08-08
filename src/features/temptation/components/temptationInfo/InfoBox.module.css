@@ -1,6 +1,7 @@
 .box {
-  width: 360px;
-  border: 1.5px solid var(--Gray-100, #DDDDDD);
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid var(--color-gray-100);
   border-radius: 15px;
   padding: 20px;
   display: flex;
@@ -16,7 +17,7 @@
 }
 
 .divider {
-  border-top: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-top: 1.5px solid var(--color-gray-100);
   margin-left: -20px;
   margin-right: -20px;
   padding-left: 20px;
@@ -25,28 +26,28 @@
 
 .sectionLabel {
   font-size: 14px;
-  font-weight: bold;
-  color: var(--Gray-300, #5B6B6A);
+  font-weight: 700;
+  color: var(--color-gray-300);
   margin: 0 0 3px;
 }
 
 .price {
   font-size: 20px;
-  font-weight: bold;
-  color: var(--Primary, #243130);
+  font-weight: 700;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .priceUnit {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
   margin-left: 4px;
 }
 
 .reasonText {
   font-size: 16px;
   font-weight: 600;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   min-height: 60px;
   white-space: pre-wrap;
   margin: 0;
@@ -62,7 +63,7 @@
 .linkText {
   flex: 1;
   min-width: 0;
-  color: var(--Primary, #243130);
+  color: var(--color-text-primary);
   font-size: 14px;
   text-decoration: underline;
   overflow: hidden;
@@ -77,8 +78,8 @@
   height: 24px;
   border: none;
   border-radius: 5px;
-  color: var(--Gray-300, #5B6B6A);
-  background-color: var(--Gray-100, #DDDDDD);
+  color: var(--color-gray-300);
+  background-color: var(--color-gray-100);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -86,11 +87,11 @@
 }
 
 .copyBtn:hover {
-  background-color: var(--Gray-200, #9CA4A3);
+  background-color: var(--color-gray-200);
 }
 
 .errorText {
-  color: #EB0000;
+  color: var(--color-text-red);
   font-size: 12px;
   margin: 4px 0 0;
 }

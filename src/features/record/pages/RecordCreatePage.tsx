@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { IoChevronBack } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
+import TabGroup from '@/shared/components/TabGroup'
 import AmountInput from '@/components/layout/AmountInput'
 import CategorySelector from '@/components/layout/CategorySelector'
 import type { Category } from '@/components/layout/CategorySelector'
@@ -10,6 +11,11 @@ import { CATEGORIES } from '@/constants/product'
 import { MOCK_RECORDS } from '@/features/record/mockRecords'
 import type { RecordType } from '@/features/record/mockRecords'
 import styles from './RecordCreatePage.module.css'
+
+const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
+  { label: '참았어요', value: 'saved' },
+  { label: '샀어요', value: 'consume' },
+]
 
 export default function RecordCreatePage() {
   const navigate = useNavigate()
@@ -56,36 +62,15 @@ export default function RecordCreatePage() {
   return (
     <div className={styles.container} key={id ?? 'new'}>
       <Header
-        left={
-          <button type="button" aria-label="로고">
-            Logo
-          </button>
-        }
-        subLeft={
-          <button type="button" aria-label="뒤로 가기" onClick={() => navigate(-1)}>
-            <IoChevronBack size={20} />
-          </button>
-        }
+        subLeft={<HeaderBackButton />}
         subTitle={isEditMode ? '소비 기록 수정' : '소비 기록 입력'}
         subMain={
-          <div className={styles.typeToggle}>
-            <button
-              type="button"
-              className={`${styles.typeButton} ${type === 'saved' ? styles.typeButtonSelected : ''}`}
-              aria-pressed={type === 'saved'}
-              onClick={() => setType('saved')}
-            >
-              참았어요
-            </button>
-            <button
-              type="button"
-              className={`${styles.typeButton} ${type === 'consume' ? styles.typeButtonSelected : ''}`}
-              aria-pressed={type === 'consume'}
-              onClick={() => setType('consume')}
-            >
-              샀어요
-            </button>
-          </div>
+          <TabGroup<RecordType>
+            variant="segment"
+            options={RECORD_TYPE_OPTIONS}
+            value={type}
+            onChange={setType}
+          />
         }
       />
 

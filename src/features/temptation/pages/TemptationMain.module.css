@@ -1,36 +1,50 @@
 /* TemptationMain.tsx */
 .temptationMain {
-  min-width: 390px;
-  margin: 0 auto;
+  width: 100%;
   position: relative;
-  padding: 25px;
-  padding-bottom: 80px;
+  padding: 20px 20px 80px;
+  box-sizing: border-box;
 }
 
 .topLine {
   display: flex;
-  color: var(--Primary, #243130);
-  font-size: 16px;
-  margin: 7px 0 15px 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  margin: 16px 0 20px;
   align-items: center;
   justify-content: space-between;
+}
+
+.countText {
+  margin: 0;
+}
+
+.countHighlight {
+  color: var(--color-main-500);
+  font-weight: 700;
 }
 
 .sortContainer {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+}
+
+.sortLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-gray-300);
 }
 
 .addBtn {
   position: fixed;
   bottom: 20px;
-  right: calc(50% - 195px + 20px); 
+  right: max(20px, calc(50% - 195px + 20px));
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: var(--Main-500, #2F7F82);
-  color: var(--White, #FEFEFE);
+  background-color: var(--color-main-500);
+  color: var(--color-text-white);
   cursor: pointer;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.25);
   display: flex;
@@ -41,7 +55,7 @@
 }
 
 .addBtn:hover {
-  background-color: var(--Main-600, #286A6D);
+  background-color: var(--color-main-600);
 }
 
 .bottomSheet {
@@ -58,8 +72,8 @@
   width: 100%;
   height: 60px;
   border-radius: 50px;
-  background-color: var(--Main-500, #2F7F82);
-  color: var(--White, #FEFEFE);
+  background-color: var(--color-main-500);
+  color: var(--color-text-white);
   font-size: 18px;
   font-weight: 500;
   border: none;
@@ -69,90 +83,33 @@
 }
 
 .sheetBtn:hover {
-  background-color: var(--Main-600, #286A6D);
-}
-
-/* SortBar.tsx */
-.sortBar {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--Primary, #243130);
-}
-
-.sortBar:hover {
-  font-weight: 500;
-}
-
-.active {
-  display: inline-block;
-  font-weight: 500;
-  border-bottom: 1.5px solid var(--Primary, #243130);
-  line-height: 1.2;
-  padding-bottom: 0px;
-  cursor: pointer;
-}
-
-/* CategoryFilterBar.tsx */
-.chipContainer {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: -13px;
-  gap: 4px;
-}
-
-.chip {
-  display: flex;
-  height: 30px;
-  border: 1.5px solid var(--Main-500, #2F7F82);
-  border-radius: 16px;
-  color: var(--Main-500, #2F7F82);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 0 10px;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.chip:hover {
-  color: var(--Main-500, #2F7F82);
-  background-color: var(--Main-100, #E5F2F1);
-}
-
-.chipSelected {
-  color: var(--White, #fefefe);
-  background-color: var(--Main-500, #2F7F82);
-  font-weight: 500;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  background-color: var(--color-main-600);
 }
 
 /* CategoryProductBox.tsx */
 .productBox {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .productCategory {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 7px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .category {
-  color: var(--Primary, #243130);
-  font-size: 18px;
-  font-weight: bold;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .productContainer {
-  border: 1.5px solid var(--Gray-100, #DDDDDD);
-  border-radius: 12px;
-  padding: 0 15px;
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: 14px;
+  padding: 0 16px;
 }
 
 .divider {
-  border-top: 1.5px solid var(--Gray-100, #DDDDDD);
+  border-top: 1.5px solid var(--color-gray-100);
 }

@@ -21,7 +21,6 @@
   padding: 0 8px;
   border-radius: 11px;
   border: 1px solid var(--color-main-500, #2f7f82);
-  font-family: Pretendard;
   font-size: 11px;
   font-weight: 600;
   color: var(--color-main-500, #2f7f82);
@@ -30,7 +29,6 @@
 
 .title {
   margin: 0;
-  font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -38,15 +36,8 @@
   color: var(--color-gray-300, #5b6b6a);
 }
 
-.amountRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
 .amount {
   margin: 0;
-  font-family: Pretendard;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -60,8 +51,8 @@
 }
 
 .date {
+  align-self: flex-end;
   margin: 0;
-  font-family: Pretendard;
   font-size: 12px;
   font-weight: 500;
   color: var(--color-gray-300, #5b6b6a);
@@ -70,7 +61,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  padding: 27px 37px 32px;
+  padding: 27px 20px 32px;
 }
 
 .section {
@@ -85,7 +76,6 @@
 
 .sectionLabel {
   margin: 0;
-  font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
@@ -97,7 +87,6 @@
   margin: 0 0 16px;
   padding-bottom: 7px;
   border-bottom: 1px solid var(--color-gray-100, #dddddd);
-  font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 600;

@@ -34,7 +34,8 @@ export function useNotificationSettings() {
 export function useUpdateNotificationSettings() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (settings: NotificationSettingsResponse) => notificationApi.updateSettings(settings),
+    mutationFn: (settings: NotificationSettingsResponse) =>
+      notificationApi.updateSettings(settings),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.settings }),
   })
 }

@@ -22,12 +22,12 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
 
   const { data: serverNotifications = [] } = useNotifications()
 
-  const notifications: NotificationItem[] = serverNotifications.map(n => ({
+  const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
     isRead: readIds.has(n.id) ? true : n.isRead,
   }))
 
-  const unreadCount = notifications.filter(n => !n.isRead).length
+  const unreadCount = notifications.filter((n) => !n.isRead).length
   useEffect(() => {
     onUnreadCountChange?.(unreadCount)
   }, [unreadCount, onUnreadCountChange])
@@ -43,9 +43,8 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
     return () => document.removeEventListener('mousedown', handler)
   }, [sortOpen])
 
-  const filtered = filter === '전체'
-    ? notifications
-    : notifications.filter(n => n.type === filter)
+  const filtered =
+    filter === '전체' ? notifications : notifications.filter((n) => n.type === filter)
 
   const sorted = [...filtered].sort((a, b) => {
     if (sort === '오래된순') return a.id - b.id
@@ -57,24 +56,27 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
   })
 
   const handleRead = (id: number) => {
-    setReadIds(prev => new Set([...prev, id]))
+    setReadIds((prev) => new Set([...prev, id]))
   }
 
   return (
     <main className={styles.main}>
       <div className={styles.sortRow}>
         <div className={styles.sortWrap} ref={sortRef}>
-          <button className={styles.sortBtn} onClick={() => setSortOpen(prev => !prev)}>
+          <button className={styles.sortBtn} onClick={() => setSortOpen((prev) => !prev)}>
             {sort}
             <IoChevronDown size={16} className={sortOpen ? styles.iconUp : ''} />
           </button>
           {sortOpen && (
             <div className={styles.sortDropdown}>
-              {SORT_OPTIONS.map(opt => (
+              {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt}
                   className={`${styles.sortOption} ${sort === opt ? styles.sortOptionActive : ''}`}
-                  onClick={() => { setSort(opt); setSortOpen(false) }}
+                  onClick={() => {
+                    setSort(opt)
+                    setSortOpen(false)
+                  }}
                 >
                   {opt}
                 </button>
@@ -84,14 +86,12 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
         </div>
       </div>
       <ul className={styles.list}>
-        {sorted.map(item => (
+        {sorted.map((item) => (
           <li key={item.id}>
             <NotificationCard {...item} onRead={handleRead} />
           </li>
         ))}
-        {sorted.length === 0 && (
-          <li className={styles.empty}>알림이 없습니다.</li>
-        )}
+        {sorted.length === 0 && <li className={styles.empty}>알림이 없습니다.</li>}
       </ul>
     </main>
   )

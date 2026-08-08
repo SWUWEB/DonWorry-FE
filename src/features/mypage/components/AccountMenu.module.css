@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
@@ -12,12 +12,12 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 16px 24px;
+  padding: 14px 20px;
   border: none;
   border-bottom: 1px solid #f1f1f1;
   background: white;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #111111;
 }
@@ -26,17 +26,15 @@
   border-bottom: none;
 }
 
-
-
 .icon {
-  color: #C0C0C0;
+  color: #c0c0c0;
   flex-shrink: 0;
 }
 
 .withdraw {
-  color: #FF8484;
+  color: #ff8484;
 }
 
 .withdraw .icon {
-  color: #FFB4B4;
+  color: #ffb4b4;
 }

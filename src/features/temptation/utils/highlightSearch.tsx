@@ -1,10 +1,10 @@
 export const highlightSearch = (text: string, keyword: string) => {
-  const trimmed = keyword.trim();
-  if (!trimmed) return text;
+  const trimmed = keyword.trim()
+  if (!trimmed) return text
 
-  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escaped})`, 'gi');
-  const parts = text.split(regex);
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escaped})`, 'gi')
+  const parts = text.split(regex)
 
   return parts.map((part, index) =>
     part.toLowerCase() === trimmed.toLowerCase() ? (
@@ -13,6 +13,6 @@ export const highlightSearch = (text: string, keyword: string) => {
       </mark>
     ) : (
       part
-    )
-  );
-};
+    ),
+  )
+}

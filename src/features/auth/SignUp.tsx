@@ -1,13 +1,13 @@
 import styles from './SignUp.module.css'
 import SignUpForm from './components/SignUpForm'
+import logo from '@/assets/logos/donworry_simple_logo.svg'
 
 export default function SignUp() {
   return (
     <main className={styles.container}>
       <div className={styles.authWrapper}>
-
         <section className={styles.topSection}>
-          <div className={styles.logo}>Logo</div>
+          <img src={logo} alt="DonWorry" className={styles.logo} />
 
           <h1 className={styles.title}>시작해볼까요?</h1>
 
@@ -21,7 +21,6 @@ export default function SignUp() {
         <section className={styles.card}>
           <SignUpForm />
         </section>
-
       </div>
     </main>
   )
