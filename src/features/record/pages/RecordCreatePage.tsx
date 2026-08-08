@@ -18,8 +18,14 @@ const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
 ]
 
 export default function RecordCreatePage() {
-  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
+
+  // id별로 폼 상태를 새로 초기화하기 위해 route key를 컴포넌트 경계에 적용합니다.
+  return <RecordCreateForm key={id ?? 'new'} id={id} />
+}
+
+function RecordCreateForm({ id }: { id?: string }) {
+  const navigate = useNavigate()
   const isEditMode = Boolean(id)
   const editingRecord = id ? MOCK_RECORDS.find((item) => item.id === id) : undefined
 
@@ -60,7 +66,7 @@ export default function RecordCreatePage() {
   }
 
   return (
-    <div className={styles.container} key={id ?? 'new'}>
+    <div className={styles.container}>
       <Header
         subLeft={<HeaderBackButton />}
         subTitle={isEditMode ? '소비 기록 수정' : '소비 기록 입력'}
