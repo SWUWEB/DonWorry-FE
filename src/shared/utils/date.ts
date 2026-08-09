@@ -14,14 +14,27 @@ export function getDayIndex(length: number, date: Date = new Date()): number {
   return dayOfYear % length
 }
 
+// 서버 응답(occurredAt)은 KST 기준 날짜 계약이므로, 브라우저 로컬 시간대와 무관하게
+// 항상 Asia/Seoul 기준으로 날짜를 뽑아냅니다.
+const KST_DATE_FORMATTER = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+})
+
+function getKstDateParts(isoDate: string) {
+  const parts = KST_DATE_FORMATTER.formatToParts(new Date(isoDate))
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? ''
+  return { year: get('year'), month: get('month'), day: get('day') }
+}
+
 export function formatDateKorean(isoDate: string): string {
-  const date = new Date(isoDate)
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+  const { year, month, day } = getKstDateParts(isoDate)
+  return `${year}년 ${month}월 ${day}일`
 }
 
 export function formatDateCompact(isoDate: string): string {
-  const date = new Date(isoDate)
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${date.getFullYear()}.${month}.${day}`
+  const { year, month, day } = getKstDateParts(isoDate)
+  return `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`
 }

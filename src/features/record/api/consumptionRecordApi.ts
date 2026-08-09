@@ -27,6 +27,7 @@ interface ConsumptionRecordDetailResult extends ConsumptionRecordResult {
 }
 
 export interface RecordDetail extends RecordItem {
+  recentCategoryConsumptionCount: number
   recentCategoryConsumptions: RecordItem[]
 }
 
@@ -70,6 +71,7 @@ export const consumptionRecordApi = {
     )
     return {
       ...adaptRecord(data.data),
+      recentCategoryConsumptionCount: data.data.recentCategoryConsumptionCount,
       recentCategoryConsumptions: data.data.recentCategoryConsumptions.map(adaptRecord),
     }
   },

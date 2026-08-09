@@ -130,4 +130,42 @@ describe('consumptionRecordApi', () => {
       },
     ])
   })
+
+  it('getDetail: recentCategoryConsumptionCount는 배열 길이가 아니라 API 응답값을 그대로 사용한다', async () => {
+    vi.mocked(client.get).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '1',
+          type: 'CONSUMED',
+          productName: 'ZARA 반팔티',
+          price: 23900,
+          categoryCode: 'FASHION',
+          categoryLabel: '패션',
+          reason: null,
+          occurredAt: '2026-04-17T12:00:00.000Z',
+          // 응답 배열은 최근 1건만 담고 있지만, 실제 총 건수는 5건인 상황을 가정합니다.
+          recentCategoryConsumptionCount: 5,
+          recentCategoryConsumptions: [
+            {
+              id: '3',
+              type: 'SKIPPED',
+              productName: '무신사',
+              price: 35000,
+              categoryCode: 'FASHION',
+              categoryLabel: '패션',
+              reason: null,
+              occurredAt: '2026-04-14T12:00:00.000Z',
+            },
+          ],
+        },
+      },
+    })
+
+    const result = await consumptionRecordApi.getDetail('1')
+
+    expect(result.recentCategoryConsumptionCount).toBe(5)
+    expect(result.recentCategoryConsumptions).toHaveLength(1)
+  })
 })
