@@ -12,6 +12,7 @@ import CategorySelector from '@/components/layout/CategorySelector'
 import type { Category } from '@/components/layout/CategorySelector'
 import { CATEGORIES } from '@/constants/product'
 import type { RecordType } from '@/features/record/mockRecords'
+import type { RecordDetail } from '@/features/record/api/consumptionRecordApi'
 import {
   useConsumptionRecordDetail,
   useCreateConsumptionRecord,
@@ -35,22 +36,49 @@ export interface RecordDraft {
 }
 
 export default function RecordCreatePage() {
-  const { id } = useParams<{ id: string }>()
-
-  // id별로 폼 상태를 새로 초기화하기 위해 route key를 컴포넌트 경계에 적용합니다.
-  return <RecordCreateForm key={id ?? 'new'} id={id} />
-}
-
-function RecordCreateForm({ id }: { id?: string }) {
   const navigate = useNavigate()
+  const { id } = useParams<{ id: string }>()
   const isEditMode = Boolean(id)
 
   const {
     data: editingRecord,
     isLoading: isLoadingRecord,
+    isError: isDetailError,
     error: detailError,
+    refetch: refetchDetail,
   } = useConsumptionRecordDetail(id)
   const isNotFound = isAxiosError(detailError) && detailError.response?.status === 404
+
+  useEffect(() => {
+    if (isNotFound) {
+      navigate('/record', { replace: true })
+    }
+  }, [isNotFound, navigate])
+
+  if (isEditMode && isNotFound) return null
+
+  if (isEditMode && isLoadingRecord) {
+    return <p className={styles.message}>불러오는 중...</p>
+  }
+
+  if (isEditMode && isDetailError) {
+    return (
+      <div className={styles.message}>
+        <p>소비 기록을 불러오지 못했습니다.</p>
+        <button type="button" className={styles.retryButton} onClick={() => refetchDetail()}>
+          다시 시도
+        </button>
+      </div>
+    )
+  }
+
+  // id별로, 그리고 상세 데이터가 준비된 이후에만 마운트되도록 route key를 컴포넌트 경계에 적용합니다.
+  return <RecordCreateForm key={id ?? 'new'} id={id} editingRecord={editingRecord} />
+}
+
+function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: RecordDetail }) {
+  const navigate = useNavigate()
+  const isEditMode = Boolean(id)
 
   const createRecord = useCreateConsumptionRecord()
   const updateRecord = useUpdateConsumptionRecord()
@@ -58,12 +86,6 @@ function RecordCreateForm({ id }: { id?: string }) {
   const parseUrl = useParseProductUrl()
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
-  useEffect(() => {
-    if (isNotFound) {
-      navigate('/record', { replace: true })
-    }
-  }, [isNotFound, navigate])
 
   const [type, setType] = useState<RecordType>(editingRecord?.type ?? 'consume')
   const [productUrl, setProductUrl] = useState('')
@@ -75,8 +97,6 @@ function RecordCreateForm({ id }: { id?: string }) {
   const [reason, setReason] = useState(editingRecord?.reason ?? '')
 
   const isValid = title.trim() !== '' && amount > 0
-
-  if (isEditMode && (isLoadingRecord || isNotFound)) return null
 
   const submitError = createRecord.isError || updateRecord.isError
 

@@ -90,7 +90,7 @@ export default function RecordDetailPage() {
         )}
 
         <RecentSpendingList
-          count={record.recentCategoryConsumptions.length}
+          count={record.recentCategoryConsumptionCount}
           records={record.recentCategoryConsumptions.map((item) => ({
             id: item.id,
             title: item.title,
