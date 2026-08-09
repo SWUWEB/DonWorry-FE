@@ -13,3 +13,15 @@ export function getDayIndex(length: number, date: Date = new Date()): number {
   const dayOfYear = Math.floor((today.getTime() - start.getTime()) / 86400000)
   return dayOfYear % length
 }
+
+export function formatDateKorean(isoDate: string): string {
+  const date = new Date(isoDate)
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+export function formatDateCompact(isoDate: string): string {
+  const date = new Date(isoDate)
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${date.getFullYear()}.${month}.${day}`
+}
