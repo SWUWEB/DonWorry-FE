@@ -85,6 +85,7 @@ export interface ConsumptionRecordInput {
   category?: string
   reason?: string
   riskScore?: number
+  productUrl?: string
 }
 
 function toRequestBody(input: ConsumptionRecordInput) {
@@ -95,6 +96,7 @@ function toRequestBody(input: ConsumptionRecordInput) {
     ...(input.category && { category_code: CATEGORY_LABEL_TO_CODE[input.category] }),
     ...(input.reason && { reason: input.reason }),
     ...(input.riskScore !== undefined && { riskScore: input.riskScore }),
+    ...(input.productUrl && { productUrl: input.productUrl }),
   }
 }
 

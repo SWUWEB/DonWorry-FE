@@ -18,6 +18,7 @@ import {
   useUpdateConsumptionRecord,
   useDeleteConsumptionRecord,
 } from '@/features/record/hooks/useConsumptionRecords'
+import { useParseProductUrl } from '@/features/record/hooks/useProductUrl'
 import styles from './RecordCreatePage.module.css'
 
 const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
@@ -30,6 +31,7 @@ export interface RecordDraft {
   amount: number
   category: Category
   reason: string
+  productUrl?: string
 }
 
 export default function RecordCreatePage() {
@@ -53,6 +55,7 @@ function RecordCreateForm({ id }: { id?: string }) {
   const createRecord = useCreateConsumptionRecord()
   const updateRecord = useUpdateConsumptionRecord()
   const deleteRecord = useDeleteConsumptionRecord()
+  const parseUrl = useParseProductUrl()
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
@@ -63,6 +66,7 @@ function RecordCreateForm({ id }: { id?: string }) {
   }, [isNotFound, navigate])
 
   const [type, setType] = useState<RecordType>(editingRecord?.type ?? 'consume')
+  const [productUrl, setProductUrl] = useState('')
   const [title, setTitle] = useState(editingRecord?.title ?? '')
   const [amount, setAmount] = useState(editingRecord?.amount ?? 0)
   const [category, setCategory] = useState<Category>(
@@ -76,26 +80,36 @@ function RecordCreateForm({ id }: { id?: string }) {
 
   const submitError = createRecord.isError || updateRecord.isError
 
+  const handleParseUrl = () => {
+    if (!productUrl.trim()) return
+    parseUrl.mutate(productUrl, {
+      onSuccess: (data) => {
+        setTitle(data.productName)
+        setAmount(data.price)
+      },
+    })
+  }
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     if (!isValid) return
 
     if (isEditMode && id) {
       updateRecord.mutate(
-        { id, input: { type, productName: title, price: amount, category, reason } },
+        { id, input: { type, productName: title, price: amount, category, reason, productUrl } },
         { onSuccess: () => navigate(`/record/${id}`) },
       )
       return
     }
 
     if (type === 'consume') {
-      const draft: RecordDraft = { title, amount, category, reason }
+      const draft: RecordDraft = { title, amount, category, reason, productUrl }
       navigate('/record/intervention', { state: { draft } })
       return
     }
 
     createRecord.mutate(
-      { type, productName: title, price: amount, category, reason },
+      { type, productName: title, price: amount, category, reason, productUrl },
       { onSuccess: () => navigate('/record') },
     )
   }
@@ -129,16 +143,28 @@ function RecordCreateForm({ id }: { id?: string }) {
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>
-          <label htmlFor="title" className={styles.label}>
-            이름
+          <label htmlFor="productUrl" className={styles.label}>
+            상품 URL (선택)
           </label>
-          <input
-            id="title"
-            className={styles.textInput}
-            placeholder="예: 투썸플레이스 신봉점"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          />
+          <div className={styles.urlRow}>
+            <input
+              id="productUrl"
+              className={`${styles.textInput} ${styles.urlInput}`}
+              placeholder="https://..."
+              value={productUrl}
+              onChange={(event) => setProductUrl(event.target.value)}
+            />
+            <button
+              type="button"
+              className={styles.urlButton}
+              disabled={!productUrl.trim() || parseUrl.isPending}
+              onClick={handleParseUrl}
+            >
+              {parseUrl.isPending ? '불러오는 중' : '불러오기'}
+            </button>
+          </div>
+          {parseUrl.isError && <p className={styles.errorText}>URL을 불러오는 데 실패했습니다.</p>}
+          {parseUrl.isSuccess && <p className={styles.successText}>상품 정보를 불러왔습니다.</p>}
         </div>
 
         <div className={styles.field}>
@@ -150,6 +176,19 @@ function RecordCreateForm({ id }: { id?: string }) {
             className={styles.amountWrapper}
             value={amount}
             onChange={setAmount}
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="title" className={styles.label}>
+            상품명
+          </label>
+          <input
+            id="title"
+            className={styles.textInput}
+            placeholder="예: 투썸플레이스 신봉점"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
           />
         </div>
 

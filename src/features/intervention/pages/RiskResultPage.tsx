@@ -54,6 +54,7 @@ export default function RiskResultPage() {
         category: draft.category,
         reason: draft.reason,
         riskScore: score,
+        productUrl: draft.productUrl,
       },
       { onSuccess: () => navigate('/record', { replace: true }) },
     )

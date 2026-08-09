@@ -43,6 +43,41 @@
   border-bottom-color: var(--color-main-500, #2f7f82);
 }
 
+.urlRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.urlInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.urlButton {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-text-primary, #243130);
+  color: var(--color-main-000, #f7fbfa);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.urlButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.successText {
+  margin: 0;
+  font-size: 13px;
+  color: #008d02;
+}
+
 .amountWrapper {
   padding-bottom: 4px;
 }

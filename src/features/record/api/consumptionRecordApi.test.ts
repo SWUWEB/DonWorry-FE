@@ -264,4 +264,37 @@ describe('consumptionRecordApi', () => {
 
     expect(client.delete).toHaveBeenCalledWith('/api/v1/consumption-records/1')
   })
+
+  it('create: productUrl이 있으면 요청 바디에 포함한다', async () => {
+    vi.mocked(client.post).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '3',
+          type: 'CONSUMED',
+          productName: '캠핑 의자',
+          price: 45000,
+          categoryCode: 'HOBBY_GOODS',
+          categoryLabel: '취미/굿즈',
+          reason: null,
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    await consumptionRecordApi.create({
+      type: 'consume',
+      productName: '캠핑 의자',
+      price: 45000,
+      productUrl: 'https://example.com/products/chair',
+    })
+
+    expect(client.post).toHaveBeenCalledWith('/api/v1/consumption-records', {
+      type: 'CONSUMED',
+      productName: '캠핑 의자',
+      price: 45000,
+      productUrl: 'https://example.com/products/chair',
+    })
+  })
 })
