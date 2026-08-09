@@ -52,6 +52,12 @@
   font-weight: 600;
 }
 
+.errorText {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: #eb0000;
+}
+
 .submitBtn {
   height: 52px;
   margin-top: 8px;

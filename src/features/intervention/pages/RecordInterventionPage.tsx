@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import InterventionHeader from '@/features/intervention/components/InterventionHeader'
 import AnswerButton from '@/features/intervention/components/AnswerButton'
 import RecentSpendingList from '@/features/intervention/components/RecentSpendingList'
 import type { RecentSpendingItem } from '@/features/intervention/components/RecentSpendingList'
+import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
 import styles from '../styles/RecordInterventionPage.module.css'
 
 interface AnswerOption {
@@ -54,9 +55,20 @@ const TOTAL_STEPS = QUESTIONS.length
 
 export default function RecordInterventionPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const draft = (location.state as { draft?: RecordDraft } | null)?.draft
+
+  useEffect(() => {
+    if (!draft) {
+      navigate('/record/new', { replace: true })
+    }
+  }, [draft, navigate])
+
   const [step, setStep] = useState(1)
   const [answers, setAnswers] = useState<number[]>([])
   const question = QUESTIONS[step - 1]
+
+  if (!draft) return null
 
   const handleAnswer = (optionScore: number) => {
     const nextAnswers = [...answers, optionScore]
@@ -68,7 +80,10 @@ export default function RecordInterventionPage() {
     }
 
     const totalScore = nextAnswers.reduce((sum, value) => sum + value, 0)
-    navigate(`/record/intervention/result?score=${totalScore}`, { replace: true })
+    navigate(`/record/intervention/result?score=${totalScore}`, {
+      replace: true,
+      state: { draft },
+    })
   }
 
   const handleBack = () => {

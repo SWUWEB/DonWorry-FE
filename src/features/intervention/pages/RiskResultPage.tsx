@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import BackButton from '@/features/intervention/components/BackButton'
 import AnswerButton from '@/features/intervention/components/AnswerButton'
 import CountdownTimer from '@/features/intervention/components/CountdownTimer'
 import { getRiskLevel, parseRiskScore } from '@/features/intervention/utils/riskLevel'
 import type { RiskLevel } from '@/features/intervention/utils/riskLevel'
+import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
+import type { RecordType } from '@/features/record/mockRecords'
+import { useCreateConsumptionRecord } from '@/features/record/hooks/useConsumptionRecords'
 import styles from '../styles/RiskResultPage.module.css'
 
-// 하드코딩됨. API 연결 시 수정 예정
-const ITEM_NAME = '쿠어 워시드 디테처블 후드 점퍼(블랙)'
+// 하드코딩됨. 급여(시급) 정보를 다루는 기능이 아직 없어 실제 근무 시간 계산 API 연결 전까지 유지합니다.
 const WORK_HOURS = 26
 
 const RISK_CONTENT: Record<RiskLevel, { heading: string; timerSeconds: number | null }> = {
@@ -22,22 +24,40 @@ const RISK_CONTENT: Record<RiskLevel, { heading: string; timerSeconds: number | 
 
 export default function RiskResultPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
 
   const score = parseRiskScore(searchParams.get('score'))
+  const draft = (location.state as { draft?: RecordDraft } | null)?.draft
+
+  const createRecord = useCreateConsumptionRecord()
 
   useEffect(() => {
-    if (score === null) {
-      navigate('/record/intervention', { replace: true })
+    if (score === null || !draft) {
+      navigate('/record/new', { replace: true })
     }
-  }, [score, navigate])
+  }, [score, draft, navigate])
 
   const riskLevel = score !== null ? getRiskLevel(score) : 'low'
   const { heading, timerSeconds } = RISK_CONTENT[riskLevel]
 
   const [waitComplete, setWaitComplete] = useState(timerSeconds === null)
 
-  if (score === null) return null
+  if (score === null || !draft) return null
+
+  const handleDecision = (type: RecordType) => {
+    createRecord.mutate(
+      {
+        type,
+        productName: draft.title,
+        price: draft.amount,
+        category: draft.category,
+        reason: draft.reason,
+        riskScore: score,
+      },
+      { onSuccess: () => navigate('/record', { replace: true }) },
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -50,7 +70,7 @@ export default function RiskResultPage() {
       </h1>
 
       <p className={styles.description}>
-        {ITEM_NAME}을
+        {draft.title}을
         <br />
         사기 위해서는 <strong className={styles.highlight}>아르바이트 {WORK_HOURS}시간</strong> 동안
         근무해야 합니다
@@ -62,13 +82,22 @@ export default function RiskResultPage() {
         )}
       </div>
 
+      {createRecord.isError && (
+        <p className={styles.errorText}>저장에 실패했습니다. 다시 시도해주세요.</p>
+      )}
+
       <div className={styles.buttons}>
-        <AnswerButton label="안 살게요" variant="outline" onClick={() => navigate('/record')} />
+        <AnswerButton
+          label="안 살게요"
+          variant="outline"
+          disabled={createRecord.isPending}
+          onClick={() => handleDecision('saved')}
+        />
         <AnswerButton
           label="그래도 살게요"
           variant="filled"
-          disabled={!waitComplete}
-          onClick={() => navigate('/record')}
+          disabled={!waitComplete || createRecord.isPending}
+          onClick={() => handleDecision('consume')}
         />
       </div>
     </div>

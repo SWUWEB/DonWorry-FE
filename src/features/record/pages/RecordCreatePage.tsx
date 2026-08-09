@@ -1,21 +1,36 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { isAxiosError } from 'axios'
+import { IoTrashOutline } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
 import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import TabGroup from '@/shared/components/TabGroup'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import AmountInput from '@/components/layout/AmountInput'
 import CategorySelector from '@/components/layout/CategorySelector'
 import type { Category } from '@/components/layout/CategorySelector'
 import { CATEGORIES } from '@/constants/product'
-import { MOCK_RECORDS } from '@/features/record/mockRecords'
 import type { RecordType } from '@/features/record/mockRecords'
+import {
+  useConsumptionRecordDetail,
+  useCreateConsumptionRecord,
+  useUpdateConsumptionRecord,
+  useDeleteConsumptionRecord,
+} from '@/features/record/hooks/useConsumptionRecords'
 import styles from './RecordCreatePage.module.css'
 
 const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
   { label: '참았어요', value: 'saved' },
   { label: '샀어요', value: 'consume' },
 ]
+
+export interface RecordDraft {
+  title: string
+  amount: number
+  category: Category
+  reason: string
+}
 
 export default function RecordCreatePage() {
   const { id } = useParams<{ id: string }>()
@@ -27,13 +42,25 @@ export default function RecordCreatePage() {
 function RecordCreateForm({ id }: { id?: string }) {
   const navigate = useNavigate()
   const isEditMode = Boolean(id)
-  const editingRecord = id ? MOCK_RECORDS.find((item) => item.id === id) : undefined
+
+  const {
+    data: editingRecord,
+    isLoading: isLoadingRecord,
+    error: detailError,
+  } = useConsumptionRecordDetail(id)
+  const isNotFound = isAxiosError(detailError) && detailError.response?.status === 404
+
+  const createRecord = useCreateConsumptionRecord()
+  const updateRecord = useUpdateConsumptionRecord()
+  const deleteRecord = useDeleteConsumptionRecord()
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
-    if (isEditMode && !editingRecord) {
+    if (isNotFound) {
       navigate('/record', { replace: true })
     }
-  }, [isEditMode, editingRecord, navigate])
+  }, [isNotFound, navigate])
 
   const [type, setType] = useState<RecordType>(editingRecord?.type ?? 'consume')
   const [title, setTitle] = useState(editingRecord?.title ?? '')
@@ -45,24 +72,37 @@ function RecordCreateForm({ id }: { id?: string }) {
 
   const isValid = title.trim() !== '' && amount > 0
 
-  if (isEditMode && !editingRecord) return null
+  if (isEditMode && (isLoadingRecord || isNotFound)) return null
 
-  // 하드코딩됨. 실제 저장(API 연결) 로직은 추후 구현 예정. 지금은 타입에 따라 라우팅만 처리합니다.
+  const submitError = createRecord.isError || updateRecord.isError
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     if (!isValid) return
 
-    if (isEditMode) {
-      navigate(`/record/${id}`)
+    if (isEditMode && id) {
+      updateRecord.mutate(
+        { id, input: { type, productName: title, price: amount, category, reason } },
+        { onSuccess: () => navigate(`/record/${id}`) },
+      )
       return
     }
 
     if (type === 'consume') {
-      navigate('/record/intervention')
+      const draft: RecordDraft = { title, amount, category, reason }
+      navigate('/record/intervention', { state: { draft } })
       return
     }
 
-    navigate('/record')
+    createRecord.mutate(
+      { type, productName: title, price: amount, category, reason },
+      { onSuccess: () => navigate('/record') },
+    )
+  }
+
+  const handleDelete = () => {
+    if (!id) return
+    deleteRecord.mutate(id, { onSuccess: () => navigate('/record', { replace: true }) })
   }
 
   return (
@@ -70,6 +110,13 @@ function RecordCreateForm({ id }: { id?: string }) {
       <Header
         subLeft={<HeaderBackButton />}
         subTitle={isEditMode ? '소비 기록 수정' : '소비 기록 입력'}
+        subRight={
+          isEditMode ? (
+            <button type="button" aria-label="삭제" onClick={() => setIsDeleteDialogOpen(true)}>
+              <IoTrashOutline size={20} />
+            </button>
+          ) : undefined
+        }
         subMain={
           <TabGroup<RecordType>
             variant="segment"
@@ -124,10 +171,27 @@ function RecordCreateForm({ id }: { id?: string }) {
           />
         </div>
 
-        <button type="submit" className={styles.submitBtn} disabled={!isValid}>
+        {submitError && <p className={styles.errorText}>저장에 실패했습니다. 다시 시도해주세요.</p>}
+
+        <button
+          type="submit"
+          className={styles.submitBtn}
+          disabled={!isValid || createRecord.isPending || updateRecord.isPending}
+        >
           {isEditMode ? '수정하기' : '기록하기'}
         </button>
       </form>
+
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        title="이 소비 기록을 삭제할까요?"
+        description="삭제한 기록은 복구할 수 없습니다."
+        confirmText="삭제"
+        isLoading={deleteRecord.isPending}
+        errorMessage={deleteRecord.isError ? '삭제에 실패했습니다. 다시 시도해주세요.' : undefined}
+        onCancel={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }
