@@ -6,6 +6,7 @@ import type { RecordListFilter } from '../api/consumptionRecordApi'
 const QUERY_KEYS = {
   list: (filter: RecordListFilter) => ['consumption-records', filter] as const,
   detail: (id: string) => ['consumption-records', id] as const,
+  ratio: ['consumption-records', 'ratio'] as const,
 }
 
 export function useConsumptionRecords(filter: RecordListFilter = 'all') {
@@ -26,5 +27,13 @@ export function useConsumptionRecordDetail(id: string | undefined) {
       if (isAxiosError(err) && err.response?.status === 404) return false
       return failureCount < 3
     },
+  })
+}
+
+export function useConsumptionRatio() {
+  return useQuery({
+    queryKey: QUERY_KEYS.ratio,
+    queryFn: consumptionRecordApi.getRatio,
+    staleTime: 1000 * 60,
   })
 }

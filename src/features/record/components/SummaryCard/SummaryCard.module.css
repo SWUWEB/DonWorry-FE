@@ -3,6 +3,29 @@
   box-sizing: border-box;
 }
 
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: var(--color-gray-300, #5b6b6a);
+  text-align: center;
+}
+
+.retryButton {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .card {
   width: 100%;
   display: flex;
@@ -41,8 +64,7 @@
 
 .legendWrapper {
   position: relative;
-  width: 100%;
-  max-width: 280px;
+  width: 280px;
   height: 73px;
   margin-top: 12px;
 }
@@ -66,7 +88,7 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  padding: 13px 16px;
+  padding: 13px 116px 14px 24px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

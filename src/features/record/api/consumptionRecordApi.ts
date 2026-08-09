@@ -30,6 +30,23 @@ export interface RecordDetail extends RecordItem {
   recentCategoryConsumptions: RecordItem[]
 }
 
+interface ConsumptionRatioResult {
+  period: { startDate: string; endDate: string; days: number }
+  totalAmount: number
+  skippedAmount: number
+  consumedAmount: number
+  skippedRatio: number
+  consumedRatio: number
+}
+
+export interface ConsumptionRatio {
+  totalAmount: number
+  skippedAmount: number
+  consumedAmount: number
+  skippedRatio: number
+  consumedRatio: number
+}
+
 export type RecordListFilter = 'all' | RecordType
 
 const TYPE_TO_FRONT: Record<ApiRecordType, RecordType> = {
@@ -72,5 +89,13 @@ export const consumptionRecordApi = {
       ...adaptRecord(data.data),
       recentCategoryConsumptions: data.data.recentCategoryConsumptions.map(adaptRecord),
     }
+  },
+
+  getRatio: async (): Promise<ConsumptionRatio> => {
+    const { data } = await client.get<ApiResponse<ConsumptionRatioResult>>(
+      '/api/v1/consumption-records/ratio',
+    )
+    const { totalAmount, skippedAmount, consumedAmount, skippedRatio, consumedRatio } = data.data
+    return { totalAmount, skippedAmount, consumedAmount, skippedRatio, consumedRatio }
   },
 }
