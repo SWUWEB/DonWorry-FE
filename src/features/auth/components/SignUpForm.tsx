@@ -4,9 +4,11 @@ import Button from '@/shared/components/Button'
 import { useState } from 'react'
 import styles from './SignUpForm.module.css'
 import ErrorMessage from './ErrorMessage'
+import { useSignup } from '@/hooks/useSignup'
 
 export default function SignUpForm() {
   const navigate = useNavigate()
+  const { mutate } = useSignup()
   const [name, setName] = useState('')
   const [id, setId] = useState('')
 
@@ -34,7 +36,27 @@ export default function SignUpForm() {
 
   const handleSubmit = () => {
     if (!canSubmit) return
-    navigate('/onboarding')
+
+    mutate(
+      {
+        name,
+        loginId: id,
+        email,
+        emailVerificationToken: code,
+        password,
+        passwordConfirm: passwordCheck,
+        phoneNumber: phone,
+      },
+      {
+        onSuccess: () => {
+          navigate('/onboarding')
+        },
+        onError: (error) => {
+          console.error(error)
+          alert('회원가입에 실패했습니다.')
+        },
+      },
+    )
   }
 
   return (
