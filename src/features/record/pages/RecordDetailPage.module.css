@@ -36,12 +36,6 @@
   color: var(--color-gray-300, #5b6b6a);
 }
 
-.amountRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
 .amount {
   margin: 0;
   font-size: 24px;
@@ -57,6 +51,7 @@
 }
 
 .date {
+  align-self: flex-end;
   margin: 0;
   font-size: 12px;
   font-weight: 500;
