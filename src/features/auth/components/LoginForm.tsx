@@ -7,12 +7,15 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './LoginForm.module.css'
+import { useLogin } from '@/hooks/useLogin'
 
 export default function LoginForm() {
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState(false)
 
   const navigate = useNavigate()
+  const { mutate } = useLogin()
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault()
@@ -27,7 +30,30 @@ export default function LoginForm() {
       return
     }
 
-    navigate('/')
+    mutate(
+      {
+        loginId: id,
+        password,
+      },
+      {
+        onSuccess: (response) => {
+          setLoginError(false)
+          console.log(response)
+
+          localStorage.setItem('accessToken', response.data.accessToken)
+
+          localStorage.setItem('refreshToken', response.data.refreshToken)
+
+          navigate('/')
+        },
+
+        onError: (error) => {
+          setLoginError(true)
+          console.error(error)
+          alert('아이디 또는 비밀번호가 올바르지 않습니다.')
+        },
+      },
+    )
   }
 
   return (
@@ -47,7 +73,7 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <ErrorMessage message="비밀번호가 일치하지 않습니다." />
+        {loginError && <ErrorMessage message="비밀번호가 일치하지 않습니다." />}
       </div>
 
       <div className={styles.buttonGroup}>

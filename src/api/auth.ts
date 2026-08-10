@@ -76,3 +76,35 @@ export const confirmVerificationEmail = async (
 
   return data
 }
+
+// 로그인
+
+export interface LoginRequest {
+  loginId: string
+  password: string
+}
+
+export interface LoginResponse {
+  success: boolean
+  message: string
+
+  data: {
+    accessToken: string
+    refreshToken: string
+    tokenType: string
+
+    user: {
+      userId: string
+      loginId: string
+      name: string
+      email: string
+      phoneNumber: string
+    }
+  }
+}
+
+export const login = async (body: LoginRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/login', body)
+
+  return data
+}
