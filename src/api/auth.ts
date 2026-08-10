@@ -28,3 +28,51 @@ export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
 
   return data
 }
+
+export interface SendEmailRequest {
+  email: string
+}
+
+export interface ConfirmEmailRequest {
+  email: string
+  code: string
+}
+
+export interface SendEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+    debugCode: string
+  }
+}
+
+export interface ConfirmEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    emailVerificationToken: string
+  }
+}
+
+export const sendVerificationEmail = async (body: SendEmailRequest): Promise<SendEmailResponse> => {
+  const { data } = await client.post<SendEmailResponse>('/api/v1/auth/email-verifications', body)
+
+  return data
+}
+
+export const confirmVerificationEmail = async (
+  body: ConfirmEmailRequest,
+): Promise<ConfirmEmailResponse> => {
+  const { data } = await client.post<ConfirmEmailResponse>(
+    '/api/v1/auth/email-verifications/confirm',
+    body,
+  )
+
+  return data
+}

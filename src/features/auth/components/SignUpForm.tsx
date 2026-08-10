@@ -5,15 +5,20 @@ import { useState } from 'react'
 import styles from './SignUpForm.module.css'
 import ErrorMessage from './ErrorMessage'
 import { useSignup } from '@/hooks/useSignup'
+import { useSendVerificationEmail } from '@/hooks/useSendVerificationEmail'
+import { useConfirmVerificationEmail } from '@/hooks/useConfirmVerificationEmail'
 
 export default function SignUpForm() {
   const navigate = useNavigate()
   const { mutate } = useSignup()
+  const { mutate: sendEmail } = useSendVerificationEmail()
+  const { mutate: confirmEmail } = useConfirmVerificationEmail()
   const [name, setName] = useState('')
   const [id, setId] = useState('')
 
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
+  const [verificationToken, setVerificationToken] = useState('')
 
   const [password, setPassword] = useState('')
   const [passwordCheck, setPasswordCheck] = useState('')
@@ -32,7 +37,8 @@ export default function SignUpForm() {
     isValidEmail &&
     isValidPassword &&
     isPasswordMatch &&
-    isValidPhone
+    isValidPhone &&
+    verificationToken !== ''
 
   const handleSubmit = () => {
     if (!canSubmit) return
@@ -42,7 +48,7 @@ export default function SignUpForm() {
         name,
         loginId: id,
         email,
-        emailVerificationToken: code,
+        emailVerificationToken: verificationToken,
         password,
         passwordConfirm: passwordCheck,
         phoneNumber: phone,
@@ -101,7 +107,25 @@ export default function SignUpForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <button type="button" className={styles.smallButton} disabled={!isValidEmail}>
+          <button
+            type="button"
+            className={styles.smallButton}
+            disabled={!isValidEmail}
+            onClick={() =>
+              sendEmail(
+                { email },
+                {
+                  onSuccess: () => {
+                    alert('인증 메일을 발송했습니다.')
+                  },
+                  onError: (error) => {
+                    console.error(error)
+                    alert('인증 메일 발송에 실패했습니다.')
+                  },
+                },
+              )
+            }
+          >
             인증하기
           </button>
         </div>
@@ -128,7 +152,29 @@ export default function SignUpForm() {
             onChange={(e) => setCode(e.target.value)}
           />
 
-          <button type="button" className={styles.confirmButton} disabled={!code.trim()}>
+          <button
+            type="button"
+            className={styles.confirmButton}
+            disabled={!code.trim()}
+            onClick={() =>
+              confirmEmail(
+                {
+                  email,
+                  code,
+                },
+                {
+                  onSuccess: (response) => {
+                    setVerificationToken(response.data.emailVerificationToken)
+                    alert('이메일 인증이 완료되었습니다.')
+                  },
+                  onError: (error) => {
+                    console.error(error)
+                    alert('인증번호가 올바르지 않습니다.')
+                  },
+                },
+              )
+            }
+          >
             확인
           </button>
         </div>
