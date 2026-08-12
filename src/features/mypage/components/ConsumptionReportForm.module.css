@@ -123,3 +123,18 @@
 .monthItem:hover {
   background: #f4f4f4;
 }
+
+.status {
+  text-align: center;
+  padding: 40px 0;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.emptyInsight {
+  margin: 0;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  padding: 12px 0;
+}
