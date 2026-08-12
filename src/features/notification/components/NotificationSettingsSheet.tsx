@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useNotificationSettings, useUpdateNotificationSettings } from '../hooks/useNotifications'
+import { useState } from 'react'
+import { notificationApi } from '../api/notificationApi'
 import styles from './NotificationSettingsSheet.module.css'
 
 const SETTINGS_LIST = [
@@ -30,38 +30,24 @@ interface Props {
 }
 
 export default function NotificationSettingsSheet({ onClose }: Props) {
-  const { data: serverSettings } = useNotificationSettings()
-  const { mutate: updateSettings } = useUpdateNotificationSettings()
-
   const [enabled, setEnabled] = useState<SubSettings>({
     general: true,
     goal: true,
     retrial: true,
   })
+  const [allOn, setAllOn] = useState(true)
 
-  useEffect(() => {
-    // 서버에서 저장된 알림 설정을 최초 로드 시 로컬 편집 상태로 반영 (사용자가 토글하는 별도 상태이므로 여기서만 동기화)
-    if (serverSettings) {
-      const { general, goal, retrial } = serverSettings
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setEnabled({ general, goal, retrial })
-    }
-  }, [serverSettings])
-
-  const allOn = enabled.general && enabled.goal && enabled.retrial
-
-  const persist = (next: SubSettings) => {
-    setEnabled(next)
-    updateSettings({ ...next, all: next.general && next.goal && next.retrial })
+  const toggleAll = () => {
+    const next = !allOn
+    setAllOn(next)
+    setEnabled({ general: next, goal: next, retrial: next })
+    notificationApi.updateAllSetting(next).catch(() => {})
   }
 
   const toggle = (id: keyof SubSettings) => {
-    persist({ ...enabled, [id]: !enabled[id] })
-  }
-
-  const toggleAll = () => {
-    const nextValue = !allOn
-    persist({ general: nextValue, goal: nextValue, retrial: nextValue })
+    const next = { ...enabled, [id]: !enabled[id] }
+    setEnabled(next)
+    notificationApi.updateSubSettings(next).catch(() => {})
   }
 
   return (
