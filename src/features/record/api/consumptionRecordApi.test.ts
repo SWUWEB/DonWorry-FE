@@ -40,6 +40,7 @@ describe('consumptionRecordApi', () => {
         amount: 6100,
         type: 'saved',
         date: '2026년 4월 17일',
+        occurredAt: '2026-04-17T12:00:00.000Z',
         reason: '스트레스 받아서',
       },
     ])
@@ -126,6 +127,7 @@ describe('consumptionRecordApi', () => {
         amount: 35000,
         type: 'saved',
         date: '2026년 4월 14일',
+        occurredAt: '2026-04-14T12:00:00.000Z',
         reason: '세일해서',
       },
     ])
