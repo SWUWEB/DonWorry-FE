@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { notificationApi } from '../api/notificationApi'
+import { useState, useEffect } from 'react'
+import { useNotificationSettings, useUpdateNotificationSettings } from '../hooks/useNotifications'
 import styles from './NotificationSettingsSheet.module.css'
 
 const SETTINGS_LIST = [
@@ -30,24 +30,37 @@ interface Props {
 }
 
 export default function NotificationSettingsSheet({ onClose }: Props) {
+  const { data: serverSettings } = useNotificationSettings()
+  const { mutate } = useUpdateNotificationSettings()
+
   const [enabled, setEnabled] = useState<SubSettings>({
     general: true,
     goal: true,
     retrial: true,
   })
-  const [allOn, setAllOn] = useState(true)
 
-  const toggleAll = () => {
-    const next = !allOn
-    setAllOn(next)
-    setEnabled({ general: next, goal: next, retrial: next })
-    notificationApi.updateAllSetting(next).catch(() => {})
+  useEffect(() => {
+    if (serverSettings) {
+      const { general, goal, retrial } = serverSettings
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEnabled({ general, goal, retrial })
+    }
+  }, [serverSettings])
+
+  const allOn = enabled.general && enabled.goal && enabled.retrial
+
+  const persist = (next: SubSettings) => {
+    setEnabled(next)
+    mutate({ ...next, all: next.general && next.goal && next.retrial })
   }
 
   const toggle = (id: keyof SubSettings) => {
-    const next = { ...enabled, [id]: !enabled[id] }
-    setEnabled(next)
-    notificationApi.updateSubSettings(next).catch(() => {})
+    persist({ ...enabled, [id]: !enabled[id] })
+  }
+
+  const toggleAll = () => {
+    const next = !allOn
+    persist({ general: next, goal: next, retrial: next })
   }
 
   return (

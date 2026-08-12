@@ -121,4 +121,16 @@ export const notificationApi = {
       retrial: data.data.notifyTemptationEnabled,
     }
   },
+
+  getSettings: async (): Promise<NotificationSettingsResponse> => {
+    return { all: true, general: true, goal: true, retrial: true }
+  },
+
+  updateSettings: async (settings: NotificationSettingsResponse): Promise<void> => {
+    await client.patch('/api/v1/users/me/notification-settings', {
+      notifyGeneralEnabled: settings.general,
+      notifyGoalEnabled: settings.goal,
+      notifyTemptationEnabled: settings.retrial,
+    })
+  },
 }
