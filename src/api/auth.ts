@@ -108,3 +108,13 @@ export const login = async (body: LoginRequest): Promise<LoginResponse> => {
 
   return data
 }
+
+// 로그아웃
+
+export interface LogoutRequest {
+  refreshToken: string
+}
+
+export const logout = async (body: LogoutRequest): Promise<void> => {
+  await client.post('/api/v1/auth/logout', body)
+}
