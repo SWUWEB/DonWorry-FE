@@ -8,7 +8,7 @@ interface SavingStatusCardProps {
 
 export default function SavingStatusCard({ savingStatus, goalAchievement }: SavingStatusCardProps) {
   const { totalAttemptCount, skipped, consumed } = savingStatus
-  const { status, achievementRate, savedAmount, remainingAmount } = goalAchievement
+  const { status, achievementRate, remainingAmount } = goalAchievement
 
   const hasGoal = status !== 'NOT_SET'
 
