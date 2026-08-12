@@ -7,6 +7,7 @@ export interface RecordItem {
   amount: number
   type: RecordType
   date: string
+  occurredAt: string
   reason?: string
   thumbnail?: string
 }
@@ -20,6 +21,7 @@ export const MOCK_RECORDS: RecordItem[] = [
     amount: 6100,
     type: 'saved',
     date: '2026년 4월 17일',
+    occurredAt: '2026-04-17T00:00:00.000Z',
     reason: '스트레스 받아서',
   },
   {
@@ -29,6 +31,7 @@ export const MOCK_RECORDS: RecordItem[] = [
     amount: 23900,
     type: 'consume',
     date: '2026년 4월 17일',
+    occurredAt: '2026-04-17T00:00:00.000Z',
     reason: '계절이 바뀌어서',
   },
   {
@@ -38,6 +41,7 @@ export const MOCK_RECORDS: RecordItem[] = [
     amount: 35000,
     type: 'saved',
     date: '2026년 4월 14일',
+    occurredAt: '2026-04-14T00:00:00.000Z',
     reason: '세일해서',
   },
 ]
