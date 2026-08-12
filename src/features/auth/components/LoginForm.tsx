@@ -13,9 +13,10 @@ export default function LoginForm() {
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const navigate = useNavigate()
-  const { mutate } = useLogin()
+  const { mutate, isPending } = useLogin()
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault()
@@ -38,10 +39,9 @@ export default function LoginForm() {
       {
         onSuccess: (response) => {
           setLoginError(false)
-          console.log(response)
+          setErrorMessage('')
 
           localStorage.setItem('accessToken', response.data.accessToken)
-
           localStorage.setItem('refreshToken', response.data.refreshToken)
 
           navigate('/')
@@ -49,8 +49,8 @@ export default function LoginForm() {
 
         onError: (error) => {
           setLoginError(true)
+          setErrorMessage('아이디 또는 비밀번호가 올바르지 않습니다.')
           console.error(error)
-          alert('아이디 또는 비밀번호가 올바르지 않습니다.')
         },
       },
     )
@@ -73,11 +73,13 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {loginError && <ErrorMessage message="비밀번호가 일치하지 않습니다." />}
+        {loginError && <ErrorMessage message={errorMessage} />}
       </div>
 
       <div className={styles.buttonGroup}>
-        <Button type="submit">로그인</Button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? '로그인 중...' : '로그인'}
+        </Button>
 
         <KakaoButton />
       </div>
