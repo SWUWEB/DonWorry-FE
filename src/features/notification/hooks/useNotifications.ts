@@ -1,10 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { notificationApi } from '../api/notificationApi'
 import type { NotificationSettingsResponse } from '../api/notificationApi'
 
 const QUERY_KEYS = {
+  // 목록은 필터/정렬별로 나뉘므로 prefix 단위 무효화를 위해 'notifications'를 공유합니다.
+  lists: ['notifications'] as const,
   list: (type: string, sort: string) => ['notifications', type, sort] as const,
-  settings: ['notifications', 'settings'] as const,
+  // 설정은 목록 무효화에 휩쓸리지 않도록 별도 prefix를 씁니다.
+  settings: ['notification-settings'] as const,
 }
 
 export function useNotifications(type = 'ALL', sort = 'LATEST') {
@@ -19,8 +23,8 @@ export function useReadNotification() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: notificationApi.readOne,
-    // 읽음 상태는 필터/정렬별 목록 캐시에 모두 걸쳐 있어 prefix 단위로 무효화합니다.
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    // 읽음 상태는 필터/정렬별 목록 캐시에 모두 걸쳐 있어 목록 prefix 단위로 무효화합니다.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.lists }),
   })
 }
 
@@ -28,11 +32,12 @@ export function useReadAllNotifications() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: notificationApi.readAll,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.lists }),
   })
 }
 
-// 조회 API 배포 전에는 404가 날 수 있어, 실패해도 시트가 열리도록 기본값으로 폴백합니다.
+// TODO: 조회 API(BE #89)가 배포되면 아래 404 폴백을 제거하세요.
+// 미배포 구간에만 쓰는 임시 처리이며, 401/500 등 실제 오류는 그대로 던져 재시도·에러 상태가 동작하게 둡니다.
 const DEFAULT_SETTINGS: NotificationSettingsResponse = {
   all: true,
   general: true,
@@ -46,8 +51,9 @@ export function useNotificationSettings() {
     queryFn: async () => {
       try {
         return await notificationApi.getSettings()
-      } catch {
-        return DEFAULT_SETTINGS
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 404) return DEFAULT_SETTINGS
+        throw error
       }
     },
     staleTime: 1000 * 60 * 5,
