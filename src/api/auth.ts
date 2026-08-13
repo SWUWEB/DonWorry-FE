@@ -59,7 +59,8 @@ export interface SendEmailResponse {
     email: string
     codeTtlSeconds: number
     resendCooldownSeconds: number
-    debugCode: string
+    // 개발 편의용 필드라 운영 환경에서는 내려오지 않을 수 있습니다.
+    debugCode?: string
   }
 }
 
