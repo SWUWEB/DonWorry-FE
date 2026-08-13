@@ -9,7 +9,7 @@ import { InfoBox } from '../components/temptationInfo/InfoBox';
 import { ActionButton } from '../components/temptationInfo/ActionButton';
 import styles from './TemptationInfo.module.css';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWishlistContext } from '../hooks/WishlistContext';
 
 export default function TemptationInfo() {
@@ -18,6 +18,12 @@ export default function TemptationInfo() {
   const { filteredProducts, handleDelete } = useWishlistContext();
   
   const product = filteredProducts.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (product && product.time.getTime() <= Date.now()) {
+      navigate(`/temptation/${product.id}/judge`, { replace: true });
+    }
+  }, [product, navigate]);
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

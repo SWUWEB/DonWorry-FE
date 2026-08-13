@@ -18,7 +18,7 @@ import ProfilePage from '@/pages/ProfilePage'
 import TemptationEdit from '@/features/temptation/pages/TemptationEdit'
 import ChangeEmailPage from '@/pages/ChangeEmailPage'
 import TemptationSaved from '@/features/temptation/pages/TemptationSaved'
-// import TemptationJudge from '@/features/temptation/pages/TemptationJudge'
+import TemptationJudge from '@/features/temptation/pages/TemptationJudge'
 import ChangePasswordPage from '@/pages/ChangePasswordPage'
 import WithdrawPage from '@/pages/WithdrawPage'
 import OnboardingInterestPage from '@/pages/OnboardingInterestPage'
@@ -52,6 +52,7 @@ const router = createBrowserRouter([
           { path: '/temptation', element: <Temptation /> },
           { path: '/temptation/:id', element: <TemptationInfo /> },
           { path: '/temptation/:id/edit', element: <TemptationEdit /> },
+          { path: '/temptation/:id/judge', element: <TemptationJudge /> },
           { path: '/temptation/saved', element: <TemptationSaved /> },
         ],
       },

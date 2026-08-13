@@ -45,12 +45,21 @@ export default function TemptationSaved() {
             <IoIosArrowBack size={25} />
           </button>
         }
+        subMain={
+          <>
+            <h2 style={{ margin: '8px 0 4px', fontSize: '22px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+              잘 참았어요!
+            </h2>
+            <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-gray-300)' }}>
+              충동 소비를 이겨냈어요. 참은 기록에 추가될 거예요.
+            </p>
+          </>
+        }
       />
       <div className={styles.wrapper}>
-        <h2 className={styles.title}>잘 참았어요!</h2>
-        <p className={styles.subtitle}>충동 소비를 이겨냈어요. 참은 기록에 추가될 거예요.</p>
-
-        <div className={styles.celebrateIcon} aria-hidden="true">🎉</div>
+        <div className={styles.celebrateIconWrapper}>
+          <span className={styles.celebrateIcon} aria-hidden="true">🎉</span>
+        </div>
 
         <ProductSummaryCard category={state.category} name={state.name} price={state.price} savedMode />
 

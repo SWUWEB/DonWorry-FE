@@ -13,7 +13,8 @@ export const ProductItem = ({ product, onDelete }: ProductItemProps) => {
   const { id, name, price, time } = product;
 
   const handleClick = () => {
-    navigate(`/temptation/${id}`);
+    const isExpired = time.getTime() <= Date.now();
+    navigate(isExpired ? `/temptation/${id}/judge` : `/temptation/${id}`);
   }
 
   return (

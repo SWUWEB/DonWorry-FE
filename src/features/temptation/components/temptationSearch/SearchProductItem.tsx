@@ -15,7 +15,8 @@ export const SearchProductItem = ({ product, keyword }: SearchProductItemProps) 
   const { id, name, category, price, time } = product;
 
   const handleClick = () => {
-    navigate(`/temptation/${id}`);
+    const isExpired = time.getTime() <= Date.now();
+    navigate(isExpired ? `/temptation/${id}/judge` : `/temptation/${id}`);
   }
 
   return (

@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { PiListBold } from 'react-icons/pi';
-import { IoNotifications, IoAlertCircle, IoHourglassOutline, IoCartOutline } from 'react-icons/io5';
+import { IoNotifications, IoAlertCircleOutline } from 'react-icons/io5';
 import Header from '@/components/layout/Header';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useWishlistContext } from '../hooks/WishlistContext';
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard';
 import { TIME_OPTIONS } from '@/constants/product';
@@ -17,14 +18,25 @@ export default function TemptationJudge() {
   const product = filteredProducts.find((p) => p.id === id);
   const [selectedExtend, setSelectedExtend] = useState<typeof TIME_OPTIONS[number]>('1일');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false);
 
   const handleBack = () => {
     navigate('/temptation');
   };
 
-  const handleExtendConfirm = () => {
+  const handleExtendClick = () => {
     if (!product || isProcessing) return;
+    setIsExtendConfirmOpen(true);
+  };
+
+  const handleExtendCancel = () => {
+    setIsExtendConfirmOpen(false);
+  };
+
+  const handleExtendConfirm = () => {
+    if (!product) return;
     handleExtend(product.id, selectedExtend);
+    setIsExtendConfirmOpen(false);
     navigate(`/temptation/${product.id}`);
   };
 
@@ -42,11 +54,18 @@ export default function TemptationJudge() {
     });
   };
 
-  const handleBuy = () => {
-    if (!product) return;
-    // TODO: 실제 구매 확인 화면과 연결 예정 (다른 팀원 구현 화면)
-    navigate(`/temptation/${product.id}/purchase`);
-  };
+const handleBuy = () => {
+  if (!product) return;
+  navigate('/record/intervention', {
+    state: {
+      from: 'temptation',
+      productId: product.id,
+      productName: product.name,
+      productPrice: product.price,
+      productCategory: product.category,
+    },
+  });
+};
 
   if (!product) {
     return <p>상품을 찾을 수 없습니다.</p>;
@@ -71,13 +90,20 @@ export default function TemptationJudge() {
             <IoIosArrowBack size={25} />
           </button>
         }
+        subMain={
+          <>
+            <h2 style={{ margin: '8px 0 4px', fontSize: '22px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
+              고민 시간 종료
+            </h2>
+            <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-gray-300)' }}>
+              이제 결정할 시간이에요. 신중하게 선택해보세요.
+            </p>
+          </>
+        }
       />
       <div className={styles.wrapper}>
-        <h2 className={styles.title}>고민 시간 종료</h2>
-        <p className={styles.subtitle}>이제 결정할 시간이에요. 신중하게 선택해보세요.</p>
-
         <div className={styles.warningBanner}>
-          <IoAlertCircle size={20} className={styles.warningIcon} />
+          <IoAlertCircleOutline size={20} className={styles.warningIcon} />
           <div>
             <p className={styles.warningTitle}>설정한 고민 시간 {totalHours}시간이 지났어요</p>
             <p className={styles.warningDescription}>시간 연장 또는 구매 여부를 결정해주세요.</p>
@@ -86,9 +112,9 @@ export default function TemptationJudge() {
 
         <ProductSummaryCard category={product.category} name={product.name} price={product.price} />
 
-        <section className={styles.section}>
+        <div className={styles.sectionBox}>
           <p className={styles.sectionTitle}>
-            <IoHourglassOutline size={18} /> 고민 시간 연장
+            ⏳ 고민 시간 연장
           </p>
           <p className={styles.sectionDescription}>아직 결정이 어렵다면 시간을 더 가져요.</p>
 
@@ -108,18 +134,22 @@ export default function TemptationJudge() {
           <button
             type="button"
             className={styles.extendConfirmBtn}
-            onClick={handleExtendConfirm}
+            onClick={handleExtendClick}
             disabled={isProcessing}
           >
             {selectedExtend} 연장 확정하기
           </button>
-        </section>
+        </div>
 
-        <p className={styles.divider}>또는 지금 결정하기</p>
+        <div className={styles.divider}>
+          <span className={styles.dividerLine} />
+          <span className={styles.dividerText}>또는 지금 결정하기</span>
+          <span className={styles.dividerLine} />
+        </div>
 
-        <section className={styles.section}>
+        <div className={styles.sectionBox} style={{ paddingBottom: 20 }}>
           <p className={styles.sectionTitle}>
-            <IoCartOutline size={18} /> 지금 결정하기
+            🛒 지금 결정하기
           </p>
           <p className={styles.sectionDescription}>고민 끝에 내린 결정을 선택해주세요.</p>
 
@@ -133,8 +163,17 @@ export default function TemptationJudge() {
               <span className={styles.decisionSub}>점검 후 구매</span>
             </button>
           </div>
-        </section>
+        </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isExtendConfirmOpen}
+        title={`고민 시간을 ${selectedExtend} 연장할까요?`}
+        cancelText="취소"
+        confirmText="연장하기"
+        onCancel={handleExtendCancel}
+        onConfirm={handleExtendConfirm}
+      />
     </>
   );
 }
