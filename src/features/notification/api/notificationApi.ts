@@ -39,6 +39,13 @@ const CONTENT_MAP = {
   GENERAL: { title: '일반 알림', description: '서비스 소식을 확인하세요.' },
 } as const
 
+// 서버 시각(createdAt)은 KST 기준 계약이므로, 브라우저 로컬 시간대와 무관하게 항상 서울 기준으로 표기합니다.
+const KST_MONTH_DAY = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul',
+  month: 'numeric',
+  day: 'numeric',
+})
+
 function formatTime(isoString: string): string {
   const date = new Date(isoString)
   const diffMins = Math.floor((Date.now() - date.getTime()) / 60000)
@@ -48,7 +55,10 @@ function formatTime(isoString: string): string {
   if (diffHours < 24) return `${diffHours}시간 전`
   const diffDays = Math.floor(diffHours / 24)
   if (diffDays < 7) return `${diffDays}일 전`
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`
+
+  const parts = KST_MONTH_DAY.formatToParts(date)
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? ''
+  return `${get('month')}월 ${get('day')}일`
 }
 
 function adapt(n: NotificationResult): NotificationItem {
@@ -122,15 +132,8 @@ export const notificationApi = {
     }
   },
 
+  // TODO: 설정 조회 GET API가 없어 임시로 전부 켜진 값을 반환합니다. API 추가 후 교체 필요.
   getSettings: async (): Promise<NotificationSettingsResponse> => {
     return { all: true, general: true, goal: true, retrial: true }
-  },
-
-  updateSettings: async (settings: NotificationSettingsResponse): Promise<void> => {
-    await client.patch('/api/v1/users/me/notification-settings', {
-      notifyGeneralEnabled: settings.general,
-      notifyGoalEnabled: settings.goal,
-      notifyTemptationEnabled: settings.retrial,
-    })
   },
 }

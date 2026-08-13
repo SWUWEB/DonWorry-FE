@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useNotificationSettings, useUpdateNotificationSettings } from '../hooks/useNotifications'
+import {
+  useNotificationSettings,
+  useUpdateAllSetting,
+  useUpdateSubSettings,
+} from '../hooks/useNotifications'
 import styles from './NotificationSettingsSheet.module.css'
 
 const SETTINGS_LIST = [
@@ -31,13 +35,18 @@ interface Props {
 
 export default function NotificationSettingsSheet({ onClose }: Props) {
   const { data: serverSettings } = useNotificationSettings()
-  const { mutate } = useUpdateNotificationSettings()
+  const { mutate: updateAll, isPending: isUpdatingAll } = useUpdateAllSetting()
+  const { mutate: updateSub, isPending: isUpdatingSub } = useUpdateSubSettings()
+
+  // 서버가 동시 요청에 409를 반환하므로, 요청이 끝날 때까지 토글을 잠급니다.
+  const isSaving = isUpdatingAll || isUpdatingSub
 
   const [enabled, setEnabled] = useState<SubSettings>({
     general: true,
     goal: true,
     retrial: true,
   })
+  const [saveError, setSaveError] = useState(false)
 
   useEffect(() => {
     if (serverSettings) {
@@ -49,18 +58,29 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
 
   const allOn = enabled.general && enabled.goal && enabled.retrial
 
-  const persist = (next: SubSettings) => {
-    setEnabled(next)
-    mutate({ ...next, all: next.general && next.goal && next.retrial })
+  // 저장에 실패하면 화면만 바뀐 채 서버와 어긋나므로 이전 값으로 되돌립니다.
+  const rollbackTo = (prev: SubSettings) => () => {
+    setEnabled(prev)
+    setSaveError(true)
   }
 
   const toggle = (id: keyof SubSettings) => {
-    persist({ ...enabled, [id]: !enabled[id] })
+    if (isSaving) return
+    const prev = enabled
+    const next = { ...enabled, [id]: !enabled[id] }
+    setEnabled(next)
+    setSaveError(false)
+    updateSub(next, { onError: rollbackTo(prev) })
   }
 
+  // 전체 알림은 notifyPushEnabled만 보내야 하므로 세부 설정과 같은 요청에 담지 않습니다.
   const toggleAll = () => {
+    if (isSaving) return
+    const prev = enabled
     const next = !allOn
-    persist({ general: next, goal: next, retrial: next })
+    setEnabled({ general: next, goal: next, retrial: next })
+    setSaveError(false)
+    updateAll(next, { onError: rollbackTo(prev) })
   }
 
   return (
@@ -69,11 +89,18 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
         <div className={styles.handle} />
         <h2 className={styles.title}>어떤 알림을 받을까요?</h2>
 
+        {saveError && (
+          <p className={styles.errorText} role="alert">
+            설정을 저장하지 못했어요. 잠시 후 다시 시도해주세요.
+          </p>
+        )}
+
         <div className={styles.masterItem}>
           <span className={styles.masterLabel}>전체 알림</span>
           <button
             className={`${styles.toggle} ${allOn ? styles.on : ''}`}
             onClick={toggleAll}
+            disabled={isSaving}
             aria-label={`전체 알림 ${allOn ? '끄기' : '켜기'}`}
           >
             <span className={styles.toggleThumb} />
@@ -91,6 +118,7 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
               <button
                 className={`${styles.toggle} ${enabled[item.id] ? styles.on : ''}`}
                 onClick={() => toggle(item.id)}
+                disabled={isSaving}
                 aria-label={`${item.label} ${enabled[item.id] ? '끄기' : '켜기'}`}
               >
                 <span className={styles.toggleThumb} />

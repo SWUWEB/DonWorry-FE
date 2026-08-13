@@ -16,7 +16,12 @@ export function useNotifications(type = 'ALL', sort = 'LATEST') {
 }
 
 export function useReadNotification() {
-  return useMutation({ mutationFn: notificationApi.readOne })
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: notificationApi.readOne,
+    // 읽음 상태는 필터/정렬별 목록 캐시에 모두 걸쳐 있어 prefix 단위로 무효화합니다.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
+  })
 }
 
 export function useReadAllNotifications() {
@@ -35,11 +40,24 @@ export function useNotificationSettings() {
   })
 }
 
-export function useUpdateNotificationSettings() {
+// 전체 알림(notifyPushEnabled)과 세부 알림은 같은 요청에 함께 담을 수 없어 훅을 나눠 둡니다.
+export function useUpdateAllSetting() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (settings: NotificationSettingsResponse) =>
-      notificationApi.updateSettings(settings),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.settings }),
+    mutationFn: notificationApi.updateAllSetting,
+    onSuccess: (settings) => {
+      queryClient.setQueryData(QUERY_KEYS.settings, settings)
+    },
+  })
+}
+
+export function useUpdateSubSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (settings: Omit<NotificationSettingsResponse, 'all'>) =>
+      notificationApi.updateSubSettings(settings),
+    onSuccess: (settings) => {
+      queryClient.setQueryData(QUERY_KEYS.settings, settings)
+    },
   })
 }
