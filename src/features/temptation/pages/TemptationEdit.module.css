@@ -1,8 +1,6 @@
 .wrapper {
-  max-width: 390px;
-  margin: 0 auto;
-  padding: 25px;
-  padding-bottom: 100px;
+  width: 100%;
+  padding: 20px 20px 100px;
   box-sizing: border-box;
 }
 

@@ -4,7 +4,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { PiListBold } from 'react-icons/pi';
 import { IoNotifications, IoAlertCircleOutline } from 'react-icons/io5';
 import Header from '@/components/layout/Header';
-import { ConfirmDialog } from '../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../shared/components/ConfirmDialog/ConfirmDialog';
 import { useWishlistContext } from '../hooks/WishlistContext';
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard';
 import { TIME_OPTIONS } from '@/constants/product';

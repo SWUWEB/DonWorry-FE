@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BiPlus } from 'react-icons/bi'
-import Header from '@/components/Header'
+import Header from '@/components/layout/Header'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import SummaryCard from '@/features/record/components/SummaryCard'
-import FilterChip from '@/features/record/components/FilterChip'
+import TabGroup from '@/shared/components/TabGroup'
 import RecordList from '@/features/record/components/RecordList'
 import type { FilterValue } from '@/features/record/components/RecordList'
 import styles from '../styles/RecordMainPage.module.css'
@@ -20,19 +21,15 @@ export default function RecordMainPage() {
 
   return (
     <div className={styles.container}>
-      <Header title="소비 기록" />
-
-      <SummaryCard />
+      <Header
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton />}
+        subTitle="소비 기록"
+        subMain={<SummaryCard />}
+      />
 
       <div className={styles.filterSection}>
-        {FILTERS.map((f) => (
-          <FilterChip
-            key={f.value}
-            label={f.label}
-            selected={filter === f.value}
-            onClick={() => setFilter(f.value)}
-          />
-        ))}
+        <TabGroup<FilterValue> options={FILTERS} value={filter} onChange={setFilter} />
       </div>
 
       {/* Record List */}

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { HiOutlineCheckCircle, HiOutlineArrowPath } from 'react-icons/hi2'
 
-import PrimaryButton from '@/features/auth/components/PrimaryButton'
+import Button from '@/shared/components/Button'
+import InputField from '@/shared/components/InputField'
 
 import styles from './ChangeEmailForm.module.css'
 
@@ -22,23 +23,12 @@ export default function ChangeEmailForm() {
           <p className={styles.currentEmail}>{currentEmail}</p>
         </div>
 
-        <HiOutlineCheckCircle
-          size={20}
-          className={styles.checkIcon}
-        />
+        <HiOutlineCheckCircle size={20} className={styles.checkIcon} />
       </div>
 
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="email"
-          className={styles.label}
-        >
-          새 이메일 입력
-        </label>
-
-        <input
-          id="email"
-          className={styles.input}
+        <InputField
+          label="새 이메일 입력"
           placeholder="example@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -46,39 +36,19 @@ export default function ChangeEmailForm() {
       </div>
 
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="code"
-          className={styles.label}
-        >
-          이메일 인증
-        </label>
-
-        <div className={styles.codeWrapper}>
-          <input
-            id="code"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={6}
-            autoComplete="one-time-code"
-            className={styles.input}
-            placeholder="인증번호 6자리"
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-          />
-
-          {isExpired && (
-           <span className={styles.expireText}>
-             만료됨
-           </span>
-          )}
-        </div>
-
-        {isVerificationSent && (
-            <p className={styles.helper}>
-              인증번호가 이메일로 발송되었습니다.
-            </p>
-          )}
+        <InputField
+          label="이메일 인증"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={6}
+          autoComplete="one-time-code"
+          placeholder="인증번호 6자리"
+          value={code}
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+          rightElement={isExpired && <span className={styles.expireText}>만료됨</span>}
+          helper={isVerificationSent ? '인증번호가 이메일로 발송되었습니다.' : undefined}
+        />
       </div>
 
       <div className={styles.noticeBox}>
@@ -89,18 +59,13 @@ export default function ChangeEmailForm() {
         </ul>
       </div>
 
-      <button
-        type="button"
-        className={styles.resendButton}
-      >
+      <button type="button" className={styles.resendButton}>
         <HiOutlineArrowPath size={16} />
         인증번호 재발송
       </button>
 
       <div className={styles.buttonWrapper}>
-        <PrimaryButton>
-          저장하기
-        </PrimaryButton>
+        <Button>저장하기</Button>
       </div>
     </section>
   )

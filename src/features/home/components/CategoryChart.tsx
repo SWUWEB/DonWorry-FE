@@ -11,13 +11,16 @@ interface CategoryChartProps {
 
 const MAX_BAR_HEIGHT = 62
 
-export default function CategoryChart({ categories, hasRecords, topCategoryLabel }: CategoryChartProps) {
+export default function CategoryChart({
+  categories,
+  hasRecords,
+  topCategoryLabel,
+}: CategoryChartProps) {
   const navigate = useNavigate()
   const maxAmount = Math.max(...categories.map((c) => c.amount), 1)
   const totalAmount = categories.reduce((sum, c) => sum + c.amount, 0)
-  const topPercent = totalAmount > 0
-    ? Math.round((categories[0]?.amount ?? 0) / totalAmount * 100)
-    : 0
+  const topPercent =
+    totalAmount > 0 ? Math.round(((categories[0]?.amount ?? 0) / totalAmount) * 100) : 0
 
   return (
     <section className={styles.card}>
@@ -57,9 +60,8 @@ export default function CategoryChart({ categories, hasRecords, topCategoryLabel
             ))}
           </div>
           <p className={styles.message}>
-            이번 달에는{' '}
-            <strong className={styles.messageBold}>{topCategoryLabel}</strong>
-            {' '}소비가 전체 지출의 {topPercent}%를 차지했어요.
+            이번 달에는 <strong className={styles.messageBold}>{topCategoryLabel}</strong> 소비가
+            전체 지출의 {topPercent}%를 차지했어요.
           </p>
         </>
       ) : (

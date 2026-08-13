@@ -1,7 +1,7 @@
 .card {
   margin-bottom: 28px;
-  padding: 18px 20px;
-  border-radius: 18px;
+  padding: 17px 20px;
+  border-radius: 16px;
   background: var(--color-main-500);
   color: white;
   display: flex;
@@ -11,21 +11,21 @@
 
 .label {
   margin: 0 0 6px 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
 }
 
 .amount {
   margin: 0;
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   line-height: 1.1;
 }
 
 .badge {
   padding: 6px 14px;
   border-radius: 999px;
-  background: #286A6D;
-  font-size: 13px;
+  background: #286a6d;
+  font-size: 12px;
   font-weight: 500;
 }

@@ -1,3 +1,4 @@
+import { formatKRW } from '@/shared/utils/currency'
 import styles from './RecentSpendingList.module.css'
 
 export interface RecentSpendingItem {
@@ -29,7 +30,7 @@ export default function RecentSpendingList({ count, records }: RecentSpendingLis
               </div>
             </div>
 
-            <p className={styles.amount}>- {record.amount.toLocaleString('ko-KR')} 원</p>
+            <p className={styles.amount}>- {formatKRW(record.amount)}</p>
           </div>
         ))}
       </div>

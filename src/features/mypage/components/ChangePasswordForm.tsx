@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import {
-  IoEyeOutline,
-  IoEyeOffOutline,
-} from 'react-icons/io5'
 
+import Button from '@/shared/components/Button'
+import InputField from '@/shared/components/InputField'
 import styles from './ChangePasswordForm.module.css'
 
 export default function ChangePasswordForm() {
@@ -11,131 +9,49 @@ export default function ChangePasswordForm() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const [showCurrent, setShowCurrent] = useState(false)
-  const [showNew, setShowNew] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault()
-}
+    event.preventDefault()
+  }
 
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit}
-     >
+    <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="current-password"
-          className={styles.label}
-        >
-          현재 비밀번호
-        </label>
-
-        <div className={styles.inputWrapper}>
-          <input
-            id="current-password"
-            type={showCurrent ? 'text' : 'password'}
-            autoComplete="current-password"
-            className={styles.input}
-            placeholder="현재 비밀번호를 입력하세요"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.eyeButton}
-            onClick={() => setShowCurrent(!showCurrent)}
-            aria-label="현재 비밀번호 표시"
-          >
-            {showCurrent ? (
-              <IoEyeOffOutline size={16} />
-            ) : (
-              <IoEyeOutline size={16} />
-            )}
-          </button>
-        </div>
+        <InputField
+          label="현재 비밀번호"
+          type="password"
+          autoComplete="current-password"
+          placeholder="현재 비밀번호를 입력하세요"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
       </div>
 
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="new-password"
-          className={styles.label}
-        >
-          새 비밀번호
-        </label>
-
-        <div className={styles.inputWrapper}>
-          <input
-            id="new-password"
-            type={showNew ? 'text' : 'password'}
-            autoComplete="new-password"
-            className={styles.input}
-            placeholder="새 비밀번호를 입력하세요"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.eyeButton}
-            onClick={() => setShowNew(!showNew)}
-            aria-label="새 비밀번호 표시"
-          >
-            {showNew ? (
-              <IoEyeOffOutline size={16} />
-            ) : (
-              <IoEyeOutline size={16} />
-            )}
-          </button>
-        </div>
-
-        <p className={styles.helper}>
-          영문, 숫자, 특수문자 포함 8~16자
-        </p>
+        <InputField
+          label="새 비밀번호"
+          type="password"
+          autoComplete="new-password"
+          placeholder="새 비밀번호를 입력하세요"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          helper="영문, 숫자, 특수문자 포함 8~16자"
+        />
       </div>
 
       <div className={styles.inputGroup}>
-        <label
-          htmlFor="confirm-password"
-          className={styles.label}
-        >
-          새 비밀번호 확인
-        </label>
-
-        <div className={styles.inputWrapper}>
-          <input
-            id="confirm-password"
-            type={showConfirm ? 'text' : 'password'}
-            autoComplete="new-password"
-            className={styles.input}
-            placeholder="새 비밀번호를 다시 입력하세요"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.eyeButton}
-            onClick={() => setShowConfirm(!showConfirm)}
-            aria-label="새 비밀번호 확인 표시"
-          >
-            {showConfirm ? (
-              <IoEyeOffOutline size={16} />
-            ) : (
-              <IoEyeOutline size={16} />
-            )}
-          </button>
-        </div>
+        <InputField
+          label="새 비밀번호 확인"
+          type="password"
+          autoComplete="new-password"
+          placeholder="새 비밀번호를 다시 입력하세요"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
       </div>
 
-      <button
-        type="submit"
-        className={styles.submitButton}
-      >
-        변경하기
-      </button>
+      <div className={styles.submitButtonWrapper}>
+        <Button type="submit">변경하기</Button>
+      </div>
     </form>
   )
 }

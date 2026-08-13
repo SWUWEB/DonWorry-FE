@@ -10,10 +10,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Header
-        onBellClick={() => navigate('/notification')}
-        unreadCount={unreadCount}
-      />
+      <Header onBellClick={() => navigate('/notification')} unreadCount={unreadCount} />
       <Home />
     </>
   )

@@ -1,9 +1,8 @@
 .search {
-  width: 390px;
-  margin: 0 auto;
+  width: 100%;
   position: relative;
-  padding: 25px 20px;
-  padding-bottom: 80px;
+  padding: 20px 20px 80px;
+  box-sizing: border-box;
 }
 
 .topLine {
@@ -21,5 +20,5 @@
 
 .wishlistCountNumber {
   color: var(--color-main-400);
-  font-weight: bold;
+  font-weight: 700;
 }

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './OnboardingInterestPage.module.css'
+import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 
 const CATEGORIES = [
   { id: 'food', emoji: '🍔', label: '음식' },
@@ -21,7 +22,10 @@ const MAX_SELECT = 3
 
 export default function OnboardingInterestPage() {
   const navigate = useNavigate()
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const draft = getOnboardingDraft()
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(draft.interests?.map((i) => i.id) ?? []),
+  )
   const [showMaxMsg, setShowMaxMsg] = useState(false)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -33,9 +37,13 @@ export default function OnboardingInterestPage() {
 
   const toggle = (id: string) => {
     if (selected.has(id)) {
-      setSelected(prev => { const next = new Set(prev); next.delete(id); return next })
+      setSelected((prev) => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
     } else if (selected.size < MAX_SELECT) {
-      setSelected(prev => new Set([...prev, id]))
+      setSelected((prev) => new Set([...prev, id]))
     } else {
       triggerToast()
     }
@@ -43,17 +51,16 @@ export default function OnboardingInterestPage() {
 
   const reset = () => setSelected(new Set())
 
-  const selectedList = CATEGORIES.filter(c => selected.has(c.id))
+  const selectedList = CATEGORIES.filter((c) => selected.has(c.id))
   const hasSelected = selected.size > 0
   const isFull = selected.size === MAX_SELECT
 
   const handleNext = () => {
     if (!hasSelected) return
-    navigate('/onboarding/step2', {
-      state: {
-        interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
-      },
+    saveOnboardingDraft({
+      interests: selectedList.map(({ id, emoji, label }) => ({ id, emoji, label })),
     })
+    navigate('/onboarding/step2')
   }
 
   return (
@@ -68,7 +75,9 @@ export default function OnboardingInterestPage() {
 
         {/* 타이틀 */}
         <h1 className={styles.title}>
-          관심 있는<br />소비 영역을 골라주세요
+          관심 있는
+          <br />
+          소비 영역을 골라주세요
         </h1>
         <p className={styles.subtitle}>선택한 항목을 기반으로 맞춤 분석을 제공해드려요.</p>
 
@@ -79,7 +88,9 @@ export default function OnboardingInterestPage() {
               {hasSelected ? `최대 ${MAX_SELECT}개 선택됨` : '1개 이상 선택해주세요'}
             </span>
             {hasSelected && (
-              <button className={styles.resetBtn} onClick={reset}>초기화</button>
+              <button className={styles.resetBtn} onClick={reset}>
+                초기화
+              </button>
             )}
           </div>
           <div className={styles.divider} />

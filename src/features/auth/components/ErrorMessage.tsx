@@ -5,17 +5,10 @@ type ErrorMessageProps = {
   type?: 'error' | 'success'
 }
 
-export default function ErrorMessage({
-  message,
-  type = 'error',
-}: ErrorMessageProps) {
+export default function ErrorMessage({ message, type = 'error' }: ErrorMessageProps) {
   return (
     <p
-      className={
-        type === 'success'
-          ? styles.success
-          : styles.error
-      }
+      className={type === 'success' ? styles.success : styles.error}
       role={type === 'error' ? 'alert' : undefined}
     >
       {message}

@@ -1,4 +1,5 @@
 import styles from '../Login.module.css'
+import logo from '@/assets/logos/donworry_simple_logo.svg'
 
 type LoginHeaderProps = {
   title: string
@@ -6,20 +7,14 @@ type LoginHeaderProps = {
   className?: string
 }
 
-export default function LoginHeader({
-  title,
-  description,
-  className,
-}: LoginHeaderProps) {
+export default function LoginHeader({ title, description, className }: LoginHeaderProps) {
   return (
     <section className={className}>
-      <div className={styles.logo}>Logo</div>
+      <img src={logo} alt="DonWorry" className={styles.logo} />
 
       <h1 className={styles.title}>{title}</h1>
 
-      <p className={styles.description}>
-        {description}
-      </p>
+      <p className={styles.description}>{description}</p>
     </section>
   )
 }
