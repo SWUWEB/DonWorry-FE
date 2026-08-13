@@ -32,10 +32,24 @@ export function useReadAllNotifications() {
   })
 }
 
+// 조회 API 배포 전에는 404가 날 수 있어, 실패해도 시트가 열리도록 기본값으로 폴백합니다.
+const DEFAULT_SETTINGS: NotificationSettingsResponse = {
+  all: true,
+  general: true,
+  goal: true,
+  retrial: true,
+}
+
 export function useNotificationSettings() {
   return useQuery({
     queryKey: QUERY_KEYS.settings,
-    queryFn: notificationApi.getSettings,
+    queryFn: async () => {
+      try {
+        return await notificationApi.getSettings()
+      } catch {
+        return DEFAULT_SETTINGS
+      }
+    },
     staleTime: 1000 * 60 * 5,
   })
 }

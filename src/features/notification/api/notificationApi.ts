@@ -19,6 +19,24 @@ export interface NotificationSettingsResponse {
   retrial: boolean
 }
 
+const NOTIFICATION_SETTINGS_URL = '/api/v1/users/me/notification-settings'
+
+interface NotificationSettingsResult {
+  notifyGeneralEnabled: boolean
+  notifyGoalEnabled: boolean
+  notifyTemptationEnabled: boolean
+  notifyPushEnabled: boolean
+}
+
+function adaptSettings(result: NotificationSettingsResult): NotificationSettingsResponse {
+  return {
+    all: result.notifyPushEnabled,
+    general: result.notifyGeneralEnabled,
+    goal: result.notifyGoalEnabled,
+    retrial: result.notifyTemptationEnabled,
+  }
+}
+
 // ─── 어댑터 유틸 ──────────────────────────────────────────────────────────────
 
 const TYPE_MAP = {
@@ -64,7 +82,7 @@ function formatTime(isoString: string): string {
 function adapt(n: NotificationResult): NotificationItem {
   const { title, description } = CONTENT_MAP[n.notificationType]
   return {
-    id: Number(n.id),
+    id: n.id,
     type: TYPE_MAP[n.notificationType],
     iconVariant: ICON_MAP[n.notificationType],
     title,
@@ -84,7 +102,7 @@ export const notificationApi = {
     return data.data.map(adapt)
   },
 
-  readOne: async (id: number): Promise<void> => {
+  readOne: async (id: string): Promise<void> => {
     await client.patch(`/api/v1/notifications/${id}/read`)
   },
 
@@ -92,48 +110,32 @@ export const notificationApi = {
     await client.patch('/api/v1/notifications/read-all')
   },
 
+  getSettings: async (): Promise<NotificationSettingsResponse> => {
+    const { data } = await client.get<{ data: NotificationSettingsResult }>(
+      NOTIFICATION_SETTINGS_URL,
+    )
+    return adaptSettings(data.data)
+  },
+
   updateAllSetting: async (enabled: boolean): Promise<NotificationSettingsResponse> => {
-    const { data } = await client.patch<{
-      data: {
-        notifyGeneralEnabled: boolean
-        notifyGoalEnabled: boolean
-        notifyTemptationEnabled: boolean
-        notifyPushEnabled: boolean
-      }
-    }>('/api/v1/users/me/notification-settings', { notifyPushEnabled: enabled })
-    return {
-      all: data.data.notifyPushEnabled,
-      general: data.data.notifyGeneralEnabled,
-      goal: data.data.notifyGoalEnabled,
-      retrial: data.data.notifyTemptationEnabled,
-    }
+    const { data } = await client.patch<{ data: NotificationSettingsResult }>(
+      NOTIFICATION_SETTINGS_URL,
+      { notifyPushEnabled: enabled },
+    )
+    return adaptSettings(data.data)
   },
 
   updateSubSettings: async (
     settings: Omit<NotificationSettingsResponse, 'all'>,
   ): Promise<NotificationSettingsResponse> => {
-    const { data } = await client.patch<{
-      data: {
-        notifyGeneralEnabled: boolean
-        notifyGoalEnabled: boolean
-        notifyTemptationEnabled: boolean
-        notifyPushEnabled: boolean
-      }
-    }>('/api/v1/users/me/notification-settings', {
-      notifyGeneralEnabled: settings.general,
-      notifyGoalEnabled: settings.goal,
-      notifyTemptationEnabled: settings.retrial,
-    })
-    return {
-      all: data.data.notifyPushEnabled,
-      general: data.data.notifyGeneralEnabled,
-      goal: data.data.notifyGoalEnabled,
-      retrial: data.data.notifyTemptationEnabled,
-    }
-  },
-
-  // TODO: 설정 조회 GET API가 없어 임시로 전부 켜진 값을 반환합니다. API 추가 후 교체 필요.
-  getSettings: async (): Promise<NotificationSettingsResponse> => {
-    return { all: true, general: true, goal: true, retrial: true }
+    const { data } = await client.patch<{ data: NotificationSettingsResult }>(
+      NOTIFICATION_SETTINGS_URL,
+      {
+        notifyGeneralEnabled: settings.general,
+        notifyGoalEnabled: settings.goal,
+        notifyTemptationEnabled: settings.retrial,
+      },
+    )
+    return adaptSettings(data.data)
   },
 }

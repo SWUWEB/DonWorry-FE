@@ -30,7 +30,7 @@ interface NotificationProps {
 export default function Notification({ filter, onUnreadCountChange }: NotificationProps) {
   const [sort, setSort] = useState<SortType>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
-  const [readIds, setReadIds] = useState<Set<number>>(new Set())
+  const [readIds, setReadIds] = useState<Set<string>>(new Set())
   const sortRef = useRef<HTMLDivElement>(null)
 
   const { data: serverNotifications = [] } = useNotifications(FILTER_MAP[filter], SORT_MAP[sort])
@@ -57,9 +57,17 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
     return () => document.removeEventListener('mousedown', handler)
   }, [sortOpen])
 
-  const handleRead = (id: number) => {
+  const handleRead = (id: string) => {
     setReadIds((prev) => new Set([...prev, id]))
-    readOne(id)
+    // 실패하면 서버는 읽지 않음인데 화면만 읽음으로 남으므로 로컬 표시를 되돌립니다.
+    readOne(id, {
+      onError: () =>
+        setReadIds((prev) => {
+          const next = new Set(prev)
+          next.delete(id)
+          return next
+        }),
+    })
   }
 
   return (
