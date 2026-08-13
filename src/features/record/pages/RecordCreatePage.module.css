@@ -24,12 +24,6 @@
   color: var(--color-gray-300, #5b6b6a);
 }
 
-.chipGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
 .textInput {
   border: none;
   border-bottom: 1.5px solid var(--color-gray-100, #dddddd);
@@ -51,6 +45,11 @@
 
 .amountWrapper {
   padding-bottom: 4px;
+}
+
+.amountWrapper input,
+.amountWrapper span {
+  font-weight: 600;
 }
 
 .submitBtn {

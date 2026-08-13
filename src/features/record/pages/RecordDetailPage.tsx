@@ -49,7 +49,11 @@ export default function RecordDetailPage() {
         subLeft={<HeaderBackButton />}
         subTitle="소비 상세"
         subRight={
-          <button type="button" aria-label="수정">
+          <button
+            type="button"
+            aria-label="수정"
+            onClick={() => navigate(`/record/${record.id}/edit`)}
+          >
             <IoPencilOutline size={20} />
           </button>
         }
@@ -60,12 +64,10 @@ export default function RecordDetailPage() {
               <p className={styles.title}>{record.title}</p>
             </div>
 
-            <div className={styles.amountRow}>
-              <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
-                {record.type === 'saved' ? '+' : '-'} {formatKRW(record.amount)}
-              </p>
-              <p className={styles.date}>{formatDateCompact(record.occurredAt)}</p>
-            </div>
+            <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
+              {record.type === 'saved' ? '+' : '-'} {formatKRW(record.amount)}
+            </p>
+            <p className={styles.date}>{formatDateCompact(record.occurredAt)}</p>
           </div>
         }
       />
