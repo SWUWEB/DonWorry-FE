@@ -7,18 +7,23 @@ import ErrorMessage from './ErrorMessage'
 import { useSignup } from '@/hooks/useSignup'
 import { useSendVerificationEmail } from '@/hooks/useSendVerificationEmail'
 import { useConfirmVerificationEmail } from '@/hooks/useConfirmVerificationEmail'
+import { useCheckEmail } from '@/hooks/useCheckEmail'
+import { AxiosError } from 'axios'
 
 export default function SignUpForm() {
   const navigate = useNavigate()
   const { mutate } = useSignup()
   const { mutate: sendEmail } = useSendVerificationEmail()
   const { mutate: confirmEmail } = useConfirmVerificationEmail()
+  const { mutate: checkEmail } = useCheckEmail()
+
   const [name, setName] = useState('')
   const [id, setId] = useState('')
 
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [verificationToken, setVerificationToken] = useState('')
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false)
 
   const [password, setPassword] = useState('')
   const [passwordCheck, setPasswordCheck] = useState('')
@@ -38,7 +43,8 @@ export default function SignUpForm() {
     isValidPassword &&
     isPasswordMatch &&
     isValidPhone &&
-    verificationToken !== ''
+    verificationToken !== '' &&
+    isEmailAvailable
 
   const handleSubmit = () => {
     if (!canSubmit) return
@@ -104,7 +110,10 @@ export default function SignUpForm() {
             className={styles.input}
             placeholder="dontworry@google.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              setIsEmailAvailable(false)
+            }}
           />
 
           <button
@@ -112,18 +121,73 @@ export default function SignUpForm() {
             className={styles.smallButton}
             disabled={!isValidEmail}
             onClick={() =>
-              sendEmail(
-                { email },
-                {
-                  onSuccess: () => {
-                    alert('인증 메일을 발송했습니다.')
-                  },
-                  onError: (error) => {
-                    console.error(error)
-                    alert('인증 메일 발송에 실패했습니다.')
-                  },
+              checkEmail(email, {
+                onSuccess: (response) => {
+                  if (!response.data.available) {
+                    setIsEmailAvailable(false)
+                    alert('이미 사용 중인 이메일입니다.')
+                    return
+                  }
+
+                  setIsEmailAvailable(true)
+
+                  sendEmail(
+                    { email },
+                    {
+                      onSuccess: (response) => {
+                        console.log(response.data)
+
+                        alert(
+                          `인증 메일을 발송했습니다.\n인증번호 유효시간: ${response.data.codeTtlSeconds}초`,
+                        )
+                      },
+
+                      onError: (error: AxiosError) => {
+                        console.error(error)
+
+                        const status = error.response?.status
+
+                        if (status === 400) {
+                          const data = error.response?.data as {
+                            message?: string
+                            errors?: {
+                              fieldErrors?: {
+                                email?: string[]
+                              }
+                            }
+                          }
+
+                          const emailError = data.errors?.fieldErrors?.email?.[0]
+
+                          if (emailError) {
+                            alert(emailError)
+                          } else {
+                            alert(data.message ?? '잘못된 요청입니다.')
+                          }
+                        } else if (status === 429) {
+                          const data = error.response?.data as {
+                            message: string
+                            retryAfterSeconds: number
+                            retryAt: string
+                            rateLimitType: string
+                          }
+
+                          alert(
+                            `${data.message}\n\n${data.retryAfterSeconds}초 후 다시 시도해주세요.`,
+                          )
+                        } else {
+                          alert('인증 메일 발송에 실패했습니다.')
+                        }
+                      },
+                    },
+                  )
                 },
-              )
+
+                onError: (error) => {
+                  console.error(error)
+                  alert('이미 사용중인 이메일입니다.')
+                },
+              })
             }
           >
             인증하기
@@ -165,11 +229,42 @@ export default function SignUpForm() {
                 {
                   onSuccess: (response) => {
                     setVerificationToken(response.data.emailVerificationToken)
-                    alert('이메일 인증이 완료되었습니다.')
+
+                    alert(response.message)
                   },
-                  onError: (error) => {
+
+                  onError: (error: AxiosError) => {
                     console.error(error)
-                    alert('인증번호가 올바르지 않습니다.')
+
+                    const status = error.response?.status
+
+                    if (status === 400) {
+                      const data = error.response?.data as {
+                        message?: string
+                        errors?: {
+                          fieldErrors?: {
+                            email?: string[]
+                          }
+                        }
+                      }
+
+                      const emailError = data.errors?.fieldErrors?.email?.[0]
+
+                      if (emailError) {
+                        alert(emailError)
+                      } else {
+                        alert('인증번호가 올바르지 않거나 만료되었습니다.')
+                      }
+                    } else if (status === 429) {
+                      const data = error.response?.data as {
+                        message: string
+                        retryAfterSeconds: number
+                      }
+
+                      alert(`${data.message}\n\n${data.retryAfterSeconds}초 후 다시 시도해주세요.`)
+                    } else {
+                      alert('이메일 인증에 실패했습니다.')
+                    }
                   },
                 },
               )
