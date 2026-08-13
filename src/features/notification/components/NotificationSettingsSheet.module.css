@@ -45,6 +45,13 @@
   margin: 0;
 }
 
+.errorText {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-sub-red, #e5484d);
+}
+
 .masterItem {
   display: flex;
   align-items: center;
