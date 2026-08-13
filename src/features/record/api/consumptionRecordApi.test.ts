@@ -133,6 +133,34 @@ describe('consumptionRecordApi', () => {
     ])
   })
 
+  it('getRatio: 응답의 비율/금액 필드를 그대로 반환한다', async () => {
+    vi.mocked(client.get).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          period: { startDate: '2026-03-21', endDate: '2026-04-17', days: 28 },
+          totalAmount: 148500,
+          skippedAmount: 96500,
+          consumedAmount: 52000,
+          skippedRatio: 65,
+          consumedRatio: 35,
+        },
+      },
+    })
+
+    const result = await consumptionRecordApi.getRatio()
+
+    expect(client.get).toHaveBeenCalledWith('/api/v1/consumption-records/ratio')
+    expect(result).toEqual({
+      totalAmount: 148500,
+      skippedAmount: 96500,
+      consumedAmount: 52000,
+      skippedRatio: 65,
+      consumedRatio: 35,
+    })
+  })
+
   it('getDetail: recentCategoryConsumptionCount는 배열 길이가 아니라 API 응답값을 그대로 사용한다', async () => {
     vi.mocked(client.get).mockResolvedValueOnce({
       data: {
