@@ -1,40 +1,46 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import { IoPencilOutline } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
 import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import RecentSpendingList from '@/features/intervention/components/RecentSpendingList'
-import { MOCK_RECORDS } from '@/features/record/mockRecords'
+import { useConsumptionRecordDetail } from '@/features/record/hooks/useConsumptionRecords'
 import { formatKRW } from '@/shared/utils/currency'
+import { formatDateCompact } from '@/shared/utils/date'
 import styles from './RecordDetailPage.module.css'
-
-// 목데이터의 날짜가 "2026년 4월 17일" 형식이라 상세 화면 표기(YYYY.MM.DD)로 변환합니다.
-// API 연결 시 서버에서 포맷된 날짜를 받도록 수정 예정입니다.
-function formatDateCompact(dateLabel: string) {
-  const match = dateLabel.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/)
-  if (!match) return dateLabel
-
-  const [, year, month, day] = match
-  return `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`
-}
 
 export default function RecordDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  const record = MOCK_RECORDS.find((item) => item.id === id)
+  const { data: record, isLoading, isError, error, refetch } = useConsumptionRecordDetail(id)
+  const isNotFound = isAxiosError(error) && error.response?.status === 404
 
   useEffect(() => {
-    if (!record) {
+    if (isNotFound) {
       navigate('/record', { replace: true })
     }
-  }, [record, navigate])
+  }, [isNotFound, navigate])
+
+  if (isLoading) {
+    return <p className={styles.message}>불러오는 중...</p>
+  }
+
+  if (isNotFound) return null
+
+  if (isError) {
+    return (
+      <div className={styles.message}>
+        <p>소비 기록을 불러오지 못했습니다.</p>
+        <button type="button" className={styles.retryButton} onClick={() => refetch()}>
+          다시 시도
+        </button>
+      </div>
+    )
+  }
 
   if (!record) return null
-
-  const recentRecords = MOCK_RECORDS.filter(
-    (item) => item.category === record.category && item.id !== record.id,
-  )
 
   return (
     <div>
@@ -61,7 +67,7 @@ export default function RecordDetailPage() {
             <p className={`${styles.amount} ${record.type === 'consume' ? styles.consume : ''}`}>
               {record.type === 'saved' ? '+' : '-'} {formatKRW(record.amount)}
             </p>
-            <p className={styles.date}>{formatDateCompact(record.date)}</p>
+            <p className={styles.date}>{formatDateCompact(record.occurredAt)}</p>
           </div>
         }
       />
@@ -75,8 +81,8 @@ export default function RecordDetailPage() {
         )}
 
         <RecentSpendingList
-          count={recentRecords.length}
-          records={recentRecords.map((item) => ({
+          count={record.recentCategoryConsumptionCount}
+          records={record.recentCategoryConsumptions.map((item) => ({
             id: item.id,
             title: item.title,
             date: item.date,
