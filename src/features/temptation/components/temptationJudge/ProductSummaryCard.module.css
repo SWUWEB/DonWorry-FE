@@ -6,7 +6,7 @@
   align-self: stretch;
   width: 100%;
   box-sizing: border-box;
-  background-color: #F7FBFA;
+  background-color: #f7fbfa;
   border-radius: 16px;
   padding: 20px;
 }
@@ -38,5 +38,5 @@
   margin: 0;
   font-size: 13px;
   font-weight: 700;
-  color: #1E7A35;
+  color: #1e7a35;
 }
