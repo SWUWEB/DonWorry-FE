@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
+import { useKakaoLogin } from '@/hooks/useKakaoLogin'
 
 export default function LoginForm() {
   const [id, setId] = useState('')
@@ -17,6 +18,7 @@ export default function LoginForm() {
 
   const navigate = useNavigate()
   const { mutate, isPending } = useLogin()
+  const { mutate: kakaoLogin } = useKakaoLogin()
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault()
@@ -47,7 +49,6 @@ export default function LoginForm() {
         },
 
         onError: (error) => {
-          // 401은 아이디/비밀번호 불일치, 그 외에는 일시적인 오류로 안내합니다.
           const status = isAxiosError(error) ? error.response?.status : undefined
 
           setErrorMessage(
@@ -55,6 +56,65 @@ export default function LoginForm() {
               ? '아이디 또는 비밀번호가 올바르지 않습니다.'
               : '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.',
           )
+        },
+      },
+    )
+  }
+
+  const handleKakaoLogin = () => {
+    kakaoLogin(
+      {
+        // TODO: 추후 OAuth 연동 시 실제 authorizationCode로 교체
+        authorizationCode: '',
+      },
+      {
+        onSuccess: (response) => {
+          localStorage.setItem('accessToken', response.data.accessToken)
+          localStorage.setItem('refreshToken', response.data.refreshToken)
+
+          navigate('/')
+        },
+
+        onError: (error) => {
+          if (!isAxiosError(error)) {
+            alert('카카오 로그인에 실패했습니다.')
+            return
+          }
+
+          const status = error.response?.status
+
+          switch (status) {
+            case 400:
+              alert('카카오 계정 정보가 올바르지 않습니다.')
+              break
+
+            case 401:
+              alert('카카오 인증 코드가 만료되었거나 올바르지 않습니다.')
+              break
+
+            case 409: {
+              const data = error.response?.data as {
+                message: string
+                data: {
+                  linkingToken: string
+                  verificationMethods: string[]
+                  expiresInSeconds: number
+                }
+              }
+
+              localStorage.setItem('linkingToken', data.data.linkingToken)
+
+              alert(data.message)
+              break
+            }
+
+            case 502:
+              alert('카카오 서버와 통신에 실패했습니다.')
+              break
+
+            default:
+              alert('카카오 로그인에 실패했습니다.')
+          }
         },
       },
     )
@@ -91,7 +151,7 @@ export default function LoginForm() {
           {isPending ? '로그인 중...' : '로그인'}
         </Button>
 
-        <KakaoButton />
+        <KakaoButton onClick={handleKakaoLogin} />
       </div>
 
       <LoginLink />
