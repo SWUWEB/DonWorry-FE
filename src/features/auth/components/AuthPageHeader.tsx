@@ -9,7 +9,7 @@ interface AuthPageHeaderProps {
 
 export default function AuthPageHeader({ title, description }: AuthPageHeaderProps) {
   return (
-    <div className="mt-12 flex w-89.5 flex-col items-start">
+    <div className="mt-12 flex w-full max-w-89.5 flex-col items-start">
       <img src={logo} alt="DonWorry" className="mb-5 h-7 w-auto rounded-[10px]" />
 
       <Link
