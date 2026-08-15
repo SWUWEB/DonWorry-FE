@@ -16,6 +16,10 @@ const RecordInterventionPage = lazy(
 const RiskResultPage = lazy(() => import('@/features/intervention/pages/RiskResultPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignUpPage = lazy(() => import('@/pages/SignUpPage'))
+const FindIdPage = lazy(() => import('@/pages/FindIdPage'))
+const ResetPasswordRequestPage = lazy(() => import('@/pages/ResetPasswordRequestPage'))
+const ResetPasswordVerifyPage = lazy(() => import('@/pages/ResetPasswordVerifyPage'))
+const ResetPasswordNewPage = lazy(() => import('@/pages/ResetPasswordNewPage'))
 const MyPagePage = lazy(() => import('@/pages/MyPagePage'))
 const Temptation = lazy(() => import('@/features/temptation/Temptation'))
 const TemptationInfo = lazy(() => import('@/features/temptation/pages/TemptationInfo'))
@@ -38,6 +42,10 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignUpPage /> },
+      { path: '/find-id', element: <FindIdPage /> },
+      { path: '/reset-password', element: <ResetPasswordRequestPage /> },
+      { path: '/reset-password/verify', element: <ResetPasswordVerifyPage /> },
+      { path: '/reset-password/new', element: <ResetPasswordNewPage /> },
       { path: '/mypage', element: <MyPagePage /> },
       { path: '/goal-amount', element: <GoalAmountPage /> },
       { path: '/notification', element: <NotificationPage /> },
