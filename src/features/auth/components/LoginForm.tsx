@@ -6,13 +6,13 @@ import ErrorMessage from './ErrorMessage'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
 
 export default function LoginForm() {
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
-  const [loginError, setLoginError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const navigate = useNavigate()
@@ -22,14 +22,16 @@ export default function LoginForm() {
     e.preventDefault()
 
     if (!id.trim()) {
-      alert('아이디를 입력해주세요.')
+      setErrorMessage('아이디를 입력해주세요.')
       return
     }
 
     if (!password.trim()) {
-      alert('비밀번호를 입력해주세요.')
+      setErrorMessage('비밀번호를 입력해주세요.')
       return
     }
+
+    setErrorMessage('')
 
     mutate(
       {
@@ -38,9 +40,6 @@ export default function LoginForm() {
       },
       {
         onSuccess: (response) => {
-          setLoginError(false)
-          setErrorMessage('')
-
           localStorage.setItem('accessToken', response.data.accessToken)
           localStorage.setItem('refreshToken', response.data.refreshToken)
 
@@ -48,9 +47,14 @@ export default function LoginForm() {
         },
 
         onError: (error) => {
-          setLoginError(true)
-          setErrorMessage('아이디 또는 비밀번호가 올바르지 않습니다.')
-          console.error(error)
+          // 401은 아이디/비밀번호 불일치, 그 외에는 일시적인 오류로 안내합니다.
+          const status = isAxiosError(error) ? error.response?.status : undefined
+
+          setErrorMessage(
+            status === 401
+              ? '아이디 또는 비밀번호가 올바르지 않습니다.'
+              : '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.',
+          )
         },
       },
     )
@@ -62,7 +66,10 @@ export default function LoginForm() {
         label="아이디"
         placeholder="아이디를 입력해주세요"
         value={id}
-        onChange={(e) => setId(e.target.value)}
+        onChange={(e) => {
+          setId(e.target.value)
+          setErrorMessage('')
+        }}
       />
 
       <div className={styles.passwordSection}>
@@ -71,9 +78,12 @@ export default function LoginForm() {
           placeholder="비밀번호를 입력해주세요"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            setErrorMessage('')
+          }}
         />
-        {loginError && <ErrorMessage message={errorMessage} />}
+        {errorMessage && <ErrorMessage message={errorMessage} />}
       </div>
 
       <div className={styles.buttonGroup}>

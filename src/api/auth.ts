@@ -29,6 +29,19 @@ export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
   return data
 }
 
+export interface CheckEmailRequest {
+  email: string
+}
+
+export interface CheckEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    available: boolean
+  }
+}
+
 export interface SendEmailRequest {
   email: string
 }
@@ -46,7 +59,8 @@ export interface SendEmailResponse {
     email: string
     codeTtlSeconds: number
     resendCooldownSeconds: number
-    debugCode: string
+    // 개발 편의용 필드라 운영 환경에서는 내려오지 않을 수 있습니다.
+    debugCode?: string
   }
 }
 
@@ -58,6 +72,18 @@ export interface ConfirmEmailResponse {
     email: string
     emailVerificationToken: string
   }
+}
+
+//이메일 중복확인
+
+export const checkEmail = async (email: string): Promise<CheckEmailResponse> => {
+  const { data } = await client.get<CheckEmailResponse>('/api/v1/auth/check-email', {
+    params: {
+      email,
+    },
+  })
+
+  return data
 }
 
 export const sendVerificationEmail = async (body: SendEmailRequest): Promise<SendEmailResponse> => {
