@@ -5,7 +5,7 @@ import LoginLink from './LoginLink'
 import ErrorMessage from './ErrorMessage'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
@@ -85,6 +85,16 @@ export default function LoginForm() {
         />
         {errorMessage && <ErrorMessage message={errorMessage} />}
       </div>
+
+      <p className={styles.findLinks}>
+        <Link to="/find-id" className={styles.findLink}>
+          아이디 찾기
+        </Link>
+        <span className={styles.divider} aria-hidden="true" />
+        <Link to="/reset-password" className={styles.findLink}>
+          비밀번호 재설정
+        </Link>
+      </p>
 
       <div className={styles.buttonGroup}>
         <Button type="submit" disabled={isPending}>
