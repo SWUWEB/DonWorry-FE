@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { IoChevronDown } from 'react-icons/io5'
 import NotificationCard from './components/NotificationCard'
 import type { FilterType } from './components/FilterTabs'
-import { useNotifications, useReadNotification, useDeleteNotification } from './hooks/useNotifications'
+import {
+  useNotifications,
+  useReadNotification,
+  useDeleteNotification,
+} from './hooks/useNotifications'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 

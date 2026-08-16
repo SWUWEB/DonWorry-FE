@@ -38,8 +38,9 @@ export function useDeleteNotification() {
       const snapshots = queryClient.getQueriesData<NotificationItem[]>({
         queryKey: QUERY_KEYS.lists,
       })
-      queryClient.setQueriesData<NotificationItem[]>({ queryKey: QUERY_KEYS.lists }, (old) =>
-        old?.filter((n) => n.id !== id) ?? [],
+      queryClient.setQueriesData<NotificationItem[]>(
+        { queryKey: QUERY_KEYS.lists },
+        (old) => old?.filter((n) => n.id !== id) ?? [],
       )
       return { snapshots }
     },
