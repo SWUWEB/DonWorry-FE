@@ -110,6 +110,10 @@ export const notificationApi = {
     await client.patch('/api/v1/notifications/read-all')
   },
 
+  deleteOne: async (id: string): Promise<void> => {
+    await client.delete(`/api/v1/notifications/${id}`)
+  },
+
   getSettings: async (): Promise<NotificationSettingsResponse> => {
     const { data } = await client.get<{ data: NotificationSettingsResult }>(
       NOTIFICATION_SETTINGS_URL,
