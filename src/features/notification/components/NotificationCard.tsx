@@ -14,7 +14,8 @@ import styles from './NotificationCard.module.css'
 import type { FilterType } from './FilterTabs'
 
 export interface NotificationItem {
-  id: number
+  // 서버가 id를 문자열로 내려주므로 변환 없이 그대로 사용합니다(정밀도 손실·NaN 방지).
+  id: string
   type: Exclude<FilterType, '전체'>
   iconVariant: 'lightning' | 'check' | 'calendar' | 'heart'
   title: string
@@ -38,7 +39,7 @@ const ICON_CONFIG: Record<
 }
 
 interface Props extends NotificationItem {
-  onRead: (id: number) => void
+  onRead: (id: string) => void
 }
 
 export default function NotificationCard({

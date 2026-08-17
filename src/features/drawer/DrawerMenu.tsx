@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useLogout } from '@/hooks/useLogout'
 import { IoCloseOutline } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useDrawer } from './useDrawer'
@@ -137,6 +138,8 @@ export default function DrawerMenu() {
   const { isOpen, close } = useDrawer()
   const navigate = useNavigate()
   const location = useLocation()
+  const { mutate: logout } = useLogout()
+
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
 
@@ -171,10 +174,41 @@ export default function DrawerMenu() {
   }
 
   const handleLogout = () => {
-    // TODO: 로그아웃 API 호출 및 토큰/세션 정리 후 이동
-    setShowLogoutConfirm(false)
-    close()
-    navigate('/login')
+    const refreshToken = localStorage.getItem('refreshToken')
+
+    if (!refreshToken) {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+
+      setShowLogoutConfirm(false)
+      close()
+      navigate('/login')
+
+      return
+    }
+
+    logout(
+      { refreshToken },
+      {
+        onSuccess: () => {
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+
+          setShowLogoutConfirm(false)
+          close()
+          navigate('/login')
+        },
+
+        onError: () => {
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+
+          setShowLogoutConfirm(false)
+          close()
+          navigate('/login')
+        },
+      },
+    )
   }
 
   return createPortal(

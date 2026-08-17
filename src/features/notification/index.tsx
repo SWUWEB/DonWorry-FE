@@ -2,12 +2,25 @@ import { useEffect, useRef, useState } from 'react'
 import { IoChevronDown } from 'react-icons/io5'
 import NotificationCard from './components/NotificationCard'
 import type { FilterType } from './components/FilterTabs'
-import { useNotifications } from './hooks/useNotifications'
+import { useNotifications, useReadNotification } from './hooks/useNotifications'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 
 type SortType = '최신순' | '오래된순' | '읽지 않은 알림 우선'
 const SORT_OPTIONS: SortType[] = ['최신순', '오래된순', '읽지 않은 알림 우선']
+
+const FILTER_MAP: Record<FilterType, string> = {
+  전체: 'ALL',
+  유혹관리: 'TEMPTATION',
+  목표현황: 'GOAL',
+  일반: 'GENERAL',
+}
+
+const SORT_MAP: Record<SortType, string> = {
+  최신순: 'LATEST',
+  오래된순: 'OLDEST',
+  '읽지 않은 알림 우선': 'UNREAD_FIRST',
+}
 
 interface NotificationProps {
   filter: FilterType
@@ -17,10 +30,11 @@ interface NotificationProps {
 export default function Notification({ filter, onUnreadCountChange }: NotificationProps) {
   const [sort, setSort] = useState<SortType>('최신순')
   const [sortOpen, setSortOpen] = useState(false)
-  const [readIds, setReadIds] = useState<Set<number>>(new Set())
+  const [readIds, setReadIds] = useState<Set<string>>(new Set())
   const sortRef = useRef<HTMLDivElement>(null)
 
-  const { data: serverNotifications = [] } = useNotifications()
+  const { data: serverNotifications = [] } = useNotifications(FILTER_MAP[filter], SORT_MAP[sort])
+  const { mutate: readOne } = useReadNotification()
 
   const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
@@ -43,20 +57,17 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
     return () => document.removeEventListener('mousedown', handler)
   }, [sortOpen])
 
-  const filtered =
-    filter === '전체' ? notifications : notifications.filter((n) => n.type === filter)
-
-  const sorted = [...filtered].sort((a, b) => {
-    if (sort === '오래된순') return a.id - b.id
-    if (sort === '읽지 않은 알림 우선') {
-      if (a.isRead === b.isRead) return b.id - a.id
-      return a.isRead ? 1 : -1
-    }
-    return b.id - a.id
-  })
-
-  const handleRead = (id: number) => {
+  const handleRead = (id: string) => {
     setReadIds((prev) => new Set([...prev, id]))
+    // 실패하면 서버는 읽지 않음인데 화면만 읽음으로 남으므로 로컬 표시를 되돌립니다.
+    readOne(id, {
+      onError: () =>
+        setReadIds((prev) => {
+          const next = new Set(prev)
+          next.delete(id)
+          return next
+        }),
+    })
   }
 
   return (
@@ -86,12 +97,12 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
         </div>
       </div>
       <ul className={styles.list}>
-        {sorted.map((item) => (
+        {notifications.map((item) => (
           <li key={item.id}>
             <NotificationCard {...item} onRead={handleRead} />
           </li>
         ))}
-        {sorted.length === 0 && <li className={styles.empty}>알림이 없습니다.</li>}
+        {notifications.length === 0 && <li className={styles.empty}>알림이 없습니다.</li>}
       </ul>
     </main>
   )
