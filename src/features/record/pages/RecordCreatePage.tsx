@@ -101,8 +101,9 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
   const submitError = createRecord.isError || updateRecord.isError
 
   const handleParseUrl = () => {
-    if (!productUrl.trim()) return
-    parseUrl.mutate(productUrl, {
+    const normalizedUrl = productUrl.trim()
+    if (!normalizedUrl) return
+    parseUrl.mutate(normalizedUrl, {
       onSuccess: (data) => {
         setTitle(data.productName)
         setAmount(data.price)
@@ -114,22 +115,47 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
     event.preventDefault()
     if (!isValid) return
 
+    const normalizedProductUrl = productUrl.trim() || undefined
+
     if (isEditMode && id) {
       updateRecord.mutate(
-        { id, input: { type, productName: title, price: amount, category, reason, productUrl } },
+        {
+          id,
+          input: {
+            type,
+            productName: title,
+            price: amount,
+            category,
+            reason,
+            productUrl: normalizedProductUrl,
+          },
+        },
         { onSuccess: () => navigate(`/record/${id}`) },
       )
       return
     }
 
     if (type === 'consume') {
-      const draft: RecordDraft = { title, amount, category, reason, productUrl }
+      const draft: RecordDraft = {
+        title,
+        amount,
+        category,
+        reason,
+        productUrl: normalizedProductUrl,
+      }
       navigate('/record/intervention', { state: { draft } })
       return
     }
 
     createRecord.mutate(
-      { type, productName: title, price: amount, category, reason, productUrl },
+      {
+        type,
+        productName: title,
+        price: amount,
+        category,
+        reason,
+        productUrl: normalizedProductUrl,
+      },
       { onSuccess: () => navigate('/record') },
     )
   }
@@ -172,6 +198,7 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
               className={`${styles.textInput} ${styles.urlInput}`}
               placeholder="https://..."
               value={productUrl}
+              disabled={parseUrl.isPending}
               onChange={(event) => setProductUrl(event.target.value)}
             />
             <button
