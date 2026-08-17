@@ -2,6 +2,8 @@
   width: 100%;
   padding: 12px 16px;
   border-radius: 12px;
+  border: 1px solid transparent;
+  box-sizing: border-box;
   font-size: 16px;
   font-weight: 600;
   line-height: 19px;
@@ -12,13 +14,12 @@
 
 .outline {
   background: var(--color-text-white, #fefefe);
-  border: 1px solid var(--color-main-500, #2f7f82);
+  border-color: var(--color-main-500, #2f7f82);
   color: var(--color-main-500, #2f7f82);
 }
 
 .filled {
   background: var(--color-main-500, #2f7f82);
-  border: none;
   color: var(--color-main-000, #f7fbfa);
 }
 
