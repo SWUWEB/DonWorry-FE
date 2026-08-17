@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import BackButton from '@/features/intervention/components/BackButton'
 import AnswerButton from '@/features/intervention/components/AnswerButton'
 import CountdownTimer from '@/features/intervention/components/CountdownTimer'
-import { getRiskLevel, parseRiskScore } from '@/features/intervention/utils/riskLevel'
-import type { RiskLevel } from '@/features/intervention/utils/riskLevel'
+import type { RiskAnalysis, RiskLevel } from '@/features/intervention/api/interventionApi'
 import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
 import type { RecordType } from '@/features/record/mockRecords'
 import { useCreateConsumptionRecord } from '@/features/record/hooks/useConsumptionRecords'
@@ -25,25 +24,22 @@ const RISK_CONTENT: Record<RiskLevel, { heading: string; timerSeconds: number | 
 export default function RiskResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
-
-  const score = parseRiskScore(searchParams.get('score'))
-  const draft = (location.state as { draft?: RecordDraft } | null)?.draft
+  const state = location.state as { draft?: RecordDraft; risk?: RiskAnalysis } | null
+  const draft = state?.draft
+  const risk = state?.risk
 
   const createRecord = useCreateConsumptionRecord()
 
   useEffect(() => {
-    if (score === null || !draft) {
+    if (!draft || !risk) {
       navigate('/record/new', { replace: true })
     }
-  }, [score, draft, navigate])
+  }, [draft, risk, navigate])
 
-  const riskLevel = score !== null ? getRiskLevel(score) : 'low'
-  const { heading, timerSeconds } = RISK_CONTENT[riskLevel]
-
+  const { heading, timerSeconds } = RISK_CONTENT[risk?.riskLevel ?? 'low']
   const [waitComplete, setWaitComplete] = useState(timerSeconds === null)
 
-  if (score === null || !draft) return null
+  if (!draft || !risk) return null
 
   const handleDecision = (type: RecordType) => {
     createRecord.mutate(
@@ -53,7 +49,7 @@ export default function RiskResultPage() {
         price: draft.amount,
         category: draft.category,
         reason: draft.reason,
-        riskScore: score,
+        riskScore: risk.riskScore,
         productUrl: draft.productUrl,
       },
       { onSuccess: () => navigate('/record', { replace: true }) },
