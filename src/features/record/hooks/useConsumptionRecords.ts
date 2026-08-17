@@ -4,8 +4,8 @@ import { consumptionRecordApi } from '../api/consumptionRecordApi'
 import type { ConsumptionRecordInput, RecordListFilter } from '../api/consumptionRecordApi'
 
 const QUERY_KEYS = {
-  list: (filter: RecordListFilter) => ['consumption-records', filter] as const,
-  detail: (id: string) => ['consumption-records', id] as const,
+  list: (filter: RecordListFilter) => ['consumption-records', 'list', filter] as const,
+  detail: (id: string) => ['consumption-records', 'detail', id] as const,
   ratio: ['consumption-records', 'ratio'] as const,
 }
 

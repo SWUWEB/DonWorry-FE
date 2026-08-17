@@ -109,6 +109,7 @@ function adaptRecord(result: ConsumptionRecordResult): RecordItem {
     amount: result.price ?? 0,
     type: TYPE_TO_FRONT[result.type],
     date: formatDateKorean(result.occurredAt),
+    occurredAt: result.occurredAt,
     reason: result.reason ?? undefined,
   }
 }
