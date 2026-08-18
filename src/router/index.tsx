@@ -23,6 +23,8 @@ const ResetPasswordNewPage = lazy(() => import('@/pages/ResetPasswordNewPage'))
 const MyPagePage = lazy(() => import('@/pages/MyPagePage'))
 const Temptation = lazy(() => import('@/features/temptation/Temptation'))
 const TemptationInfo = lazy(() => import('@/features/temptation/pages/TemptationInfo'))
+const TemptationJudge = lazy(() => import('@/features/temptation/pages/TemptationJudge'))
+const TemptationSaved = lazy(() => import('@/features/temptation/pages/TemptationSaved'))
 const GoalAmountPage = lazy(() => import('@/pages/GoalAmountPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const TemptationEdit = lazy(() => import('@/features/temptation/pages/TemptationEdit'))
@@ -72,6 +74,8 @@ const router = createBrowserRouter([
           { path: '/temptation', element: <Temptation /> },
           { path: '/temptation/:id', element: <TemptationInfo /> },
           { path: '/temptation/:id/edit', element: <TemptationEdit /> },
+          { path: '/temptation/:id/judge', element: <TemptationJudge /> },
+          { path: '/temptation/saved', element: <TemptationSaved /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },
