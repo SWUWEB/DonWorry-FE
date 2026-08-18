@@ -3,7 +3,7 @@ import client from '@/api/client'
 import { consumptionRecordApi } from './consumptionRecordApi'
 
 vi.mock('@/api/client', () => ({
-  default: { get: vi.fn() },
+  default: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() },
 }))
 
 describe('consumptionRecordApi', () => {
@@ -197,5 +197,144 @@ describe('consumptionRecordApi', () => {
 
     expect(result.recentCategoryConsumptionCount).toBe(5)
     expect(result.recentCategoryConsumptions).toHaveLength(1)
+  })
+
+  it('create: saved/consume을 SKIPPED/CONSUMED로, 카테고리 라벨을 코드로 변환해 전송한다', async () => {
+    vi.mocked(client.post).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: '소비 기록 생성에 성공했습니다.',
+        data: {
+          id: '1',
+          type: 'SKIPPED',
+          productName: '무선 이어폰',
+          price: 150000,
+          categoryCode: 'ELECTRONICS',
+          categoryLabel: '전자기기',
+          reason: '비슷한 걸 이미 가지고 있어서',
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    const result = await consumptionRecordApi.create({
+      type: 'saved',
+      productName: '무선 이어폰',
+      price: 150000,
+      category: '전자기기',
+      reason: '비슷한 걸 이미 가지고 있어서',
+    })
+
+    expect(client.post).toHaveBeenCalledWith('/api/v1/consumption-records', {
+      type: 'SKIPPED',
+      productName: '무선 이어폰',
+      price: 150000,
+      category_code: 'ELECTRONICS',
+      reason: '비슷한 걸 이미 가지고 있어서',
+    })
+    expect(result.type).toBe('saved')
+    expect(result.category).toBe('전자기기')
+  })
+
+  it('create: category/reason/riskScore가 없으면 요청 바디에 포함하지 않는다', async () => {
+    vi.mocked(client.post).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '2',
+          type: 'CONSUMED',
+          productName: '아메리카노',
+          price: 4500,
+          categoryCode: null,
+          categoryLabel: null,
+          reason: null,
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    await consumptionRecordApi.create({ type: 'consume', productName: '아메리카노', price: 4500 })
+
+    expect(client.post).toHaveBeenCalledWith('/api/v1/consumption-records', {
+      type: 'CONSUMED',
+      productName: '아메리카노',
+      price: 4500,
+    })
+  })
+
+  it('update: PUT으로 요청하고 응답을 프론트 타입으로 변환한다', async () => {
+    vi.mocked(client.put).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '1',
+          type: 'CONSUMED',
+          productName: '수정된 상품명',
+          price: 10000,
+          categoryCode: 'FASHION',
+          categoryLabel: '패션',
+          reason: null,
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    const result = await consumptionRecordApi.update('1', {
+      type: 'consume',
+      productName: '수정된 상품명',
+      price: 10000,
+      category: '패션',
+    })
+
+    expect(client.put).toHaveBeenCalledWith('/api/v1/consumption-records/1', {
+      type: 'CONSUMED',
+      productName: '수정된 상품명',
+      price: 10000,
+      category_code: 'FASHION',
+    })
+    expect(result.title).toBe('수정된 상품명')
+  })
+
+  it('remove: DELETE로 요청한다', async () => {
+    vi.mocked(client.delete).mockResolvedValueOnce({ data: { success: true } })
+
+    await consumptionRecordApi.remove('1')
+
+    expect(client.delete).toHaveBeenCalledWith('/api/v1/consumption-records/1')
+  })
+
+  it('create: productUrl이 있으면 요청 바디에 포함한다', async () => {
+    vi.mocked(client.post).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '3',
+          type: 'CONSUMED',
+          productName: '캠핑 의자',
+          price: 45000,
+          categoryCode: 'HOBBY_GOODS',
+          categoryLabel: '취미/굿즈',
+          reason: null,
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    await consumptionRecordApi.create({
+      type: 'consume',
+      productName: '캠핑 의자',
+      price: 45000,
+      productUrl: 'https://example.com/products/chair',
+    })
+
+    expect(client.post).toHaveBeenCalledWith('/api/v1/consumption-records', {
+      type: 'CONSUMED',
+      productName: '캠핑 의자',
+      price: 45000,
+      productUrl: 'https://example.com/products/chair',
+    })
   })
 })
