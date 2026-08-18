@@ -4,10 +4,10 @@ import ProfileIcon from '@/assets/profile.svg'
 
 type ProfileCardProps = {
   name: string
-  email: string
+  subtitle?: string
 }
 
-export default function ProfileCard({ name, email }: ProfileCardProps) {
+export default function ProfileCard({ name, subtitle }: ProfileCardProps) {
   const navigate = useNavigate()
 
   return (
@@ -18,7 +18,7 @@ export default function ProfileCard({ name, email }: ProfileCardProps) {
 
       <h2 className={styles.name}>{name}</h2>
 
-      <p className={styles.email}>{email}</p>
+      {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
 
       <button type="button" className={styles.manageButton} onClick={() => navigate('/profile')}>
         회원 정보 관리

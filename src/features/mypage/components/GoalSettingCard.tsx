@@ -1,18 +1,61 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { isAxiosError } from 'axios'
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
+import { useMe, useSetSavingGoal } from '../hooks/useUser'
 import styles from './GoalSettingCard.module.css'
 
 export default function GoalSettingCard() {
+  const { data: profile } = useMe()
+  const { mutate: setSavingGoal, isPending } = useSetSavingGoal()
+
+  const [goalText, setGoalText] = useState('')
   const [goalAmount, setGoalAmount] = useState('')
-  const [showGoal, setShowGoal] = useState(true)
+  const [isActive, setIsActive] = useState(true)
+  const [error, setError] = useState('')
+  const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    if (profile?.savingGoalText) {
+      // 서버에 저장된 목표 이름을 최초 1회 편집 상태로 반영합니다.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGoalText(profile.savingGoalText)
+    }
+  }, [profile])
 
   const handleSave = () => {
-    if (!goalAmount.trim()) {
-      alert('목표 금액을 입력해주세요.')
+    if (!goalText.trim()) {
+      setError('목표 이름을 입력해주세요.')
       return
     }
-    alert('저장되었습니다.')
+
+    const amount = Number(goalAmount.replace(/,/g, ''))
+    if (!goalAmount.trim() || Number.isNaN(amount) || amount <= 0) {
+      setError('목표 금액을 입력해주세요.')
+      return
+    }
+
+    setError('')
+    setSaved(false)
+
+    setSavingGoal(
+      { savingGoalText: goalText, targetSavingAmount: amount, savingGoalIsActive: isActive },
+      {
+        onSuccess: () => setSaved(true),
+        onError: (err) => {
+          const fieldError = isAxiosError(err)
+            ? Object.values(
+                (err.response?.data as { errors?: { fieldErrors?: Record<string, string[]> } })
+                  ?.errors?.fieldErrors ?? {},
+              )
+                .flat()
+                .find(Boolean)
+            : undefined
+
+          setError(fieldError ?? '저장하지 못했습니다. 잠시 후 다시 시도해주세요.')
+        },
+      },
+    )
   }
 
   return (
@@ -21,10 +64,26 @@ export default function GoalSettingCard() {
 
       <div className={styles.inputGroup}>
         <InputField
+          label="목표 이름"
+          placeholder="예: 여행 자금, 목돈 마련"
+          value={goalText}
+          onChange={(e) => {
+            setGoalText(e.target.value)
+            setSaved(false)
+          }}
+        />
+      </div>
+
+      <div className={styles.inputGroup}>
+        <InputField
           label="목표 금액"
           placeholder="금액을 입력하세요"
+          inputMode="numeric"
           value={goalAmount}
-          onChange={(e) => setGoalAmount(e.target.value)}
+          onChange={(e) => {
+            setGoalAmount(e.target.value.replace(/[^0-9]/g, ''))
+            setSaved(false)
+          }}
           rightElement={<span className={styles.unit}>원</span>}
         />
       </div>
@@ -38,15 +97,27 @@ export default function GoalSettingCard() {
 
         <button
           type="button"
-          className={styles.toggle}
-          aria-label="목표 달성 표시"
-          onClick={() => setShowGoal(!showGoal)}
+          className={`${styles.toggle} ${isActive ? styles.toggleOn : styles.toggleOff}`}
+          aria-label={`목표 달성 표시 ${isActive ? '끄기' : '켜기'}`}
+          onClick={() => {
+            setIsActive((prev) => !prev)
+            setSaved(false)
+          }}
         >
           <div className={styles.toggleCircle} />
         </button>
       </div>
 
-      <Button onClick={handleSave}>저장하기</Button>
+      {error && (
+        <p className={styles.formError} role="alert">
+          {error}
+        </p>
+      )}
+      {saved && <p className={styles.formSuccess}>저장되었습니다.</p>}
+
+      <Button onClick={handleSave} disabled={isPending}>
+        {isPending ? '저장 중...' : '저장하기'}
+      </Button>
     </section>
   )
 }

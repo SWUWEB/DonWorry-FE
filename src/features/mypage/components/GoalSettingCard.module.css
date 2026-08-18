@@ -45,8 +45,16 @@
   padding: 3px;
   border: none;
   border-radius: 999px;
-  background-color: #2f7f82;
   cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.toggleOn {
+  background-color: #2f7f82;
+}
+
+.toggleOff {
+  background-color: #d1d5db;
 }
 
 .toggleCircle {
@@ -54,7 +62,15 @@
   height: 20px;
   border-radius: 50%;
   background-color: white;
+  transition: margin-left 0.15s ease;
+}
+
+.toggleOn .toggleCircle {
   margin-left: auto;
+}
+
+.toggleOff .toggleCircle {
+  margin-left: 0;
 }
 
 .inputGroup {
@@ -68,4 +84,18 @@
   font-weight: 600;
   color: #c0c0c0;
   pointer-events: none;
+}
+
+.formError {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-red);
+}
+
+.formSuccess {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-green);
 }

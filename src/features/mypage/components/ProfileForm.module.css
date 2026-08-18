@@ -41,10 +41,18 @@
   box-sizing: border-box;
 }
 
-.calendarIcon {
-  font-size: 22px;
-  color: #9ca3af;
-  pointer-events: none;
+.formError {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-red);
+}
+
+.formSuccess {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-green);
 }
 
 .buttonWrapper {
