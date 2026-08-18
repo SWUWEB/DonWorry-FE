@@ -4,6 +4,29 @@
   min-height: 100svh;
 }
 
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  font-size: 14px;
+  color: var(--color-gray-300, #5b6b6a);
+  text-align: center;
+}
+
+.retryButton {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -43,6 +66,41 @@
   border-bottom-color: var(--color-main-500, #2f7f82);
 }
 
+.urlRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.urlInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.urlButton {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-text-primary, #243130);
+  color: var(--color-main-000, #f7fbfa);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.urlButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.successText {
+  margin: 0;
+  font-size: 13px;
+  color: #008d02;
+}
+
 .amountWrapper {
   padding-bottom: 4px;
 }
@@ -50,6 +108,12 @@
 .amountWrapper input,
 .amountWrapper span {
   font-weight: 600;
+}
+
+.errorText {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: #eb0000;
 }
 
 .submitBtn {

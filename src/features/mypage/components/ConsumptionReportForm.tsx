@@ -1,81 +1,92 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { formatKRW } from '@/shared/utils/currency'
+import { useConsumptionReport } from '../hooks/useConsumptionReport'
 import DonutChart from './DonutChart'
 import CategoryItem from './CategoryItem'
 import styles from './ConsumptionReportForm.module.css'
 import SavingStatusCard from './SavingStatusCard'
 import SavingCategoryItem from './SavingCategoryItem'
-import { CategoryIcon } from '@/assets/icons/CategoryIcon.tsx'
-import { CATEGORY_COLORS, CATEGORY_ICON_MAP } from '@/assets/icons/CategoryIconMap.tsx'
-import type { Category } from '@/features/temptation/types'
-import { getCurrentYearMonth, shiftYearMonth } from '@/shared/utils/date'
-import { useConsumptionReport } from '../hooks/useReport'
-import type { ConsumptionReportInsight } from '../api/reportApi'
 
-const FALLBACK_COLOR = '#D9D9D9'
+// 카테고리가 9종이라 색도 9개를 둡니다.
+// 개수가 모자라면 서로 다른 카테고리에 같은 색이 배정돼 차트/범례에서 구분이 안 됩니다.
+const CATEGORY_COLORS = [
+  '#2F7F82',
+  '#4ECDC4',
+  '#FFE66D',
+  '#FF6B6B',
+  '#A8E6CF',
+  '#DDA0DD',
+  '#F4A261',
+  '#8AB6F9',
+  '#B0BEC5',
+]
 
-function toCategory(label: string): Category {
-  return label in CATEGORY_ICON_MAP ? (label as Category) : '기타'
+// 백엔드 카테고리 코드 9종 기준 (소비기록 API와 동일한 코드 체계)
+const CATEGORY_ICONS: Record<string, string> = {
+  FASHION: '👗',
+  BEAUTY: '💄',
+  FOOD_SNACK: '🍔',
+  CAFE_DESSERT: '☕',
+  HOBBY_GOODS: '🎮',
+  ELECTRONICS: '📱',
+  HEALTH_FITNESS: '💪',
+  TRAVEL: '✈️',
+  ETC: '📦',
 }
 
-function formatYearMonthKorean(yearMonth: string): string {
-  const [year, month] = yearMonth.split('-')
-  return `${year}년 ${Number(month)}월`
-}
+// 서버는 KST 기준으로 "미래 월"을 판단해 400을 반환하므로,
+// 기기 시간대와 무관하게 서울 기준 연/월에서 목록을 만듭니다.
+const KST_YEAR_MONTH = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+  month: '2-digit',
+})
 
-function InsightCard({ insight }: { insight: ConsumptionReportInsight }) {
-  if (insight.type === 'VULNERABLE_TIME') {
-    return (
-      <div className={styles.patternCard}>
-        <span className={styles.patternIcon}>⏰</span>
+function getRecentMonths(count: number): { label: string; value: string }[] {
+  const parts = KST_YEAR_MONTH.formatToParts(new Date())
+  const get = (type: string) => Number(parts.find((part) => part.type === type)?.value)
+  const currentYear = get('year')
+  const currentMonth = get('month')
 
-        <div className={styles.patternContent}>
-          <p className={styles.patternTitle}>
-            가장 취약한 시간대는 {insight.weekdayLabel}요일 밤 {insight.hour}시
-          </p>
+  return Array.from({ length: count }, (_, i) => {
+    // 월을 0-based로 바꿔 뺀 뒤 다시 1-based로 되돌려 연도 넘김을 자연스럽게 처리합니다.
+    const date = new Date(Date.UTC(currentYear, currentMonth - 1 - i, 1))
+    const year = date.getUTCFullYear()
+    const month = date.getUTCMonth() + 1
 
-          <p className={styles.patternDescription}>
-            전체 지출의 {insight.ratio}%가 {insight.weekdayLabel}요일 이 시간대에 발생했습니다.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className={styles.patternCard}>
-      <span className={styles.patternIcon}>🔗</span>
-
-      <div className={styles.patternContent}>
-        <p className={styles.patternTitle}>주요 충동 유입 경로는 {insight.channel}</p>
-
-        <p className={styles.patternDescription}>
-          기록된 소비 시도 중 {insight.count}건이 이 경로를 통해 유입되었습니다.
-        </p>
-      </div>
-    </div>
-  )
+    return {
+      label: `${year}년 ${month}월`,
+      value: `${year}-${String(month).padStart(2, '0')}`,
+    }
+  })
 }
 
 export default function ConsumptionReportForm() {
-  const currentYearMonth = getCurrentYearMonth()
-  const months = [
-    currentYearMonth,
-    shiftYearMonth(currentYearMonth, -1),
-    shiftYearMonth(currentYearMonth, -2),
-  ]
-
-  const [selectedMonth, setSelectedMonth] = useState(currentYearMonth)
+  const months = getRecentMonths(3)
+  const [selectedMonth, setSelectedMonth] = useState(months[0])
   const [isOpen, setIsOpen] = useState(false)
+  const monthRef = useRef<HTMLDivElement>(null)
 
-  const { data, isLoading, isError, refetch } = useConsumptionReport(selectedMonth)
+  // 드롭다운 바깥을 누르면 닫습니다. (알림 화면 정렬 드롭다운과 동일한 방식)
+  useEffect(() => {
+    if (!isOpen) return
+    const handleClickOutside = (event: MouseEvent) => {
+      if (monthRef.current && !monthRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
+
+  const { data, isLoading, isError, refetch } = useConsumptionReport(selectedMonth.value)
 
   return (
     <div className={styles.wrapper}>
       {/* 월 선택 */}
-      <div className={styles.monthWrapper}>
+      <div className={styles.monthWrapper} ref={monthRef}>
         <button type="button" className={styles.monthButton} onClick={() => setIsOpen(!isOpen)}>
-          <span>{formatYearMonthKorean(selectedMonth)}</span>
-
+          <span>{selectedMonth.label}</span>
           <span className={styles.arrow}>▼</span>
         </button>
 
@@ -83,7 +94,7 @@ export default function ConsumptionReportForm() {
           <div className={styles.monthDropdown}>
             {months.map((month) => (
               <button
-                key={month}
+                key={month.value}
                 type="button"
                 className={styles.monthItem}
                 onClick={() => {
@@ -91,18 +102,17 @@ export default function ConsumptionReportForm() {
                   setIsOpen(false)
                 }}
               >
-                {formatYearMonthKorean(month)}
+                {month.label}
               </button>
             ))}
           </div>
         )}
       </div>
 
-      {isLoading && <p className={styles.message}>불러오는 중...</p>}
-
+      {isLoading && <p className={styles.status}>불러오는 중...</p>}
       {isError && (
-        <div className={styles.message}>
-          <p>리포트를 불러오지 못했습니다.</p>
+        <div className={styles.status}>
+          <p>데이터를 불러오지 못했습니다.</p>
           <button type="button" className={styles.retryButton} onClick={() => refetch()}>
             다시 시도
           </button>
@@ -114,18 +124,23 @@ export default function ConsumptionReportForm() {
           {/* 총 소비 요약 */}
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>총 소비 요약</h2>
-
             <div className={styles.summaryContent}>
-              <DonutChart totalAmount={data.totalConsumption.totalAmount} />
-
+              {/* 차트와 범례가 같은 색·같은 비율을 쓰도록 동일한 배열에서 파생시킵니다. */}
+              <DonutChart
+                totalAmount={data.totalConsumption.totalAmount}
+                segments={data.totalConsumption.categories.map((cat, i) => ({
+                  color: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
+                  ratio: cat.ratio,
+                }))}
+              />
               <div className={styles.legend}>
-                {data.totalConsumption.categories.map((category) => (
+                {data.totalConsumption.categories.map((cat, i) => (
                   <CategoryItem
-                    key={category.categoryCode}
-                    color={CATEGORY_COLORS[toCategory(category.categoryLabel)] ?? FALLBACK_COLOR}
-                    name={category.categoryLabel}
-                    amount={`${category.amount.toLocaleString('ko-KR')}원`}
-                    percent={`${category.ratio}%`}
+                    key={cat.categoryCode}
+                    color={CATEGORY_COLORS[i % CATEGORY_COLORS.length]}
+                    name={cat.categoryLabel}
+                    amount={formatKRW(cat.amount)}
+                    percent={`${cat.ratio}%`}
                   />
                 ))}
               </div>
@@ -135,9 +150,7 @@ export default function ConsumptionReportForm() {
           {/* 통합 절약 현황 */}
           <section className={styles.card}>
             <SavingStatusCard
-              totalAttemptCount={data.savingStatus.totalAttemptCount}
-              skipped={data.savingStatus.skipped}
-              consumed={data.savingStatus.consumed}
+              savingStatus={data.savingStatus}
               goalAchievement={data.goalAchievement}
             />
           </section>
@@ -145,35 +158,66 @@ export default function ConsumptionReportForm() {
           {/* 나의 충동 소비 패턴 */}
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>나의 충동 소비 패턴</h2>
-
             {data.insights.hasEnoughData ? (
               <div className={styles.patternBox}>
-                {data.insights.insights.map((insight, index) => (
-                  <InsightCard key={`${insight.type}-${index}`} insight={insight} />
+                {data.insights.insights.map((insight, i) => (
+                  <div key={i} className={styles.patternCard}>
+                    <span className={styles.patternIcon}>
+                      {insight.type === 'VULNERABLE_TIME' ? '⏰' : '🔗'}
+                    </span>
+                    <div className={styles.patternContent}>
+                      {insight.type === 'VULNERABLE_TIME' && (
+                        <>
+                          <p className={styles.patternTitle}>
+                            가장 취약한 시간대는 {insight.weekdayLabel}요일{' '}
+                            {insight.hour != null ? `${insight.hour}시` : ''}
+                          </p>
+                          {insight.ratio != null && (
+                            <p className={styles.patternDescription}>
+                              전체 지출의 {insight.ratio}%가 이 시간대에 발생했습니다.
+                            </p>
+                          )}
+                        </>
+                      )}
+                      {insight.type === 'INFLOW_CHANNEL' && (
+                        <>
+                          <p className={styles.patternTitle}>
+                            주요 충동 유입 경로는 {insight.channel}
+                          </p>
+                          {insight.count != null && (
+                            <p className={styles.patternDescription}>
+                              해당 경로를 통한 소비 시도가 {insight.count}건 기록되었습니다.
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (
-              <p className={styles.patternDescription}>
-                아직 소비 기록이 충분하지 않아요. 기록이 쌓이면 패턴을 분석해드릴게요.
+              <p className={styles.emptyInsight}>
+                소비 기록이 3건 이상 쌓이면 패턴을 분석해드려요.
               </p>
             )}
           </section>
 
           {/* 카테고리별 소비 및 절약 요약 */}
-          <section className={styles.card}>
-            <h2 className={styles.cardTitle}>카테고리별 소비 및 절약 요약</h2>
-
-            {data.categoryDefenseSummary.map((summary) => (
-              <SavingCategoryItem
-                key={summary.categoryCode}
-                icon={<CategoryIcon category={toCategory(summary.categoryLabel)} size={20} />}
-                name={summary.categoryLabel}
-                defense={summary.defenseRate}
-                saved={summary.skippedAmount.toLocaleString('ko-KR')}
-                spent={summary.consumedAmount.toLocaleString('ko-KR')}
-              />
-            ))}
-          </section>
+          {data.categoryDefenseSummary.length > 0 && (
+            <section className={styles.card}>
+              <h2 className={styles.cardTitle}>카테고리별 소비 및 절약 요약</h2>
+              {data.categoryDefenseSummary.map((cat) => (
+                <SavingCategoryItem
+                  key={cat.categoryCode}
+                  icon={CATEGORY_ICONS[cat.categoryCode] ?? '📦'}
+                  name={cat.categoryLabel}
+                  defense={cat.defenseRate}
+                  saved={cat.skippedAmount.toLocaleString('ko-KR')}
+                  spent={cat.consumedAmount.toLocaleString('ko-KR')}
+                />
+              ))}
+            </section>
+          )}
         </>
       )}
     </div>

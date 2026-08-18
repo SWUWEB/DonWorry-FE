@@ -37,6 +37,13 @@
   justify-content: center;
 }
 
+.errorText {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #eb0000;
+  text-align: center;
+}
+
 .buttons {
   display: flex;
   flex-direction: column;

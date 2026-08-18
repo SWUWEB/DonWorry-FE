@@ -26,7 +26,7 @@ export default function CategoryChart({
     <section className={styles.card}>
       <div className={styles.header}>
         <span className={styles.title}>카테고리별 지출</span>
-        <button className={styles.detailButton} onClick={() => navigate('/report')}>
+        <button className={styles.detailButton} onClick={() => navigate('/consumption-report')}>
           상세 보기 &gt;
         </button>
       </div>

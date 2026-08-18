@@ -56,6 +56,23 @@ export const useWishlist = () => {
     setProducts((prev) => [...prev, newProduct])
   }
 
+  const handleExtend = (id: string, timeOption: (typeof TIME_OPTIONS)[number]) => {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              // 연장 시점을 새 기준으로 삼아 남은 시간 게이지와 수정 화면이 함께 맞도록
+              // time/timeOption/createdAt을 모두 갱신합니다.
+              time: new Date(Date.now() + TIME_TO_HOURS[timeOption] * 60 * 60 * 1000),
+              timeOption,
+              createdAt: new Date(),
+            }
+          : p,
+      ),
+    )
+  }
+
   const handleEdit = (id: string, formData: WishFormData, timeChanged: boolean) => {
     setProducts((prev) =>
       prev.map((p) => {
@@ -93,6 +110,7 @@ export const useWishlist = () => {
     categoriesToRender,
     handleDelete,
     handleAdd,
+    handleExtend,
     handleEdit,
   }
 }
