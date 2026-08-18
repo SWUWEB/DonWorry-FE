@@ -17,6 +17,18 @@ interface CategoryIconEntry {
   ratio?: number
 }
 
+export const CATEGORY_COLORS: Record<Category, string> = {
+  패션: '#C98A93',
+  뷰티: '#A99BC2',
+  음식: '#CC9966',
+  '카페/디저트': '#9C7D66',
+  '취미/굿즈': '#7FACB0',
+  전자기기: '#7E8FB8',
+  '건강/운동': '#7FA98A',
+  여행: '#C4AD6C',
+  기타: '#A8ADB3',
+}
+
 export const CATEGORY_ICON_MAP: Record<Category, CategoryIconEntry> = {
   패션: { Icon: FaShoppingCart },
   뷰티: {
