@@ -51,8 +51,27 @@ export default function RecordInterventionPage() {
   }
 
   const { questions, recentCategoryConsumptionCount, recentCategoryConsumptions } = data
+
+  const isValidQuestions =
+    questions.length === 3 &&
+    new Set(questions.map((item) => item.questionId)).size === 3 &&
+    questions.every(
+      (item) =>
+        item.options.length === 2 &&
+        new Set(item.options.map((option) => option.answerValue)).size === 2,
+    )
+
+  if (!isValidQuestions) {
+    return <p className={styles.message}>질문 정보를 처리할 수 없습니다.</p>
+  }
+
   const totalSteps = questions.length
   const question = questions[step - 1]
+
+  if (!question) {
+    return <p className={styles.message}>질문 정보를 처리할 수 없습니다.</p>
+  }
+
   const isLastQuestion = step === totalSteps
   const [outlineOption, filledOption] = question.options
 
