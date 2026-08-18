@@ -9,17 +9,8 @@ import { useConsumptionRatio } from '@/features/record/hooks/useConsumptionRecor
 import type { Category } from '@/features/temptation/types'
 import { useBudget, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
+import { MOCK_BUDGET, MOCK_RATIO, MOCK_CATEGORY_ENTRIES } from './BudgetSettingCard.mock'
 import styles from './BudgetSettingCard.module.css'
-
-// TEMP PREVIEW: 카테고리별 예산은 백엔드 API가 없어 로컬 상태로만 유지됩니다.
-// 새로고침하면 초기화되고, "저장하기"를 눌러도 카테고리별 배분은 서버에 저장되지 않습니다.
-const MOCK_CATEGORY_ENTRIES: CategoryBudgetEntry[] = [
-  { category: '음식', budgetAmount: 400000, spentAmount: 287000 },
-  { category: '패션', budgetAmount: 300000, spentAmount: 213000 },
-  { category: '카페/디저트', budgetAmount: 100000, spentAmount: 95000 },
-  { category: '여행', budgetAmount: 80000, spentAmount: 52000 },
-  { category: '건강/운동', budgetAmount: 120000, spentAmount: 98000 },
-]
 
 function toDigits(value: string) {
   return value.replace(/[^0-9]/g, '')
@@ -27,16 +18,6 @@ function toDigits(value: string) {
 
 function formatManwon(amount: number): string {
   return `${Math.round(amount / 10000).toLocaleString('ko-KR')}만원`
-}
-
-// TEMP PREVIEW: 디자인 확인용 목업 데이터. 확인 끝나면 걷어냅니다.
-const MOCK_BUDGET = { monthlyIncome: '3000000', monthlyBudget: '2000000' }
-const MOCK_RATIO = {
-  totalAmount: 900000,
-  skippedAmount: 0,
-  consumedAmount: 900000,
-  skippedRatio: 0,
-  consumedRatio: 0.3,
 }
 
 interface EditableAmountRowProps {
