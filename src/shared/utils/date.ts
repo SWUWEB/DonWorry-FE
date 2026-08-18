@@ -38,3 +38,21 @@ export function formatDateCompact(isoDate: string): string {
   const { year, month, day } = getKstDateParts(isoDate)
   return `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`
 }
+
+const KST_YEAR_MONTH_FORMATTER = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+  month: '2-digit',
+})
+
+// "YYYY-MM" 형식의 서울 기준 현재 연월을 반환합니다. (예산 조회 등 month 파라미터에 사용)
+export function getCurrentYearMonth(): string {
+  return KST_YEAR_MONTH_FORMATTER.format(new Date())
+}
+
+// "YYYY-MM" 문자열을 delta개월만큼 이동시킵니다. (월 선택 이전/다음 이동에 사용)
+export function shiftYearMonth(yearMonth: string, delta: number): string {
+  const [year, month] = yearMonth.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1 + delta, 1))
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`
+}

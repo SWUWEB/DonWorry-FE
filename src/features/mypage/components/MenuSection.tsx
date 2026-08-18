@@ -10,7 +10,11 @@ export default function MenuSection() {
       <h3 className={styles.heading}>재무 관리</h3>
 
       <section className={styles.card}>
-        <MenuItem icon="solar:wallet-money-outline" title="월별 수입/예산 관리" />
+        <MenuItem
+          icon="solar:wallet-money-outline"
+          title="월별 수입/예산 관리"
+          onClick={() => navigate('/budget')}
+        />
 
         <MenuItem
           icon="mynaui:target"
@@ -18,7 +22,11 @@ export default function MenuSection() {
           onClick={() => navigate('/goal-amount')}
         />
 
-        <MenuItem icon="mynaui:chart-column-solid" title="상세 소비 분석 리포트" />
+        <MenuItem
+          icon="mynaui:chart-column-solid"
+          title="상세 소비 분석 리포트"
+          onClick={() => navigate('/consumption-report')}
+        />
       </section>
 
       <h3 className={styles.heading}>설정</h3>
