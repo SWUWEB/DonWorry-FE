@@ -30,7 +30,7 @@ export default function GoalSettingCard() {
     }
 
     const amount = Number(goalAmount.replace(/,/g, ''))
-    if (!goalAmount.trim() || Number.isNaN(amount) || amount <= 0) {
+    if (!goalAmount.trim() || !Number.isFinite(amount) || amount <= 0) {
       setError('목표 금액을 입력해주세요.')
       return
     }

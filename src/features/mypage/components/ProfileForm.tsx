@@ -96,6 +96,7 @@ export default function ProfileForm() {
           value={phone}
           onChange={(e) => {
             setPhone(e.target.value)
+            setError('')
             setSaved(false)
           }}
         />
@@ -108,6 +109,7 @@ export default function ProfileForm() {
           value={birth}
           onChange={(e) => {
             setBirth(e.target.value)
+            setError('')
             setSaved(false)
           }}
         />
@@ -126,6 +128,7 @@ export default function ProfileForm() {
               checked={gender === 'female'}
               onChange={() => {
                 setGender('female')
+                setError('')
                 setSaved(false)
               }}
             />
@@ -141,6 +144,7 @@ export default function ProfileForm() {
               checked={gender === 'male'}
               onChange={() => {
                 setGender('male')
+                setError('')
                 setSaved(false)
               }}
             />

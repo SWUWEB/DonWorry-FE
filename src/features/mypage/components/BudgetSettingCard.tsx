@@ -9,7 +9,6 @@ import { useConsumptionRatio } from '@/features/record/hooks/useConsumptionRecor
 import type { Category } from '@/features/temptation/types'
 import { useBudget, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
-import { MOCK_BUDGET, MOCK_RATIO, MOCK_CATEGORY_ENTRIES } from './BudgetSettingCard.mock'
 import styles from './BudgetSettingCard.module.css'
 
 function toDigits(value: string) {
@@ -70,28 +69,29 @@ export default function BudgetSettingCard() {
   const isCurrentMonth = yearMonth === getCurrentYearMonth()
   const [year, month] = yearMonth.split('-')
 
-  // TEMP PREVIEW: 실제 데이터가 없을 때 목업으로 대체해서 보여줍니다. 확인 끝나면 걷어냅니다.
-  const { data: realBudget, isLoading: isLoadingReal, isError, refetch } = useBudget(yearMonth)
-  const { data: realRatio } = useConsumptionRatio()
-  const isLoading = false
-  const budget = realBudget ?? MOCK_BUDGET
-  const ratio = realRatio ?? MOCK_RATIO
-  void isLoadingReal
+  const { data: budget, isLoading, isError, refetch } = useBudget(yearMonth)
+  const { data: ratio } = useConsumptionRatio()
   const { mutate: setBudget, isPending } = useSetBudget()
 
   const [income, setIncome] = useState('')
-  const [categoryEntries, setCategoryEntries] =
-    useState<CategoryBudgetEntry[]>(MOCK_CATEGORY_ENTRIES)
+  const [categoryEntries, setCategoryEntries] = useState<CategoryBudgetEntry[]>([])
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    // 서버에서 불러온 값을 편집 가능한 로컬 상태로 최초 1회 반영합니다.
+    // 서버에서 불러온 값을 편집 가능한 로컬 상태로 반영합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIncome(budget?.monthlyIncome != null ? String(budget.monthlyIncome) : '')
+  }, [budget])
+
+  useEffect(() => {
+    // 카테고리별 예산은 백엔드 API가 없어 로컬 상태로만 유지됩니다. 다른 달로 이동하면
+    // 이어줄 서버 데이터가 없으므로 초기화하고, 이전 달의 저장/에러 메시지도 지웁니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCategoryEntries([])
     setSaved(false)
     setError('')
-  }, [budget])
+  }, [yearMonth])
 
   const totalBudget = categoryEntries.reduce((sum, entry) => sum + entry.budgetAmount, 0)
 
