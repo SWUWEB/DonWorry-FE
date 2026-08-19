@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import client from '@/api/client'
 import { fetchWishlistItems } from './wishlistApi'
 
-vi.mock('@/lib/client')
+vi.mock('@/api/client')
 
 describe('wishlistApi', () => {
   it('서버 응답을 Product 형태로 변환 및 반환', async () => {
