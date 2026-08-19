@@ -40,6 +40,7 @@ const ICON_CONFIG: Record<
 
 interface Props extends NotificationItem {
   onRead: (id: string) => void
+  onDelete?: (id: string) => void
 }
 
 export default function NotificationCard({
@@ -50,18 +51,20 @@ export default function NotificationCard({
   iconVariant,
   isRead,
   onRead,
+  onDelete,
 }: Props) {
   const { bg, color, border, Icon } = ICON_CONFIG[iconVariant]
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!menuOpen) return
     const handleClickOutside = (e: MouseEvent) => {
-      if (btnRef.current && !btnRef.current.contains(e.target as Node)) {
-        setMenuOpen(false)
-      }
+      const inBtn = btnRef.current?.contains(e.target as Node)
+      const inDropdown = dropdownRef.current?.contains(e.target as Node)
+      if (!inBtn && !inDropdown) setMenuOpen(false)
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
@@ -112,12 +115,17 @@ export default function NotificationCard({
 
       {menuOpen &&
         createPortal(
-          <div className={styles.dropdown} style={{ top: menuPos.top, right: menuPos.right }}>
+          <div
+            ref={dropdownRef}
+            className={styles.dropdown}
+            style={{ top: menuPos.top, right: menuPos.right }}
+          >
             <button
               className={styles.dropdownItem}
               onClick={(e) => {
                 e.stopPropagation()
                 setMenuOpen(false)
+                onDelete?.(id)
               }}
             >
               <IoTrashOutline size={16} />
