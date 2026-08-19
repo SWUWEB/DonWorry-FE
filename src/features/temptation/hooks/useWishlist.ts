@@ -1,23 +1,24 @@
 import { useMemo, useState } from 'react'
-import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
-import type { Category, Product, FilterValue, SortValue } from '../types'
-import { MOCK_PRODUCTS } from '../mockData'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { CATEGORIES } from '@/constants/product'
+import type { Category, FilterValue, SortValue } from '../types'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
-
-const TIME_TO_HOURS: Record<(typeof TIME_OPTIONS)[number], number> = {
-  '1시간': 1,
-  '1일': 24,
-  '3일': 72,
-  '7일': 168,
-}
-
-const timeStringToDate = (time: (typeof TIME_OPTIONS)[number]): Date => {
-  const hours = TIME_TO_HOURS[time]
-  return new Date(Date.now() + hours * 60 * 60 * 1000)
-}
+import { fetchWishlistItems, addWishlistItem } from '../api/wishlistApi'
+import { isUnauthorizedError } from '../utils/isUnauthorizedError'
 
 export const useWishlist = () => {
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS)
+  const queryClient = useQueryClient()
+
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['wishlistItems'],
+    queryFn: fetchWishlistItems,
+  })
+
   const [filter, setFilter] = useState<FilterValue>('전체')
   const [sort, setSort] = useState<SortValue>('가나다순')
   const [keyword, setKeyword] = useState('')
@@ -37,50 +38,28 @@ export const useWishlist = () => {
     })
   }, [products, filter, sort, keyword])
 
-  const handleDelete = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id))
+  const addMutation = useMutation({
+    mutationFn: addWishlistItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
+    },
+  })
+
+  const handleDelete = (_id: string) => {
+    console.warn(`삭제 API 연동 전! (id: ${_id}) 다음 이슈에서 작업 예정`)
   }
 
   const handleAdd = (formData: WishFormData) => {
-    const newProduct: Product = {
-      id: globalThis.crypto?.randomUUID?.() ?? Date.now().toString(), // 백엔드 연동 시 발급받은 고유 id 할당
-      name: formData.name,
-      price: formData.price,
-      time: timeStringToDate(formData.time),
-      timeOption: formData.time,
-      category: formData.category,
-      link: formData.link,
-      reason: formData.reason,
-      createdAt: new Date(),
-    }
-    setProducts((prev) => [...prev, newProduct])
+    addMutation.mutate(formData)
   }
 
-  const handleEdit = (id: string, formData: WishFormData, timeChanged: boolean) => {
-    setProducts((prev) =>
-      prev.map((p) => {
-        if (p.id !== id) return p
-
-        // 남은 고민 시간 수정 로직
-        const newTime = timeChanged
-          ? new Date(Date.now() + TIME_TO_HOURS[formData.time] * 60 * 60 * 1000)
-          : p.time
-
-        return {
-          ...p,
-          name: formData.name,
-          price: formData.price,
-          time: newTime,
-          timeOption: formData.time,
-          category: formData.category,
-          link: formData.link,
-          reason: formData.reason,
-        }
-      }),
-    )
+  const handleEdit = (_id: string, _formData: WishFormData, _timeChanged: boolean) => {
+    console.warn(`수정 API 연동 전! (id: ${_id}, timeChanged: ${_timeChanged})`, _formData)
   }
 
   const categoriesToRender: Category[] = filter === '전체' ? [...CATEGORIES] : [filter]
+
+  const isUnauthorized = isUnauthorizedError(error) || isUnauthorizedError(addMutation.error)
 
   return {
     keyword,
@@ -91,6 +70,10 @@ export const useWishlist = () => {
     setSort,
     filteredProducts,
     categoriesToRender,
+    isLoading,
+    isError,
+    isAdding: addMutation.isPending,
+    isUnauthorized,
     handleDelete,
     handleAdd,
     handleEdit,
