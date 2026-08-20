@@ -1,5 +1,6 @@
 import client from '@/api/client'
 import { formatDateKorean } from '@/shared/utils/date'
+import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import type { RecordItem, RecordType } from '@/features/record/mockRecords'
 
 type ApiRecordType = 'CONSUMED' | 'SKIPPED'
@@ -55,10 +56,37 @@ const TYPE_TO_FRONT: Record<ApiRecordType, RecordType> = {
   CONSUMED: 'consume',
 }
 
+const TYPE_TO_API: Record<RecordType, ApiRecordType> = {
+  saved: 'SKIPPED',
+  consume: 'CONSUMED',
+}
+
 const FILTER_TO_API: Record<RecordListFilter, 'ALL' | ApiRecordType> = {
   all: 'ALL',
   saved: 'SKIPPED',
   consume: 'CONSUMED',
+}
+
+export interface ConsumptionRecordInput {
+  type: RecordType
+  productName: string
+  price: number
+  category?: string
+  reason?: string
+  riskScore?: number
+  productUrl?: string
+}
+
+function toRequestBody(input: ConsumptionRecordInput) {
+  return {
+    type: TYPE_TO_API[input.type],
+    productName: input.productName,
+    price: input.price,
+    ...(input.category && { category_code: CATEGORY_LABEL_TO_CODE[input.category] }),
+    ...(input.reason && { reason: input.reason }),
+    ...(input.riskScore !== undefined && { riskScore: input.riskScore }),
+    ...(input.productUrl && { productUrl: input.productUrl }),
+  }
 }
 
 function adaptRecord(result: ConsumptionRecordResult): RecordItem {
@@ -100,5 +128,25 @@ export const consumptionRecordApi = {
     )
     const { totalAmount, skippedAmount, consumedAmount, skippedRatio, consumedRatio } = data.data
     return { totalAmount, skippedAmount, consumedAmount, skippedRatio, consumedRatio }
+  },
+
+  create: async (input: ConsumptionRecordInput): Promise<RecordItem> => {
+    const { data } = await client.post<ApiResponse<ConsumptionRecordResult>>(
+      '/api/v1/consumption-records',
+      toRequestBody(input),
+    )
+    return adaptRecord(data.data)
+  },
+
+  update: async (id: string, input: ConsumptionRecordInput): Promise<RecordItem> => {
+    const { data } = await client.put<ApiResponse<ConsumptionRecordResult>>(
+      `/api/v1/consumption-records/${id}`,
+      toRequestBody(input),
+    )
+    return adaptRecord(data.data)
+  },
+
+  remove: async (id: string): Promise<void> => {
+    await client.delete(`/api/v1/consumption-records/${id}`)
   },
 }

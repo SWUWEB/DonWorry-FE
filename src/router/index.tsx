@@ -18,9 +18,15 @@ const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignUpPage = lazy(() => import('@/pages/SignUpPage'))
 const KakaoCallbackPage = lazy(() => import('@/pages/KakaoCallbackPage'))
 const KakaoLinkPage = lazy(() => import('@/pages/KakaoLinkPage'))
+const FindIdPage = lazy(() => import('@/pages/FindIdPage'))
+const ResetPasswordRequestPage = lazy(() => import('@/pages/ResetPasswordRequestPage'))
+const ResetPasswordVerifyPage = lazy(() => import('@/pages/ResetPasswordVerifyPage'))
+const ResetPasswordNewPage = lazy(() => import('@/pages/ResetPasswordNewPage'))
 const MyPagePage = lazy(() => import('@/pages/MyPagePage'))
 const Temptation = lazy(() => import('@/features/temptation/Temptation'))
 const TemptationInfo = lazy(() => import('@/features/temptation/pages/TemptationInfo'))
+const TemptationJudge = lazy(() => import('@/features/temptation/pages/TemptationJudge'))
+const TemptationSaved = lazy(() => import('@/features/temptation/pages/TemptationSaved'))
 const GoalAmountPage = lazy(() => import('@/pages/GoalAmountPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const TemptationEdit = lazy(() => import('@/features/temptation/pages/TemptationEdit'))
@@ -42,6 +48,10 @@ const router = createBrowserRouter([
       { path: '/signup', element: <SignUpPage /> },
       { path: '/auth/kakao/callback', element: <KakaoCallbackPage /> },
       { path: '/auth/kakao/link', element: <KakaoLinkPage /> },
+      { path: '/find-id', element: <FindIdPage /> },
+      { path: '/reset-password', element: <ResetPasswordRequestPage /> },
+      { path: '/reset-password/verify', element: <ResetPasswordVerifyPage /> },
+      { path: '/reset-password/new', element: <ResetPasswordNewPage /> },
       { path: '/mypage', element: <MyPagePage /> },
       { path: '/goal-amount', element: <GoalAmountPage /> },
       { path: '/notification', element: <NotificationPage /> },
@@ -68,6 +78,8 @@ const router = createBrowserRouter([
           { path: '/temptation', element: <Temptation /> },
           { path: '/temptation/:id', element: <TemptationInfo /> },
           { path: '/temptation/:id/edit', element: <TemptationEdit /> },
+          { path: '/temptation/:id/judge', element: <TemptationJudge /> },
+          { path: '/temptation/saved', element: <TemptationSaved /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

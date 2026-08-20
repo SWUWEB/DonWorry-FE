@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { notificationApi } from '../api/notificationApi'
 import type { NotificationSettingsResponse } from '../api/notificationApi'
+import type { NotificationItem } from '../components/NotificationCard'
 
 const QUERY_KEYS = {
   // 목록은 필터/정렬별로 나뉘므로 prefix 단위 무효화를 위해 'notifications'를 공유합니다.
@@ -25,6 +26,28 @@ export function useReadNotification() {
     mutationFn: notificationApi.readOne,
     // 읽음 상태는 필터/정렬별 목록 캐시에 모두 걸쳐 있어 목록 prefix 단위로 무효화합니다.
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.lists }),
+  })
+}
+
+export function useDeleteNotification() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: notificationApi.deleteOne,
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.lists })
+      const snapshots = queryClient.getQueriesData<NotificationItem[]>({
+        queryKey: QUERY_KEYS.lists,
+      })
+      queryClient.setQueriesData<NotificationItem[]>(
+        { queryKey: QUERY_KEYS.lists },
+        (old) => old?.filter((n) => n.id !== id) ?? [],
+      )
+      return { snapshots }
+    },
+    onError: (_, __, context) => {
+      context?.snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data))
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.lists }),
   })
 }
 

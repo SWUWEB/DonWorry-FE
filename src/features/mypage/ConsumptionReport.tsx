@@ -1,5 +1,5 @@
 import Header from '@/components/layout/Header'
-import { IoChevronBack } from 'react-icons/io5'
+import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import ConsumptionReportForm from './components/ConsumptionReportForm'
@@ -19,17 +19,8 @@ export default function ConsumptionReport() {
   return (
     <>
       <Header
-        left={<span className={styles.logo}>Logo</span>}
-        subLeft={
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={handleBack}
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack size={20} />
-          </button>
-        }
+        onBellClick={() => navigate('/notification')}
+        subLeft={<HeaderBackButton onClick={handleBack} />}
         subMain={
           <div className={styles.headerContent}>
             <h1 className={styles.pageTitle}>소비 분석 리포트</h1>
