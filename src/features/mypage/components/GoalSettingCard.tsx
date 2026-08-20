@@ -3,10 +3,22 @@ import { isAxiosError } from 'axios'
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
 import { useMe, useSetSavingGoal } from '../hooks/useUser'
+import { useConsumptionReport } from '../hooks/useConsumptionReport'
 import styles from './GoalSettingCard.module.css'
 
 export default function GoalSettingCard() {
-  const { data: profile } = useMe()
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+    refetch: refetchProfile,
+  } = useMe()
+  const {
+    data: report,
+    isLoading: isReportLoading,
+    isError: isReportError,
+    refetch: refetchReport,
+  } = useConsumptionReport()
   const { mutate: setSavingGoal, isPending } = useSetSavingGoal()
 
   const [goalText, setGoalText] = useState('')
@@ -16,12 +28,38 @@ export default function GoalSettingCard() {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    if (profile?.savingGoalText) {
-      // 서버에 저장된 목표 이름을 최초 1회 편집 상태로 반영합니다.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setGoalText(profile.savingGoalText)
-    }
-  }, [profile])
+    // 서버에 저장된 목표 이름과 현재 월의 목표 금액을 편집 상태로 반영합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGoalText(profile?.savingGoalText ?? '')
+    const targetAmount = report?.goalAchievement.targetAmount
+    setGoalAmount(targetAmount == null ? '' : String(targetAmount))
+  }, [profile, report])
+
+  if (isProfileLoading || isReportLoading) {
+    return (
+      <section className={styles.card}>
+        <h2 className={styles.title}>목표 설정</h2>
+        <p className={styles.status}>목표 정보를 불러오는 중...</p>
+      </section>
+    )
+  }
+
+  if (isProfileError || isReportError || !profile || !report) {
+    return (
+      <section className={styles.card}>
+        <h2 className={styles.title}>목표 설정</h2>
+        <p className={styles.formError} role="alert">
+          목표 정보를 불러오지 못했습니다.
+        </p>
+        <Button
+          variant="outline"
+          onClick={() => void Promise.all([refetchProfile(), refetchReport()])}
+        >
+          다시 시도
+        </Button>
+      </section>
+    )
+  }
 
   const handleSave = () => {
     if (!goalText.trim()) {

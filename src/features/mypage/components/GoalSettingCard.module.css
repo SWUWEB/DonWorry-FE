@@ -16,6 +16,12 @@
   color: #111827;
 }
 
+.status {
+  margin: 0;
+  color: var(--color-gray-300);
+  font-size: 14px;
+}
+
 .toggleSection {
   display: flex;
   justify-content: space-between;
