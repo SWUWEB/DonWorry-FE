@@ -150,6 +150,18 @@ export interface KakaoLoginRequest {
   authorizationCode: string
 }
 
+// 409: 동일 이메일의 로컬 계정이 이미 있어 본인 확인(계정 연결)이 필요할 때의 응답 바디
+export interface KakaoLinkRequiredResponse {
+  success: false
+  code: string
+  message: string
+  data: {
+    linkingToken: string
+    verificationMethods: ('PASSWORD' | 'EMAIL')[]
+    expiresInSeconds: number
+  }
+}
+
 export const kakaoLogin = async (body: KakaoLoginRequest): Promise<LoginResponse> => {
   const { data } = await client.post<LoginResponse>('/api/v1/auth/kakao/login', body)
 

@@ -16,6 +16,8 @@ const RecordInterventionPage = lazy(
 const RiskResultPage = lazy(() => import('@/features/intervention/pages/RiskResultPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignUpPage = lazy(() => import('@/pages/SignUpPage'))
+const KakaoCallbackPage = lazy(() => import('@/pages/KakaoCallbackPage'))
+const KakaoLinkPage = lazy(() => import('@/pages/KakaoLinkPage'))
 const MyPagePage = lazy(() => import('@/pages/MyPagePage'))
 const Temptation = lazy(() => import('@/features/temptation/Temptation'))
 const TemptationInfo = lazy(() => import('@/features/temptation/pages/TemptationInfo'))
@@ -38,6 +40,8 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignUpPage /> },
+      { path: '/auth/kakao/callback', element: <KakaoCallbackPage /> },
+      { path: '/auth/kakao/link', element: <KakaoLinkPage /> },
       { path: '/mypage', element: <MyPagePage /> },
       { path: '/goal-amount', element: <GoalAmountPage /> },
       { path: '/notification', element: <NotificationPage /> },
