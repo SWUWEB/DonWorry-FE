@@ -7,6 +7,7 @@ import Button from '@/shared/components/Button'
 import ErrorMessage from './components/ErrorMessage'
 import LoginHeader from './components/LoginHeader'
 import { getKakaoLoginErrorMessage, isKakaoLinkRequired } from './kakaoErrors'
+import { consumeKakaoState } from './kakaoOAuth'
 import styles from './Login.module.css'
 
 export default function KakaoCallback() {
@@ -35,6 +36,11 @@ export default function KakaoCallback() {
       return
     }
 
+    if (!consumeKakaoState(searchParams.get('state'))) {
+      setErrorMessage('로그인 요청이 올바르지 않습니다. 처음부터 다시 시도해주세요.')
+      return
+    }
+
     hasRequestedRef.current = true
 
     // react-query useMutation의 per-call 콜백은 StrictMode의 effect 이중 실행과
@@ -50,15 +56,19 @@ export default function KakaoCallback() {
         // 409는 AUTH4093(계정 연결 필요) 외에 AUTH4094(이미 다른 계정에 연결된 카카오 계정)도
         // 공유하는 상태코드라, HTTP status가 아니라 code로 구분해야 합니다.
         if (isKakaoLinkRequired(error) && isAxiosError(error)) {
-          const body = error.response?.data as KakaoLinkRequiredResponse
-          navigate('/auth/kakao/link', {
-            replace: true,
-            state: {
-              linkingToken: body.data.linkingToken,
-              verificationMethods: body.data.verificationMethods,
-            },
-          })
-          return
+          const body = error.response?.data as KakaoLinkRequiredResponse | undefined
+          const linkingToken = body?.data?.linkingToken
+
+          if (linkingToken) {
+            navigate('/auth/kakao/link', {
+              replace: true,
+              state: {
+                linkingToken,
+                verificationMethods: body.data.verificationMethods,
+              },
+            })
+            return
+          }
         }
 
         setErrorMessage(getKakaoLoginErrorMessage(error))

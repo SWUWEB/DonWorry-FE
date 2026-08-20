@@ -63,7 +63,12 @@ export default function LoginForm() {
   // 카카오 동의 화면으로 리다이렉트합니다. 인증 코드는 카카오가 redirect_uri로
   // 돌려보내주는 콜백(KakaoCallback)에서 받아 처리합니다.
   const handleKakaoLogin = () => {
-    window.location.href = getKakaoAuthorizeUrl()
+    try {
+      window.location.href = getKakaoAuthorizeUrl()
+    } catch {
+      // 카카오 앱 키/Redirect URI 환경변수가 비어있는 등 설정 누락 시 조용히 실패하지 않도록 안내합니다.
+      setErrorMessage('카카오 로그인을 사용할 수 없습니다. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   return (

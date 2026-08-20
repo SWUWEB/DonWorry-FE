@@ -34,27 +34,24 @@ function formatSeconds(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-// seconds가 갱신될 때마다 그 값부터 다시 세는 카운트다운입니다.
-// (인증번호 재전송 시 codeTtlSeconds/resendCooldownSeconds가 새로 내려오면 리셋됩니다.)
-function useCountdown(seconds: number, active: boolean): number {
+// resetKey가 바뀔 때마다 seconds 값부터 다시 세는 카운트다운입니다.
+// (재전송 시 서버가 이전과 "같은" codeTtlSeconds/resendCooldownSeconds를 내려주면 값 자체는
+// 안 바뀌므로, seconds를 effect 의존성으로 쓰면 리셋이 안 됩니다. 매 전송마다 고유한
+// resetKey(타임스탬프)를 넘겨서 값이 같아도 항상 리셋되도록 합니다.)
+function useCountdown(seconds: number, active: boolean, resetKey: number): number {
   const [remaining, setRemaining] = useState(seconds)
 
   useEffect(() => {
-    // seconds(재전송으로 새로 받은 ttl/cooldown)가 바뀌면 그 값부터 다시 셉니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setRemaining(seconds)
-  }, [seconds])
+    // seconds는 resetKey와 함께 갱신되는 값이라 의도적으로 의존성에서 제외합니다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetKey])
 
   useEffect(() => {
     if (!active) return
     const timer = setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 0) {
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
+      setRemaining((prev) => Math.max(0, prev - 1))
     }, 1000)
     return () => clearInterval(timer)
   }, [active])
@@ -79,11 +76,12 @@ export default function KakaoLink() {
   const [emailSentTo, setEmailSentTo] = useState('')
   const [codeTtlSeconds, setCodeTtlSeconds] = useState(0)
   const [resendCooldownSeconds, setResendCooldownSeconds] = useState(0)
+  const [sentAt, setSentAt] = useState(0)
   const [errorMessage, setErrorMessage] = useState('')
   const [sessionExpired, setSessionExpired] = useState(false)
 
-  const codeRemaining = useCountdown(codeTtlSeconds, Boolean(emailSentTo))
-  const resendRemaining = useCountdown(resendCooldownSeconds, Boolean(emailSentTo))
+  const codeRemaining = useCountdown(codeTtlSeconds, Boolean(emailSentTo), sentAt)
+  const resendRemaining = useCountdown(resendCooldownSeconds, Boolean(emailSentTo), sentAt)
 
   useEffect(() => {
     // 콜백을 거치지 않고 직접 들어온 경우처럼 연결 정보가 없으면 로그인으로 되돌립니다.
@@ -107,7 +105,11 @@ export default function KakaoLink() {
   }
 
   const handleRestartKakaoLogin = () => {
-    window.location.href = getKakaoAuthorizeUrl()
+    try {
+      window.location.href = getKakaoAuthorizeUrl()
+    } catch {
+      setErrorMessage('카카오 로그인을 사용할 수 없습니다. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   const handlePasswordSubmit = () => {
@@ -133,6 +135,7 @@ export default function KakaoLink() {
           setEmailSentTo(response.data.email)
           setCodeTtlSeconds(response.data.codeTtlSeconds)
           setResendCooldownSeconds(response.data.resendCooldownSeconds)
+          setSentAt(Date.now())
           setCode('')
         },
         onError: handleLinkError,
@@ -165,9 +168,11 @@ export default function KakaoLink() {
         />
 
         <section className={styles.card}>
-          {sessionExpired ? (
+          {sessionExpired || !method ? (
             <>
-              <ErrorMessage message={errorMessage} />
+              <ErrorMessage
+                message={errorMessage || '본인 확인 방법을 확인할 수 없습니다. 다시 시도해주세요.'}
+              />
               <Button onClick={handleRestartKakaoLogin}>카카오 로그인 다시 시작하기</Button>
             </>
           ) : (
