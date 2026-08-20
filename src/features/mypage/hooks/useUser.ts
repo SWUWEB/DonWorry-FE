@@ -12,10 +12,11 @@ const QUERY_KEYS = {
   budget: (yearMonth: string) => ['user', 'budget', yearMonth] as const,
 }
 
-export function useMe() {
+export function useMe(enabled = true) {
   return useQuery({
     queryKey: QUERY_KEYS.me,
     queryFn: userApi.getMe,
+    enabled,
     staleTime: 1000 * 60 * 5,
   })
 }
@@ -24,9 +25,8 @@ export function useUpdateMe() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (body: UpdateProfileRequest) => userApi.updateMe(body),
-    onSuccess: (profile) => {
-      queryClient.setQueryData(QUERY_KEYS.me, profile)
-    },
+    // 수정 응답에는 계정 제공자 등 GET 전용 필드가 없으므로 전체 프로필을 다시 조회합니다.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
   })
 }
 
@@ -40,7 +40,12 @@ export function useSetSavingGoal() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (body: SetSavingGoalRequest) => userApi.setSavingGoal(body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
+        queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
+      ])
+    },
   })
 }
 
@@ -48,7 +53,12 @@ export function useDeleteSavingGoal() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: userApi.deleteSavingGoal,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
+        queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
+      ])
+    },
   })
 }
 

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { consumptionRecordApi } from '../api/consumptionRecordApi'
 import type { ConsumptionRecordInput, RecordListFilter } from '../api/consumptionRecordApi'
@@ -7,6 +8,14 @@ const QUERY_KEYS = {
   list: (filter: RecordListFilter) => ['consumption-records', 'list', filter] as const,
   detail: (id: string) => ['consumption-records', 'detail', id] as const,
   ratio: ['consumption-records', 'ratio'] as const,
+}
+
+function invalidateConsumptionDerivedQueries(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['consumption-records'] }),
+    queryClient.invalidateQueries({ queryKey: ['user', 'budget'] }),
+    queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
+  ])
 }
 
 export function useConsumptionRecords(filter: RecordListFilter = 'all') {
@@ -42,9 +51,7 @@ export function useCreateConsumptionRecord() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: consumptionRecordApi.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
-    },
+    onSuccess: () => invalidateConsumptionDerivedQueries(queryClient),
   })
 }
 
@@ -53,9 +60,7 @@ export function useUpdateConsumptionRecord() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: ConsumptionRecordInput }) =>
       consumptionRecordApi.update(id, input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
-    },
+    onSuccess: () => invalidateConsumptionDerivedQueries(queryClient),
   })
 }
 
@@ -63,8 +68,6 @@ export function useDeleteConsumptionRecord() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: consumptionRecordApi.remove,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
-    },
+    onSuccess: () => invalidateConsumptionDerivedQueries(queryClient),
   })
 }

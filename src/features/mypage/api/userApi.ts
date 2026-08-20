@@ -1,4 +1,6 @@
 import client from '@/api/client'
+import { CATEGORY_CODE_TO_LABEL, CATEGORY_LABEL_TO_CODE } from '@/constants/product'
+import type { CategoryCode, CategoryLabel } from '@/constants/product'
 
 interface ApiResponse<T> {
   success: boolean
@@ -15,7 +17,16 @@ export interface UserProfile {
   phoneNumber: string | null
   birthDate: string | null
   gender: 'FEMALE' | 'MALE' | null
+  email: string
+  loginProvider: 'LOCAL' | 'KAKAO'
+  hasPassword: boolean
+  hourlyWage: string | null
 }
+
+export type UpdatedUserProfile = Omit<
+  UserProfile,
+  'email' | 'loginProvider' | 'hasPassword' | 'hourlyWage'
+>
 
 export interface UpdateProfileRequest {
   nickname?: string
@@ -60,14 +71,61 @@ export interface DeleteSavingGoalResult {
 
 export interface Budget {
   yearMonth: string
-  monthlyIncome: string | null
-  monthlyBudget: string
+  monthlyIncome: number | null
+  monthlyBudget: number
+  spentAmount: number
+  remainingAmount: number
+  usageRate: number
+  categoryBudgets: CategoryBudget[]
+}
+
+export interface CategoryBudget {
+  category: CategoryLabel
+  budgetAmount: number
+  spentAmount: number
+  remainingAmount: number
+  usageRate: number
 }
 
 export interface SetBudgetRequest {
   yearMonth: string
   monthlyIncome?: number
-  monthlyBudget: number
+  monthlyBudget?: number
+  categoryBudgets?: Pick<CategoryBudget, 'category' | 'budgetAmount'>[]
+}
+
+interface MonthlyBudgetResult {
+  yearMonth: string
+  monthlyIncome: string | null
+  monthlyBudget: string
+  spentAmount: string
+  remainingAmount: string
+  usageRate: number
+  categoryBudgets: {
+    categoryCode: CategoryCode
+    budgetAmount: string
+    spentAmount: string
+    remainingAmount: string
+    usageRate: number
+  }[]
+}
+
+function adaptBudget(result: MonthlyBudgetResult): Budget {
+  return {
+    yearMonth: result.yearMonth,
+    monthlyIncome: result.monthlyIncome === null ? null : Number(result.monthlyIncome),
+    monthlyBudget: Number(result.monthlyBudget),
+    spentAmount: Number(result.spentAmount),
+    remainingAmount: Number(result.remainingAmount),
+    usageRate: result.usageRate,
+    categoryBudgets: result.categoryBudgets.map((category) => ({
+      category: CATEGORY_CODE_TO_LABEL[category.categoryCode],
+      budgetAmount: Number(category.budgetAmount),
+      spentAmount: Number(category.spentAmount),
+      remainingAmount: Number(category.remainingAmount),
+      usageRate: category.usageRate,
+    })),
+  }
 }
 
 export interface ChangePasswordRequest {
@@ -81,8 +139,8 @@ export const userApi = {
     return data.data
   },
 
-  updateMe: async (body: UpdateProfileRequest): Promise<UserProfile> => {
-    const { data } = await client.patch<ApiResponse<UserProfile>>('/api/v1/users/me', body)
+  updateMe: async (body: UpdateProfileRequest): Promise<UpdatedUserProfile> => {
+    const { data } = await client.patch<ApiResponse<UpdatedUserProfile>>('/api/v1/users/me', body)
     return data.data
   },
 
@@ -104,15 +162,26 @@ export const userApi = {
 
   // 아직 예산을 설정하지 않은 달은 data가 null로 내려옵니다.
   getBudget: async (yearMonth: string): Promise<Budget | null> => {
-    const { data } = await client.get<ApiResponse<Budget | null>>('/api/v1/users/me/budget', {
-      params: { yearMonth },
-    })
-    return data.data
+    const { data } = await client.get<ApiResponse<MonthlyBudgetResult | null>>(
+      '/api/v1/users/me/budget',
+      { params: { yearMonth } },
+    )
+    return data.data === null ? null : adaptBudget(data.data)
   },
 
   setBudget: async (body: SetBudgetRequest): Promise<Budget> => {
-    const { data } = await client.put<ApiResponse<Budget>>('/api/v1/users/me/budget', body)
-    return data.data
+    const { data } = await client.put<ApiResponse<MonthlyBudgetResult>>('/api/v1/users/me/budget', {
+      yearMonth: body.yearMonth,
+      ...(body.monthlyIncome !== undefined && { monthlyIncome: body.monthlyIncome }),
+      ...(body.monthlyBudget !== undefined && { monthlyBudget: body.monthlyBudget }),
+      ...(body.categoryBudgets !== undefined && {
+        categoryBudgets: body.categoryBudgets.map(({ category, budgetAmount }) => ({
+          categoryCode: CATEGORY_LABEL_TO_CODE[category],
+          budgetAmount,
+        })),
+      }),
+    })
+    return adaptBudget(data.data)
   },
 
   // 스웨거상 성공(200) 응답이 명시돼 있지 않고 501(NotImplemented)만 문서화된,
