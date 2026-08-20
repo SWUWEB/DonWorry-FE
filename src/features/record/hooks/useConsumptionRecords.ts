@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { consumptionRecordApi } from '../api/consumptionRecordApi'
-import type { RecordListFilter } from '../api/consumptionRecordApi'
+import type { ConsumptionRecordInput, RecordListFilter } from '../api/consumptionRecordApi'
 
 const QUERY_KEYS = {
   list: (filter: RecordListFilter) => ['consumption-records', 'list', filter] as const,
@@ -35,5 +35,36 @@ export function useConsumptionRatio() {
     queryKey: QUERY_KEYS.ratio,
     queryFn: consumptionRecordApi.getRatio,
     staleTime: 1000 * 60,
+  })
+}
+
+export function useCreateConsumptionRecord() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: consumptionRecordApi.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
+    },
+  })
+}
+
+export function useUpdateConsumptionRecord() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: ConsumptionRecordInput }) =>
+      consumptionRecordApi.update(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
+    },
+  })
+}
+
+export function useDeleteConsumptionRecord() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: consumptionRecordApi.remove,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consumption-records'] })
+    },
   })
 }

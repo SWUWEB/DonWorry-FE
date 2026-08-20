@@ -7,7 +7,7 @@ import { InfoBox } from '../components/temptationInfo/InfoBox'
 import { ActionButton } from '../components/temptationInfo/ActionButton'
 import styles from './TemptationInfo.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useWishlistContext } from '../hooks/WishlistContext'
 
 export default function TemptationInfo() {
@@ -20,6 +20,24 @@ export default function TemptationInfo() {
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  // 고민 시간이 끝나면 재판단 화면으로 넘깁니다.
+  // 이미 지난 채로 들어온 경우엔 즉시, 아직 남았다면 남은 시간만큼 기다린 뒤 이동합니다.
+  const deadlineMs = product?.time.getTime()
+  useEffect(() => {
+    if (!id || deadlineMs === undefined) return
+
+    const goJudge = () => navigate(`/temptation/${id}/judge`, { replace: true })
+    const remainMs = deadlineMs - Date.now()
+
+    if (remainMs <= 0) {
+      goJudge()
+      return
+    }
+
+    const timer = setTimeout(goJudge, remainMs)
+    return () => clearTimeout(timer)
+  }, [id, deadlineMs, navigate])
 
   const handleBack = () => {
     navigate('/temptation')

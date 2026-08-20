@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { IoChevronDown } from 'react-icons/io5'
 import NotificationCard from './components/NotificationCard'
 import type { FilterType } from './components/FilterTabs'
-import { useNotifications, useReadNotification } from './hooks/useNotifications'
+import {
+  useNotifications,
+  useReadNotification,
+  useDeleteNotification,
+} from './hooks/useNotifications'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 
@@ -35,6 +39,7 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
 
   const { data: serverNotifications = [] } = useNotifications(FILTER_MAP[filter], SORT_MAP[sort])
   const { mutate: readOne } = useReadNotification()
+  const { mutate: deleteNotification } = useDeleteNotification()
 
   const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
@@ -99,7 +104,7 @@ export default function Notification({ filter, onUnreadCountChange }: Notificati
       <ul className={styles.list}>
         {notifications.map((item) => (
           <li key={item.id}>
-            <NotificationCard {...item} onRead={handleRead} />
+            <NotificationCard {...item} onRead={handleRead} onDelete={deleteNotification} />
           </li>
         ))}
         {notifications.length === 0 && <li className={styles.empty}>알림이 없습니다.</li>}
