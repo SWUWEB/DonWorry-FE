@@ -7,7 +7,7 @@ import { useChangePassword } from '../hooks/useUser'
 import styles from './ChangePasswordForm.module.css'
 
 const isValidPassword = (value: string) =>
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/.test(value)
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,100}$/.test(value)
 
 export default function ChangePasswordForm() {
   const { mutate: changePassword, isPending } = useChangePassword()
@@ -27,7 +27,7 @@ export default function ChangePasswordForm() {
     }
 
     if (!isValidPassword(newPassword)) {
-      setError('영문, 숫자, 특수문자 포함 8~16자로 입력해주세요.')
+      setError('영문, 숫자, 특수문자 포함 8~100자로 입력해주세요.')
       return
     }
 
@@ -93,7 +93,7 @@ export default function ChangePasswordForm() {
             setError('')
             setSaved(false)
           }}
-          helper="영문, 숫자, 특수문자 포함 8~16자"
+          helper="영문, 숫자, 특수문자 포함 8~100자"
         />
       </div>
 
