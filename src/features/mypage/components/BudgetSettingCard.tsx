@@ -5,7 +5,6 @@ import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
 import { formatKRW } from '@/shared/utils/currency'
 import { getCurrentYearMonth, shiftYearMonth } from '@/shared/utils/date'
-import { useConsumptionRatio } from '@/features/record/hooks/useConsumptionRecords'
 import type { Category } from '@/features/temptation/types'
 import { useBudget, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
@@ -70,7 +69,6 @@ export default function BudgetSettingCard() {
   const [year, month] = yearMonth.split('-')
 
   const { data: budget, isLoading, isError, refetch } = useBudget(yearMonth)
-  const { data: ratio } = useConsumptionRatio()
   const { mutate: setBudget, isPending } = useSetBudget()
 
   const [income, setIncome] = useState('')
@@ -79,19 +77,17 @@ export default function BudgetSettingCard() {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    // 서버에서 불러온 값을 편집 가능한 로컬 상태로 반영합니다.
+    // 선택한 월의 서버 값을 편집 가능한 로컬 상태로 반영합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIncome(budget?.monthlyIncome != null ? String(budget.monthlyIncome) : '')
-  }, [budget])
-
-  useEffect(() => {
-    // 카테고리별 예산은 백엔드 API가 없어 로컬 상태로만 유지됩니다. 다른 달로 이동하면
-    // 이어줄 서버 데이터가 없으므로 초기화하고, 이전 달의 저장/에러 메시지도 지웁니다.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCategoryEntries([])
-    setSaved(false)
-    setError('')
-  }, [yearMonth])
+    setIncome(budget?.monthlyIncome === null || !budget ? '' : String(budget.monthlyIncome))
+    setCategoryEntries(
+      budget?.categoryBudgets.map(({ category, budgetAmount, spentAmount }) => ({
+        category,
+        budgetAmount,
+        spentAmount,
+      })) ?? [],
+    )
+  }, [budget, yearMonth])
 
   const totalBudget = categoryEntries.reduce((sum, entry) => sum + entry.budgetAmount, 0)
 
@@ -99,27 +95,49 @@ export default function BudgetSettingCard() {
     setCategoryEntries((prev) =>
       prev.map((entry) => (entry.category === category ? { ...entry, budgetAmount } : entry)),
     )
+    setError('')
     setSaved(false)
   }
 
   const handleAddCategory = (category: Category) => {
     setCategoryEntries((prev) => [...prev, { category, budgetAmount: 0, spentAmount: 0 }])
+    setError('')
     setSaved(false)
   }
 
+  const handleChangeMonth = (delta: number) => {
+    setError('')
+    setSaved(false)
+    setYearMonth((prev) => shiftYearMonth(prev, delta))
+  }
+
   const handleSave = () => {
-    if (totalBudget <= 0) {
-      setError('카테고리별 예산을 설정해주세요.')
+    const hasIncome = income.trim() !== ''
+    const hasCategoryBudgets = categoryEntries.length > 0
+
+    if (!hasIncome && !hasCategoryBudgets) {
+      setError('수입 또는 카테고리별 예산을 설정해주세요.')
       return
     }
 
-    const incomeAmount = income.trim() === '' ? undefined : Number(income)
+    // API는 monthlyIncome에 null을 받지 않으므로, 기존 수입을 지운 경우 0을 명시해 초기화합니다.
+    const incomeAmount = hasIncome ? Number(income) : budget?.monthlyIncome != null ? 0 : undefined
 
     setError('')
     setSaved(false)
 
     setBudget(
-      { yearMonth, monthlyIncome: incomeAmount, monthlyBudget: totalBudget },
+      {
+        yearMonth,
+        ...(incomeAmount !== undefined && { monthlyIncome: incomeAmount }),
+        ...(hasCategoryBudgets && {
+          monthlyBudget: totalBudget,
+          categoryBudgets: categoryEntries.map(({ category, budgetAmount }) => ({
+            category,
+            budgetAmount,
+          })),
+        }),
+      },
       {
         onSuccess: () => setSaved(true),
         onError: (err) => {
@@ -138,20 +156,15 @@ export default function BudgetSettingCard() {
     )
   }
 
-  const incomeAmount = Number(income) || 0
-  const consumedAmount = ratio?.consumedAmount ?? 0
-  const remaining = incomeAmount - consumedAmount
-  const usagePercent =
-    incomeAmount > 0 ? Math.min(100, Math.round((consumedAmount / incomeAmount) * 100)) : 0
+  const incomeAmount = budget?.monthlyIncome ?? 0
+  const consumedAmount = budget?.spentAmount ?? 0
+  const remaining = budget?.remainingAmount ?? 0
+  const usagePercent = Math.min(100, budget?.usageRate ?? 0)
 
   return (
     <>
       <div className={styles.monthNav}>
-        <button
-          type="button"
-          aria-label="이전 달"
-          onClick={() => setYearMonth((prev) => shiftYearMonth(prev, -1))}
-        >
+        <button type="button" aria-label="이전 달" onClick={() => handleChangeMonth(-1)}>
           <IoChevronBack size={20} />
         </button>
 
@@ -159,11 +172,7 @@ export default function BudgetSettingCard() {
           {year}년 {Number(month)}월
         </span>
 
-        <button
-          type="button"
-          aria-label="다음 달"
-          onClick={() => setYearMonth((prev) => shiftYearMonth(prev, 1))}
-        >
+        <button type="button" aria-label="다음 달" onClick={() => handleChangeMonth(1)}>
           <IoChevronForward size={20} />
         </button>
       </div>
@@ -181,8 +190,6 @@ export default function BudgetSettingCard() {
 
       {!isLoading && !isError && (
         <>
-          {/* 지출/잔액은 "최근 소비 현황" API(월 파라미터 없음) 기반이라, 다른 달을 보는 중엔
-              실제 그 달의 지출과 다를 수 있어 현재 달을 볼 때만 보여줍니다. */}
           {isCurrentMonth && incomeAmount > 0 && (
             <section className={styles.summaryCard}>
               <div className={styles.summaryRow}>
@@ -217,6 +224,7 @@ export default function BudgetSettingCard() {
             value={income}
             onChange={(v) => {
               setIncome(v)
+              setError('')
               setSaved(false)
             }}
           />

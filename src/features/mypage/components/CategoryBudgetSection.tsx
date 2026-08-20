@@ -35,7 +35,7 @@ function CategoryBudgetRow({ entry, onChangeBudget }: CategoryBudgetRowProps) {
   return (
     <div className={styles.row}>
       <div className={styles.rowHeader}>
-        <CategoryIcon category={category} size={40} />
+        <CategoryIcon category={category} size={40} color={CATEGORY_COLORS[category]} />
 
         <div className={styles.rowInfo}>
           <p className={styles.categoryName}>{category}</p>
