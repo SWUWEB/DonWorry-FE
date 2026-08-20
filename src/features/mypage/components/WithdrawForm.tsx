@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { isAxiosError } from 'axios'
 import { IoWarningOutline, IoChevronDown } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
@@ -22,6 +23,7 @@ const REASON_OPTIONS: { value: WithdrawReasonType; label: string }[] = [
 
 export default function WithdrawForm() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { mutate: deleteMe, isPending } = useDeleteMe()
 
   const [reason, setReason] = useState<WithdrawReasonType | ''>('')
@@ -48,6 +50,7 @@ export default function WithdrawForm() {
         onSuccess: () => {
           localStorage.removeItem('accessToken')
           localStorage.removeItem('refreshToken')
+          queryClient.clear()
           navigate('/login', { replace: true })
         },
         onError: (err) => {

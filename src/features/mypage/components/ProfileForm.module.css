@@ -41,6 +41,22 @@
   box-sizing: border-box;
 }
 
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 24px 5px;
+  box-sizing: border-box;
+  color: var(--color-gray-300);
+  font-size: 14px;
+}
+
+.status p {
+  margin: 0;
+}
+
 .formError {
   margin: 0;
   font-size: 13px;

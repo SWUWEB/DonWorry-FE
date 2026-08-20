@@ -19,13 +19,13 @@ const GENDER_FROM_API: Record<'FEMALE' | 'MALE', Gender> = {
 }
 
 export default function ProfileForm() {
-  const { data: profile } = useMe()
+  const { data: profile, isLoading, isError, refetch } = useMe()
   const { mutate: updateMe, isPending } = useUpdateMe()
 
   const [nickname, setNickname] = useState('')
   const [phone, setPhone] = useState('')
   const [birth, setBirth] = useState('')
-  const [gender, setGender] = useState<Gender>('female')
+  const [gender, setGender] = useState<Gender | null>(null)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
 
@@ -36,9 +36,24 @@ export default function ProfileForm() {
       setNickname(profile.nickname)
       setPhone(profile.phoneNumber ?? '')
       setBirth(profile.birthDate ?? '')
-      setGender(profile.gender ? GENDER_FROM_API[profile.gender] : 'female')
+      setGender(profile.gender ? GENDER_FROM_API[profile.gender] : null)
     }
   }, [profile])
+
+  if (isLoading) {
+    return <p className={styles.status}>회원 정보를 불러오는 중...</p>
+  }
+
+  if (isError || !profile) {
+    return (
+      <section className={styles.status}>
+        <p role="alert">회원 정보를 불러오지 못했습니다.</p>
+        <Button variant="outline" onClick={() => refetch()}>
+          다시 시도
+        </Button>
+      </section>
+    )
+  }
 
   const handleSubmit = () => {
     if (!nickname.trim()) {
@@ -54,7 +69,7 @@ export default function ProfileForm() {
         nickname,
         phoneNumber: phone || null,
         birthDate: birth || null,
-        gender: GENDER_TO_API[gender],
+        ...(gender && { gender: GENDER_TO_API[gender] }),
       },
       {
         onSuccess: () => setSaved(true),

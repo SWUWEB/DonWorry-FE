@@ -54,3 +54,10 @@
   height: 36px;
   display: block;
 }
+
+.avatarPhoto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
