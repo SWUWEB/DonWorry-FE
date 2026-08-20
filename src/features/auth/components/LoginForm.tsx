@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
+import { saveAuthSession } from '@/shared/auth/session'
 import { getKakaoAuthorizeUrl } from '../kakaoOAuth'
 
 export default function LoginForm() {
@@ -41,8 +42,7 @@ export default function LoginForm() {
       },
       {
         onSuccess: (response) => {
-          localStorage.setItem('accessToken', response.data.accessToken)
-          localStorage.setItem('refreshToken', response.data.refreshToken)
+          saveAuthSession(response.data)
 
           navigate('/')
         },

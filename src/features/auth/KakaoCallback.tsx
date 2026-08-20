@@ -8,6 +8,7 @@ import ErrorMessage from './components/ErrorMessage'
 import LoginHeader from './components/LoginHeader'
 import { getKakaoLoginErrorMessage, isKakaoLinkRequired } from './kakaoErrors'
 import { consumeKakaoState } from './kakaoOAuth'
+import { saveAuthSession } from '@/shared/auth/session'
 import styles from './Login.module.css'
 
 export default function KakaoCallback() {
@@ -48,8 +49,7 @@ export default function KakaoCallback() {
     // 마운트 시 1회만 실행되는 이 흐름은 API 함수를 직접 호출해 처리합니다.
     kakaoLogin({ authorizationCode: code })
       .then((response) => {
-        localStorage.setItem('accessToken', response.data.accessToken)
-        localStorage.setItem('refreshToken', response.data.refreshToken)
+        saveAuthSession(response.data)
         navigate('/', { replace: true })
       })
       .catch((error: unknown) => {

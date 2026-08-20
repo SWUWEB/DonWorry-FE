@@ -6,6 +6,7 @@ import Button from '@/shared/components/Button'
 import { useKakaoLink } from '@/hooks/useKakaoLink'
 import { useKakaoLinkEmail } from '@/hooks/useKakaoLinkEmail'
 import { useConfirmKakaoLinkEmail } from '@/hooks/useConfirmKakaoLinkEmail'
+import { saveAuthSession } from '@/shared/auth/session'
 import { getKakaoAuthorizeUrl } from './kakaoOAuth'
 import { getKakaoLinkErrorMessage } from './kakaoErrors'
 import ErrorMessage from './components/ErrorMessage'
@@ -93,8 +94,7 @@ export default function KakaoLink() {
   const { linkingToken } = state
 
   const handleLoginSuccess = (response: LoginResponse) => {
-    localStorage.setItem('accessToken', response.data.accessToken)
-    localStorage.setItem('refreshToken', response.data.refreshToken)
+    saveAuthSession(response.data)
     navigate('/', { replace: true })
   }
 
