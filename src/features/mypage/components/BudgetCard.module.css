@@ -1,8 +1,9 @@
 .card {
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   padding: 17px 20px;
   border-radius: 16px;
   background: var(--color-main-500);
+  box-shadow: 0 4px 16px rgba(36, 49, 48, 0.08);
   color: white;
   display: flex;
   justify-content: space-between;

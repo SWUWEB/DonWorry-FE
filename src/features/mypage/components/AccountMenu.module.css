@@ -1,10 +1,11 @@
 .card {
   display: flex;
+  width: 100%;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: var(--account-card-radius, 16px);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
 }
 
 .menuButton {
@@ -12,7 +13,8 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 14px 20px;
+  min-height: 52px;
+  padding: 12px 20px;
   border: none;
   border-bottom: 1px solid #f1f1f1;
   background: white;

@@ -1,13 +1,25 @@
+.form,
+.status {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--account-card-radius, 16px);
+  background: #ffffff;
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .label {
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-text-primary);
 }
 
 .genderGroup {
@@ -20,9 +32,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #b4b4b4;
   font-size: 14px;
   font-weight: 500;
-  color: #b4b4b4;
   cursor: pointer;
 }
 
@@ -32,23 +44,7 @@
   cursor: pointer;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
-  padding: 24px 5px;
-  box-sizing: border-box;
-}
-
 .status {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  margin: 0;
-  padding: 24px 5px;
-  box-sizing: border-box;
   color: var(--color-gray-300);
   font-size: 14px;
 }
@@ -57,22 +53,23 @@
   margin: 0;
 }
 
-.formError {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-red);
-}
-
+.formError,
 .formSuccess {
   margin: 0;
   font-size: 13px;
   font-weight: 500;
+}
+
+.formError {
+  color: var(--color-text-red);
+}
+
+.formSuccess {
   color: var(--color-text-green);
 }
 
 .buttonWrapper {
-  margin-top: 10px;
-  width: 100%;
   display: flex;
+  width: 100%;
+  margin-top: 4px;
 }

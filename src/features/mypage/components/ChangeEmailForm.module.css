@@ -1,101 +1,90 @@
 .form {
   display: flex;
-  flex-direction: column;
-  gap: 36px;
   width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--account-card-radius, 16px);
+  background: #ffffff;
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
 }
 
 .currentEmailCard {
-  margin-top: 15px;
-  width: 100%;
-  max-width: 342px;
-  height: 68px;
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  min-height: 68px;
   align-items: center;
-  padding: 18px 22px 18px 18px;
-  border-radius: 13px;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-radius: 12px;
   background: #e8f4f4;
-  box-sizing: border-box;
 }
 
 .cardLabel {
   margin: 0 0 2px;
+  color: var(--color-main-500);
   font-size: 11px;
   font-weight: 500;
-  color: #2f7f82;
 }
 
 .currentEmail {
+  overflow: hidden;
+  max-width: 240px;
   margin: 0;
+  color: #1e2939;
   font-size: 14px;
   font-weight: 600;
-  color: #1e2939;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .checkIcon {
-  font-size: 34px;
-  color: #2f7f82;
+  flex-shrink: 0;
+  color: var(--color-main-500);
 }
 
 .inputGroup {
-  margin-top: -10px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
 .expireText {
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-60%);
-  font-size: 13px;
-  font-weight: 700;
   color: #aaaaaa;
-}
-
-.helper {
-  margin: 0;
-  margin-top: -10px;
-  font-weight: 300;
   font-size: 12px;
-  color: #adadad;
+  font-weight: 700;
 }
 
 .noticeBox {
-  margin-top: -10px;
   width: 100%;
-  max-width: 342px;
-  height: 86px;
+  min-height: 86px;
   padding: 14px 18px;
-  border-radius: 13px;
+  border-radius: 12px;
   background: #f7fbfa;
-  box-sizing: border-box;
 }
 
 .noticeBox ul {
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .noticeBox li {
   position: relative;
-  padding-left: 14px;
-  margin-top: -2px;
   margin-bottom: 6px;
+  padding-left: 14px;
+  color: #898989;
   font-size: 12px;
   line-height: 18px;
-  color: #898989;
 }
+
 .noticeBox li::before {
-  content: '•';
   position: absolute;
-  left: 0;
   top: 0;
-  font-size: 14px;
+  left: 0;
   color: #c7ced1;
+  font-size: 14px;
+  content: '•';
 }
 
 .noticeBox li:last-child {
@@ -103,32 +92,26 @@
 }
 
 .resendButton {
-  margin-top: -25px;
   display: flex;
+  width: fit-content;
   align-items: center;
   gap: 7px;
-  width: fit-content;
   padding: 0;
   border: none;
   background: none;
+  color: var(--color-main-500);
   font-size: 12px;
   font-weight: 500;
-  color: #2f7f82;
   cursor: pointer;
 }
 
 .buttonWrapper {
-  margin-top: 18px;
-  width: 100%;
   display: flex;
-  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
 }
 
 .buttonWrapper button {
-  width: 100%;
-  max-width: 342px;
-  height: 54px;
-  border-radius: 15px;
-  font-size: 16px;
-  font-weight: 600;
+  height: 56px;
+  border-radius: 14px;
 }

@@ -3,7 +3,7 @@ import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import ChangeEmailForm from './components/ChangeEmailForm'
-import styles from './ChangeEmail.module.css'
+import styles from './AccountPage.module.css'
 
 export default function ChangeEmail() {
   const navigate = useNavigate()

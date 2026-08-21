@@ -129,18 +129,20 @@ export default function WithdrawForm() {
         />
       </div>
 
-      <button type="submit" className={styles.withdrawButton}>
-        탈퇴하기
-      </button>
+      <div className={styles.actionGroup}>
+        <button type="submit" className={styles.withdrawButton}>
+          탈퇴하기
+        </button>
 
-      <Button
-        type="button"
-        variant="outline"
-        className={styles.cancelButton}
-        onClick={() => navigate(-1)}
-      >
-        취소
-      </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className={styles.cancelButton}
+          onClick={() => navigate(-1)}
+        >
+          취소
+        </Button>
+      </div>
 
       <ConfirmDialog
         isOpen={isConfirmOpen}
