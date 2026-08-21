@@ -9,6 +9,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
+import { saveAuthSession } from '@/shared/auth/session'
+import { getKakaoAuthorizeUrl } from '../kakaoOAuth'
 
 export default function LoginForm() {
   const [id, setId] = useState('')
@@ -40,14 +42,12 @@ export default function LoginForm() {
       },
       {
         onSuccess: (response) => {
-          localStorage.setItem('accessToken', response.data.accessToken)
-          localStorage.setItem('refreshToken', response.data.refreshToken)
+          saveAuthSession(response.data)
 
           navigate('/')
         },
 
         onError: (error) => {
-          // 401은 아이디/비밀번호 불일치, 그 외에는 일시적인 오류로 안내합니다.
           const status = isAxiosError(error) ? error.response?.status : undefined
 
           setErrorMessage(
@@ -58,6 +58,17 @@ export default function LoginForm() {
         },
       },
     )
+  }
+
+  // 카카오 동의 화면으로 리다이렉트합니다. 인증 코드는 카카오가 redirect_uri로
+  // 돌려보내주는 콜백(KakaoCallback)에서 받아 처리합니다.
+  const handleKakaoLogin = () => {
+    try {
+      window.location.href = getKakaoAuthorizeUrl()
+    } catch {
+      // 카카오 앱 키/Redirect URI 환경변수가 비어있는 등 설정 누락 시 조용히 실패하지 않도록 안내합니다.
+      setErrorMessage('카카오 로그인을 사용할 수 없습니다. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   return (
@@ -101,7 +112,7 @@ export default function LoginForm() {
           {isPending ? '로그인 중...' : '로그인'}
         </Button>
 
-        <KakaoButton />
+        <KakaoButton onClick={handleKakaoLogin} />
       </div>
 
       <LoginLink />

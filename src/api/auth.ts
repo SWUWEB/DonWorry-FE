@@ -144,3 +144,84 @@ export interface LogoutRequest {
 export const logout = async (body: LogoutRequest): Promise<void> => {
   await client.post('/api/v1/auth/logout', body)
 }
+
+// 카카오
+export interface KakaoLoginRequest {
+  authorizationCode: string
+}
+
+// 409: 동일 이메일의 로컬 계정이 이미 있어 본인 확인(계정 연결)이 필요할 때의 응답 바디
+export interface KakaoLinkRequiredResponse {
+  success: false
+  code: string
+  message: string
+  data: {
+    linkingToken: string
+    verificationMethods: ('PASSWORD' | 'EMAIL')[]
+    expiresInSeconds: number
+  }
+}
+
+export const kakaoLogin = async (body: KakaoLoginRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/kakao/login', body)
+
+  return data
+}
+
+// 카카오 계정 연결 (비밀번호 인증)
+
+export interface KakaoLinkRequest {
+  linkingToken: string
+  password: string
+}
+
+export const kakaoLink = async (body: KakaoLinkRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/kakao/link', body)
+
+  return data
+}
+
+//카카오 계정 연결 이메일 인증요청
+export interface KakaoLinkEmailRequest {
+  linkingToken: string
+}
+
+export interface KakaoLinkEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+    debugCode?: string
+  }
+}
+
+export const sendKakaoLinkEmail = async (
+  body: KakaoLinkEmailRequest,
+): Promise<KakaoLinkEmailResponse> => {
+  const { data } = await client.post<KakaoLinkEmailResponse>(
+    '/api/v1/auth/kakao/link/email-verifications',
+    body,
+  )
+
+  return data
+}
+
+//이메일 인증으로 카카오계정연결
+export interface ConfirmKakaoLinkEmailRequest {
+  linkingToken: string
+  code: string
+}
+
+export const confirmKakaoLinkEmail = async (
+  body: ConfirmKakaoLinkEmailRequest,
+): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>(
+    '/api/v1/auth/kakao/link/email-verifications/confirm',
+    body,
+  )
+
+  return data
+}

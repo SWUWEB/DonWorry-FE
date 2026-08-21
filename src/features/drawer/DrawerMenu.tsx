@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useLogout } from '@/hooks/useLogout'
 import { IoCloseOutline } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { clearAuthSession, getRefreshToken } from '@/shared/auth/session'
 import { useDrawer } from './useDrawer'
 import ProfileIcon from '@/assets/profile.svg'
 import styles from './DrawerMenu.module.css'
@@ -174,11 +175,10 @@ export default function DrawerMenu() {
   }
 
   const handleLogout = () => {
-    const refreshToken = localStorage.getItem('refreshToken')
+    const refreshToken = getRefreshToken()
 
     if (!refreshToken) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      clearAuthSession()
 
       setShowLogoutConfirm(false)
       close()
@@ -191,8 +191,7 @@ export default function DrawerMenu() {
       { refreshToken },
       {
         onSuccess: () => {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
+          clearAuthSession()
 
           setShowLogoutConfirm(false)
           close()
@@ -200,8 +199,7 @@ export default function DrawerMenu() {
         },
 
         onError: () => {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
+          clearAuthSession()
 
           setShowLogoutConfirm(false)
           close()
