@@ -33,6 +33,9 @@ export default function GoalSettingCard() {
     setGoalText(profile?.savingGoalText ?? '')
     const targetAmount = report?.goalAchievement.targetAmount
     setGoalAmount(targetAmount == null ? '' : String(targetAmount))
+    // GET /users/me에는 활성 여부가 없으므로, 저장된 목표가 있으면서 리포트가 NOT_SET이면
+    // 비활성 목표로 간주합니다. 새 목표는 기존 UX대로 활성 상태에서 시작합니다.
+    setIsActive(!profile?.savingGoalText || report?.goalAchievement.status !== 'NOT_SET')
   }, [profile, report])
 
   if (isProfileLoading || isReportLoading) {
