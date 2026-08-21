@@ -6,6 +6,7 @@ import { useLogout } from '@/hooks/useLogout'
 import { useMe } from '@/features/mypage/hooks/useUser'
 import { IoCloseOutline } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { clearAuthSession, getRefreshToken } from '@/shared/auth/session'
 import { useDrawer } from './useDrawer'
 import ProfileIcon from '@/assets/profile.svg'
 import styles from './DrawerMenu.module.css'
@@ -180,11 +181,10 @@ export default function DrawerMenu() {
   }
 
   const handleLogout = () => {
-    const refreshToken = localStorage.getItem('refreshToken')
+    const refreshToken = getRefreshToken()
 
     const finishLogout = () => {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      clearAuthSession()
       queryClient.clear()
 
       setShowLogoutConfirm(false)
