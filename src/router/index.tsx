@@ -16,6 +16,8 @@ const RecordInterventionPage = lazy(
 const RiskResultPage = lazy(() => import('@/features/intervention/pages/RiskResultPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const SignUpPage = lazy(() => import('@/pages/SignUpPage'))
+const KakaoCallbackPage = lazy(() => import('@/pages/KakaoCallbackPage'))
+const KakaoLinkPage = lazy(() => import('@/pages/KakaoLinkPage'))
 const FindIdPage = lazy(() => import('@/pages/FindIdPage'))
 const ResetPasswordRequestPage = lazy(() => import('@/pages/ResetPasswordRequestPage'))
 const ResetPasswordVerifyPage = lazy(() => import('@/pages/ResetPasswordVerifyPage'))
@@ -45,6 +47,8 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignUpPage /> },
+      { path: '/auth/kakao/callback', element: <KakaoCallbackPage /> },
+      { path: '/auth/kakao/link', element: <KakaoLinkPage /> },
       { path: '/find-id', element: <FindIdPage /> },
       { path: '/reset-password', element: <ResetPasswordRequestPage /> },
       { path: '/reset-password/verify', element: <ResetPasswordVerifyPage /> },

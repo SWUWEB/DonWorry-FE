@@ -223,6 +223,7 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
             className={styles.amountWrapper}
             value={amount}
             onChange={setAmount}
+            disabled={parseUrl.isPending}
           />
         </div>
 
@@ -235,6 +236,7 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
             className={styles.textInput}
             placeholder="예: 투썸플레이스 신봉점"
             value={title}
+            disabled={parseUrl.isPending}
             onChange={(event) => setTitle(event.target.value)}
           />
         </div>

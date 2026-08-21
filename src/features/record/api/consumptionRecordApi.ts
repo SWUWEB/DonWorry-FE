@@ -1,5 +1,6 @@
 import client from '@/api/client'
 import { formatDateKorean } from '@/shared/utils/date'
+import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import type { RecordItem, RecordType } from '@/features/record/mockRecords'
 
 type ApiRecordType = 'CONSUMED' | 'SKIPPED'
@@ -64,19 +65,6 @@ const FILTER_TO_API: Record<RecordListFilter, 'ALL' | ApiRecordType> = {
   all: 'ALL',
   saved: 'SKIPPED',
   consume: 'CONSUMED',
-}
-
-// 백엔드에 실제로 존재하는 카테고리 코드로 확인된 값만 매핑합니다.
-const CATEGORY_LABEL_TO_CODE: Record<string, string> = {
-  패션: 'FASHION',
-  뷰티: 'BEAUTY',
-  음식: 'FOOD_SNACK',
-  '카페/디저트': 'CAFE_DESSERT',
-  '취미/굿즈': 'HOBBY_GOODS',
-  전자기기: 'ELECTRONICS',
-  '건강/운동': 'HEALTH_FITNESS',
-  여행: 'TRAVEL',
-  기타: 'ETC',
 }
 
 export interface ConsumptionRecordInput {
