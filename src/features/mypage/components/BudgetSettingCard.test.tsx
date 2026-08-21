@@ -119,6 +119,9 @@ describe('BudgetSettingCard', () => {
     fireEvent.change(screen.getByLabelText('이번 달 수입'), {
       target: { value: '9'.repeat(400) },
     })
+
+    expect(screen.getByRole('alert')).toHaveTextContent('수입 금액을 다시 확인해주세요.')
+    expect(screen.getByText('—')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: '저장하기' }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent('수입 금액을 다시 확인해주세요.')

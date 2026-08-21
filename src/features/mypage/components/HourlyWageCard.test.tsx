@@ -29,7 +29,10 @@ describe('HourlyWageCard', () => {
     render(<EditableHourlyWageCard />)
 
     fireEvent.click(screen.getByRole('button', { name: /10,000원/ }))
-    fireEvent.change(screen.getByLabelText('시급'), { target: { value: '20000원' } })
+    const input = screen.getByLabelText('시급')
+
+    expect(input).toHaveFocus()
+    fireEvent.change(input, { target: { value: '20000원' } })
 
     expect(screen.getByDisplayValue('20000')).toBeInTheDocument()
     expect(screen.getByLabelText('26시간')).toBeInTheDocument()
@@ -48,5 +51,20 @@ describe('HourlyWageCard', () => {
     )
 
     expect(screen.getAllByText('—')).toHaveLength(2)
+  })
+
+  it('유한하지 않은 수입은 시간으로 환산하지 않는다', () => {
+    render(
+      <HourlyWageCard
+        hourlyWage="10000"
+        monthlyIncome={null}
+        spentAmount={743000}
+        monthLabel="이번 달"
+        onChangeHourlyWage={() => undefined}
+      />,
+    )
+
+    expect(screen.getByText('—')).toBeInTheDocument()
+    expect(screen.queryByText(/∞/)).not.toBeInTheDocument()
   })
 })

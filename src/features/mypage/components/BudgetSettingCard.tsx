@@ -169,6 +169,9 @@ export default function BudgetSettingCard() {
   const consumedAmount = budget?.spentAmount ?? 0
   const remaining = budget?.remainingAmount ?? 0
   const usagePercent = Math.min(100, budget?.usageRate ?? 0)
+  const parsedIncome = Number(income)
+  const incomeError =
+    income.trim() !== '' && !Number.isFinite(parsedIncome) ? '수입 금액을 다시 확인해주세요.' : ''
 
   return (
     <>
@@ -240,7 +243,7 @@ export default function BudgetSettingCard() {
 
           <HourlyWageCard
             hourlyWage={hourlyWage}
-            monthlyIncome={Number(income) || 0}
+            monthlyIncome={incomeError ? null : parsedIncome}
             spentAmount={consumedAmount}
             monthLabel={isCurrentMonth ? '이번 달' : `${Number(month)}월`}
             onChangeHourlyWage={setHourlyWageOverride}
@@ -252,9 +255,9 @@ export default function BudgetSettingCard() {
             onAddCategory={handleAddCategory}
           />
 
-          {error && (
+          {(incomeError || error) && (
             <p className={styles.formError} role="alert">
-              {error}
+              {incomeError || error}
             </p>
           )}
           {saved && <p className={styles.formSuccess}>저장되었습니다.</p>}

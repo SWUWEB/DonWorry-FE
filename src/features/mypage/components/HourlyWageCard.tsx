@@ -6,13 +6,14 @@ import styles from './HourlyWageCard.module.css'
 
 interface HourlyWageCardProps {
   hourlyWage: string
-  monthlyIncome: number
+  monthlyIncome: number | null
   spentAmount: number
   monthLabel: string
   onChangeHourlyWage: (value: string) => void
 }
 
-function calculateHours(amount: number, hourlyWage: number): number | null {
+function calculateHours(amount: number | null, hourlyWage: number): number | null {
+  if (amount === null || !Number.isFinite(amount)) return null
   if (!Number.isFinite(hourlyWage) || hourlyWage <= 0) return null
   return Math.round((amount / hourlyWage) * 10) / 10
 }
@@ -53,6 +54,7 @@ export default function HourlyWageCard({
     <section className={styles.card}>
       {isEditing ? (
         <InputField
+          autoFocus
           label="시급"
           placeholder="금액을 입력하세요"
           inputMode="numeric"

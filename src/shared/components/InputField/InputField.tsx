@@ -18,6 +18,7 @@ type InputFieldProps = {
   inputMode?: 'text' | 'numeric' | 'tel' | 'email' | 'search' | 'none' | 'decimal' | 'url'
   pattern?: string
   autoComplete?: string
+  autoFocus?: boolean
   readOnly?: boolean
   className?: string
 }
@@ -38,6 +39,7 @@ export default function InputField({
   inputMode,
   pattern,
   autoComplete,
+  autoFocus,
   readOnly,
   className,
 }: InputFieldProps) {
@@ -80,6 +82,7 @@ export default function InputField({
           inputMode={inputMode}
           pattern={pattern}
           autoComplete={autoComplete}
+          autoFocus={autoFocus}
           readOnly={readOnly}
         />
         {trailing && <span className={styles.trailing}>{trailing}</span>}
