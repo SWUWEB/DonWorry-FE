@@ -1,11 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCurrentYearMonth } from '@/shared/utils/date'
-import { useBudget, useSetBudget } from '../hooks/useUser'
+import { useBudget, useMe, useSetBudget } from '../hooks/useUser'
 import BudgetSettingCard from './BudgetSettingCard'
 
 vi.mock('../hooks/useUser', () => ({
   useBudget: vi.fn(),
+  useMe: vi.fn(),
   useSetBudget: vi.fn(),
 }))
 
@@ -19,6 +20,22 @@ describe('BudgetSettingCard', () => {
       mutate: setBudget,
       isPending: false,
     } as unknown as ReturnType<typeof useSetBudget>)
+    vi.mocked(useMe).mockReturnValue({
+      data: {
+        id: '1',
+        nickname: '테스터',
+        profileImageUrl: null,
+        savingGoalText: null,
+        interestTagsJson: null,
+        phoneNumber: null,
+        birthDate: null,
+        gender: null,
+        email: 'tester@example.com',
+        loginProvider: 'LOCAL',
+        hasPassword: true,
+        hourlyWage: '10000',
+      },
+    } as ReturnType<typeof useMe>)
     vi.mocked(useBudget).mockReturnValue({
       data: {
         yearMonth: currentYearMonth,
@@ -68,6 +85,8 @@ describe('BudgetSettingCard', () => {
     expect(await screen.findByText('20만원')).toBeInTheDocument()
     expect(screen.getByText('80만원')).toBeInTheDocument()
     expect(screen.getByText('20%')).toBeInTheDocument()
+    expect(screen.getByLabelText('100시간')).toBeInTheDocument()
+    expect(screen.getByLabelText('20시간')).toBeInTheDocument()
   })
 
   it('카테고리 예산이 없는 달에도 월 수입만 저장할 수 있다', async () => {
@@ -91,6 +110,19 @@ describe('BudgetSettingCard', () => {
         expect.any(Object),
       )
     })
+  })
+
+  it('유한하지 않은 월 수입은 저장하지 않는다', async () => {
+    render(<BudgetSettingCard />)
+
+    fireEvent.click(screen.getByRole('button', { name: /이번 달 수입/ }))
+    fireEvent.change(screen.getByLabelText('이번 달 수입'), {
+      target: { value: '9'.repeat(400) },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '저장하기' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('수입 금액을 다시 확인해주세요.')
+    expect(setBudget).not.toHaveBeenCalled()
   })
 
   it('기존 월 수입을 비우면 0을 보내 초기화한다', async () => {

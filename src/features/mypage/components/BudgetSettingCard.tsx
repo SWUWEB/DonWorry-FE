@@ -6,8 +6,9 @@ import InputField from '@/shared/components/InputField'
 import { formatKRW } from '@/shared/utils/currency'
 import { getCurrentYearMonth, shiftYearMonth } from '@/shared/utils/date'
 import type { Category } from '@/features/temptation/types'
-import { useBudget, useSetBudget } from '../hooks/useUser'
+import { useBudget, useMe, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
+import HourlyWageCard from './HourlyWageCard'
 import styles from './BudgetSettingCard.module.css'
 
 function toDigits(value: string) {
@@ -69,12 +70,14 @@ export default function BudgetSettingCard() {
   const [year, month] = yearMonth.split('-')
 
   const { data: budget, isLoading, isError, refetch } = useBudget(yearMonth)
+  const { data: profile } = useMe()
   const { mutate: setBudget, isPending } = useSetBudget()
 
   const [income, setIncome] = useState('')
   const [categoryEntries, setCategoryEntries] = useState<CategoryBudgetEntry[]>([])
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
+  const [hourlyWageOverride, setHourlyWageOverride] = useState<string | null>(null)
 
   useEffect(() => {
     // 선택한 월의 서버 값을 편집 가능한 로컬 상태로 반영합니다.
@@ -90,6 +93,7 @@ export default function BudgetSettingCard() {
   }, [budget, yearMonth])
 
   const totalBudget = categoryEntries.reduce((sum, entry) => sum + entry.budgetAmount, 0)
+  const hourlyWage = hourlyWageOverride ?? profile?.hourlyWage ?? ''
 
   const handleChangeCategoryBudget = (category: Category, budgetAmount: number) => {
     setCategoryEntries((prev) =>
@@ -122,6 +126,11 @@ export default function BudgetSettingCard() {
 
     // API는 monthlyIncome에 null을 받지 않으므로, 기존 수입을 지운 경우 0을 명시해 초기화합니다.
     const incomeAmount = hasIncome ? Number(income) : budget?.monthlyIncome != null ? 0 : undefined
+
+    if (incomeAmount !== undefined && !Number.isFinite(incomeAmount)) {
+      setError('수입 금액을 다시 확인해주세요.')
+      return
+    }
 
     setError('')
     setSaved(false)
@@ -227,6 +236,14 @@ export default function BudgetSettingCard() {
               setError('')
               setSaved(false)
             }}
+          />
+
+          <HourlyWageCard
+            hourlyWage={hourlyWage}
+            monthlyIncome={Number(income) || 0}
+            spentAmount={consumedAmount}
+            monthLabel={isCurrentMonth ? '이번 달' : `${Number(month)}월`}
+            onChangeHourlyWage={setHourlyWageOverride}
           />
 
           <CategoryBudgetSection

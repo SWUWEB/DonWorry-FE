@@ -1,4 +1,6 @@
 .container {
+  --budget-card-shadow: 0 4px 14px rgba(36, 49, 48, 0.06);
+
   display: flex;
   flex-direction: column;
   gap: 20px;
