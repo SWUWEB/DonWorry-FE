@@ -10,9 +10,10 @@ export const CATEGORIES = [
   '기타',
 ] as const
 
-export type CategoryLabel = (typeof CATEGORIES)[number]
+export const TIME_OPTIONS = ['1시간', '1일', '3일', '7일'] as const
 
-export const CATEGORY_LABEL_TO_CODE = {
+// 백엔드에 실제로 존재하는 카테고리 코드로 확인된 값만 매핑합니다.
+export const CATEGORY_LABEL_TO_CODE: Record<string, string> = {
   패션: 'FASHION',
   뷰티: 'BEAUTY',
   음식: 'FOOD_SNACK',
@@ -22,12 +23,4 @@ export const CATEGORY_LABEL_TO_CODE = {
   '건강/운동': 'HEALTH_FITNESS',
   여행: 'TRAVEL',
   기타: 'ETC',
-} as const satisfies Record<CategoryLabel, string>
-
-export type CategoryCode = (typeof CATEGORY_LABEL_TO_CODE)[CategoryLabel]
-
-export const CATEGORY_CODE_TO_LABEL = Object.fromEntries(
-  Object.entries(CATEGORY_LABEL_TO_CODE).map(([label, code]) => [code, label]),
-) as Record<CategoryCode, CategoryLabel>
-
-export const TIME_OPTIONS = ['1시간', '1일', '3일', '7일'] as const
+}

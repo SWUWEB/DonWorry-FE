@@ -1,6 +1,7 @@
 import client from '@/api/client'
-import { CATEGORY_CODE_TO_LABEL, CATEGORY_LABEL_TO_CODE } from '@/constants/product'
-import type { CategoryCode, CategoryLabel } from '@/constants/product'
+import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
+import { CATEGORY_CODE_TO_LABEL } from '@/constants/budgetCategory'
+import type { CategoryCode, CategoryLabel } from '@/constants/budgetCategory'
 
 interface ApiResponse<T> {
   success: boolean
