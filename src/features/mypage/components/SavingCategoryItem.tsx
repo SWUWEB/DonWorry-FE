@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react'
 import styles from './SavingCategoryItem.module.css'
 
 interface SavingCategoryItemProps {
-  icon: string
+  icon: ReactNode
   name: string
   defense: number
   saved: string

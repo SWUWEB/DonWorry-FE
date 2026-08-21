@@ -1,13 +1,13 @@
 import Header from '@/components/layout/Header'
 import HeaderBackButton from '@/shared/components/HeaderBackButton'
-import ProfileForm from './components/ProfileForm'
-import AccountMenu from './components/AccountMenu'
-
 import { useNavigate } from 'react-router-dom'
-import styles from './AccountPage.module.css'
+import styles from './Budget.module.css'
 
-export default function Profile() {
+import BudgetSettingCard from './components/BudgetSettingCard'
+
+export default function Budget() {
   const navigate = useNavigate()
+
   return (
     <>
       <Header
@@ -15,17 +15,15 @@ export default function Profile() {
         subLeft={<HeaderBackButton />}
         subMain={
           <div className={styles.headerContent}>
-            <h1 className={styles.pageTitle}>회원 정보 관리</h1>
+            <h1 className={styles.pageTitle}>월별 수입/예산 관리</h1>
 
-            <p className={styles.pageDescription}>프로필 및 계정 정보를 관리하세요.</p>
+            <p className={styles.pageDescription}>이번 달 수입과 소비 예산을 설정하세요.</p>
           </div>
         }
       />
 
       <main className={styles.container}>
-        <ProfileForm />
-
-        <AccountMenu />
+        <BudgetSettingCard />
       </main>
     </>
   )

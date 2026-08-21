@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useLogout } from '@/hooks/useLogout'
+import { useMe } from '@/features/mypage/hooks/useUser'
 import { IoCloseOutline } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { clearAuthSession, getRefreshToken } from '@/shared/auth/session'
@@ -139,7 +141,11 @@ export default function DrawerMenu() {
   const { isOpen, close } = useDrawer()
   const navigate = useNavigate()
   const location = useLocation()
+  const queryClient = useQueryClient()
   const { mutate: logout } = useLogout()
+  const hasAccessToken = Boolean(localStorage.getItem('accessToken'))
+  const { data: profile } = useMe(isOpen && hasAccessToken)
+  const authenticatedProfile = hasAccessToken ? profile : undefined
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const touchStartX = useRef<number | null>(null)
@@ -177,34 +183,25 @@ export default function DrawerMenu() {
   const handleLogout = () => {
     const refreshToken = getRefreshToken()
 
-    if (!refreshToken) {
+    const finishLogout = () => {
       clearAuthSession()
+      queryClient.clear()
 
       setShowLogoutConfirm(false)
       close()
       navigate('/login')
+    }
 
+    if (!refreshToken) {
+      finishLogout()
       return
     }
 
     logout(
       { refreshToken },
       {
-        onSuccess: () => {
-          clearAuthSession()
-
-          setShowLogoutConfirm(false)
-          close()
-          navigate('/login')
-        },
-
-        onError: () => {
-          clearAuthSession()
-
-          setShowLogoutConfirm(false)
-          close()
-          navigate('/login')
-        },
+        onSuccess: finishLogout,
+        onError: finishLogout,
       },
     )
   }
@@ -227,11 +224,20 @@ export default function DrawerMenu() {
             </button>
             <div className={styles.profileRow}>
               <div className={styles.avatar}>
-                <img src={ProfileIcon} alt="프로필" className={styles.avatarIcon} />
+                <img
+                  src={authenticatedProfile?.profileImageUrl || ProfileIcon}
+                  alt="프로필"
+                  className={`${styles.avatarIcon} ${authenticatedProfile?.profileImageUrl ? styles.avatarPhoto : ''}`}
+                />
               </div>
               <div className={styles.userInfo}>
-                {/* TODO: 실제 사용자 이름 및 프로필 이미지 연결 */}
-                <p className={styles.userName}>000님,</p>
+                <p className={styles.userName}>
+                  {authenticatedProfile
+                    ? `${authenticatedProfile.nickname}님,`
+                    : hasAccessToken
+                      ? '회원님,'
+                      : '반가워요,'}
+                </p>
                 <p className={styles.greeting}>
                   오늘도 알뜰한 하루
                   <br />

@@ -28,6 +28,7 @@ const TemptationInfo = lazy(() => import('@/features/temptation/pages/Temptation
 const TemptationJudge = lazy(() => import('@/features/temptation/pages/TemptationJudge'))
 const TemptationSaved = lazy(() => import('@/features/temptation/pages/TemptationSaved'))
 const GoalAmountPage = lazy(() => import('@/pages/GoalAmountPage'))
+const BudgetPage = lazy(() => import('@/pages/BudgetPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const TemptationEdit = lazy(() => import('@/features/temptation/pages/TemptationEdit'))
 const ChangeEmailPage = lazy(() => import('@/pages/ChangeEmailPage'))
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
       { path: '/reset-password/new', element: <ResetPasswordNewPage /> },
       { path: '/mypage', element: <MyPagePage /> },
       { path: '/goal-amount', element: <GoalAmountPage /> },
+      { path: '/budget', element: <BudgetPage /> },
       { path: '/notification', element: <NotificationPage /> },
       { path: '/profile', element: <ProfilePage /> },
       { path: '/changeemail', element: <ChangeEmailPage /> },

@@ -3,7 +3,7 @@ import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import ChangePasswordForm from './components/ChangePasswordForm'
-import styles from './ChangePassword.module.css'
+import styles from './AccountPage.module.css'
 
 export default function ChangePassword() {
   const navigate = useNavigate()

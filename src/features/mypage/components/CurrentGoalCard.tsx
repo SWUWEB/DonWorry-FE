@@ -2,12 +2,36 @@ import { formatKRW } from '@/shared/utils/currency'
 import styles from './CurrentGoalCard.module.css'
 
 interface CurrentGoalCardProps {
-  goalAmount: number
+  goalAmount: number | null
   achievedAmount: number
+  achievementRate: number
+  isLoading?: boolean
+  isError?: boolean
 }
-export default function CurrentGoalCard({ goalAmount, achievedAmount }: CurrentGoalCardProps) {
-  const progress =
-    goalAmount === 0 ? 0 : Math.min(100, Math.max(0, (achievedAmount / goalAmount) * 100))
+
+export default function CurrentGoalCard({
+  goalAmount,
+  achievedAmount,
+  achievementRate,
+  isLoading = false,
+  isError = false,
+}: CurrentGoalCardProps) {
+  if (isLoading || isError || goalAmount === null) {
+    const message = isLoading
+      ? '목표 현황을 불러오는 중입니다.'
+      : isError
+        ? '목표 현황을 불러오지 못했습니다.'
+        : '설정된 목표 금액이 없습니다.'
+
+    return (
+      <section className={styles.card}>
+        <span className={styles.title}>현재 목표 금액</span>
+        <p className={styles.status}>{message}</p>
+      </section>
+    )
+  }
+
+  const progress = Math.min(100, Math.max(0, achievementRate))
 
   return (
     <section className={styles.card}>
@@ -18,7 +42,7 @@ export default function CurrentGoalCard({ goalAmount, achievedAmount }: CurrentG
 
       <div className={styles.rateRow}>
         <span className={styles.rateLabel}>목표 달성률</span>
-        <span className={styles.rateValue}>{Math.round(progress)}%</span>
+        <span className={styles.rateValue}>{progress}%</span>
       </div>
 
       <div className={styles.progressBar}>

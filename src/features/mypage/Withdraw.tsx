@@ -3,7 +3,7 @@ import HeaderBackButton from '@/shared/components/HeaderBackButton'
 import { useNavigate } from 'react-router-dom'
 
 import WithdrawForm from './components/WithdrawForm'
-import styles from './Withdraw.module.css'
+import styles from './AccountPage.module.css'
 
 export default function Withdraw() {
   const navigate = useNavigate()

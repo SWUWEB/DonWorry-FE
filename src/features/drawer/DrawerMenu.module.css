@@ -61,6 +61,13 @@
   display: block;
 }
 
+.avatarPhoto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .userInfo {
   min-width: 0;
   flex: 1;
