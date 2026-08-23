@@ -6,21 +6,14 @@ import styles from './CategoryChart.module.css'
 interface CategoryChartProps {
   categories: CategoryData[]
   hasRecords: boolean
-  topCategoryLabel: string
+  summaryText: string
 }
 
 const MAX_BAR_HEIGHT = 62
 
-export default function CategoryChart({
-  categories,
-  hasRecords,
-  topCategoryLabel,
-}: CategoryChartProps) {
+export default function CategoryChart({ categories, hasRecords, summaryText }: CategoryChartProps) {
   const navigate = useNavigate()
   const maxAmount = Math.max(...categories.map((c) => c.amount), 1)
-  const totalAmount = categories.reduce((sum, c) => sum + c.amount, 0)
-  const topPercent =
-    totalAmount > 0 ? Math.round(((categories[0]?.amount ?? 0) / totalAmount) * 100) : 0
 
   return (
     <section className={styles.card}>
@@ -36,12 +29,12 @@ export default function CategoryChart({
           <div className={styles.chartArea}>
             {categories.map((cat) => (
               <div
-                key={cat.label}
+                key={cat.categoryCode}
                 className={styles.barWrapper}
                 onClick={() =>
                   cat.isOther
                     ? navigate('/record?filter=other')
-                    : navigate(`/record?category=${encodeURIComponent(cat.label)}`)
+                    : navigate(`/record?category=${encodeURIComponent(cat.categoryCode)}`)
                 }
                 role="button"
                 tabIndex={0}
@@ -59,10 +52,7 @@ export default function CategoryChart({
               </div>
             ))}
           </div>
-          <p className={styles.message}>
-            이번 달에는 <strong className={styles.messageBold}>{topCategoryLabel}</strong> 소비가
-            전체 지출의 {topPercent}%를 차지했어요.
-          </p>
+          <p className={styles.message}>{summaryText}</p>
         </>
       ) : (
         <div className={styles.emptyState}>
