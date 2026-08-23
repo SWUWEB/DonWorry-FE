@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import styles from './OnboardingInterestPage.module.css'
 import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
+import { useOnboarding } from '@/features/onboarding/hooks/useOnboarding'
 
 const CATEGORIES = [
   { id: 'food', emoji: '🍔', label: '음식' },
@@ -28,6 +29,11 @@ export default function OnboardingInterestPage() {
   )
   const [showMaxMsg, setShowMaxMsg] = useState(false)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { data: onboarding, isLoading: isOnboardingLoading } = useOnboarding()
+
+  const alreadyOnboarded = Boolean(
+    onboarding?.interestTags?.length && onboarding.savingGoalText && onboarding.targetSavingAmount,
+  )
 
   const triggerToast = () => {
     setShowMaxMsg(true)
@@ -62,6 +68,9 @@ export default function OnboardingInterestPage() {
     })
     navigate('/onboarding/step2')
   }
+
+  if (isOnboardingLoading) return <div className={styles.page} />
+  if (alreadyOnboarded) return <Navigate to="/" replace />
 
   return (
     <div className={styles.page}>
