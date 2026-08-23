@@ -9,8 +9,8 @@ export interface Product {
   time: Date
   timeOption: (typeof TIME_OPTIONS)[number]
   category: Category
-  link?: string
-  reason?: string
+  link?: string | null
+  reason?: string | null
   createdAt: Date
 }
 

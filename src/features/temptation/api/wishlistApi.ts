@@ -8,13 +8,15 @@ interface WishlistItemResponse {
   userId: string
   categoryCode: string
   productName: string
-  productUrl: string
-  price: string
-  productImageUrl: string
-  reason: string
+  productUrl: string | null
+  price: string | null
+  productImageUrl: string | null
+  reason: string | null
   waitType: string
-  waitUntil: string
+  waitUntil: string | null
   status: string
+  createdAt: string
+  updatedAt: string
 }
 
 interface WishlistItemsApiResponse {
@@ -54,29 +56,29 @@ const CATEGORY_TO_CODE_MAP: Record<(typeof CATEGORIES)[number], string> = {
 // TODO: 아래 날짜 형식이 맞는지 확인 필요 (1H, ONE_DAY만 확인됨)
 const WAIT_TYPE_MAP: Record<string, (typeof TIME_OPTIONS)[number]> = {
   '1H': '1시간',
-  ONE_DAY: '1일',
-  THREE_DAYS: '3일',
-  ONE_WEEK: '7일',
+  '1D': '1일',
+  '3D': '3일',
+  '1W': '7일',
 }
 
 const TIME_TO_WAIT_TYPE_MAP: Record<(typeof TIME_OPTIONS)[number], string> = {
   '1시간': '1H',
-  '1일': 'ONE_DAY',
-  '3일': 'THREE_DAYS',
-  '7일': 'ONE_WEEK',
+  '1일': '1D',
+  '3일': '3D',
+  '7일': '1W',
 }
 
 const mapToProduct = (item: WishlistItemResponse): Product => {
   return {
     id: item.id,
     name: item.productName,
-    price: Number(item.price),
-    time: new Date(item.waitUntil),
+    price: item.price ? Number(item.price) : 0,
+    time: item.waitUntil ? new Date(item.waitUntil) : new Date(),
     timeOption: WAIT_TYPE_MAP[item.waitType] ?? '1일',
     category: CATEGORY_CODE_MAP[item.categoryCode] ?? '기타',
     link: item.productUrl,
     reason: item.reason,
-    createdAt: new Date(item.waitUntil),
+    createdAt: new Date(item.createdAt),
   }
 }
 
