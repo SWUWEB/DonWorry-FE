@@ -41,7 +41,7 @@ describe('wishlistApi', () => {
         category: '전자기기',
         link: 'https://apple.com/kr/macbook',
         reason: '개발 작업용 스펙 업그레이드',
-        createdAt: new Date('2026-07-23T18:00:00.000Z'),
+        createdAt: new Date('2026-07-16T18:00:00.000Z'),
       },
     ])
   })
