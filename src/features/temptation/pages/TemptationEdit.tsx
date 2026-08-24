@@ -91,12 +91,12 @@ export default function TemptationEdit() {
         <ProductForm
           formId="edit-wishlist-form"
           initialData={{
-            link: product.link,
+            link: product.link ?? '',
             price: product.price,
             name: product.name,
             category: product.category,
             time: product.timeOption,
-            reason: product.reason,
+            reason: product.reason ?? '',
           }}
           onSubmit={handleSave}
           onDirtyChange={setIsDirty}

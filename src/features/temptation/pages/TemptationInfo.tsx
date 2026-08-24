@@ -88,7 +88,11 @@ export default function TemptationInfo() {
       />
       <div className={styles.wrapper}>
         <RemainingTime deadline={product.time} createdAt={product.createdAt} />
-        <InfoBox price={product.price} reason={product.reason} link={product.link} />
+        <InfoBox
+          price={product.price}
+          reason={product.reason ?? undefined}
+          link={product.link ?? undefined}
+        />
         <ActionButton onEdit={handleEdit} onGiveUp={handleGiveUpOpen} />
       </div>
 
