@@ -53,7 +53,6 @@ const CATEGORY_TO_CODE_MAP: Record<(typeof CATEGORIES)[number], string> = {
   기타: 'ETC',
 }
 
-// TODO: 아래 날짜 형식이 맞는지 확인 필요 (1H, ONE_DAY만 확인됨)
 const WAIT_TYPE_MAP: Record<string, (typeof TIME_OPTIONS)[number]> = {
   '1H': '1시간',
   '1D': '1일',
@@ -68,23 +67,29 @@ const TIME_TO_WAIT_TYPE_MAP: Record<(typeof TIME_OPTIONS)[number], string> = {
   '7일': '1W',
 }
 
+const DEFAULT_WAIT_HOURS = 24
+
 const mapToProduct = (item: WishlistItemResponse): Product => {
+  const createdAt = new Date(item.createdAt)
+
   return {
     id: item.id,
     name: item.productName,
     price: item.price ? Number(item.price) : 0,
-    time: item.waitUntil ? new Date(item.waitUntil) : new Date(),
+    time: item.waitUntil
+      ? new Date(item.waitUntil)
+      : new Date(createdAt.getTime() + DEFAULT_WAIT_HOURS * 60 * 60 * 1000),
     timeOption: WAIT_TYPE_MAP[item.waitType] ?? '1일',
     category: CATEGORY_CODE_MAP[item.categoryCode] ?? '기타',
-    link: item.productUrl,
-    reason: item.reason,
-    createdAt: new Date(item.createdAt),
+    link: item.productUrl ?? null,
+    reason: item.reason ?? null,
+    createdAt,
   }
 }
 
 export const fetchWishlistItems = async (): Promise<Product[]> => {
   const { data } = await client.get<WishlistItemsApiResponse>('/api/v1/wishlist-items')
-  return data.data.map(mapToProduct)
+  return data.data.map(mapToProduct).filter((p): p is Product => p !== null)
 }
 
 export const addWishlistItem = async (formData: WishFormData): Promise<Product> => {
@@ -96,5 +101,9 @@ export const addWishlistItem = async (formData: WishFormData): Promise<Product> 
     reason: formData.reason,
     waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
   })
-  return mapToProduct(data.data)
+  const product = mapToProduct(data.data)
+  if (!product) {
+    throw new Error('Failed to map the response to Product')
+  }
+  return product
 }
