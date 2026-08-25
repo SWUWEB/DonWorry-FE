@@ -51,10 +51,10 @@ export default function TemptationJudge() {
   }
 
   const handleExtendConfirm = () => {
-    if (!product) return
+    if (!product || isExtending) return
     handleExtend(product.id, selectedExtend)
-    // setIsExtendConfirmOpen(false)
-    // navigate(`/temptation/${product.id}`)
+    setIsExtendConfirmOpen(false)
+    navigate(`/temptation/${id}`, { replace: true })
   }
 
   const handleExtendFailConfirm = () => {
@@ -190,6 +190,7 @@ export default function TemptationJudge() {
 
       <ConfirmDialog
         isOpen={isExtendConfirmOpen}
+        isLoading={isExtending}
         title={`고민 시간을 ${selectedExtend} 연장할까요?`}
         cancelText="취소"
         confirmText="연장하기"
