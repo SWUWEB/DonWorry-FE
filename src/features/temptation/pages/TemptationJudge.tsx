@@ -12,7 +12,14 @@ import styles from './TemptationJudge.module.css'
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { filteredProducts, handleDelete, handleExtend } = useWishlistContext()
+  const {
+    filteredProducts,
+    handleDelete,
+    handleExtend,
+    isExtending,
+    isExtendError,
+    resetExtendStatus,
+  } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
@@ -39,14 +46,19 @@ export default function TemptationJudge() {
   }
 
   const handleExtendCancel = () => {
+    if (isExtending) return
     setIsExtendConfirmOpen(false)
   }
 
   const handleExtendConfirm = () => {
     if (!product) return
     handleExtend(product.id, selectedExtend)
-    setIsExtendConfirmOpen(false)
-    navigate(`/temptation/${product.id}`)
+    // setIsExtendConfirmOpen(false)
+    // navigate(`/temptation/${product.id}`)
+  }
+
+  const handleExtendFailConfirm = () => {
+    resetExtendStatus()
   }
 
   const handleNotBuy = () => {
@@ -183,6 +195,16 @@ export default function TemptationJudge() {
         confirmText="연장하기"
         onCancel={handleExtendCancel}
         onConfirm={handleExtendConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isExtendError}
+        title="연장에 실패했습니다."
+        description="다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleExtendFailConfirm}
+        onConfirm={handleExtendFailConfirm}
       />
     </>
   )

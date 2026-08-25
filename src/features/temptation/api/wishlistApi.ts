@@ -92,8 +92,33 @@ export const fetchWishlistItems = async (): Promise<Product[]> => {
   return data.data.map(mapToProduct).filter((p): p is Product => p !== null)
 }
 
+export const fetchWishlistItem = async (id: string): Promise<Product> => {
+  const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
+  const product = mapToProduct(data.data)
+  if (!product) {
+    throw new Error('Failed to map the response to Product')
+  }
+  return product
+}
+
 export const addWishlistItem = async (formData: WishFormData): Promise<Product> => {
   const { data } = await client.post<WishlistItemApiResponse>('/api/v1/wishlist-items', {
+    categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
+    productName: formData.name,
+    productUrl: formData.link,
+    price: formData.price,
+    reason: formData.reason,
+    waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
+  })
+  const product = mapToProduct(data.data)
+  if (!product) {
+    throw new Error('Failed to map the response to Product')
+  }
+  return product
+}
+
+export const updateWishlistItem = async (id: string, formData: WishFormData): Promise<Product> => {
+  const { data } = await client.patch<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`, {
     categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
     productName: formData.name,
     productUrl: formData.link,
