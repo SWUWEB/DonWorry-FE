@@ -225,3 +225,46 @@ export const confirmKakaoLinkEmail = async (
 
   return data
 }
+
+// 비밀번호 재설정 요청
+export interface PasswordResetRequest {
+  email: string
+}
+
+export interface PasswordResetResponse {
+  success: boolean
+  message: string
+}
+
+export const requestPasswordReset = async (
+  body: PasswordResetRequest,
+): Promise<PasswordResetResponse> => {
+  const { data } = await client.post<PasswordResetResponse>(
+    '/api/v1/auth/password-reset/request',
+    body,
+  )
+
+  return data
+}
+
+//비밀번호 재설정 완료
+export interface PasswordResetConfirmRequest {
+  token: string
+  newPassword: string
+}
+
+export interface PasswordResetConfirmResponse {
+  success: boolean
+  message: string
+}
+
+export const confirmPasswordReset = async (
+  body: PasswordResetConfirmRequest,
+): Promise<PasswordResetConfirmResponse> => {
+  const { data } = await client.patch<PasswordResetConfirmResponse>(
+    '/api/v1/auth/password-reset/confirm',
+    body,
+  )
+
+  return data
+}

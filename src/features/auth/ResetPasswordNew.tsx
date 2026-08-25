@@ -6,12 +6,15 @@ import Button from '@/shared/components/Button'
 import AuthLayout from './components/AuthLayout'
 import AuthPageHeader from './components/AuthPageHeader'
 import { clearResetPasswordDraft, getResetPasswordDraft } from './resetPasswordSession'
+import { usePasswordResetConfirm } from '@/hooks/usePasswordResetConfirm'
+import { AxiosError } from 'axios'
 
 const isValidPassword = (value: string) =>
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(value)
 
 export default function ResetPasswordNew() {
   const navigate = useNavigate()
+  const { mutate: confirmPasswordReset } = usePasswordResetConfirm()
   const draft = getResetPasswordDraft()
 
   const [password, setPassword] = useState('')
@@ -37,9 +40,22 @@ export default function ResetPasswordNew() {
     }
 
     // TODO: API 연동 시 실제 비밀번호 변경 요청으로 교체
-    setError('')
-    clearResetPasswordDraft()
-    navigate('/login')
+    confirmPasswordReset(
+      {
+        token: '', // TODO: 인증 API에서 받은 token으로 교체
+        newPassword: password,
+      },
+      {
+        onSuccess: () => {
+          clearResetPasswordDraft()
+          navigate('/login')
+        },
+
+        onError: (error: AxiosError<{ message: string }>) => {
+          setError(error.response?.data.message ?? '비밀번호 변경에 실패했습니다.')
+        },
+      },
+    )
   }
 
   return (

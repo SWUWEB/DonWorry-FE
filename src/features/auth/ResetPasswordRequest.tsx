@@ -6,11 +6,14 @@ import Button from '@/shared/components/Button'
 import AuthLayout from './components/AuthLayout'
 import AuthPageHeader from './components/AuthPageHeader'
 import { saveResetPasswordDraft } from './resetPasswordSession'
+import { usePasswordResetRequest } from '@/hooks/usePasswordResetRequest'
+import { AxiosError } from 'axios'
 
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 
 export default function ResetPasswordRequest() {
   const navigate = useNavigate()
+  const { mutate: requestPasswordReset } = usePasswordResetRequest()
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
@@ -23,8 +26,35 @@ export default function ResetPasswordRequest() {
     }
 
     // TODO: API 연동 시 실제 일회용 코드 발송 요청으로 교체
-    saveResetPasswordDraft({ email, codeVerified: false })
-    navigate('/reset-password/verify')
+    requestPasswordReset(
+      { email },
+      {
+        onSuccess: () => {
+          saveResetPasswordDraft({
+            email,
+            codeVerified: false,
+          })
+
+          navigate('/reset-password/verify')
+        },
+
+        onError: (error: AxiosError) => {
+          console.error(error)
+
+          const status = error.response?.status
+
+          if (status === 400) {
+            setError('올바른 이메일 형식이 아닙니다.')
+          } else if (status === 404) {
+            setError('가입되지 않은 이메일입니다.')
+          } else if (status === 501) {
+            setError('비밀번호 재설정 기능이 아직 지원되지 않습니다.')
+          } else {
+            setError('비밀번호 재설정 요청에 실패했습니다.')
+          }
+        },
+      },
+    )
   }
 
   return (
