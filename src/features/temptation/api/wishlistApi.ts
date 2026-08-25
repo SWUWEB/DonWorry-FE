@@ -1,8 +1,8 @@
-import axios from 'axios'
 import client from '@/api/client'
 import type { Product } from '../types'
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
+import { getWishlistErrorKind } from '../utils/wishlistErrors'
 
 interface WishlistItemResponse {
   id: string
@@ -88,34 +88,28 @@ const mapToProduct = (item: WishlistItemResponse): Product => {
   }
 }
 
-export const fetchWishlistItems = async (): Promise<Product[]> => {
-  const { data } = await client.get<WishlistItemsApiResponse>('/api/v1/wishlist-items')
-  return data.data.map(mapToProduct).filter((p): p is Product => p !== null)
-}
-
-export const fetchWishlistItem = async (id: string): Promise<Product> => {
+const wishlistErrorHandling = async <T>(request: () => Promise<T>): Promise<T> => {
   try {
-    const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
-    const product = mapToProduct(data.data)
-    if (!product) {
-      throw new Error('Failed to map the response to Product')
-    }
-    return product
+    return await request()
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorCode = error.response.data?.code
-      if (errorCode === 'WISH4001') {
-        throw new Error('EMPTY', { cause: error })
-      }
-      if (errorCode === 'WISH4031') {
-        throw new Error('FORBIDDEN', { cause: error })
-      }
-      if (errorCode === 'WISH4041') {
-        throw new Error('NOT_FOUND', { cause: error })
-      }
+    const kind = getWishlistErrorKind(error)
+    if (kind) {
+      throw new Error(kind, { cause: error })
     }
     throw error
   }
+}
+
+export const fetchWishlistItems = async (): Promise<Product[]> => {
+  const { data } = await client.get<WishlistItemsApiResponse>('/api/v1/wishlist-items')
+  return data.data.map(mapToProduct)
+}
+
+export const fetchWishlistItem = async (id: string): Promise<Product> => {
+  return wishlistErrorHandling(async () => {
+    const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
+    return mapToProduct(data.data)
+  })
 }
 
 export const addWishlistItem = async (formData: WishFormData): Promise<Product> => {
@@ -127,25 +121,19 @@ export const addWishlistItem = async (formData: WishFormData): Promise<Product> 
     reason: formData.reason,
     waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
   })
-  const product = mapToProduct(data.data)
-  if (!product) {
-    throw new Error('Failed to map the response to Product')
-  }
-  return product
+  return mapToProduct(data.data)
 }
 
 export const updateWishlistItem = async (id: string, formData: WishFormData): Promise<Product> => {
-  const { data } = await client.patch<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`, {
-    categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
-    productName: formData.name,
-    productUrl: formData.link,
-    price: formData.price,
-    reason: formData.reason,
-    waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
+  return wishlistErrorHandling(async () => {
+    const { data } = await client.patch<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`, {
+      categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
+      productName: formData.name,
+      productUrl: formData.link,
+      price: formData.price,
+      reason: formData.reason,
+      waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
+    })
+    return mapToProduct(data.data)
   })
-  const product = mapToProduct(data.data)
-  if (!product) {
-    throw new Error('Failed to map the response to Product')
-  }
-  return product
 }

@@ -5,6 +5,7 @@ import type { Category, FilterValue, SortValue } from '../types'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { fetchWishlistItems, addWishlistItem, updateWishlistItem } from '../api/wishlistApi'
 import { isUnauthorizedError } from '../utils/isUnauthorizedError'
+import { getMutationErrorKind } from '../utils/wishlistErrors'
 
 export const useWishlist = () => {
   const queryClient = useQueryClient()
@@ -111,6 +112,8 @@ export const useWishlist = () => {
     isUnauthorizedError(editMutation.error) ||
     isUnauthorizedError(extendMutation.error)
 
+  const editErrorKind = getMutationErrorKind(editMutation.error) // 'EMPTY' | 'FORBIDDEN' | 'NOT_FOUND' | null
+
   return {
     keyword,
     setKeyword,
@@ -126,6 +129,7 @@ export const useWishlist = () => {
     isEditing: editMutation.isPending,
     isEditSuccess: editMutation.isSuccess,
     isEditError: editMutation.isError,
+    editErrorKind,
     resetEditStatus: editMutation.reset,
     isExtending: extendMutation.isPending,
     isExtendSuccess: extendMutation.isSuccess,
