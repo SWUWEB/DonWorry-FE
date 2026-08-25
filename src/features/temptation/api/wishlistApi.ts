@@ -1,3 +1,4 @@
+import axios from 'axios'
 import client from '@/api/client'
 import type { Product } from '../types'
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
@@ -93,12 +94,28 @@ export const fetchWishlistItems = async (): Promise<Product[]> => {
 }
 
 export const fetchWishlistItem = async (id: string): Promise<Product> => {
-  const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
-  const product = mapToProduct(data.data)
-  if (!product) {
-    throw new Error('Failed to map the response to Product')
+  try {
+    const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
+    const product = mapToProduct(data.data)
+    if (!product) {
+      throw new Error('Failed to map the response to Product')
+    }
+    return product
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const errorCode = error.response.data?.code
+      if (errorCode === 'WISH4001') {
+        throw new Error('EMPTY', { cause: error })
+      }
+      if (errorCode === 'WISH4031') {
+        throw new Error('FORBIDDEN', { cause: error })
+      }
+      if (errorCode === 'WISH4041') {
+        throw new Error('NOT_FOUND', { cause: error })
+      }
+    }
+    throw error
   }
-  return product
 }
 
 export const addWishlistItem = async (formData: WishFormData): Promise<Product> => {
