@@ -17,6 +17,7 @@ export default function TemptationJudge() {
     handleDelete,
     handleExtend,
     isExtending,
+    isExtendSuccess,
     isExtendError,
     resetExtendStatus,
   } = useWishlistContext()
@@ -25,6 +26,8 @@ export default function TemptationJudge() {
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
+
+  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
 
   // 아직 고민 시간이 남은 상품은 재판단 대상이 아니므로 상세로 돌려보냅니다.
   // (상세 화면은 반대로 시간이 끝나면 이 화면으로 보냅니다 — 조건이 서로 배타적이라 왕복하지 않습니다.)
@@ -53,9 +56,15 @@ export default function TemptationJudge() {
   const handleExtendConfirm = () => {
     if (!product || isExtending) return
     handleExtend(product.id, selectedExtend)
-    setIsExtendConfirmOpen(false)
-    navigate(`/temptation/${id}`, { replace: true })
   }
+
+  // 연장 성공 시: 확인 다이얼로그를 닫고 상세 화면으로 이동.
+  useEffect(() => {
+    if (isExtendSuccess && id) {
+      resetExtendStatus()
+      navigate(`/temptation/${id}`, { replace: true })
+    }
+  }, [isExtendSuccess, id, navigate, resetExtendStatus])
 
   const handleExtendFailConfirm = () => {
     resetExtendStatus()
@@ -189,7 +198,7 @@ export default function TemptationJudge() {
       </div>
 
       <ConfirmDialog
-        isOpen={isExtendConfirmOpen}
+        isOpen={isExtendDialogOpen}
         isLoading={isExtending}
         title={`고민 시간을 ${selectedExtend} 연장할까요?`}
         cancelText="취소"
