@@ -14,12 +14,21 @@ import { useWishlistDetail } from '../hooks/useWishlistDetail'
 export default function TemptationInfo() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { filteredProducts, handleDelete } = useWishlistContext()
+  const {
+    filteredProducts,
+    handleDelete,
+    isDeleting,
+    isDeleteSuccess,
+    isDeleteError,
+    deleteErrorKind,
+    resetDeleteStatus,
+  } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess
+
   const [errorMessage, setErrorMessage] = useState('')
 
   const { isUnauthorized, errorKind } = useWishlistDetail(id)
@@ -56,26 +65,18 @@ export default function TemptationInfo() {
   }
 
   const handleGiveUpCancel = () => {
-    if (isSubmitting) return
+    if (isDeleting) return
     setIsGiveUpOpen(false)
     setErrorMessage('')
   }
 
   const handleGiveUpConfirm = async () => {
     if (!product) return
-    setIsSubmitting(true)
-    setErrorMessage('')
+    handleDelete(product.id)
+  }
 
-    try {
-      // 백엔드 연동 시 실제 삭제 요청으로 교체 필요
-      await new Promise((resolve) => setTimeout(resolve, 400))
-      handleDelete(product.id)
-      navigate('/temptation')
-    } catch {
-      setErrorMessage('처리하지 못했습니다. 다시 시도해 주세요.')
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleDeleteFailConfirm = () => {
+    resetDeleteStatus()
   }
 
   const handleErrorConfirm = () => {
@@ -148,15 +149,48 @@ export default function TemptationInfo() {
       )}
 
       <ConfirmDialog
-        isOpen={isGiveUpOpen}
+        isOpen={isGiveUpDialogOpen}
         title="이 상품을 포기하시겠습니까?"
         description="포기한 금액은 참은 소비 기록에 반영됩니다."
         cancelText="취소"
         confirmText="포기하기"
-        isLoading={isSubmitting}
+        isLoading={isDeleting}
         errorMessage={errorMessage}
         onCancel={handleGiveUpCancel}
         onConfirm={handleGiveUpConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteError && deleteErrorKind === null}
+        title="처리하지 못했습니다."
+        description="잠시 후 다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteFailConfirm}
+        onConfirm={handleDeleteFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteErrorKind === 'NOT_FOUND'}
+        title="상품을 찾을 수 없습니다."
+        description="이미 삭제되었거나 존재하지 않는 상품입니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteFailConfirm}
+        onConfirm={() => {
+          resetDeleteStatus()
+          navigate('/temptation')
+        }}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteErrorKind === 'FORBIDDEN'}
+        title="접근 권한이 없습니다."
+        description="본인의 위시리스트 항목만 삭제할 수 있습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteFailConfirm}
+        onConfirm={handleDeleteFailConfirm}
       />
     </>
   )
