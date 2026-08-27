@@ -12,14 +12,34 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { filteredProducts, handleEdit } = useWishlistContext()
+  const {
+    filteredProducts,
+    handleEdit,
+    isEditing,
+    isEditSuccess,
+    isEditError,
+    editErrorKind,
+    resetEditStatus,
+  } = useWishlistContext()
+
+  const errorMessageMap: Record<string, { title: string; description: string }> = {
+    EMPTY: { title: '수정할 내용이 없습니다.', description: '변경된 항목이 있는지 확인해주세요.' },
+    FORBIDDEN: {
+      title: '접근 권한이 없습니다.',
+      description: '본인의 위시리스트 항목만 수정할 수 있습니다.',
+    },
+    NOT_FOUND: {
+      title: '상품을 찾을 수 없습니다.',
+      description: '삭제되었거나 존재하지 않는 상품입니다.',
+    },
+  }
+
+  const editErrorContent = editErrorKind
+    ? errorMessageMap[editErrorKind]
+    : { title: '수정사항을 저장하지 못했습니다.', description: '다시 시도해주세요.' }
 
   const product = filteredProducts.find((p) => p.id === id)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
-
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [isFailOpen, setIsFailOpen] = useState(false)
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -51,29 +71,19 @@ export default function TemptationEdit() {
     blocker.proceed?.()
   }
 
-  const handleSave = async (data: WishFormData, meta: { timeChanged: boolean }) => {
-    if (!product || isSubmitting) return
-    setIsSubmitting(true)
-    try {
-      // 백엔드 연동 시 실제 수정 요청으로 교체
-      await new Promise((resolve) => setTimeout(resolve, 400))
-      handleEdit(product.id, data, meta.timeChanged)
-      setIsSubmitting(false)
-      setIsDirty(false) // 저장 성공 후에는 dirty 해제 (상세 페이지 이동 시 재차단 방지)
-      setIsSuccessOpen(true)
-    } catch {
-      setIsSubmitting(false)
-      setIsFailOpen(true)
-    }
+  const handleSave = (data: WishFormData) => {
+    if (!product || isEditing) return
+    handleEdit(product.id, data)
   }
 
   const handleSuccessConfirm = () => {
-    setIsSuccessOpen(false)
+    setIsDirty(false)
+    resetEditStatus()
     navigate(`/temptation/${id}`)
   }
 
   const handleFailConfirm = () => {
-    setIsFailOpen(false)
+    resetEditStatus()
   }
 
   if (!product) {
@@ -108,9 +118,9 @@ export default function TemptationEdit() {
           type="submit"
           form="edit-wishlist-form"
           className={styles.saveBtn}
-          disabled={isSubmitting}
+          disabled={isEditing}
         >
-          {isSubmitting ? '•  •  •' : '수정사항 저장하기'}
+          {isEditing ? '•  •  •' : '수정사항 저장하기'}
         </button>
       </div>
 
@@ -125,7 +135,7 @@ export default function TemptationEdit() {
       />
 
       <ConfirmDialog
-        isOpen={isSuccessOpen}
+        isOpen={isEditSuccess}
         title="수정사항이 저장되었습니다."
         onlyConfirm
         variant="success"
@@ -135,9 +145,9 @@ export default function TemptationEdit() {
       />
 
       <ConfirmDialog
-        isOpen={isFailOpen}
-        title="수정사항을 저장하지 못했습니다."
-        description="다시 시도해주세요."
+        isOpen={isEditError}
+        title={editErrorContent.title}
+        description={editErrorContent.description}
         onlyConfirm
         confirmText="확인"
         onCancel={handleFailConfirm}

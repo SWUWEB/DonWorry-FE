@@ -12,12 +12,22 @@ import styles from './TemptationJudge.module.css'
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { filteredProducts, handleDelete, handleExtend } = useWishlistContext()
+  const {
+    filteredProducts,
+    handleDelete,
+    handleExtend,
+    isExtending,
+    isExtendSuccess,
+    isExtendError,
+    resetExtendStatus,
+  } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
+
+  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
 
   // 아직 고민 시간이 남은 상품은 재판단 대상이 아니므로 상세로 돌려보냅니다.
   // (상세 화면은 반대로 시간이 끝나면 이 화면으로 보냅니다 — 조건이 서로 배타적이라 왕복하지 않습니다.)
@@ -39,14 +49,25 @@ export default function TemptationJudge() {
   }
 
   const handleExtendCancel = () => {
+    if (isExtending) return
     setIsExtendConfirmOpen(false)
   }
 
   const handleExtendConfirm = () => {
-    if (!product) return
+    if (!product || isExtending) return
     handleExtend(product.id, selectedExtend)
-    setIsExtendConfirmOpen(false)
-    navigate(`/temptation/${product.id}`)
+  }
+
+  // 연장 성공 시: 확인 다이얼로그를 닫고 상세 화면으로 이동.
+  useEffect(() => {
+    if (isExtendSuccess && id) {
+      resetExtendStatus()
+      navigate(`/temptation/${id}`, { replace: true })
+    }
+  }, [isExtendSuccess, id, navigate, resetExtendStatus])
+
+  const handleExtendFailConfirm = () => {
+    resetExtendStatus()
   }
 
   const handleNotBuy = () => {
@@ -177,12 +198,23 @@ export default function TemptationJudge() {
       </div>
 
       <ConfirmDialog
-        isOpen={isExtendConfirmOpen}
+        isOpen={isExtendDialogOpen}
+        isLoading={isExtending}
         title={`고민 시간을 ${selectedExtend} 연장할까요?`}
         cancelText="취소"
         confirmText="연장하기"
         onCancel={handleExtendCancel}
         onConfirm={handleExtendConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isExtendError}
+        title="연장에 실패했습니다."
+        description="다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleExtendFailConfirm}
+        onConfirm={handleExtendFailConfirm}
       />
     </>
   )

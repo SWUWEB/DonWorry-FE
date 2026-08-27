@@ -2,6 +2,7 @@ import client from '@/api/client'
 import type { Product } from '../types'
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
+import { getWishlistErrorKind } from '../utils/wishlistErrors'
 
 interface WishlistItemResponse {
   id: string
@@ -87,9 +88,28 @@ const mapToProduct = (item: WishlistItemResponse): Product => {
   }
 }
 
+const wishlistErrorHandling = async <T>(request: () => Promise<T>): Promise<T> => {
+  try {
+    return await request()
+  } catch (error) {
+    const kind = getWishlistErrorKind(error)
+    if (kind) {
+      throw new Error(kind, { cause: error })
+    }
+    throw error
+  }
+}
+
 export const fetchWishlistItems = async (): Promise<Product[]> => {
   const { data } = await client.get<WishlistItemsApiResponse>('/api/v1/wishlist-items')
-  return data.data.map(mapToProduct).filter((p): p is Product => p !== null)
+  return data.data.map(mapToProduct)
+}
+
+export const fetchWishlistItem = async (id: string): Promise<Product> => {
+  return wishlistErrorHandling(async () => {
+    const { data } = await client.get<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`)
+    return mapToProduct(data.data)
+  })
 }
 
 export const addWishlistItem = async (formData: WishFormData): Promise<Product> => {
@@ -101,9 +121,19 @@ export const addWishlistItem = async (formData: WishFormData): Promise<Product> 
     reason: formData.reason,
     waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
   })
-  const product = mapToProduct(data.data)
-  if (!product) {
-    throw new Error('Failed to map the response to Product')
-  }
-  return product
+  return mapToProduct(data.data)
+}
+
+export const updateWishlistItem = async (id: string, formData: WishFormData): Promise<Product> => {
+  return wishlistErrorHandling(async () => {
+    const { data } = await client.patch<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`, {
+      categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
+      productName: formData.name,
+      productUrl: formData.link,
+      price: formData.price,
+      reason: formData.reason,
+      waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
+    })
+    return mapToProduct(data.data)
+  })
 }
