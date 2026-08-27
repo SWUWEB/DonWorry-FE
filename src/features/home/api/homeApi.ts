@@ -33,7 +33,7 @@ interface HomeSummaryData {
   }
 }
 
-function mapHomeSummary(data: HomeSummaryData): HomeData {
+function mapHomeSummary(data: HomeSummaryData): Omit<HomeData, 'cheerMessage' | 'dailyQuestion'> {
   const categories: CategoryData[] = [
     ...data.consumptionChart.categories.map((c, i) => ({
       categoryCode: c.categoryCode,
@@ -73,9 +73,28 @@ function mapHomeSummary(data: HomeSummaryData): HomeData {
   }
 }
 
+interface CheerMessageData {
+  achievementRate: number
+  message: string
+  messageLevel: string
+}
+
+interface DailyQuestionData {
+  questionText: string
+  date: string
+}
+
 export const homeApi = {
   getHomeData: async (): Promise<HomeData> => {
-    const { data } = await client.get<{ data: HomeSummaryData }>('/api/v1/home/summary')
-    return mapHomeSummary(data.data)
+    const [{ data: summary }, { data: cheer }, { data: question }] = await Promise.all([
+      client.get<{ data: HomeSummaryData }>('/api/v1/home/summary'),
+      client.get<{ data: CheerMessageData }>('/api/v1/home/cheer-message'),
+      client.get<{ data: DailyQuestionData }>('/api/v1/home/daily-question'),
+    ])
+    return {
+      ...mapHomeSummary(summary.data),
+      cheerMessage: cheer.data.message,
+      dailyQuestion: question.data.questionText,
+    }
   },
 }

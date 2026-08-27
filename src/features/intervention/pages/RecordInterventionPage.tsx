@@ -86,7 +86,10 @@ export default function RecordInterventionPage() {
 
     riskScoreMutation.mutate(nextAnswers, {
       onSuccess: (risk) => {
-        navigate('/record/intervention/result', { replace: true, state: { draft, risk } })
+        navigate('/record/intervention/result', {
+          replace: true,
+          state: { draft, risk, answers: nextAnswers },
+        })
       },
     })
   }

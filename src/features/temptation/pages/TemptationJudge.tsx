@@ -7,6 +7,7 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
+import type { Product } from '../types'
 import styles from './TemptationJudge.module.css'
 
 export default function TemptationJudge() {
@@ -14,18 +15,28 @@ export default function TemptationJudge() {
   const navigate = useNavigate()
   const {
     filteredProducts,
-    handleDelete,
     handleExtend,
     isExtending,
     isExtendSuccess,
     isExtendError,
     resetExtendStatus,
+    handleJudgeDecision,
+    isDeciding,
+    isDecideSuccess,
+    isDecideError,
+    resetDecideStatus,
   } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
+  // 살래요/안 살래요 중 어떤 결정을 보냈는지, 그 시점의 상품 정보를 기억해뒀다가 성공하면 그에 맞는
+  // 화면으로 이동합니다. 결정이 성공하면 목록 캐시에서 즉시 제거되어 product가 undefined가 되므로,
+  // 이동 시점에 필요한 정보를 product에서 다시 읽지 않고 클릭 시점의 스냅샷을 그대로 씁니다.
+  const [pendingDecision, setPendingDecision] = useState<{
+    type: 'BUY' | 'SKIP'
+    product: Product
+  } | null>(null)
 
   const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
 
@@ -44,7 +55,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendClick = () => {
-    if (!product || isProcessing) return
+    if (!product || isDeciding) return
     setIsExtendConfirmOpen(true)
   }
 
@@ -70,47 +81,63 @@ export default function TemptationJudge() {
     resetExtendStatus()
   }
 
-  const handleNotBuy = () => {
-    if (!product || isProcessing) return
-    setIsProcessing(true)
+  // 구매/포기 결정 성공 시: 결정 종류에 맞는 화면으로 이동.
+  useEffect(() => {
+    if (!isDecideSuccess || !pendingDecision) return
+    resetDecideStatus()
+    const { type, product: decidedProduct } = pendingDecision
 
-    // TODO: 참은 소비 기록 저장 API 연동 필요.
-    // 연동 시에는 저장에 성공한 뒤 handleDelete를 호출하고,
-    // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
-    try {
-      handleDelete(product.id)
+    if (type === 'SKIP') {
       navigate('/temptation/saved', {
         state: {
-          name: product.name,
-          category: product.category,
-          price: product.price,
+          name: decidedProduct.name,
+          category: decidedProduct.category,
+          price: decidedProduct.price,
         },
       })
-    } catch {
-      setIsProcessing(false)
+    } else {
+      // RecordInterventionPage는 { draft: RecordDraft } 형태의 state를 기대합니다.
+      navigate('/record/intervention', {
+        state: {
+          draft: {
+            title: decidedProduct.name,
+            amount: decidedProduct.price,
+            category: decidedProduct.category,
+            reason: decidedProduct.reason ?? '',
+            productUrl: decidedProduct.link ?? undefined,
+          },
+        },
+      })
     }
+  }, [isDecideSuccess, pendingDecision, navigate, resetDecideStatus])
+
+  const handleDecideFailConfirm = () => {
+    resetDecideStatus()
+    setPendingDecision(null)
+  }
+
+  const handleNotBuy = () => {
+    if (!product || isDeciding || isExtending) return
+    setPendingDecision({ type: 'SKIP', product })
+    handleJudgeDecision(product.id, 'SKIP')
   }
 
   const handleBuy = () => {
-    if (!product || isProcessing) return
-    navigate('/record/intervention', {
-      state: {
-        from: 'temptation',
-        productId: product.id,
-        productName: product.name,
-        productPrice: product.price,
-        productCategory: product.category,
-      },
-    })
+    if (!product || isDeciding || isExtending) return
+    setPendingDecision({ type: 'BUY', product })
+    handleJudgeDecision(product.id, 'BUY')
   }
 
   if (!product) {
+    // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
+    if (pendingDecision) return null
     return <p>상품을 찾을 수 없습니다.</p>
   }
 
   const totalHours = Math.round(
     (product.time.getTime() - product.createdAt.getTime()) / (60 * 60 * 1000),
   )
+  const isProcessing = isDeciding || isExtending
 
   return (
     <>
@@ -215,6 +242,16 @@ export default function TemptationJudge() {
         confirmText="확인"
         onCancel={handleExtendFailConfirm}
         onConfirm={handleExtendFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isDecideError}
+        title="결정을 저장하지 못했습니다."
+        description="다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDecideFailConfirm}
+        onConfirm={handleDecideFailConfirm}
       />
     </>
   )

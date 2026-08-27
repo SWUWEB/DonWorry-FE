@@ -3,14 +3,17 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import BackButton from '@/features/intervention/components/BackButton'
 import AnswerButton from '@/features/intervention/components/AnswerButton'
 import CountdownTimer from '@/features/intervention/components/CountdownTimer'
-import type { RiskAnalysis, RiskLevel } from '@/features/intervention/api/interventionApi'
+import type {
+  InterventionAnswer,
+  RiskAnalysis,
+  RiskLevel,
+} from '@/features/intervention/api/interventionApi'
 import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
 import type { RecordType } from '@/features/record/mockRecords'
 import { useCreateConsumptionRecord } from '@/features/record/hooks/useConsumptionRecords'
+import { useMe } from '@/features/mypage/hooks/useUser'
+import { calculateWorkHours } from '@/shared/utils/workHours'
 import styles from '../styles/RiskResultPage.module.css'
-
-// 하드코딩됨. 급여(시급) 정보를 다루는 기능이 아직 없어 실제 근무 시간 계산 API 연결 전까지 유지합니다.
-const WORK_HOURS = 26
 
 const RISK_CONTENT: Record<RiskLevel, { heading: string; timerSeconds: number | null }> = {
   high: { heading: '충동소비 가능성 높음', timerSeconds: 180 },
@@ -24,11 +27,19 @@ const RISK_CONTENT: Record<RiskLevel, { heading: string; timerSeconds: number | 
 export default function RiskResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const state = location.state as { draft?: RecordDraft; risk?: RiskAnalysis } | null
+  const state = location.state as {
+    draft?: RecordDraft
+    risk?: RiskAnalysis
+    answers?: InterventionAnswer[]
+  } | null
   const draft = state?.draft
   const risk = state?.risk
+  const answers = state?.answers
 
   const createRecord = useCreateConsumptionRecord()
+  const { data: me } = useMe()
+  const hourlyWage = me?.hourlyWage ? Number(me.hourlyWage) : null
+  const workHours = draft && hourlyWage ? calculateWorkHours(draft.amount, hourlyWage) : null
 
   useEffect(() => {
     if (!draft || !risk) {
@@ -51,6 +62,8 @@ export default function RiskResultPage() {
         reason: draft.reason,
         riskScore: risk.riskScore,
         productUrl: draft.productUrl,
+        ...(workHours !== null && { workHoursNeeded: workHours }),
+        ...(answers && { interventionAnswers: answers }),
       },
       { onSuccess: () => navigate('/record', { replace: true }) },
     )
@@ -67,10 +80,21 @@ export default function RiskResultPage() {
       </h1>
 
       <p className={styles.description}>
-        {draft.title}을
-        <br />
-        사기 위해서는 <strong className={styles.highlight}>아르바이트 {WORK_HOURS}시간</strong> 동안
-        근무해야 합니다
+        {workHours !== null ? (
+          <>
+            {draft.title}을
+            <br />
+            사기 위해서는 <strong className={styles.highlight}>
+              아르바이트 {workHours}시간
+            </strong>{' '}
+            동안 근무해야 합니다
+          </>
+        ) : (
+          <>
+            시급을 설정하면
+            <br />이 소비에 필요한 근무 시간을 알려드려요
+          </>
+        )}
       </p>
 
       <div className={styles.timerWrapper}>

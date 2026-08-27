@@ -11,16 +11,33 @@ import { useEffect, useState } from 'react'
 import { useWishlistContext } from '../hooks/WishlistContext'
 import { useWishlistDetail } from '../hooks/useWishlistDetail'
 
+const DELETE_ERROR_MESSAGE_MAP: Record<string, { title: string; description: string }> = {
+  FORBIDDEN: {
+    title: '접근 권한이 없습니다.',
+    description: '본인의 위시리스트 항목만 포기할 수 있습니다.',
+  },
+  NOT_FOUND: {
+    title: '상품을 찾을 수 없습니다.',
+    description: '이미 삭제되었거나 존재하지 않는 상품입니다.',
+  },
+}
+
 export default function TemptationInfo() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { filteredProducts, handleDelete } = useWishlistContext()
+  const {
+    filteredProducts,
+    handleDelete,
+    isDeleting,
+    isDeleteSuccess,
+    isDeleteError,
+    deleteErrorKind,
+    resetDeleteStatus,
+  } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
 
   const { isUnauthorized, errorKind } = useWishlistDetail(id)
 
@@ -42,6 +59,13 @@ export default function TemptationInfo() {
     return () => clearTimeout(timer)
   }, [id, deadlineMs, navigate])
 
+  // 포기하기 성공 시 목록 화면으로 이동합니다.
+  useEffect(() => {
+    if (!isDeleteSuccess) return
+    resetDeleteStatus()
+    navigate('/temptation')
+  }, [isDeleteSuccess, navigate, resetDeleteStatus])
+
   const handleBack = () => {
     navigate('/temptation')
   }
@@ -51,31 +75,19 @@ export default function TemptationInfo() {
   }
 
   const handleGiveUpOpen = () => {
-    setErrorMessage('')
+    resetDeleteStatus()
     setIsGiveUpOpen(true)
   }
 
   const handleGiveUpCancel = () => {
-    if (isSubmitting) return
+    if (isDeleting) return
     setIsGiveUpOpen(false)
-    setErrorMessage('')
+    resetDeleteStatus()
   }
 
-  const handleGiveUpConfirm = async () => {
-    if (!product) return
-    setIsSubmitting(true)
-    setErrorMessage('')
-
-    try {
-      // 백엔드 연동 시 실제 삭제 요청으로 교체 필요
-      await new Promise((resolve) => setTimeout(resolve, 400))
-      handleDelete(product.id)
-      navigate('/temptation')
-    } catch {
-      setErrorMessage('처리하지 못했습니다. 다시 시도해 주세요.')
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleGiveUpConfirm = () => {
+    if (!product || isDeleting) return
+    handleDelete(product.id)
   }
 
   const handleErrorConfirm = () => {
@@ -125,8 +137,12 @@ export default function TemptationInfo() {
   }
 
   if (!product) {
+    // 방금 포기하기가 성공해 목록에서 사라진 직후라면 곧 /temptation으로 이동하니 빈 화면만 보여줍니다.
+    if (isDeleteSuccess) return null
     return <p>상품을 찾을 수 없습니다.</p>
   }
+
+  const deleteErrorContent = deleteErrorKind ? DELETE_ERROR_MESSAGE_MAP[deleteErrorKind] : undefined
 
   return (
     <>
@@ -153,8 +169,12 @@ export default function TemptationInfo() {
         description="포기한 금액은 참은 소비 기록에 반영됩니다."
         cancelText="취소"
         confirmText="포기하기"
-        isLoading={isSubmitting}
-        errorMessage={errorMessage}
+        isLoading={isDeleting}
+        errorMessage={
+          isDeleteError
+            ? (deleteErrorContent?.description ?? '처리하지 못했습니다. 다시 시도해 주세요.')
+            : ''
+        }
         onCancel={handleGiveUpCancel}
         onConfirm={handleGiveUpConfirm}
       />

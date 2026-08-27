@@ -30,6 +30,30 @@ interface WishlistItemApiResponse {
   data: WishlistItemResponse
 }
 
+export type TemptationDecisionType = 'BUY' | 'SKIP' | 'DELAY'
+
+interface TemptationDecisionRequest {
+  decisionType: TemptationDecisionType
+  selectedWaitType?: string
+}
+
+interface TemptationDecisionResponse {
+  success: boolean
+  data: {
+    id: string
+    wishlistItemId: string
+    decisionType: TemptationDecisionType
+    selectedWaitType: string | null
+    selectedWaitUntil: string | null
+    decidedAt: string
+  }
+}
+
+export interface TemptationDecisionResult {
+  selectedWaitUntil: string | null
+  selectedWaitType: string | null
+}
+
 const CATEGORY_CODE_MAP: Record<string, (typeof CATEGORIES)[number]> = {
   FASHION: '패션',
   BEAUTY: '뷰티',
@@ -137,3 +161,32 @@ export const updateWishlistItem = async (id: string, formData: WishFormData): Pr
     return mapToProduct(data.data)
   })
 }
+
+export const deleteWishlistItem = async (id: string): Promise<void> => {
+  return wishlistErrorHandling(async () => {
+    await client.delete(`/api/v1/wishlist-items/${id}`)
+  })
+}
+
+export const submitTemptationDecision = async (
+  id: string,
+  decisionType: TemptationDecisionType,
+  selectedWaitType?: string,
+): Promise<TemptationDecisionResult> => {
+  return wishlistErrorHandling(async () => {
+    const body: TemptationDecisionRequest = {
+      decisionType,
+      ...(selectedWaitType && { selectedWaitType }),
+    }
+    const { data } = await client.post<TemptationDecisionResponse>(
+      `/api/v1/temptations/${id}/decisions`,
+      body,
+    )
+    return {
+      selectedWaitUntil: data.data.selectedWaitUntil,
+      selectedWaitType: data.data.selectedWaitType,
+    }
+  })
+}
+
+export { WAIT_TYPE_MAP, TIME_TO_WAIT_TYPE_MAP }
