@@ -1,4 +1,4 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import axios, { isAxiosError, type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import {
   getAccessToken,
   getRefreshToken,
@@ -64,10 +64,13 @@ client.interceptors.response.use(
       })
       await refreshPromise
       return client(originalRequest)
-    } catch {
-      // refresh token도 만료/무효인 경우: 세션을 정리하고 원래 401을 그대로 전달해
-      // 각 화면의 기존 isUnauthorizedError 처리(로그인 화면 이동)가 동작하도록 합니다.
-      clearAuthSession()
+    } catch (refreshError) {
+      // refresh token 자체가 만료/무효하다고 서버가 401로 확인해준 경우에만 세션을 정리합니다.
+      // 네트워크 오류·타임아웃·5xx 같은 일시적 실패까지 세션을 지우면, refresh token은
+      // 아직 유효한데 재발급 시도가 잠깐 실패했다는 이유로 사용자가 강제 로그아웃됩니다.
+      if (isAxiosError(refreshError) && refreshError.response?.status === 401) {
+        clearAuthSession()
+      }
       return Promise.reject(error)
     }
   },
