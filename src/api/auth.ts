@@ -234,6 +234,10 @@ export interface PasswordResetRequest {
 export interface PasswordResetResponse {
   success: boolean
   message: string
+  data: {
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+  }
 }
 
 export const requestPasswordReset = async (
@@ -249,8 +253,10 @@ export const requestPasswordReset = async (
 
 //비밀번호 재설정 완료
 export interface PasswordResetConfirmRequest {
-  token: string
+  email: string
+  code: string
   newPassword: string
+  newPasswordConfirm: string
 }
 
 export interface PasswordResetConfirmResponse {
