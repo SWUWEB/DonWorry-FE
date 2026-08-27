@@ -8,6 +8,7 @@ import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
 import styles from './TemptationJudge.module.css'
+import type { Product } from '../types'
 
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
@@ -18,6 +19,7 @@ export default function TemptationJudge() {
     isDeleting,
     isDeleteSuccess,
     isDeleteError,
+    isDeleteUnauthorized,
     resetDeleteStatus,
     handleExtend,
     isExtending,
@@ -29,6 +31,12 @@ export default function TemptationJudge() {
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
+  // 삭제 요청 이전에 삭제할 상품 정보(name, category, price)를 보존(저장),
+  // 삭제 성공 시 이동할 화면에 전달
+  const [deletedProductInfo, setDeletedProductInfo] = useState<Pick<
+    Product,
+    'name' | 'category' | 'price'
+  > | null>(null)
 
   const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
 
@@ -78,21 +86,20 @@ export default function TemptationJudge() {
   // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
   const handleNotBuy = () => {
     if (!product || isDeleting) return
+    setDeletedProductInfo({
+      name: product.name,
+      category: product.category,
+      price: product.price,
+    })
     handleDelete(product.id)
   }
 
   useEffect(() => {
-    if (isDeleteSuccess && product) {
+    if (isDeleteSuccess && deletedProductInfo) {
       resetDeleteStatus()
-      navigate('/temptation/saved', {
-        state: {
-          name: product.name,
-          category: product.category,
-          price: product.price,
-        },
-      })
+      navigate('/temptation/saved', { state: deletedProductInfo })
     }
-  }, [isDeleteSuccess, product, resetDeleteStatus, navigate])
+  }, [isDeleteSuccess, deletedProductInfo, resetDeleteStatus, navigate])
 
   const handleDeleteFailConfirm = () => {
     resetDeleteStatus()
@@ -225,13 +232,29 @@ export default function TemptationJudge() {
       />
 
       <ConfirmDialog
-        isOpen={isDeleteError}
+        isOpen={isDeleteError && !isDeleteUnauthorized}
         title="처리하지 못했습니다."
         description="잠시 후 다시 시도해주세요."
         onlyConfirm
         confirmText="확인"
         onCancel={handleDeleteFailConfirm}
         onConfirm={handleDeleteFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 이용해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
+        onConfirm={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
       />
     </>
   )

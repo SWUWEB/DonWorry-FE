@@ -118,7 +118,11 @@ export const useWishlist = () => {
     isUnauthorizedError(error) ||
     isUnauthorizedError(addMutation.error) ||
     isUnauthorizedError(editMutation.error) ||
-    isUnauthorizedError(extendMutation.error)
+    isUnauthorizedError(extendMutation.error) ||
+    isUnauthorizedError(deleteMutation.error)
+
+  // 삭제 401 에러 여부를 별도 노출 (상세 화면/재판단 화면에서 로그인 분기용)
+  const isDeleteUnauthorized = isUnauthorizedError(deleteMutation.error)
 
   const editErrorKind = getMutationErrorKind(editMutation.error) // 'EMPTY' | 'FORBIDDEN' | 'NOT_FOUND' | null
   const deleteErrorKind = getMutationErrorKind(deleteMutation.error)
@@ -147,6 +151,7 @@ export const useWishlist = () => {
     isDeleting: deleteMutation.isPending,
     isDeleteSuccess: deleteMutation.isSuccess,
     isDeleteError: deleteMutation.isError,
+    isDeleteUnauthorized,
     deleteErrorKind,
     resetDeleteStatus: deleteMutation.reset,
     isUnauthorized,

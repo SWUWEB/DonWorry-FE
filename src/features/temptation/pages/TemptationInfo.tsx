@@ -20,6 +20,7 @@ export default function TemptationInfo() {
     isDeleting,
     isDeleteSuccess,
     isDeleteError,
+    isDeleteUnauthorized,
     deleteErrorKind,
     resetDeleteStatus,
   } = useWishlistContext()
@@ -50,6 +51,14 @@ export default function TemptationInfo() {
     const timer = setTimeout(goJudge, remainMs)
     return () => clearTimeout(timer)
   }, [id, deadlineMs, navigate])
+
+  // 삭제 성공 시 리셋 및 이동 처리
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      resetDeleteStatus()
+      navigate('/temptation')
+    }
+  }, [isDeleteSuccess, resetDeleteStatus, navigate])
 
   const handleBack = () => {
     navigate('/temptation')
@@ -119,13 +128,21 @@ export default function TemptationInfo() {
         description="로그인 후 이용해주세요."
         onlyConfirm
         confirmText="확인"
-        onCancel={() => navigate('/login')}
-        onConfirm={() => navigate('/login')}
+        onCancel={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
+        onConfirm={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
       />
     )
   }
 
   if (!product) {
+    // 이동하는 동안 잠시 동안 빈 화면을 렌더링하도록 함
+    if (isDeleteSuccess) return null
     return <p>상품을 찾을 수 없습니다.</p>
   }
 
@@ -161,7 +178,7 @@ export default function TemptationInfo() {
       />
 
       <ConfirmDialog
-        isOpen={isDeleteError && deleteErrorKind === null}
+        isOpen={isDeleteError && deleteErrorKind === null && !isDeleteUnauthorized}
         title="처리하지 못했습니다."
         description="잠시 후 다시 시도해주세요."
         onlyConfirm
