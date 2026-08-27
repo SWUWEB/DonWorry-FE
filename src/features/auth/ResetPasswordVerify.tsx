@@ -31,9 +31,10 @@ export default function ResetPasswordVerify() {
       return
     }
 
-    // TODO: API 연동 시 실제 인증 코드 확인 요청으로 교체
+    // 코드 단독 검증 API가 없어(백엔드가 비밀번호 변경과 함께 원자적으로 검증), 여기서는
+    // 형식만 확인하고 코드를 보관해뒀다가 다음 화면에서 새 비밀번호와 함께 제출합니다.
     setError('')
-    saveResetPasswordDraft({ codeVerified: true })
+    saveResetPasswordDraft({ code, codeVerified: true })
     navigate('/reset-password/new')
   }
 
