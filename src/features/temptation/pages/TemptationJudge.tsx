@@ -85,7 +85,7 @@ export default function TemptationJudge() {
   // 연동 시에는 저장에 성공한 뒤 handleDelete를 호출하고,
   // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
   const handleNotBuy = () => {
-    if (!product || isDeleting) return
+    if (!product || isDeleting || isExtending) return
     setDeletedProductInfo({
       name: product.name,
       category: product.category,
@@ -106,7 +106,7 @@ export default function TemptationJudge() {
   }
 
   const handleBuy = () => {
-    if (!product || isDeleting) return
+    if (!product || isDeleting || isExtending) return
     navigate('/record/intervention', {
       state: {
         from: 'temptation',
@@ -193,7 +193,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.notBuyBtn}
               onClick={handleNotBuy}
-              disabled={isDeleting}
+              disabled={isDeleting || isExtending}
             >
               <span className={styles.decisionMain}>안 살래요</span>
               <span className={styles.decisionSub}>참을게요</span>
@@ -202,7 +202,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.buyBtn}
               onClick={handleBuy}
-              disabled={isDeleting}
+              disabled={isDeleting || isExtending}
             >
               <span className={styles.decisionMain}>살래요</span>
               <span className={styles.decisionSub}>점검 후 구매</span>
