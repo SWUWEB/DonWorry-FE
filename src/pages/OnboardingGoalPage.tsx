@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import styles from './OnboardingGoalPage.module.css'
 import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
+import { useUpdateOnboarding } from '@/features/onboarding/hooks/useOnboarding'
+import ErrorMessage from '@/features/auth/components/ErrorMessage'
+
+// 400: 관심사/목표 입력값 검증 실패, 401: 인증 만료
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (!isAxiosError(error)) return fallback
+  const status = error.response?.status
+  if (status === 400) return '입력한 값을 다시 확인해주세요.'
+  if (status === 401) return '로그인이 만료되었습니다. 다시 로그인해주세요.'
+  return fallback
+}
 
 const PURPOSES = [
   { id: 'invest', emoji: '📊', label: '투자', description: '미래를 위한 투자 습관을 만들어요.' },
@@ -53,7 +65,8 @@ export default function OnboardingGoalPage() {
   const [amountInput, setAmountInput] = useState(draft.amountInput ?? '')
   const [amountTouched, setAmountTouched] = useState(false)
   const [saveError, setSaveError] = useState('')
-  const [saving, setSaving] = useState(false)
+  const updateOnboarding = useUpdateOnboarding()
+  const saving = updateOnboarding.isPending
 
   const rawAmount = amountInput.replace(/,/g, '')
   const amount = rawAmount === '' ? 0 : Number(rawAmount)
@@ -74,27 +87,32 @@ export default function OnboardingGoalPage() {
     setAmountInput(Number(raw).toLocaleString('ko-KR'))
   }
 
-  const handleNext = async () => {
+  const handleNext = () => {
     setAmountTouched(true)
     if (!isActive || saving) return
-    setSaving(true)
     setSaveError('')
-    try {
-      // TODO: API 호출 - 1·2단계 설정값 저장 (selectedId, amount 전달)
-      await Promise.resolve()
-      saveOnboardingDraft({
-        purposeId: selectedId,
-        purposeLabel: selectedPurpose?.label ?? '',
-        purposeEmoji: selectedPurpose?.emoji ?? '',
-        amount,
-        amountInput,
-      })
-      navigate('/onboarding/step3')
-    } catch {
-      setSaveError('설정을 저장하지 못했습니다. 다시 시도해주세요.')
-    } finally {
-      setSaving(false)
-    }
+    updateOnboarding.mutate(
+      {
+        interestTags: (draft.interests ?? []).map((i) => i.label),
+        savingGoalText: selectedPurpose?.label ?? '',
+        targetSavingAmount: amount,
+      },
+      {
+        onSuccess: () => {
+          saveOnboardingDraft({
+            purposeId: selectedId,
+            purposeLabel: selectedPurpose?.label ?? '',
+            purposeEmoji: selectedPurpose?.emoji ?? '',
+            amount,
+            amountInput,
+          })
+          navigate('/onboarding/step3')
+        },
+        onError: (error) => {
+          setSaveError(getErrorMessage(error, '설정을 저장하지 못했습니다. 다시 시도해주세요.'))
+        },
+      },
+    )
   }
 
   return (
@@ -179,7 +197,7 @@ export default function OnboardingGoalPage() {
 
       {/* 하단 버튼 */}
       <div className={styles.bottom}>
-        {saveError && <p className={styles.saveError}>{saveError}</p>}
+        {saveError && <ErrorMessage message={saveError} />}
         {selectedPurpose && !saveError && (
           <div className={styles.selectedTags}>
             <span className={styles.tag}>
