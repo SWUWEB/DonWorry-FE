@@ -1,31 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import { formatKRW } from '@/shared/utils/currency'
+import type { RemainingBudgetStatus } from '../types'
 import styles from './SpendingSummary.module.css'
 
 interface SpendingSummaryProps {
   monthlySpending: number
-  lastMonthSpending: number | null
-  budget: number | null
+  comparisonRate: number | null
+  comparisonMessage: string | null
+  budgetStatus: RemainingBudgetStatus
+  remainingBudget: number | null
+  budgetMessage: string
 }
 
-function getComparisonLabel(
-  monthlySpending: number,
-  lastMonthSpending: number | null,
-): string | null {
-  if (lastMonthSpending === null || lastMonthSpending === 0) return null
-  const percent = Math.round(((monthlySpending - lastMonthSpending) / lastMonthSpending) * 100)
-  if (percent === 0) return '지난달과 같아요'
-  return `지난 달보다 ${percent > 0 ? '+' : ''}${percent}%`
-}
-
-function getSpendingTrend(
-  monthlySpending: number,
-  lastMonthSpending: number | null,
-): 'up' | 'down' | 'none' {
-  if (lastMonthSpending === null || lastMonthSpending === 0) return 'none'
-  if (monthlySpending > lastMonthSpending) return 'up'
-  if (monthlySpending < lastMonthSpending) return 'down'
-  return 'none'
+function getSpendingTrend(comparisonRate: number | null): 'up' | 'down' | 'none' {
+  if (!comparisonRate) return 'none'
+  return comparisonRate > 0 ? 'up' : 'down'
 }
 
 function UpArrowIcon({ color }: { color: string }) {
@@ -72,30 +61,18 @@ function DownArrowIcon({ color }: { color: string }) {
 
 export default function SpendingSummary({
   monthlySpending,
-  lastMonthSpending,
-  budget,
+  comparisonRate,
+  comparisonMessage,
+  budgetStatus,
+  remainingBudget,
+  budgetMessage,
 }: SpendingSummaryProps) {
   const navigate = useNavigate()
-  const comparisonLabel = getComparisonLabel(monthlySpending, lastMonthSpending)
-  const spendingTrend = getSpendingTrend(monthlySpending, lastMonthSpending)
+  const spendingTrend = getSpendingTrend(comparisonRate)
 
-  const isBudgetUnset = budget === null
-  const remaining = budget !== null ? budget - monthlySpending : null
-  const isOverBudget = remaining !== null && remaining < 0
-
-  let budgetAmount: string
-  let budgetSub: string
-
-  if (isBudgetUnset) {
-    budgetAmount = ''
-    budgetSub = '이번 달 예산을 설정해주세요.'
-  } else if (isOverBudget) {
-    budgetAmount = formatKRW(Math.abs(remaining!))
-    budgetSub = `예산을 ${formatKRW(Math.abs(remaining!))} 초과했어요`
-  } else {
-    budgetAmount = formatKRW(remaining!)
-    budgetSub = '목표까지 남았어요'
-  }
+  const isBudgetUnset = budgetStatus === 'NOT_SET'
+  const isOverBudget = budgetStatus === 'EXCEEDED'
+  const budgetAmount = remainingBudget !== null ? formatKRW(Math.abs(remainingBudget)) : ''
 
   return (
     <div className={styles.wrapper}>
@@ -107,7 +84,7 @@ export default function SpendingSummary({
           {spendingTrend === 'down' && <DownArrowIcon color="#2946D8" />}
           <p className={styles.amountRed}>{formatKRW(monthlySpending)}</p>
         </div>
-        {comparisonLabel && <p className={styles.sub}>{comparisonLabel}</p>}
+        {comparisonMessage && <p className={styles.sub}>{comparisonMessage}</p>}
       </div>
 
       {/* 남은 예산 */}
@@ -138,7 +115,7 @@ export default function SpendingSummary({
             </p>
           </div>
         )}
-        <p className={styles.sub}>{budgetSub}</p>
+        <p className={styles.sub}>{budgetMessage}</p>
       </div>
     </div>
   )

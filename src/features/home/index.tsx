@@ -27,37 +27,42 @@ export default function Home() {
   if (!data) return null
 
   const {
+    goalStatus,
+    achievementRate,
+    achievementRemainingAmount,
     monthlySpending,
-    lastMonthSpending,
-    budget,
-    goalAmount,
-    goalCurrent,
+    comparisonRate,
+    comparisonMessage,
+    budgetStatus,
+    remainingBudget,
+    budgetMessage,
     categories,
+    categorySummaryText,
     hasRecords,
   } = data
 
-  const achievementPercent = goalAmount
-    ? Math.min(100, Math.round((goalCurrent / goalAmount) * 100))
-    : null
-
-  const topCategory = categories[0]
-  const topCategoryLabel = topCategory?.label ?? ''
-
   return (
     <main className={styles.main}>
-      <HomeBanner goalSet={goalAmount !== null} achievementPercent={achievementPercent} />
+      <HomeBanner goalStatus={goalStatus} achievementRate={achievementRate} />
       <div className={styles.content}>
         <CategoryChart
           categories={categories}
           hasRecords={hasRecords}
-          topCategoryLabel={topCategoryLabel}
+          summaryText={categorySummaryText}
         />
         <SpendingSummary
           monthlySpending={monthlySpending}
-          lastMonthSpending={lastMonthSpending}
-          budget={budget}
+          comparisonRate={comparisonRate}
+          comparisonMessage={comparisonMessage}
+          budgetStatus={budgetStatus}
+          remainingBudget={remainingBudget}
+          budgetMessage={budgetMessage}
         />
-        <GoalProgress goalAmount={goalAmount} goalCurrent={goalCurrent} />
+        <GoalProgress
+          goalStatus={goalStatus}
+          achievementRate={achievementRate}
+          remainingAmount={achievementRemainingAmount}
+        />
         <EncouragementCard />
         <SpendingQuestion />
       </div>

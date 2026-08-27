@@ -1,25 +1,26 @@
 import { getFormattedDateLabel } from '@/shared/utils/date'
+import type { GoalAchievementStatus } from '../types'
 import styles from './HomeBanner.module.css'
 
 interface HomeBannerProps {
-  goalSet: boolean
-  achievementPercent: number | null
+  goalStatus: GoalAchievementStatus
+  achievementRate: number
 }
 
-export default function HomeBanner({ goalSet, achievementPercent }: HomeBannerProps) {
+export default function HomeBanner({ goalStatus, achievementRate }: HomeBannerProps) {
   const dateLabel = getFormattedDateLabel()
 
   let line1: string
   let line2: string
 
-  if (!goalSet) {
+  if (goalStatus === 'NOT_SET') {
     line1 = '이번 달 절약 목표를'
     line2 = '설정해보세요.'
-  } else if (achievementPercent !== null && achievementPercent >= 100) {
+  } else if (goalStatus === 'ACHIEVED') {
     line1 = '이번 달 절약 목표를'
     line2 = '달성했어요! 🎉'
   } else {
-    line1 = `이번 달 목표 ${achievementPercent ?? 0}%`
+    line1 = `이번 달 목표 ${achievementRate}%`
     line2 = '달성했어요 🎯'
   }
 

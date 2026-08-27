@@ -1,15 +1,19 @@
 import { formatKRW } from '@/shared/utils/currency'
+import type { GoalAchievementStatus } from '../types'
 import styles from './GoalProgress.module.css'
 
 interface GoalProgressProps {
-  goalAmount: number | null
-  goalCurrent: number
+  goalStatus: GoalAchievementStatus
+  achievementRate: number
+  remainingAmount: number | null
 }
 
-export default function GoalProgress({ goalAmount, goalCurrent }: GoalProgressProps) {
-  const rawPercent = goalAmount ? Math.round((goalCurrent / goalAmount) * 100) : 0
-  const percent = Math.min(100, rawPercent)
-  const isAchieved = rawPercent >= 100
+export default function GoalProgress({
+  goalStatus,
+  achievementRate,
+  remainingAmount,
+}: GoalProgressProps) {
+  const percent = Math.min(100, Math.max(0, achievementRate))
 
   return (
     <div className={styles.card}>
@@ -31,21 +35,16 @@ export default function GoalProgress({ goalAmount, goalCurrent }: GoalProgressPr
         </div>
       </div>
 
-      <div className={styles.amounts}>
-        <span className={styles.amount}>{formatKRW(goalCurrent)}</span>
-        <span className={styles.amount}>
-          {goalAmount ? `목표 ${formatKRW(goalAmount)}` : '목표 미설정'}
-        </span>
-      </div>
-
-      {goalAmount === null ? (
+      {goalStatus === 'NOT_SET' ? (
         <p className={styles.remaining}>절약 목표를 설정해보세요.</p>
-      ) : isAchieved ? (
+      ) : goalStatus === 'ACHIEVED' ? (
         <p className={styles.remaining}>이번 달 절약 목표를 달성했어요!</p>
       ) : (
         <p className={styles.remaining}>
           목표까지{' '}
-          <strong className={styles.remainingAmount}>{formatKRW(goalAmount - goalCurrent)}</strong>{' '}
+          <strong className={styles.remainingAmount}>
+            {remainingAmount !== null ? formatKRW(remainingAmount) : ''}
+          </strong>{' '}
           남았어요
         </p>
       )}
