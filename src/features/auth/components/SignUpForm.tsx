@@ -8,6 +8,7 @@ import { useSignup } from '@/hooks/useSignup'
 import { useSendVerificationEmail } from '@/hooks/useSendVerificationEmail'
 import { useConfirmVerificationEmail } from '@/hooks/useConfirmVerificationEmail'
 import { useCheckEmail } from '@/hooks/useCheckEmail'
+import { useCheckLoginId } from '@/hooks/useCheckLoginId'
 import { isAxiosError } from 'axios'
 
 // 서버 오류 응답에서 사용자에게 보여줄 문구를 뽑아냅니다.
@@ -53,9 +54,13 @@ export default function SignUpForm() {
   const { mutate: sendEmail, isPending: isSendingEmail } = useSendVerificationEmail()
   const { mutate: confirmEmail, isPending: isConfirmingEmail } = useConfirmVerificationEmail()
   const { mutate: checkEmail, isPending: isCheckingEmail } = useCheckEmail()
+  const { mutate: checkLoginId, isPending: isCheckingId } = useCheckLoginId()
 
   const [name, setName] = useState('')
   const [id, setId] = useState('')
+  const [isIdAvailable, setIsIdAvailable] = useState(false)
+  // 진행 중인 요청의 응답이 현재 입력값 기준으로 유효한지 판단하기 위한 최신 아이디
+  const latestIdRef = useRef(id)
 
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -66,6 +71,7 @@ export default function SignUpForm() {
 
   // 서버 응답 안내를 입력칸 아래에 표시하기 위한 상태
   type FieldStatus = { type: 'success' | 'error'; message: string } | null
+  const [idStatus, setIdStatus] = useState<FieldStatus>(null)
   const [emailStatus, setEmailStatus] = useState<FieldStatus>(null)
   const [codeStatus, setCodeStatus] = useState<FieldStatus>(null)
   const [submitError, setSubmitError] = useState('')
@@ -84,6 +90,7 @@ export default function SignUpForm() {
   const canSubmit =
     name.trim() !== '' &&
     isValidId &&
+    isIdAvailable &&
     isValidEmail &&
     isValidPassword &&
     isPasswordMatch &&
@@ -114,6 +121,36 @@ export default function SignUpForm() {
         },
       },
     )
+  }
+
+  const handleCheckId = () => {
+    if (!isValidId || isCheckingId) return
+
+    const requestedId = id
+    const isStale = () => requestedId !== latestIdRef.current
+    setIdStatus(null)
+
+    checkLoginId(requestedId, {
+      onSuccess: (response) => {
+        if (isStale()) return
+
+        if (!response.data.available) {
+          setIsIdAvailable(false)
+          setIdStatus({ type: 'error', message: '이미 사용 중인 아이디입니다.' })
+          return
+        }
+
+        setIsIdAvailable(true)
+        setIdStatus({ type: 'success', message: '사용 가능한 아이디입니다.' })
+      },
+      onError: (error) => {
+        if (isStale()) return
+        setIdStatus({
+          type: 'error',
+          message: getErrorMessage(error, '아이디 확인에 실패했습니다. 잠시 후 다시 시도해주세요.'),
+        })
+      },
+    })
   }
 
   // 중복 확인을 통과한 이메일에만 인증 메일을 보냅니다.
@@ -212,22 +249,48 @@ export default function SignUpForm() {
         />
       </div>
 
-      <div className={styles.formField}>
-        <InputField
-          label="아이디"
-          placeholder="영문, 숫자 조합 6~12자"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-        />
-        {id.length > 0 && (
-          <ErrorMessage
-            type={isValidId ? 'success' : 'error'}
-            message={
-              isValidId ? '올바른 아이디 형식입니다.' : '영문, 숫자 조합 6~12자로 입력해주세요.'
-            }
+      <div className={styles.inputWithButton}>
+        <label htmlFor="loginId" className={styles.label}>
+          아이디
+        </label>
+
+        <div className={styles.row}>
+          <input
+            id="loginId"
+            className={styles.input}
+            placeholder="영문, 숫자 조합 6~12자"
+            value={id}
+            onChange={(e) => {
+              const nextId = e.target.value
+              latestIdRef.current = nextId
+              setId(nextId)
+              // 아이디가 바뀌면 이전 아이디로 받은 중복확인 결과는 모두 무효입니다.
+              setIsIdAvailable(false)
+              setIdStatus(null)
+            }}
           />
-        )}
+
+          <button
+            type="button"
+            className={styles.smallButton}
+            disabled={!isValidId || isCheckingId}
+            onClick={handleCheckId}
+          >
+            중복확인
+          </button>
+        </div>
       </div>
+
+      {id.length > 0 && (
+        <ErrorMessage
+          type={isValidId ? 'success' : 'error'}
+          message={
+            isValidId ? '올바른 아이디 형식입니다.' : '영문, 숫자 조합 6~12자로 입력해주세요.'
+          }
+        />
+      )}
+
+      {idStatus && <ErrorMessage type={idStatus.type} message={idStatus.message} />}
 
       <div className={styles.inputWithButton}>
         <label htmlFor="email" className={styles.label}>

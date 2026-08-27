@@ -86,6 +86,27 @@ export const checkEmail = async (email: string): Promise<CheckEmailResponse> => 
   return data
 }
 
+//아이디 중복확인
+
+export interface CheckLoginIdResponse {
+  success: boolean
+  message: string
+
+  data: {
+    available: boolean
+  }
+}
+
+export const checkLoginId = async (loginId: string): Promise<CheckLoginIdResponse> => {
+  const { data } = await client.get<CheckLoginIdResponse>('/api/v1/auth/check-login-id', {
+    params: {
+      loginId,
+    },
+  })
+
+  return data
+}
+
 export const sendVerificationEmail = async (body: SendEmailRequest): Promise<SendEmailResponse> => {
   const { data } = await client.post<SendEmailResponse>('/api/v1/auth/email-verifications', body)
 
