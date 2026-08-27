@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
-import type { Category, FilterValue, SortValue } from '../types'
+import type { Category, FilterValue, SortValue, Product } from '../types'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { fetchWishlistItems, addWishlistItem, updateWishlistItem } from '../api/wishlistApi'
 import { isUnauthorizedError } from '../utils/isUnauthorizedError'
@@ -56,6 +56,16 @@ export const useWishlist = () => {
     },
   })
 
+  // 목록 캐시를 서버 재조회 없이 즉시 갱신합니다.
+  // invalidateQueries만 쓰면 재조회가 끝나기 전까지 목록에 남은 이전 값(예: 지난 고민 시간)을
+  // 상세/재판단 화면이 그대로 읽어 서로를 오가며 화면이 튀는 문제가 있었습니다.
+  const patchWishlistItemCache = (updated: Product) => {
+    queryClient.setQueryData<Product[]>(['wishlistItems'], (old) =>
+      old?.map((p) => (p.id === updated.id ? updated : p)),
+    )
+    queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
+  }
+
   const handleDelete = (id: string) => {
     console.warn(`API 연동 전! (id: ${id}) 다음 이슈에서 작업 예정`)
     setLocalOverrides((prev) => ({
@@ -70,9 +80,7 @@ export const useWishlist = () => {
   const extendMutation = useMutation({
     mutationFn: ({ id, formData }: { id: string; formData: WishFormData }) =>
       updateWishlistItem(id, formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
-    },
+    onSuccess: patchWishlistItemCache,
   })
 
   const handleExtend = (id: string, timeOption: (typeof TIME_OPTIONS)[number]) => {
@@ -95,9 +103,7 @@ export const useWishlist = () => {
   const editMutation = useMutation({
     mutationFn: ({ id, formData }: { id: string; formData: WishFormData }) =>
       updateWishlistItem(id, formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
-    },
+    onSuccess: patchWishlistItemCache,
   })
 
   const handleEdit = (id: string, formData: WishFormData) => {
