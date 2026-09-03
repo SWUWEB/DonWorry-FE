@@ -70,7 +70,7 @@ client.interceptors.response.use(
       // 네트워크 오류·타임아웃·5xx 같은 일시적 실패까지 세션을 지우면, refresh token은
       // 아직 유효한데 재발급 시도가 잠깐 실패했다는 이유로 사용자가 강제 로그아웃됩니다.
       if (isAxiosError(refreshError) && refreshError.response?.status === 401) {
-        clearAuthSession()
+        clearAuthSession({ expired: true })
       }
       return Promise.reject(error)
     }

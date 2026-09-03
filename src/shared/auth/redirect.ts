@@ -1,3 +1,5 @@
+export const SESSION_EXPIRED_NOTICE = '로그인이 만료되었습니다. 다시 로그인해주세요.'
+
 export interface LoginRedirectState {
   from?: string
   notice?: string

@@ -1,13 +1,16 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { hasAuthSession } from './session'
+import { useAuthSession } from './useAuthSession'
+import { SESSION_EXPIRED_NOTICE } from './redirect'
 import type { LoginRedirectState } from './redirect'
 
 export default function ProtectedRoute() {
   const location = useLocation()
+  const { isAuthenticated, expired } = useAuthSession()
 
-  if (!hasAuthSession()) {
+  if (!isAuthenticated) {
     const state: LoginRedirectState = {
       from: `${location.pathname}${location.search}${location.hash}`,
+      ...(expired && { notice: SESSION_EXPIRED_NOTICE }),
     }
     return <Navigate to="/login" replace state={state} />
   }
