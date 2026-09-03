@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 import InputField from '@/shared/components/InputField'
 import Button from '@/shared/components/Button'
+import { usePasswordResetRequest } from '@/hooks/usePasswordResetRequest'
 import AuthLayout from './components/AuthLayout'
 import AuthPageHeader from './components/AuthPageHeader'
 import InfoBanner from './components/InfoBanner'
@@ -10,9 +12,15 @@ import { getResetPasswordDraft, saveResetPasswordDraft } from './resetPasswordSe
 
 const CODE_LENGTH = 6
 
+interface RateLimitErrorBody {
+  message?: string
+  retryAfterSeconds?: number
+}
+
 export default function ResetPasswordVerify() {
   const navigate = useNavigate()
   const draft = getResetPasswordDraft()
+  const { mutate: resendPasswordReset, isPending: isResending } = usePasswordResetRequest()
 
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
@@ -39,8 +47,24 @@ export default function ResetPasswordVerify() {
   }
 
   const handleResend = () => {
-    // TODO: API 연동 시 실제 코드 재전송 요청으로 교체
-    setResent(true)
+    setError('')
+    setResent(false)
+    resendPasswordReset(
+      { email: draft.email! },
+      {
+        onSuccess: () => setResent(true),
+        onError: (error: unknown) => {
+          if (isAxiosError<RateLimitErrorBody>(error) && error.response?.status === 429) {
+            const retry = error.response.data.retryAfterSeconds
+            const base = error.response.data.message ?? '요청이 너무 잦습니다.'
+            setError(retry ? `${base} (${retry}초 후 다시 시도해주세요.)` : base)
+            return
+          }
+
+          setError('인증 코드 재전송에 실패했습니다.')
+        },
+      },
+    )
   }
 
   return (
@@ -80,8 +104,9 @@ export default function ResetPasswordVerify() {
           type="button"
           className="cursor-pointer border-none bg-none p-0 font-sans font-semibold text-main-500"
           onClick={handleResend}
+          disabled={isResending}
         >
-          코드 재전송
+          {isResending ? '재전송 중...' : '코드 재전송'}
         </button>
       </p>
     </AuthLayout>

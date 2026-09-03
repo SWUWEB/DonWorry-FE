@@ -30,7 +30,6 @@ export default function ResetPasswordRequest() {
       return
     }
 
-    // TODO: API 연동 시 실제 일회용 코드 발송 요청으로 교체
     requestPasswordReset(
       { email },
       {

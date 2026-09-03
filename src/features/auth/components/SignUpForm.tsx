@@ -82,7 +82,7 @@ export default function SignUpForm() {
   const [phone, setPhone] = useState('')
 
   const isValidId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,12}$/.test(id)
-  const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)
+  const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,100}$/.test(password)
   const isPasswordMatch = password === passwordCheck
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const isValidPhone = /^(01[016789])-?\d{3,4}-?\d{4}$/.test(phone)
@@ -367,7 +367,7 @@ export default function SignUpForm() {
       <div className={styles.formField}>
         <InputField
           label="비밀번호"
-          placeholder="영문, 숫자, 특수문자 조합 8자 이상"
+          placeholder="영문, 숫자, 특수문자 조합 8~100자"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
