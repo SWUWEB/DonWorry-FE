@@ -9,7 +9,8 @@ import {
 const REFRESH_URL = '/api/v1/auth/refresh'
 
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  // 개발 환경에서는 Vite의 same-origin /api 프록시를 사용해 백엔드 CORS 제한을 피합니다.
+  baseURL: import.meta.env.DEV ? undefined : import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
