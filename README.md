@@ -32,6 +32,24 @@ npm install
 npm run dev
 ```
 
+Node.js 22.13 이상을 사용합니다.
+
+## API 계약 동기화
+
+배포된 Swagger 명세를 갱신하고 TypeScript 타입을 생성합니다.
+
+```bash
+npm run api:sync
+npm run api:generate
+```
+
+- `openapi/openapi.json`: 배포 API 명세 스냅샷
+- `src/api/generated`: 자동 생성된 타입이며 직접 수정하지 않음
+- `npm run api:check`: 스냅샷과 생성 타입의 일치 여부 확인
+- `npm run api:drift`: 배포 API와 저장된 스냅샷의 차이 확인
+
+PR CI는 생성 타입을 검사하고, 예약 워크플로는 매주 배포 API의 변경 여부를 검사합니다.
+
 ---
 
 ## Git 컨벤션
