@@ -20,6 +20,10 @@ export function getRefreshToken(): string | null {
   return localStorage.getItem(REFRESH_TOKEN_KEY)
 }
 
+export function hasAuthSession(): boolean {
+  return Boolean(getAccessToken() || getRefreshToken())
+}
+
 export function clearAuthSession(): void {
   localStorage.removeItem(ACCESS_TOKEN_KEY)
   localStorage.removeItem(REFRESH_TOKEN_KEY)

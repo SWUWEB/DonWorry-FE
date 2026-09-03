@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import AppLayout from '@/components/layout/AppLayout'
 import { WishlistProvider } from '@/features/temptation/hooks/WishlistProvider'
 import NotFoundPage from '@/pages/NotFoundPage'
+import ProtectedRoute from '@/shared/auth/ProtectedRoute'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const NotificationPage = lazy(() => import('@/pages/NotificationPage'))
@@ -44,7 +45,6 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     errorElement: <NotFoundPage />,
     children: [
-      { path: '/', element: <HomePage /> },
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignUpPage /> },
       { path: '/auth/kakao/callback', element: <KakaoCallbackPage /> },
@@ -53,35 +53,41 @@ const router = createBrowserRouter([
       { path: '/reset-password', element: <ResetPasswordRequestPage /> },
       { path: '/reset-password/verify', element: <ResetPasswordVerifyPage /> },
       { path: '/reset-password/new', element: <ResetPasswordNewPage /> },
-      { path: '/mypage', element: <MyPagePage /> },
-      { path: '/goal-amount', element: <GoalAmountPage /> },
-      { path: '/budget', element: <BudgetPage /> },
-      { path: '/notification', element: <NotificationPage /> },
-      { path: '/profile', element: <ProfilePage /> },
-      { path: '/changeemail', element: <ChangeEmailPage /> },
-      { path: '/changepassword', element: <ChangePasswordPage /> },
-      { path: '/withdraw', element: <WithdrawPage /> },
-      { path: '/consumption-report', element: <ConsumptionReportPage /> },
-      { path: '/onboarding', element: <OnboardingInterestPage /> },
-      { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
-      { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
-      { path: '/record', element: <RecordMainPage /> },
-      { path: '/record/new', element: <RecordCreatePage /> },
-      { path: '/record/:id', element: <RecordDetailPage /> },
-      { path: '/record/:id/edit', element: <RecordCreatePage /> },
-      { path: '/record/intervention', element: <RecordInterventionPage /> },
       {
-        path: '/record/intervention/result',
-        element: <RiskResultPage />,
-      },
-      {
-        element: <WishlistProvider />,
+        element: <ProtectedRoute />,
         children: [
-          { path: '/temptation', element: <Temptation /> },
-          { path: '/temptation/:id', element: <TemptationInfo /> },
-          { path: '/temptation/:id/edit', element: <TemptationEdit /> },
-          { path: '/temptation/:id/judge', element: <TemptationJudge /> },
-          { path: '/temptation/saved', element: <TemptationSaved /> },
+          { path: '/', element: <HomePage /> },
+          { path: '/mypage', element: <MyPagePage /> },
+          { path: '/goal-amount', element: <GoalAmountPage /> },
+          { path: '/budget', element: <BudgetPage /> },
+          { path: '/notification', element: <NotificationPage /> },
+          { path: '/profile', element: <ProfilePage /> },
+          { path: '/changeemail', element: <ChangeEmailPage /> },
+          { path: '/changepassword', element: <ChangePasswordPage /> },
+          { path: '/withdraw', element: <WithdrawPage /> },
+          { path: '/consumption-report', element: <ConsumptionReportPage /> },
+          { path: '/onboarding', element: <OnboardingInterestPage /> },
+          { path: '/onboarding/step2', element: <OnboardingGoalPage /> },
+          { path: '/onboarding/step3', element: <OnboardingCompletePage /> },
+          { path: '/record', element: <RecordMainPage /> },
+          { path: '/record/new', element: <RecordCreatePage /> },
+          { path: '/record/:id', element: <RecordDetailPage /> },
+          { path: '/record/:id/edit', element: <RecordCreatePage /> },
+          { path: '/record/intervention', element: <RecordInterventionPage /> },
+          {
+            path: '/record/intervention/result',
+            element: <RiskResultPage />,
+          },
+          {
+            element: <WishlistProvider />,
+            children: [
+              { path: '/temptation', element: <Temptation /> },
+              { path: '/temptation/:id', element: <TemptationInfo /> },
+              { path: '/temptation/:id/edit', element: <TemptationEdit /> },
+              { path: '/temptation/:id/judge', element: <TemptationJudge /> },
+              { path: '/temptation/saved', element: <TemptationSaved /> },
+            ],
+          },
         ],
       },
       { path: '*', element: <NotFoundPage /> },
