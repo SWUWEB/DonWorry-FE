@@ -4,503 +4,23 @@ export type ClientOptions = {
   baseUrl: `${string}://${string}` | (string & {})
 }
 
-export type ErrorResponse = {
-  success?: boolean
-  code?: string
-  message?: string
-}
-
-export type KakaoLinkRequiredResponse = {
-  success: false
-  code: 'AUTH4093'
-  message: string
-  data: {
-    /**
-     * 기존 LOCAL 계정의 본인 확인에 사용하는 일회용 토큰
-     */
-    linkingToken: string
-    verificationMethods: Array<'PASSWORD' | 'EMAIL'>
-    expiresInSeconds: number
-  }
-}
-
-export type KakaoAccountConflictResponse = {
-  success: false
-  code: 'AUTH4094'
-  message: string
-}
-
-export type KakaoLinkTokenErrorResponse = {
-  success: false
-  code: 'AUTH4014'
-  message: string
-}
-
-export type KakaoLinkVerificationErrorResponse = {
-  success: false
-  code: 'AUTH4013'
-  message: string
-}
-
-export type KakaoLinkEmailVerificationResponse = {
-  success: boolean
-  message: string
-  data: {
-    email: string
-    codeTtlSeconds: number
-    resendCooldownSeconds: number
-    /**
-     * Non-production environments only.
-     */
-    debugCode?: string
-  }
-}
-
-export type UnauthorizedResponse = {
-  success: boolean
-  message: string
-}
-
-export type RateLimitErrorResponse = {
-  success: boolean
-  code: string
-  message: string
-  /**
-   * 요청 시점을 기준으로 다시 시도할 수 있을 때까지 남은 초
-   */
-  retryAfterSeconds: number
-  /**
-   * 다시 시도할 수 있는 UTC 시각
-   */
-  retryAt: string
-  /**
-   * 적용된 이메일 인증 제한 종류
-   */
-  rateLimitType:
-    | 'RESEND_COOLDOWN'
-    | 'SEND_LIMIT'
-    | 'CONFIRM_LOCK'
-    | 'PASSWORD_RESET_CONFIRM_LOCK'
-    | 'KAKAO_LINK_PASSWORD_LOCK'
-}
-
-export type ValidationErrorResponse = {
-  success?: boolean
-  code?: string
-  message?: string
-  errors?: {
-    formErrors?: Array<string>
-    fieldErrors?: {
-      [key: string]: Array<string>
-    }
-  }
-}
-
-export type NotImplementedResponse = {
-  success?: boolean
-  message?: string
-}
-
-export type SignupResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    userId?: string
-    loginId?: string
-    name?: string
-    email?: string
-    phoneNumber?: string
-  }
-}
-
-export type LoginResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    accessToken?: string
-    refreshToken?: string
-    tokenType?: string
-    user?: {
-      userId?: string
-      loginId?: string
-      name?: string
-      email?: string
-      phoneNumber?: string
-    }
-  }
-}
-
-export type RefreshTokenResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    tokenType?: string
-    accessToken?: string
-    /**
-     * Rotated refresh token. Use this value for the next refresh request.
-     */
-    refreshToken?: string
-  }
-}
-
 export type CheckEmailResponse = {
-  success?: boolean
-  message?: string
   data?: {
     available?: boolean
   }
-}
-
-export type EmailVerificationResponse = {
-  success?: boolean
   message?: string
-  data?: {
-    email?: string
-    codeTtlSeconds?: number
-    resendCooldownSeconds?: number
-    /**
-     * Development only. Returned when SMTP delivery is skipped or fails.
-     */
-    debugCode?: string
-  }
-}
-
-export type PasswordResetRequestResponse = {
-  success: true
-  message: string
-  data: {
-    codeTtlSeconds: number
-    resendCooldownSeconds: number
-  }
-}
-
-export type PasswordResetConfirmResponse = {
-  success: true
-  message: string
-  data: {
-    [key: string]: unknown
-  } | null
-}
-
-export type EmailVerificationConfirmResponse = {
   success?: boolean
-  message?: string
-  data?: {
-    email?: string
-    emailVerificationToken?: string
-  }
 }
 
 export type CheckLoginIdResponse = {
-  success?: boolean
-  message?: string
   data?: {
     available?: boolean
   }
-}
-
-export type GetMeResponse = {
-  success?: boolean
   message?: string
-  data?: {
-    id?: string
-    nickname?: string
-    profileImageUrl?: string | null
-    savingGoalText?: string | null
-    interestTagsJson?: Array<string> | null
-    phoneNumber?: string | null
-    birthDate?: string | null
-    gender?: 'FEMALE' | 'MALE'
-    email?: string
-    loginProvider?: 'LOCAL' | 'KAKAO'
-    hasPassword?: boolean
-    hourlyWage?: string | null
-  }
-}
-
-export type UpdateMeResponse = {
   success?: boolean
-  message?: string
-  data?: {
-    id?: string
-    nickname?: string
-    profileImageUrl?: string | null
-    savingGoalText?: string | null
-    interestTagsJson?: Array<string> | null
-    phoneNumber?: string | null
-    birthDate?: string | null
-    gender?: 'FEMALE' | 'MALE'
-  }
-}
-
-export type UpdateSavingGoalResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    id?: string
-    savingGoalText?: string
-    targetSavingAmount?: string
-    savingGoalIsActive?: boolean
-  }
-}
-
-export type DeleteSavingGoalResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    id?: string
-    savingGoalIsActive?: boolean
-  }
-}
-
-export type GetOnboardingResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    interestTags?: Array<string> | null
-    savingGoalText?: string | null
-    targetSavingAmount?: string | null
-  }
-}
-
-export type UpdateOnboardingResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    interestTags?: Array<string>
-    savingGoalText?: string
-    targetSavingAmount?: string
-  }
-}
-
-export type GetNotificationSettingsResponse = {
-  success: boolean
-  message: string
-  data: {
-    notifyGeneralEnabled: boolean
-    notifyGoalEnabled: boolean
-    notifyTemptationEnabled: boolean
-    notifyPushEnabled: boolean
-  }
-}
-
-export type UpdateNotificationSettingsResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    notifyGeneralEnabled?: boolean
-    notifyGoalEnabled?: boolean
-    notifyTemptationEnabled?: boolean
-    notifyPushEnabled?: boolean
-  }
-}
-
-export type NotificationResult = {
-  id?: string
-  notificationType?: 'TEMPTATION' | 'GOAL' | 'GENERAL'
-  title?: string
-  body?: string
-  isRead?: boolean
-  readAt?: string | null
-  wishlistItemId?: string | null
-  notifyAt?: string
-  createdAt?: string
-}
-
-export type ListNotificationsResponse = {
-  success?: boolean
-  message?: string
-  data?: Array<NotificationResult>
-}
-
-export type MarkNotificationReadResponse = {
-  success?: boolean
-  message?: string
-  data?: unknown
-}
-
-export type MarkAllNotificationsReadResponse = {
-  success?: boolean
-  message?: string
-  data?: unknown
-}
-
-export type DeleteNotificationResponse = {
-  success?: boolean
-  message?: string
-  data?: unknown
-}
-
-export type ConsumptionReportDetailResponse = {
-  success: true
-  message: string
-  data: {
-    reportMonth: string
-    totalConsumption: {
-      totalAmount: number
-      /**
-       * 소비 금액이 큰 상위 4개 카테고리 + 그 외(합산) 목록
-       */
-      categories: Array<{
-        categoryCode: string
-        categoryLabel: string
-        amount: number
-        ratio: number
-      }>
-    }
-    savingStatus: {
-      totalAttemptCount: number
-      skipped: {
-        amount: number
-        count: number
-      }
-      consumed: {
-        amount: number
-        count: number
-      }
-    }
-    goalAchievement: {
-      status: 'NOT_SET' | 'IN_PROGRESS' | 'ACHIEVED'
-      achievementRate: number
-      targetAmount?: number | null
-      savedAmount: number
-      remainingAmount?: number | null
-    }
-    insights: {
-      /**
-       * 실제 소비 기록이 3건 이상인지 여부 (false일 경우 인사이트 미제공)
-       */
-      hasEnoughData: boolean
-      insights: Array<{
-        type?: 'VULNERABLE_TIME' | 'INFLOW_CHANNEL'
-        weekdayLabel?: string
-        hour?: number | null
-        amount?: number | null
-        ratio?: number | null
-        channel?: string | null
-        count?: number | null
-      }>
-    }
-    categoryDefenseSummary: Array<{
-      categoryCode: string
-      categoryLabel: string
-      skippedAmount: number
-      consumedAmount: number
-      defenseRate: number
-    }>
-  }
-}
-
-export type MonthlyBudgetResult = {
-  /**
-   * YYYY-MM
-   */
-  yearMonth?: string
-  /**
-   * 월 수입
-   */
-  monthlyIncome?: string | null
-  /**
-   * 월 예산
-   */
-  monthlyBudget?: string
-  /**
-   * 총 지출 금액
-   */
-  spentAmount?: string
-  /**
-   * 수입 기준 잔액
-   */
-  remainingAmount?: string
-  /**
-   * 수입 대비 총 사용률(%)
-   */
-  usageRate?: number
-  /**
-   * 카테고리별 예산 상세 목록
-   */
-  categoryBudgets?: Array<{
-    categoryCode?: string
-    budgetAmount?: string
-    spentAmount?: string
-    remainingAmount?: string
-    usageRate?: number
-  }>
-  /**
-   * 시급 (미설정 시 null)
-   */
-  hourlyWage?: string | null
-  /**
-   * 이번 달 근무 시간 = round(월 수입 ÷ 시급), 시급 또는 월 수입 미설정 시 null
-   */
-  workedHours?: number | null
-  /**
-   * 지출에 쓴 시간 = round(월 지출 ÷ 시급, 소수 1자리), 시급 미설정 시 null
-   */
-  spentHours?: number | null
-}
-
-export type GetMonthlyBudgetResponse = {
-  success?: boolean
-  message?: string
-  data?: unknown | MonthlyBudgetResult
-}
-
-export type UpsertMonthlyBudgetResponse = {
-  success?: boolean
-  message?: string
-  data?: MonthlyBudgetResult
-}
-
-export type HomeSummaryResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    goalAchievement?: {
-      status?: 'NOT_SET' | 'IN_PROGRESS' | 'ACHIEVED'
-      rate?: number
-      remainingAmount?: number | null
-      message?: string
-    }
-    consumptionChart?: {
-      hasData?: boolean
-      categories?: Array<{
-        categoryCode?: string
-        categoryLabel?: string
-        amount?: number
-        ratio?: number
-      }>
-      others?: {
-        amount?: number
-        ratio?: number
-      } | null
-      summaryText?: string
-    }
-    thisMonthSpending?: {
-      amount?: number
-      comparisonRate?: number | null
-      comparisonMessage?: string | null
-    }
-    remainingBudget?: {
-      status?: 'NOT_SET' | 'WITHIN' | 'EXCEEDED'
-      amount?: number | null
-      message?: string
-    }
-  }
-}
-
-export type DailyQuestionResponse = {
-  success?: boolean
-  message?: string
-  data?: {
-    questionText?: string
-    date?: string
-  }
 }
 
 export type CheerMessageResponse = {
-  success: boolean
-  message: string
   data: {
     /**
      * 목표 금액 대비 누적 참은 소비 금액의 달성률(소수점 이하 버림, 최대 100)
@@ -512,40 +32,37 @@ export type CheerMessageResponse = {
      */
     messageLevel: 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5'
   }
+  message: string
+  success: boolean
 }
 
-export type ConsumptionRecordResult = {
-  id?: string
-  type?: string
-  productName?: string
-  price?: number | null
-  productUrl?: string | null
-  riskScore?: number | null
-  workHoursNeeded?: number | null
-  categoryCode?: string
-  categoryLabel?: string
-  reason?: string | null
-  occurredAt?: string
-  createdAt?: string
-  updatedAt?: string
-  interventionAnswers?: Array<{
-    id?: string
-    questionId?: string
-    answerValue?: boolean
-    questionText?: string
-  }>
+export type ConsumptionRatioResponse = {
+  data: {
+    consumedAmount: number
+    consumedRatio: number
+    period: {
+      days: 28
+      endDate: string
+      startDate: string
+    }
+    skippedAmount: number
+    skippedRatio: number
+    totalAmount: number
+  }
+  message: string
+  success: true
 }
 
 export type ConsumptionRecordCreatedResponse = {
-  success?: boolean
-  message?: string
   data?: ConsumptionRecordResult
+  message?: string
+  success?: boolean
 }
 
-export type ConsumptionRecordResponse = {
-  success?: boolean
+export type ConsumptionRecordDetailResponse = {
+  data?: ConsumptionRecordDetailResult
   message?: string
-  data?: ConsumptionRecordResult
+  success?: boolean
 }
 
 export type ConsumptionRecordDetailResult = ConsumptionRecordResult & {
@@ -559,243 +76,577 @@ export type ConsumptionRecordDetailResult = ConsumptionRecordResult & {
   recentCategoryConsumptions?: Array<ConsumptionRecordResult>
 }
 
-export type ConsumptionRecordDetailResponse = {
-  success?: boolean
-  message?: string
-  data?: ConsumptionRecordDetailResult
-}
-
 export type ConsumptionRecordListResponse = {
-  success?: boolean
-  message?: string
   data?: Array<ConsumptionRecordResult>
+  message?: string
+  success?: boolean
 }
 
-export type ConsumptionRatioResponse = {
-  success: true
-  message: string
+export type ConsumptionRecordResponse = {
+  data?: ConsumptionRecordResult
+  message?: string
+  success?: boolean
+}
+
+export type ConsumptionRecordResult = {
+  categoryCode?: string
+  categoryLabel?: string
+  createdAt?: string
+  id?: string
+  interventionAnswers?: Array<{
+    answerValue?: boolean
+    id?: string
+    questionId?: string
+    questionText?: string
+  }>
+  occurredAt?: string
+  price?: number | null
+  productName?: string
+  productUrl?: string | null
+  reason?: string | null
+  riskScore?: number | null
+  type?: string
+  updatedAt?: string
+  workHoursNeeded?: number | null
+}
+
+export type ConsumptionReportDetailResponse = {
   data: {
-    period: {
-      startDate: string
-      endDate: string
-      days: 28
+    categoryDefenseSummary: Array<{
+      categoryCode: string
+      categoryLabel: string
+      consumedAmount: number
+      defenseRate: number
+      skippedAmount: number
+    }>
+    goalAchievement: {
+      achievementRate: number
+      remainingAmount?: number | null
+      savedAmount: number
+      status: 'NOT_SET' | 'IN_PROGRESS' | 'ACHIEVED'
+      targetAmount?: number | null
     }
-    totalAmount: number
-    skippedAmount: number
-    consumedAmount: number
-    skippedRatio: number
-    consumedRatio: number
+    insights: {
+      /**
+       * 실제 소비 기록이 3건 이상인지 여부 (false일 경우 인사이트 미제공)
+       */
+      hasEnoughData: boolean
+      insights: Array<{
+        amount?: number | null
+        channel?: string | null
+        count?: number | null
+        hour?: number | null
+        ratio?: number | null
+        type?: 'VULNERABLE_TIME' | 'INFLOW_CHANNEL'
+        weekdayLabel?: string
+      }>
+    }
+    reportMonth: string
+    savingStatus: {
+      consumed: {
+        amount: number
+        count: number
+      }
+      skipped: {
+        amount: number
+        count: number
+      }
+      totalAttemptCount: number
+    }
+    totalConsumption: {
+      /**
+       * 소비 금액이 큰 상위 4개 카테고리 + 그 외(합산) 목록
+       */
+      categories: Array<{
+        amount: number
+        categoryCode: string
+        categoryLabel: string
+        ratio: number
+      }>
+      totalAmount: number
+    }
   }
+  message: string
+  success: true
+}
+
+export type DailyQuestionResponse = {
+  data?: {
+    date?: string
+    questionText?: string
+  }
+  message?: string
+  success?: boolean
+}
+
+export type DeleteNotificationResponse = {
+  data?: unknown
+  message?: string
+  success?: boolean
+}
+
+export type DeleteSavingGoalResponse = {
+  data?: {
+    id?: string
+    savingGoalIsActive?: boolean
+  }
+  message?: string
+  success?: boolean
+}
+
+export type EmailVerificationConfirmResponse = {
+  data?: {
+    email?: string
+    emailVerificationToken?: string
+  }
+  message?: string
+  success?: boolean
+}
+
+export type EmailVerificationResponse = {
+  data?: {
+    codeTtlSeconds?: number
+    /**
+     * Development only. Returned when SMTP delivery is skipped or fails.
+     */
+    debugCode?: string
+    email?: string
+    resendCooldownSeconds?: number
+  }
+  message?: string
+  success?: boolean
+}
+
+export type ErrorResponse = {
+  code?: string
+  message?: string
+  success?: boolean
+}
+
+export type GetMeResponse = {
+  data?: {
+    birthDate?: string | null
+    email?: string
+    gender?: 'FEMALE' | 'MALE'
+    hasPassword?: boolean
+    hourlyWage?: string | null
+    id?: string
+    interestTagsJson?: Array<string> | null
+    loginProvider?: 'LOCAL' | 'KAKAO'
+    nickname?: string
+    phoneNumber?: string | null
+    profileImageUrl?: string | null
+    savingGoalText?: string | null
+  }
+  message?: string
+  success?: boolean
+}
+
+export type GetMonthlyBudgetResponse = {
+  data?: unknown | MonthlyBudgetResult
+  message?: string
+  success?: boolean
+}
+
+export type GetNotificationSettingsResponse = {
+  data: {
+    notifyGeneralEnabled: boolean
+    notifyGoalEnabled: boolean
+    notifyPushEnabled: boolean
+    notifyTemptationEnabled: boolean
+  }
+  message: string
+  success: boolean
+}
+
+export type GetOnboardingResponse = {
+  data?: {
+    interestTags?: Array<string> | null
+    savingGoalText?: string | null
+    targetSavingAmount?: string | null
+  }
+  message?: string
+  success?: boolean
+}
+
+export type HomeSummaryResponse = {
+  data?: {
+    consumptionChart?: {
+      categories?: Array<{
+        amount?: number
+        categoryCode?: string
+        categoryLabel?: string
+        ratio?: number
+      }>
+      hasData?: boolean
+      others?: {
+        amount?: number
+        ratio?: number
+      } | null
+      summaryText?: string
+    }
+    goalAchievement?: {
+      message?: string
+      rate?: number
+      remainingAmount?: number | null
+      status?: 'NOT_SET' | 'IN_PROGRESS' | 'ACHIEVED'
+    }
+    remainingBudget?: {
+      amount?: number | null
+      message?: string
+      status?: 'NOT_SET' | 'WITHIN' | 'EXCEEDED'
+    }
+    thisMonthSpending?: {
+      amount?: number
+      comparisonMessage?: string | null
+      comparisonRate?: number | null
+    }
+  }
+  message?: string
+  success?: boolean
 }
 
 export type InterventionQuestionsResponse = {
-  success: true
-  message: string
   data: {
     questions: [
       {
-        questionId: string
-        questionText: string
         description: string
-        sortOrder: number
         options: Array<{
           answerValue: boolean
           label: string
         }>
+        questionId: string
+        questionText: string
+        sortOrder: number
       },
       {
-        questionId: string
-        questionText: string
         description: string
-        sortOrder: number
         options: Array<{
           answerValue: boolean
           label: string
         }>
+        questionId: string
+        questionText: string
+        sortOrder: number
       },
       {
-        questionId: string
-        questionText: string
         description: string
-        sortOrder: number
         options: Array<{
           answerValue: boolean
           label: string
         }>
+        questionId: string
+        questionText: string
+        sortOrder: number
       },
     ]
     recentCategoryConsumption: {
       categoryCode: string
-      totalCount: number
       records: Array<{
         consumptionRecordId: string
-        productName: string
-        price: number
         occurredAt: string
+        price: number
+        productName: string
       }>
+      totalCount: number
     }
   }
+  message: string
+  success: true
+}
+
+export type KakaoAccountConflictResponse = {
+  code: 'AUTH4094'
+  message: string
+  success: false
+}
+
+export type KakaoLinkEmailVerificationResponse = {
+  data: {
+    codeTtlSeconds: number
+    /**
+     * Non-production environments only.
+     */
+    debugCode?: string
+    email: string
+    resendCooldownSeconds: number
+  }
+  message: string
+  success: boolean
+}
+
+export type KakaoLinkRequiredResponse = {
+  code: 'AUTH4093'
+  data: {
+    expiresInSeconds: number
+    /**
+     * 기존 LOCAL 계정의 본인 확인에 사용하는 일회용 토큰
+     */
+    linkingToken: string
+    verificationMethods: Array<'PASSWORD' | 'EMAIL'>
+  }
+  message: string
+  success: false
+}
+
+export type KakaoLinkTokenErrorResponse = {
+  code: 'AUTH4014'
+  message: string
+  success: false
+}
+
+export type KakaoLinkVerificationErrorResponse = {
+  code: 'AUTH4013'
+  message: string
+  success: false
+}
+
+export type ListNotificationsResponse = {
+  data?: Array<NotificationResult>
+  message?: string
+  success?: boolean
+}
+
+export type LoginResponse = {
+  data?: {
+    accessToken?: string
+    refreshToken?: string
+    tokenType?: string
+    user?: {
+      email?: string
+      loginId?: string
+      name?: string
+      phoneNumber?: string
+      userId?: string
+    }
+  }
+  message?: string
+  success?: boolean
+}
+
+export type MarkAllNotificationsReadResponse = {
+  data?: unknown
+  message?: string
+  success?: boolean
+}
+
+export type MarkNotificationReadResponse = {
+  data?: unknown
+  message?: string
+  success?: boolean
+}
+
+export type MonthlyBudgetResult = {
+  /**
+   * 카테고리별 예산 상세 목록
+   */
+  categoryBudgets?: Array<{
+    budgetAmount?: string
+    categoryCode?: string
+    remainingAmount?: string
+    spentAmount?: string
+    usageRate?: number
+  }>
+  /**
+   * 시급 (미설정 시 null)
+   */
+  hourlyWage?: string | null
+  /**
+   * 월 예산
+   */
+  monthlyBudget?: string
+  /**
+   * 월 수입
+   */
+  monthlyIncome?: string | null
+  /**
+   * 수입 기준 잔액
+   */
+  remainingAmount?: string
+  /**
+   * 총 지출 금액
+   */
+  spentAmount?: string
+  /**
+   * 지출에 쓴 시간 = round(월 지출 ÷ 시급, 소수 1자리), 시급 미설정 시 null
+   */
+  spentHours?: number | null
+  /**
+   * 수입 대비 총 사용률(%)
+   */
+  usageRate?: number
+  /**
+   * 이번 달 근무 시간 = round(월 수입 ÷ 시급), 시급 또는 월 수입 미설정 시 null
+   */
+  workedHours?: number | null
+  /**
+   * YYYY-MM
+   */
+  yearMonth?: string
+}
+
+export type NotImplementedResponse = {
+  message?: string
+  success?: boolean
+}
+
+export type NotificationResult = {
+  body?: string
+  createdAt?: string
+  id?: string
+  isRead?: boolean
+  notificationType?: 'TEMPTATION' | 'GOAL' | 'GENERAL'
+  notifyAt?: string
+  readAt?: string | null
+  title?: string
+  wishlistItemId?: string | null
+}
+
+export type PasswordResetConfirmResponse = {
+  data: {
+    [key: string]: unknown
+  } | null
+  message: string
+  success: true
+}
+
+export type PasswordResetRequestResponse = {
+  data: {
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+  }
+  message: string
+  success: true
+}
+
+export type RateLimitErrorResponse = {
+  code: string
+  message: string
+  /**
+   * 적용된 이메일 인증 제한 종류
+   */
+  rateLimitType:
+    | 'RESEND_COOLDOWN'
+    | 'SEND_LIMIT'
+    | 'CONFIRM_LOCK'
+    | 'PASSWORD_RESET_CONFIRM_LOCK'
+    | 'KAKAO_LINK_PASSWORD_LOCK'
+  /**
+   * 요청 시점을 기준으로 다시 시도할 수 있을 때까지 남은 초
+   */
+  retryAfterSeconds: number
+  /**
+   * 다시 시도할 수 있는 UTC 시각
+   */
+  retryAt: string
+  success: boolean
+}
+
+export type RefreshTokenResponse = {
+  data?: {
+    accessToken?: string
+    /**
+     * Rotated refresh token. Use this value for the next refresh request.
+     */
+    refreshToken?: string
+    tokenType?: string
+  }
+  message?: string
+  success?: boolean
 }
 
 export type RiskAnalysisResponse = {
-  success: true
-  message: string
   data: {
-    riskScore: number
     riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'
     riskMessage: string
+    riskScore: number
     workHoursNeeded: number | null
   }
+  message: string
+  success: true
 }
 
-export type GetHealthData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/health'
-}
-
-export type GetHealthResponses = {
-  /**
-   * Server health status
-   */
-  200: unknown
-}
-
-export type PostApiV1AuthSignupData = {
-  body: {
-    name: string
-    loginId: string
-    email: string
-    emailVerificationToken: string
-    password: string & string & string
-    passwordConfirm: string
-    phoneNumber: string
+export type SignupResponse = {
+  data?: {
+    email?: string
+    loginId?: string
+    name?: string
+    phoneNumber?: string
+    userId?: string
   }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/signup'
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthSignupErrors = {
-  /**
-   * Invalid request or email verification token
-   */
-  400: ValidationErrorResponse | ErrorResponse
-  /**
-   * Duplicated email or login id
-   */
-  409: ErrorResponse
+export type UnauthorizedResponse = {
+  message: string
+  success: boolean
 }
 
-export type PostApiV1AuthSignupError = PostApiV1AuthSignupErrors[keyof PostApiV1AuthSignupErrors]
-
-export type PostApiV1AuthSignupResponses = {
-  /**
-   * Signup completed
-   */
-  201: SignupResponse
-}
-
-export type PostApiV1AuthSignupResponse =
-  PostApiV1AuthSignupResponses[keyof PostApiV1AuthSignupResponses]
-
-export type PostApiV1AuthLoginData = {
-  body: {
-    loginId: string
-    password: string & string & string
+export type UpdateMeResponse = {
+  data?: {
+    birthDate?: string | null
+    gender?: 'FEMALE' | 'MALE'
+    id?: string
+    interestTagsJson?: Array<string> | null
+    nickname?: string
+    phoneNumber?: string | null
+    profileImageUrl?: string | null
+    savingGoalText?: string | null
   }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/login'
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthLoginErrors = {
-  /**
-   * Invalid request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Invalid login id or password
-   */
-  401: ErrorResponse
-}
-
-export type PostApiV1AuthLoginError = PostApiV1AuthLoginErrors[keyof PostApiV1AuthLoginErrors]
-
-export type PostApiV1AuthLoginResponses = {
-  /**
-   * Login completed
-   */
-  200: LoginResponse
-}
-
-export type PostApiV1AuthLoginResponse =
-  PostApiV1AuthLoginResponses[keyof PostApiV1AuthLoginResponses]
-
-export type PostApiV1AuthLogoutData = {
-  body: {
-    refreshToken: string
+export type UpdateNotificationSettingsResponse = {
+  data?: {
+    notifyGeneralEnabled?: boolean
+    notifyGoalEnabled?: boolean
+    notifyPushEnabled?: boolean
+    notifyTemptationEnabled?: boolean
   }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/logout'
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthLogoutErrors = {
-  /**
-   * Invalid request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Access token 인증 실패 또는 유효하지 않거나 다른 사용자가 소유한 refresh token
-   */
-  401: ErrorResponse
-}
-
-export type PostApiV1AuthLogoutError = PostApiV1AuthLogoutErrors[keyof PostApiV1AuthLogoutErrors]
-
-export type PostApiV1AuthLogoutResponses = {
-  /**
-   * 현재 로그인 세션 종료 완료. 응답 본문은 없습니다.
-   */
-  204: void
-}
-
-export type PostApiV1AuthLogoutResponse =
-  PostApiV1AuthLogoutResponses[keyof PostApiV1AuthLogoutResponses]
-
-export type PostApiV1AuthRefreshData = {
-  body: {
-    refreshToken: string
+export type UpdateOnboardingResponse = {
+  data?: {
+    interestTags?: Array<string>
+    savingGoalText?: string
+    targetSavingAmount?: string
   }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/refresh'
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthRefreshErrors = {
-  /**
-   * Invalid request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Invalid, expired, used, or revoked refresh token
-   */
-  401: ErrorResponse
+export type UpdateSavingGoalResponse = {
+  data?: {
+    id?: string
+    savingGoalIsActive?: boolean
+    savingGoalText?: string
+    targetSavingAmount?: string
+  }
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthRefreshError = PostApiV1AuthRefreshErrors[keyof PostApiV1AuthRefreshErrors]
-
-export type PostApiV1AuthRefreshResponses = {
-  /**
-   * Access token refreshed
-   */
-  200: RefreshTokenResponse
+export type UpsertMonthlyBudgetResponse = {
+  data?: MonthlyBudgetResult
+  message?: string
+  success?: boolean
 }
 
-export type PostApiV1AuthRefreshResponse =
-  PostApiV1AuthRefreshResponses[keyof PostApiV1AuthRefreshResponses]
+export type ValidationErrorResponse = {
+  code?: string
+  errors?: {
+    fieldErrors?: {
+      [key: string]: Array<string>
+    }
+    formErrors?: Array<string>
+  }
+  message?: string
+  success?: boolean
+}
 
 export type GetApiV1AuthCheckEmailData = {
   body?: never
@@ -894,8 +745,8 @@ export type PostApiV1AuthEmailVerificationsResponse =
 
 export type PostApiV1AuthEmailVerificationsConfirmData = {
   body: {
-    email: string
     code: string
+    email: string
   }
   path?: never
   query?: never
@@ -929,116 +780,6 @@ export type PostApiV1AuthEmailVerificationsConfirmResponses = {
 
 export type PostApiV1AuthEmailVerificationsConfirmResponse =
   PostApiV1AuthEmailVerificationsConfirmResponses[keyof PostApiV1AuthEmailVerificationsConfirmResponses]
-
-export type PostApiV1AuthPasswordResetRequestData = {
-  body: {
-    email: string
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/password-reset/request'
-}
-
-export type PostApiV1AuthPasswordResetRequestErrors = {
-  /**
-   * Invalid request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Password reset request rate limited
-   */
-  429: RateLimitErrorResponse
-}
-
-export type PostApiV1AuthPasswordResetRequestError =
-  PostApiV1AuthPasswordResetRequestErrors[keyof PostApiV1AuthPasswordResetRequestErrors]
-
-export type PostApiV1AuthPasswordResetRequestResponses = {
-  /**
-   * Password reset guidance accepted
-   */
-  200: PasswordResetRequestResponse
-}
-
-export type PostApiV1AuthPasswordResetRequestResponse =
-  PostApiV1AuthPasswordResetRequestResponses[keyof PostApiV1AuthPasswordResetRequestResponses]
-
-export type PatchApiV1AuthPasswordResetConfirmData = {
-  body: {
-    email: string
-    code: string
-    newPassword: string & string & string
-    newPasswordConfirm: string
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/password-reset/confirm'
-}
-
-export type PatchApiV1AuthPasswordResetConfirmErrors = {
-  /**
-   * Invalid request, code, password, expired code, or already used code
-   */
-  400: ValidationErrorResponse | ErrorResponse
-  /**
-   * Password reset confirmation rate limited
-   */
-  429: RateLimitErrorResponse
-}
-
-export type PatchApiV1AuthPasswordResetConfirmError =
-  PatchApiV1AuthPasswordResetConfirmErrors[keyof PatchApiV1AuthPasswordResetConfirmErrors]
-
-export type PatchApiV1AuthPasswordResetConfirmResponses = {
-  /**
-   * Password reset completed
-   */
-  200: PasswordResetConfirmResponse
-}
-
-export type PatchApiV1AuthPasswordResetConfirmResponse =
-  PatchApiV1AuthPasswordResetConfirmResponses[keyof PatchApiV1AuthPasswordResetConfirmResponses]
-
-export type PostApiV1AuthKakaoLoginData = {
-  body: {
-    authorizationCode: string
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/auth/kakao/login'
-}
-
-export type PostApiV1AuthKakaoLoginErrors = {
-  /**
-   * Required Kakao account information is missing
-   */
-  400: unknown
-  /**
-   * Invalid or expired Kakao authorization code
-   */
-  401: unknown
-  /**
-   * Local account verification is required or Kakao account conflict
-   */
-  409: KakaoLinkRequiredResponse | KakaoAccountConflictResponse
-  /**
-   * Kakao API communication failed
-   */
-  502: unknown
-}
-
-export type PostApiV1AuthKakaoLoginError =
-  PostApiV1AuthKakaoLoginErrors[keyof PostApiV1AuthKakaoLoginErrors]
-
-export type PostApiV1AuthKakaoLoginResponses = {
-  /**
-   * Kakao login completed
-   */
-  200: LoginResponse
-}
-
-export type PostApiV1AuthKakaoLoginResponse =
-  PostApiV1AuthKakaoLoginResponses[keyof PostApiV1AuthKakaoLoginResponses]
 
 export type PostApiV1AuthKakaoLinkData = {
   body: {
@@ -1113,8 +854,8 @@ export type PostApiV1AuthKakaoLinkEmailVerificationsResponse =
 
 export type PostApiV1AuthKakaoLinkEmailVerificationsConfirmData = {
   body: {
-    linkingToken: string
     code: string
+    linkingToken: string
   }
   path?: never
   query?: never
@@ -1153,132 +894,314 @@ export type PostApiV1AuthKakaoLinkEmailVerificationsConfirmResponses = {
 export type PostApiV1AuthKakaoLinkEmailVerificationsConfirmResponse =
   PostApiV1AuthKakaoLinkEmailVerificationsConfirmResponses[keyof PostApiV1AuthKakaoLinkEmailVerificationsConfirmResponses]
 
-export type DeleteApiV1UsersMeData = {
+export type PostApiV1AuthKakaoLoginData = {
   body: {
-    password: string
-    reasonType?:
-      | 'LOW_FREQUENCY'
-      | 'MISSING_FEATURE'
-      | 'INCONVENIENT'
-      | 'PRIVACY_CONCERN'
-      | 'SWITCHING_SERVICE'
-      | 'OTHER'
+    authorizationCode: string
   }
   path?: never
   query?: never
-  url: '/api/v1/users/me'
+  url: '/api/v1/auth/kakao/login'
 }
 
-export type DeleteApiV1UsersMeErrors = {
+export type PostApiV1AuthKakaoLoginErrors = {
   /**
-   * 비밀번호 불일치 또는 요청 값 검증 실패
+   * Required Kakao account information is missing
    */
-  400: ValidationErrorResponse | ErrorResponse
+  400: unknown
   /**
-   * Authentication required
+   * Invalid or expired Kakao authorization code
    */
-  401: UnauthorizedResponse
+  401: unknown
+  /**
+   * Local account verification is required or Kakao account conflict
+   */
+  409: KakaoLinkRequiredResponse | KakaoAccountConflictResponse
+  /**
+   * Kakao API communication failed
+   */
+  502: unknown
 }
 
-export type DeleteApiV1UsersMeError = DeleteApiV1UsersMeErrors[keyof DeleteApiV1UsersMeErrors]
+export type PostApiV1AuthKakaoLoginError =
+  PostApiV1AuthKakaoLoginErrors[keyof PostApiV1AuthKakaoLoginErrors]
 
-export type DeleteApiV1UsersMeResponses = {
+export type PostApiV1AuthKakaoLoginResponses = {
   /**
-   * 회원 탈퇴 성공
+   * Kakao login completed
    */
-  200: {
-    success?: boolean
-    message?: string
-    data?: unknown
-  }
+  200: LoginResponse
 }
 
-export type DeleteApiV1UsersMeResponse =
-  DeleteApiV1UsersMeResponses[keyof DeleteApiV1UsersMeResponses]
+export type PostApiV1AuthKakaoLoginResponse =
+  PostApiV1AuthKakaoLoginResponses[keyof PostApiV1AuthKakaoLoginResponses]
 
-export type GetApiV1UsersMeData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/users/me'
-}
-
-export type GetApiV1UsersMeErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 사용자를 찾을 수 없습니다.
-   */
-  404: ErrorResponse
-}
-
-export type GetApiV1UsersMeError = GetApiV1UsersMeErrors[keyof GetApiV1UsersMeErrors]
-
-export type GetApiV1UsersMeResponses = {
-  /**
-   * 회원 정보 조회 성공
-   */
-  200: GetMeResponse
-}
-
-export type GetApiV1UsersMeResponse = GetApiV1UsersMeResponses[keyof GetApiV1UsersMeResponses]
-
-export type PatchApiV1UsersMeData = {
+export type PostApiV1AuthLoginData = {
   body: {
-    nickname?: string
-    profileImageUrl?: string | null
-    interestTags?: Array<string>
-    phoneNumber?: string | null
-    birthDate?: string | null
-    gender?: 'FEMALE' | 'MALE'
+    loginId: string
+    password: string & string & string
   }
   path?: never
   query?: never
-  url: '/api/v1/users/me'
+  url: '/api/v1/auth/login'
 }
 
-export type PatchApiV1UsersMeErrors = {
+export type PostApiV1AuthLoginErrors = {
   /**
-   * Bad Request
+   * Invalid request
    */
   400: ValidationErrorResponse
   /**
-   * Authentication required
+   * Invalid login id or password
    */
-  401: UnauthorizedResponse
-  /**
-   * 사용자를 찾을 수 없습니다.
-   */
-  404: ErrorResponse
+  401: ErrorResponse
 }
 
-export type PatchApiV1UsersMeError = PatchApiV1UsersMeErrors[keyof PatchApiV1UsersMeErrors]
+export type PostApiV1AuthLoginError = PostApiV1AuthLoginErrors[keyof PostApiV1AuthLoginErrors]
 
-export type PatchApiV1UsersMeResponses = {
+export type PostApiV1AuthLoginResponses = {
   /**
-   * 회원 정보 수정 성공
+   * Login completed
    */
-  200: UpdateMeResponse
+  200: LoginResponse
 }
 
-export type PatchApiV1UsersMeResponse = PatchApiV1UsersMeResponses[keyof PatchApiV1UsersMeResponses]
+export type PostApiV1AuthLoginResponse =
+  PostApiV1AuthLoginResponses[keyof PostApiV1AuthLoginResponses]
 
-export type PatchApiV1UsersMePasswordData = {
+export type PostApiV1AuthLogoutData = {
   body: {
-    currentPassword: string
+    refreshToken: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/auth/logout'
+}
+
+export type PostApiV1AuthLogoutErrors = {
+  /**
+   * Invalid request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Access token 인증 실패 또는 유효하지 않거나 다른 사용자가 소유한 refresh token
+   */
+  401: ErrorResponse
+}
+
+export type PostApiV1AuthLogoutError = PostApiV1AuthLogoutErrors[keyof PostApiV1AuthLogoutErrors]
+
+export type PostApiV1AuthLogoutResponses = {
+  /**
+   * 현재 로그인 세션 종료 완료. 응답 본문은 없습니다.
+   */
+  204: void
+}
+
+export type PostApiV1AuthLogoutResponse =
+  PostApiV1AuthLogoutResponses[keyof PostApiV1AuthLogoutResponses]
+
+export type PatchApiV1AuthPasswordResetConfirmData = {
+  body: {
+    code: string
+    email: string
     newPassword: string & string & string
     newPasswordConfirm: string
   }
   path?: never
   query?: never
-  url: '/api/v1/users/me/password'
+  url: '/api/v1/auth/password-reset/confirm'
 }
 
-export type PatchApiV1UsersMePasswordErrors = {
+export type PatchApiV1AuthPasswordResetConfirmErrors = {
   /**
-   * 현재 비밀번호 불일치 또는 요청 값 검증 실패
+   * Invalid request, code, password, expired code, or already used code
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Password reset confirmation rate limited
+   */
+  429: RateLimitErrorResponse
+}
+
+export type PatchApiV1AuthPasswordResetConfirmError =
+  PatchApiV1AuthPasswordResetConfirmErrors[keyof PatchApiV1AuthPasswordResetConfirmErrors]
+
+export type PatchApiV1AuthPasswordResetConfirmResponses = {
+  /**
+   * Password reset completed
+   */
+  200: PasswordResetConfirmResponse
+}
+
+export type PatchApiV1AuthPasswordResetConfirmResponse =
+  PatchApiV1AuthPasswordResetConfirmResponses[keyof PatchApiV1AuthPasswordResetConfirmResponses]
+
+export type PostApiV1AuthPasswordResetRequestData = {
+  body: {
+    email: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/auth/password-reset/request'
+}
+
+export type PostApiV1AuthPasswordResetRequestErrors = {
+  /**
+   * Invalid request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Password reset request rate limited
+   */
+  429: RateLimitErrorResponse
+}
+
+export type PostApiV1AuthPasswordResetRequestError =
+  PostApiV1AuthPasswordResetRequestErrors[keyof PostApiV1AuthPasswordResetRequestErrors]
+
+export type PostApiV1AuthPasswordResetRequestResponses = {
+  /**
+   * Password reset guidance accepted
+   */
+  200: PasswordResetRequestResponse
+}
+
+export type PostApiV1AuthPasswordResetRequestResponse =
+  PostApiV1AuthPasswordResetRequestResponses[keyof PostApiV1AuthPasswordResetRequestResponses]
+
+export type PostApiV1AuthRefreshData = {
+  body: {
+    refreshToken: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/auth/refresh'
+}
+
+export type PostApiV1AuthRefreshErrors = {
+  /**
+   * Invalid request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Invalid, expired, used, or revoked refresh token
+   */
+  401: ErrorResponse
+}
+
+export type PostApiV1AuthRefreshError = PostApiV1AuthRefreshErrors[keyof PostApiV1AuthRefreshErrors]
+
+export type PostApiV1AuthRefreshResponses = {
+  /**
+   * Access token refreshed
+   */
+  200: RefreshTokenResponse
+}
+
+export type PostApiV1AuthRefreshResponse =
+  PostApiV1AuthRefreshResponses[keyof PostApiV1AuthRefreshResponses]
+
+export type PostApiV1AuthSignupData = {
+  body: {
+    email: string
+    emailVerificationToken: string
+    loginId: string
+    name: string
+    password: string & string & string
+    passwordConfirm: string
+    phoneNumber: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/auth/signup'
+}
+
+export type PostApiV1AuthSignupErrors = {
+  /**
+   * Invalid request or email verification token
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Duplicated email or login id
+   */
+  409: ErrorResponse
+}
+
+export type PostApiV1AuthSignupError = PostApiV1AuthSignupErrors[keyof PostApiV1AuthSignupErrors]
+
+export type PostApiV1AuthSignupResponses = {
+  /**
+   * Signup completed
+   */
+  201: SignupResponse
+}
+
+export type PostApiV1AuthSignupResponse =
+  PostApiV1AuthSignupResponses[keyof PostApiV1AuthSignupResponses]
+
+export type GetApiV1ConsumptionRecordsData = {
+  body?: never
+  path?: never
+  query?: {
+    type?: 'ALL' | 'CONSUMED' | 'SKIPPED'
+  }
+  url: '/api/v1/consumption-records'
+}
+
+export type GetApiV1ConsumptionRecordsErrors = {
+  /**
+   * Invalid path or query parameter
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * Unexpected consumption record processing error
+   */
+  500: ErrorResponse
+}
+
+export type GetApiV1ConsumptionRecordsError =
+  GetApiV1ConsumptionRecordsErrors[keyof GetApiV1ConsumptionRecordsErrors]
+
+export type GetApiV1ConsumptionRecordsResponses = {
+  /**
+   * Consumption record list
+   */
+  200: ConsumptionRecordListResponse
+}
+
+export type GetApiV1ConsumptionRecordsResponse =
+  GetApiV1ConsumptionRecordsResponses[keyof GetApiV1ConsumptionRecordsResponses]
+
+export type PostApiV1ConsumptionRecordsData = {
+  /**
+   * occurredAt을 생략하면 서버의 현재 시각을 소비 발생 시각으로 저장합니다.
+   */
+  body: {
+    category_code?: string
+    interventionAnswers?: Array<{
+      answerValue: boolean
+      questionId: number
+    }>
+    occurredAt?: string
+    price: number
+    productName: string
+    productUrl?: string
+    reason?: string
+    riskScore?: number
+    type: 'CONSUMED' | 'SKIPPED'
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/consumption-records'
+}
+
+export type PostApiV1ConsumptionRecordsErrors = {
+  /**
+   * Invalid consumption record request
    */
   400: ValidationErrorResponse | ErrorResponse
   /**
@@ -1286,73 +1209,116 @@ export type PatchApiV1UsersMePasswordErrors = {
    */
   401: UnauthorizedResponse
   /**
-   * 사용자를 찾을 수 없습니다.
+   * Not Found
    */
   404: ErrorResponse
+  /**
+   * Internal Server Error
+   */
+  500: ErrorResponse
 }
 
-export type PatchApiV1UsersMePasswordError =
-  PatchApiV1UsersMePasswordErrors[keyof PatchApiV1UsersMePasswordErrors]
+export type PostApiV1ConsumptionRecordsError =
+  PostApiV1ConsumptionRecordsErrors[keyof PostApiV1ConsumptionRecordsErrors]
 
-export type PatchApiV1UsersMePasswordResponses = {
+export type PostApiV1ConsumptionRecordsResponses = {
   /**
-   * 비밀번호가 변경되었습니다.
+   * Consumption record created
+   */
+  201: ConsumptionRecordCreatedResponse
+}
+
+export type PostApiV1ConsumptionRecordsResponse =
+  PostApiV1ConsumptionRecordsResponses[keyof PostApiV1ConsumptionRecordsResponses]
+
+export type GetApiV1ConsumptionRecordsRatioData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/consumption-records/ratio'
+}
+
+export type GetApiV1ConsumptionRecordsRatioErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * Unexpected consumption record processing error
+   */
+  500: ErrorResponse
+}
+
+export type GetApiV1ConsumptionRecordsRatioError =
+  GetApiV1ConsumptionRecordsRatioErrors[keyof GetApiV1ConsumptionRecordsRatioErrors]
+
+export type GetApiV1ConsumptionRecordsRatioResponses = {
+  /**
+   * 최근 소비 비율 조회 성공
+   */
+  200: ConsumptionRatioResponse
+}
+
+export type GetApiV1ConsumptionRecordsRatioResponse =
+  GetApiV1ConsumptionRecordsRatioResponses[keyof GetApiV1ConsumptionRecordsRatioResponses]
+
+export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdData = {
+  body?: never
+  path: {
+    consumptionRecordId: number
+  }
+  query?: never
+  url: '/api/v1/consumption-records/{consumptionRecordId}'
+}
+
+export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
+  /**
+   * Invalid path or query parameter
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * Consumption record not found or inaccessible
+   */
+  404: ErrorResponse
+  /**
+   * Unexpected consumption record processing error
+   */
+  500: ErrorResponse
+}
+
+export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdError =
+  DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
+
+export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
+  /**
+   * Consumption record deleted
    */
   200: {
-    success: true
-    message: string
-    data: unknown
+    data?: unknown
+    message?: string
+    success?: boolean
   }
 }
 
-export type PatchApiV1UsersMePasswordResponse =
-  PatchApiV1UsersMePasswordResponses[keyof PatchApiV1UsersMePasswordResponses]
+export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
+  DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
 
-export type DeleteApiV1UsersMeSavingGoalData = {
+export type GetApiV1ConsumptionRecordsByConsumptionRecordIdData = {
   body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/users/me/saving-goal'
-}
-
-export type DeleteApiV1UsersMeSavingGoalErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 사용자를 찾을 수 없습니다.
-   */
-  404: ErrorResponse
-}
-
-export type DeleteApiV1UsersMeSavingGoalError =
-  DeleteApiV1UsersMeSavingGoalErrors[keyof DeleteApiV1UsersMeSavingGoalErrors]
-
-export type DeleteApiV1UsersMeSavingGoalResponses = {
-  /**
-   * 절약 목적 삭제 성공
-   */
-  200: DeleteSavingGoalResponse
-}
-
-export type DeleteApiV1UsersMeSavingGoalResponse =
-  DeleteApiV1UsersMeSavingGoalResponses[keyof DeleteApiV1UsersMeSavingGoalResponses]
-
-export type PutApiV1UsersMeSavingGoalData = {
-  body: {
-    savingGoalText: string
-    targetSavingAmount: number
-    savingGoalIsActive?: boolean
+  path: {
+    consumptionRecordId: number
   }
-  path?: never
   query?: never
-  url: '/api/v1/users/me/saving-goal'
+  url: '/api/v1/consumption-records/{consumptionRecordId}'
 }
 
-export type PutApiV1UsersMeSavingGoalErrors = {
+export type GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
   /**
-   * Bad Request
+   * Invalid path or query parameter
    */
   400: ValidationErrorResponse
   /**
@@ -1360,32 +1326,148 @@ export type PutApiV1UsersMeSavingGoalErrors = {
    */
   401: UnauthorizedResponse
   /**
-   * 사용자를 찾을 수 없습니다.
+   * Consumption record not found or inaccessible
    */
   404: ErrorResponse
-}
-
-export type PutApiV1UsersMeSavingGoalError =
-  PutApiV1UsersMeSavingGoalErrors[keyof PutApiV1UsersMeSavingGoalErrors]
-
-export type PutApiV1UsersMeSavingGoalResponses = {
   /**
-   * 절약 목적 수정 성공
+   * Unexpected consumption record processing error
    */
-  200: UpdateSavingGoalResponse
+  500: ErrorResponse
 }
 
-export type PutApiV1UsersMeSavingGoalResponse =
-  PutApiV1UsersMeSavingGoalResponses[keyof PutApiV1UsersMeSavingGoalResponses]
+export type GetApiV1ConsumptionRecordsByConsumptionRecordIdError =
+  GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
 
-export type GetApiV1UsersMeNotificationSettingsData = {
+export type GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
+  /**
+   * Consumption record detail
+   */
+  200: ConsumptionRecordDetailResponse
+}
+
+export type GetApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
+  GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
+
+export type PutApiV1ConsumptionRecordsByConsumptionRecordIdData = {
+  body: {
+    category_code?: string | null
+    interventionAnswers?: Array<{
+      answerValue: boolean
+      questionId: number
+    }>
+    occurredAt?: string
+    price?: number
+    productName?: string
+    productUrl?: string | null
+    reason?: string | null
+    riskScore?: number | null
+    type?: 'CONSUMED' | 'SKIPPED'
+  }
+  path: {
+    consumptionRecordId: number
+  }
+  query?: never
+  url: '/api/v1/consumption-records/{consumptionRecordId}'
+}
+
+export type PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
+  /**
+   * Invalid consumption record request
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * Consumption record or intervention question not found
+   */
+  404: ErrorResponse
+  /**
+   * Unexpected consumption record processing error
+   */
+  500: ErrorResponse
+}
+
+export type PutApiV1ConsumptionRecordsByConsumptionRecordIdError =
+  PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
+
+export type PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
+  /**
+   * Consumption record updated
+   */
+  200: ConsumptionRecordResponse
+}
+
+export type PutApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
+  PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
+
+export type GetApiV1HomeCheerMessageData = {
   body?: never
   path?: never
   query?: never
-  url: '/api/v1/users/me/notification-settings'
+  url: '/api/v1/home/cheer-message'
 }
 
-export type GetApiV1UsersMeNotificationSettingsErrors = {
+export type GetApiV1HomeCheerMessageErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 목표 금액 미설정 또는 사용자 미존재
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1HomeCheerMessageError =
+  GetApiV1HomeCheerMessageErrors[keyof GetApiV1HomeCheerMessageErrors]
+
+export type GetApiV1HomeCheerMessageResponses = {
+  /**
+   * 응원 메시지 조회 성공
+   */
+  200: CheerMessageResponse
+}
+
+export type GetApiV1HomeCheerMessageResponse =
+  GetApiV1HomeCheerMessageResponses[keyof GetApiV1HomeCheerMessageResponses]
+
+export type GetApiV1HomeDailyQuestionData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/home/daily-question'
+}
+
+export type GetApiV1HomeDailyQuestionErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+}
+
+export type GetApiV1HomeDailyQuestionError =
+  GetApiV1HomeDailyQuestionErrors[keyof GetApiV1HomeDailyQuestionErrors]
+
+export type GetApiV1HomeDailyQuestionResponses = {
+  /**
+   * 오늘의 소비 질문 조회 성공
+   */
+  200: DailyQuestionResponse
+}
+
+export type GetApiV1HomeDailyQuestionResponse =
+  GetApiV1HomeDailyQuestionResponses[keyof GetApiV1HomeDailyQuestionResponses]
+
+export type GetApiV1HomeSummaryData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/home/summary'
+}
+
+export type GetApiV1HomeSummaryErrors = {
   /**
    * Authentication required
    */
@@ -1396,73 +1478,115 @@ export type GetApiV1UsersMeNotificationSettingsErrors = {
   404: ErrorResponse
 }
 
-export type GetApiV1UsersMeNotificationSettingsError =
-  GetApiV1UsersMeNotificationSettingsErrors[keyof GetApiV1UsersMeNotificationSettingsErrors]
+export type GetApiV1HomeSummaryError = GetApiV1HomeSummaryErrors[keyof GetApiV1HomeSummaryErrors]
 
-export type GetApiV1UsersMeNotificationSettingsResponses = {
+export type GetApiV1HomeSummaryResponses = {
   /**
-   * 알림 설정 조회 성공
+   * 홈 요약 조회 성공
    */
-  200: GetNotificationSettingsResponse
+  200: HomeSummaryResponse
 }
 
-export type GetApiV1UsersMeNotificationSettingsResponse =
-  GetApiV1UsersMeNotificationSettingsResponses[keyof GetApiV1UsersMeNotificationSettingsResponses]
+export type GetApiV1HomeSummaryResponse =
+  GetApiV1HomeSummaryResponses[keyof GetApiV1HomeSummaryResponses]
 
-export type PatchApiV1UsersMeNotificationSettingsData = {
+export type GetApiV1InterventionQuestionsData = {
+  body?: never
+  path?: never
+  query: {
+    category_code: string
+  }
+  url: '/api/v1/intervention-questions'
+}
+
+export type GetApiV1InterventionQuestionsErrors = {
+  /**
+   * Query 검증 실패 또는 허용되지 않은 category_code
+   */
+  400: ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 활성 Q1~Q3를 찾을 수 없음 (INTERVENTION4041)
+   */
+  404: ErrorResponse
+  /**
+   * 질문 또는 최근 소비 기록 조회 실패 (INTERVENTION5001)
+   */
+  500: ErrorResponse
+}
+
+export type GetApiV1InterventionQuestionsError =
+  GetApiV1InterventionQuestionsErrors[keyof GetApiV1InterventionQuestionsErrors]
+
+export type GetApiV1InterventionQuestionsResponses = {
+  /**
+   * 개입 질문 목록 조회 성공
+   */
+  200: InterventionQuestionsResponse
+}
+
+export type GetApiV1InterventionQuestionsResponse =
+  GetApiV1InterventionQuestionsResponses[keyof GetApiV1InterventionQuestionsResponses]
+
+export type PostApiV1InterventionsRiskScoreData = {
   body: {
-    notifyGoalEnabled?: boolean
-    notifyTemptationEnabled?: boolean
-    notifyGeneralEnabled?: boolean
-    notifyPushEnabled?: boolean
+    interventionAnswers: Array<{
+      answerValue: boolean
+      questionId: number | string
+    }>
+    price: number
   }
   path?: never
   query?: never
-  url: '/api/v1/users/me/notification-settings'
+  url: '/api/v1/interventions/risk-score'
 }
 
-export type PatchApiV1UsersMeNotificationSettingsErrors = {
+export type PostApiV1InterventionsRiskScoreErrors = {
   /**
-   * Bad Request
+   * DTO 검증 실패(COMMON4001), 중복 질문(CONSUMPTION_RECORD4003), 필수 질문 누락(RISK4001)
    */
-  400: ValidationErrorResponse
+  400: ErrorResponse
   /**
    * Authentication required
    */
   401: UnauthorizedResponse
   /**
-   * 사용자를 찾을 수 없습니다.
+   * 질문이 존재하지 않거나 비활성 상태(CONSUMPTION_RECORD4042)
    */
   404: ErrorResponse
   /**
-   * 동시 요청 충돌 발생
+   * 위험도 계산 실패(RISK5001)
    */
-  409: ErrorResponse
+  500: ErrorResponse
 }
 
-export type PatchApiV1UsersMeNotificationSettingsError =
-  PatchApiV1UsersMeNotificationSettingsErrors[keyof PatchApiV1UsersMeNotificationSettingsErrors]
+export type PostApiV1InterventionsRiskScoreError =
+  PostApiV1InterventionsRiskScoreErrors[keyof PostApiV1InterventionsRiskScoreErrors]
 
-export type PatchApiV1UsersMeNotificationSettingsResponses = {
+export type PostApiV1InterventionsRiskScoreResponses = {
   /**
-   * 알림 설정 수정 성공
+   * 소비 위험도 계산 성공
    */
-  200: UpdateNotificationSettingsResponse
+  200: RiskAnalysisResponse
 }
 
-export type PatchApiV1UsersMeNotificationSettingsResponse =
-  PatchApiV1UsersMeNotificationSettingsResponses[keyof PatchApiV1UsersMeNotificationSettingsResponses]
+export type PostApiV1InterventionsRiskScoreResponse =
+  PostApiV1InterventionsRiskScoreResponses[keyof PostApiV1InterventionsRiskScoreResponses]
 
-export type GetApiV1UsersMeBudgetData = {
+export type GetApiV1NotificationsData = {
   body?: never
   path?: never
   query?: {
-    yearMonth?: string
+    type?: 'ALL' | 'GENERAL' | 'GOAL' | 'TEMPTATION'
+    sort?: 'LATEST' | 'OLDEST' | 'UNREAD_FIRST'
   }
-  url: '/api/v1/users/me/budget'
+  url: '/api/v1/notifications'
 }
 
-export type GetApiV1UsersMeBudgetErrors = {
+export type GetApiV1NotificationsErrors = {
   /**
    * Bad Request
    */
@@ -1471,51 +1595,58 @@ export type GetApiV1UsersMeBudgetErrors = {
    * Authentication required
    */
   401: UnauthorizedResponse
-  /**
-   * 사용자를 찾을 수 없습니다.
-   */
-  404: ErrorResponse
 }
 
-export type GetApiV1UsersMeBudgetError =
-  GetApiV1UsersMeBudgetErrors[keyof GetApiV1UsersMeBudgetErrors]
+export type GetApiV1NotificationsError =
+  GetApiV1NotificationsErrors[keyof GetApiV1NotificationsErrors]
 
-export type GetApiV1UsersMeBudgetResponses = {
+export type GetApiV1NotificationsResponses = {
   /**
-   * 월별 수입/예산 조회 성공
+   * 알림 목록 조회 성공
    */
-  200: GetMonthlyBudgetResponse
+  200: ListNotificationsResponse
 }
 
-export type GetApiV1UsersMeBudgetResponse =
-  GetApiV1UsersMeBudgetResponses[keyof GetApiV1UsersMeBudgetResponses]
+export type GetApiV1NotificationsResponse =
+  GetApiV1NotificationsResponses[keyof GetApiV1NotificationsResponses]
 
-export type PutApiV1UsersMeBudgetData = {
-  body: {
-    yearMonth: string
-    monthlyIncome?: number
-    monthlyBudget?: number
-    hourlyWage?: number
-    categoryBudgets?: Array<{
-      categoryCode:
-        | 'FASHION'
-        | 'BEAUTY'
-        | 'FOOD_SNACK'
-        | 'CAFE_DESSERT'
-        | 'HOBBY_GOODS'
-        | 'ELECTRONICS'
-        | 'HEALTH_FITNESS'
-        | 'TRAVEL'
-        | 'ETC'
-      budgetAmount: number
-    }>
-  }
+export type PatchApiV1NotificationsReadAllData = {
+  body?: never
   path?: never
   query?: never
-  url: '/api/v1/users/me/budget'
+  url: '/api/v1/notifications/read-all'
 }
 
-export type PutApiV1UsersMeBudgetErrors = {
+export type PatchApiV1NotificationsReadAllErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+}
+
+export type PatchApiV1NotificationsReadAllError =
+  PatchApiV1NotificationsReadAllErrors[keyof PatchApiV1NotificationsReadAllErrors]
+
+export type PatchApiV1NotificationsReadAllResponses = {
+  /**
+   * 알림 전체 읽음 처리 성공
+   */
+  200: MarkAllNotificationsReadResponse
+}
+
+export type PatchApiV1NotificationsReadAllResponse =
+  PatchApiV1NotificationsReadAllResponses[keyof PatchApiV1NotificationsReadAllResponses]
+
+export type DeleteApiV1NotificationsByNotificationIdData = {
+  body?: never
+  path: {
+    notificationId: number
+  }
+  query?: never
+  url: '/api/v1/notifications/{notificationId}'
+}
+
+export type DeleteApiV1NotificationsByNotificationIdErrors = {
   /**
    * Bad Request
    */
@@ -1525,23 +1656,60 @@ export type PutApiV1UsersMeBudgetErrors = {
    */
   401: UnauthorizedResponse
   /**
-   * 사용자를 찾을 수 없습니다.
+   * 요청한 알림을 찾을 수 없습니다.
    */
   404: ErrorResponse
 }
 
-export type PutApiV1UsersMeBudgetError =
-  PutApiV1UsersMeBudgetErrors[keyof PutApiV1UsersMeBudgetErrors]
+export type DeleteApiV1NotificationsByNotificationIdError =
+  DeleteApiV1NotificationsByNotificationIdErrors[keyof DeleteApiV1NotificationsByNotificationIdErrors]
 
-export type PutApiV1UsersMeBudgetResponses = {
+export type DeleteApiV1NotificationsByNotificationIdResponses = {
   /**
-   * 월별 수입/예산이 설정되었습니다.
+   * 알림 삭제 성공
    */
-  200: UpsertMonthlyBudgetResponse
+  200: DeleteNotificationResponse
 }
 
-export type PutApiV1UsersMeBudgetResponse =
-  PutApiV1UsersMeBudgetResponses[keyof PutApiV1UsersMeBudgetResponses]
+export type DeleteApiV1NotificationsByNotificationIdResponse =
+  DeleteApiV1NotificationsByNotificationIdResponses[keyof DeleteApiV1NotificationsByNotificationIdResponses]
+
+export type PatchApiV1NotificationsByNotificationIdReadData = {
+  body?: never
+  path: {
+    notificationId: number
+  }
+  query?: never
+  url: '/api/v1/notifications/{notificationId}/read'
+}
+
+export type PatchApiV1NotificationsByNotificationIdReadErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 요청한 알림을 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type PatchApiV1NotificationsByNotificationIdReadError =
+  PatchApiV1NotificationsByNotificationIdReadErrors[keyof PatchApiV1NotificationsByNotificationIdReadErrors]
+
+export type PatchApiV1NotificationsByNotificationIdReadResponses = {
+  /**
+   * 알림 읽음 처리 성공
+   */
+  200: MarkNotificationReadResponse
+}
+
+export type PatchApiV1NotificationsByNotificationIdReadResponse =
+  PatchApiV1NotificationsByNotificationIdReadResponses[keyof PatchApiV1NotificationsByNotificationIdReadResponses]
 
 export type GetApiV1OnboardingData = {
   body?: never
@@ -1611,443 +1779,6 @@ export type PutApiV1OnboardingResponses = {
 export type PutApiV1OnboardingResponse =
   PutApiV1OnboardingResponses[keyof PutApiV1OnboardingResponses]
 
-export type GetApiV1HomeSummaryData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/home/summary'
-}
-
-export type GetApiV1HomeSummaryErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 사용자를 찾을 수 없습니다.
-   */
-  404: ErrorResponse
-}
-
-export type GetApiV1HomeSummaryError = GetApiV1HomeSummaryErrors[keyof GetApiV1HomeSummaryErrors]
-
-export type GetApiV1HomeSummaryResponses = {
-  /**
-   * 홈 요약 조회 성공
-   */
-  200: HomeSummaryResponse
-}
-
-export type GetApiV1HomeSummaryResponse =
-  GetApiV1HomeSummaryResponses[keyof GetApiV1HomeSummaryResponses]
-
-export type GetApiV1HomeCheerMessageData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/home/cheer-message'
-}
-
-export type GetApiV1HomeCheerMessageErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 목표 금액 미설정 또는 사용자 미존재
-   */
-  404: ErrorResponse
-}
-
-export type GetApiV1HomeCheerMessageError =
-  GetApiV1HomeCheerMessageErrors[keyof GetApiV1HomeCheerMessageErrors]
-
-export type GetApiV1HomeCheerMessageResponses = {
-  /**
-   * 응원 메시지 조회 성공
-   */
-  200: CheerMessageResponse
-}
-
-export type GetApiV1HomeCheerMessageResponse =
-  GetApiV1HomeCheerMessageResponses[keyof GetApiV1HomeCheerMessageResponses]
-
-export type GetApiV1HomeDailyQuestionData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/home/daily-question'
-}
-
-export type GetApiV1HomeDailyQuestionErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-}
-
-export type GetApiV1HomeDailyQuestionError =
-  GetApiV1HomeDailyQuestionErrors[keyof GetApiV1HomeDailyQuestionErrors]
-
-export type GetApiV1HomeDailyQuestionResponses = {
-  /**
-   * 오늘의 소비 질문 조회 성공
-   */
-  200: DailyQuestionResponse
-}
-
-export type GetApiV1HomeDailyQuestionResponse =
-  GetApiV1HomeDailyQuestionResponses[keyof GetApiV1HomeDailyQuestionResponses]
-
-export type GetApiV1ConsumptionRecordsData = {
-  body?: never
-  path?: never
-  query?: {
-    type?: 'ALL' | 'CONSUMED' | 'SKIPPED'
-  }
-  url: '/api/v1/consumption-records'
-}
-
-export type GetApiV1ConsumptionRecordsErrors = {
-  /**
-   * Invalid path or query parameter
-   */
-  400: ValidationErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Unexpected consumption record processing error
-   */
-  500: ErrorResponse
-}
-
-export type GetApiV1ConsumptionRecordsError =
-  GetApiV1ConsumptionRecordsErrors[keyof GetApiV1ConsumptionRecordsErrors]
-
-export type GetApiV1ConsumptionRecordsResponses = {
-  /**
-   * Consumption record list
-   */
-  200: ConsumptionRecordListResponse
-}
-
-export type GetApiV1ConsumptionRecordsResponse =
-  GetApiV1ConsumptionRecordsResponses[keyof GetApiV1ConsumptionRecordsResponses]
-
-export type PostApiV1ConsumptionRecordsData = {
-  /**
-   * occurredAt을 생략하면 서버의 현재 시각을 소비 발생 시각으로 저장합니다.
-   */
-  body: {
-    type: 'CONSUMED' | 'SKIPPED'
-    productName: string
-    price: number
-    productUrl?: string
-    reason?: string
-    occurredAt?: string
-    riskScore?: number
-    category_code?: string
-    interventionAnswers?: Array<{
-      questionId: number
-      answerValue: boolean
-    }>
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/consumption-records'
-}
-
-export type PostApiV1ConsumptionRecordsErrors = {
-  /**
-   * Invalid consumption record request
-   */
-  400: ValidationErrorResponse | ErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Not Found
-   */
-  404: ErrorResponse
-  /**
-   * Internal Server Error
-   */
-  500: ErrorResponse
-}
-
-export type PostApiV1ConsumptionRecordsError =
-  PostApiV1ConsumptionRecordsErrors[keyof PostApiV1ConsumptionRecordsErrors]
-
-export type PostApiV1ConsumptionRecordsResponses = {
-  /**
-   * Consumption record created
-   */
-  201: ConsumptionRecordCreatedResponse
-}
-
-export type PostApiV1ConsumptionRecordsResponse =
-  PostApiV1ConsumptionRecordsResponses[keyof PostApiV1ConsumptionRecordsResponses]
-
-export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdData = {
-  body?: never
-  path: {
-    consumptionRecordId: number
-  }
-  query?: never
-  url: '/api/v1/consumption-records/{consumptionRecordId}'
-}
-
-export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
-  /**
-   * Invalid path or query parameter
-   */
-  400: ValidationErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Consumption record not found or inaccessible
-   */
-  404: ErrorResponse
-  /**
-   * Unexpected consumption record processing error
-   */
-  500: ErrorResponse
-}
-
-export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdError =
-  DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof DeleteApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
-
-export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
-  /**
-   * Consumption record deleted
-   */
-  200: {
-    success?: boolean
-    message?: string
-    data?: unknown
-  }
-}
-
-export type DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
-  DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof DeleteApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
-
-export type GetApiV1ConsumptionRecordsByConsumptionRecordIdData = {
-  body?: never
-  path: {
-    consumptionRecordId: number
-  }
-  query?: never
-  url: '/api/v1/consumption-records/{consumptionRecordId}'
-}
-
-export type GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
-  /**
-   * Invalid path or query parameter
-   */
-  400: ValidationErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Consumption record not found or inaccessible
-   */
-  404: ErrorResponse
-  /**
-   * Unexpected consumption record processing error
-   */
-  500: ErrorResponse
-}
-
-export type GetApiV1ConsumptionRecordsByConsumptionRecordIdError =
-  GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof GetApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
-
-export type GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
-  /**
-   * Consumption record detail
-   */
-  200: ConsumptionRecordDetailResponse
-}
-
-export type GetApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
-  GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof GetApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
-
-export type PutApiV1ConsumptionRecordsByConsumptionRecordIdData = {
-  body: {
-    type?: 'CONSUMED' | 'SKIPPED'
-    productName?: string
-    price?: number
-    productUrl?: string | null
-    reason?: string | null
-    occurredAt?: string
-    riskScore?: number | null
-    category_code?: string | null
-    interventionAnswers?: Array<{
-      questionId: number
-      answerValue: boolean
-    }>
-  }
-  path: {
-    consumptionRecordId: number
-  }
-  query?: never
-  url: '/api/v1/consumption-records/{consumptionRecordId}'
-}
-
-export type PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors = {
-  /**
-   * Invalid consumption record request
-   */
-  400: ValidationErrorResponse | ErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Consumption record or intervention question not found
-   */
-  404: ErrorResponse
-  /**
-   * Unexpected consumption record processing error
-   */
-  500: ErrorResponse
-}
-
-export type PutApiV1ConsumptionRecordsByConsumptionRecordIdError =
-  PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors[keyof PutApiV1ConsumptionRecordsByConsumptionRecordIdErrors]
-
-export type PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses = {
-  /**
-   * Consumption record updated
-   */
-  200: ConsumptionRecordResponse
-}
-
-export type PutApiV1ConsumptionRecordsByConsumptionRecordIdResponse =
-  PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses[keyof PutApiV1ConsumptionRecordsByConsumptionRecordIdResponses]
-
-export type GetApiV1ConsumptionRecordsRatioData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/consumption-records/ratio'
-}
-
-export type GetApiV1ConsumptionRecordsRatioErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Unexpected consumption record processing error
-   */
-  500: ErrorResponse
-}
-
-export type GetApiV1ConsumptionRecordsRatioError =
-  GetApiV1ConsumptionRecordsRatioErrors[keyof GetApiV1ConsumptionRecordsRatioErrors]
-
-export type GetApiV1ConsumptionRecordsRatioResponses = {
-  /**
-   * 최근 소비 비율 조회 성공
-   */
-  200: ConsumptionRatioResponse
-}
-
-export type GetApiV1ConsumptionRecordsRatioResponse =
-  GetApiV1ConsumptionRecordsRatioResponses[keyof GetApiV1ConsumptionRecordsRatioResponses]
-
-export type GetApiV1InterventionQuestionsData = {
-  body?: never
-  path?: never
-  query: {
-    category_code: string
-  }
-  url: '/api/v1/intervention-questions'
-}
-
-export type GetApiV1InterventionQuestionsErrors = {
-  /**
-   * Query 검증 실패 또는 허용되지 않은 category_code
-   */
-  400: ErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 활성 Q1~Q3를 찾을 수 없음 (INTERVENTION4041)
-   */
-  404: ErrorResponse
-  /**
-   * 질문 또는 최근 소비 기록 조회 실패 (INTERVENTION5001)
-   */
-  500: ErrorResponse
-}
-
-export type GetApiV1InterventionQuestionsError =
-  GetApiV1InterventionQuestionsErrors[keyof GetApiV1InterventionQuestionsErrors]
-
-export type GetApiV1InterventionQuestionsResponses = {
-  /**
-   * 개입 질문 목록 조회 성공
-   */
-  200: InterventionQuestionsResponse
-}
-
-export type GetApiV1InterventionQuestionsResponse =
-  GetApiV1InterventionQuestionsResponses[keyof GetApiV1InterventionQuestionsResponses]
-
-export type PostApiV1InterventionsRiskScoreData = {
-  body: {
-    price: number
-    interventionAnswers: Array<{
-      questionId: number | string
-      answerValue: boolean
-    }>
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/interventions/risk-score'
-}
-
-export type PostApiV1InterventionsRiskScoreErrors = {
-  /**
-   * DTO 검증 실패(COMMON4001), 중복 질문(CONSUMPTION_RECORD4003), 필수 질문 누락(RISK4001)
-   */
-  400: ErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 질문이 존재하지 않거나 비활성 상태(CONSUMPTION_RECORD4042)
-   */
-  404: ErrorResponse
-  /**
-   * 위험도 계산 실패(RISK5001)
-   */
-  500: ErrorResponse
-}
-
-export type PostApiV1InterventionsRiskScoreError =
-  PostApiV1InterventionsRiskScoreErrors[keyof PostApiV1InterventionsRiskScoreErrors]
-
-export type PostApiV1InterventionsRiskScoreResponses = {
-  /**
-   * 소비 위험도 계산 성공
-   */
-  200: RiskAnalysisResponse
-}
-
-export type PostApiV1InterventionsRiskScoreResponse =
-  PostApiV1InterventionsRiskScoreResponses[keyof PostApiV1InterventionsRiskScoreResponses]
-
 export type PostApiV1ProductUrlParseData = {
   body: {
     productUrl: string
@@ -2088,39 +1819,18 @@ export type PostApiV1ProductUrlParseResponses = {
    * 상품 URL 파싱 성공
    */
   200: {
-    success: boolean
-    message: string
     data: {
-      productName: string
-      price: number
       occurredAt: string
+      price: number
+      productName: string
     }
+    message: string
+    success: boolean
   }
 }
 
 export type PostApiV1ProductUrlParseResponse =
   PostApiV1ProductUrlParseResponses[keyof PostApiV1ProductUrlParseResponses]
-
-export type GetApiV1ReportsConsumptionSummaryData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/reports/consumption/summary'
-}
-
-export type GetApiV1ReportsConsumptionSummaryErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * Endpoint scaffolded but not implemented yet
-   */
-  501: NotImplementedResponse
-}
-
-export type GetApiV1ReportsConsumptionSummaryError =
-  GetApiV1ReportsConsumptionSummaryErrors[keyof GetApiV1ReportsConsumptionSummaryErrors]
 
 export type GetApiV1ReportsConsumptionDetailData = {
   body?: never
@@ -2159,396 +1869,26 @@ export type GetApiV1ReportsConsumptionDetailResponses = {
 export type GetApiV1ReportsConsumptionDetailResponse =
   GetApiV1ReportsConsumptionDetailResponses[keyof GetApiV1ReportsConsumptionDetailResponses]
 
-export type GetApiV1NotificationsData = {
-  body?: never
-  path?: never
-  query?: {
-    type?: 'ALL' | 'GENERAL' | 'GOAL' | 'TEMPTATION'
-    sort?: 'LATEST' | 'OLDEST' | 'UNREAD_FIRST'
-  }
-  url: '/api/v1/notifications'
-}
-
-export type GetApiV1NotificationsErrors = {
-  /**
-   * Bad Request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-}
-
-export type GetApiV1NotificationsError =
-  GetApiV1NotificationsErrors[keyof GetApiV1NotificationsErrors]
-
-export type GetApiV1NotificationsResponses = {
-  /**
-   * 알림 목록 조회 성공
-   */
-  200: ListNotificationsResponse
-}
-
-export type GetApiV1NotificationsResponse =
-  GetApiV1NotificationsResponses[keyof GetApiV1NotificationsResponses]
-
-export type PatchApiV1NotificationsReadAllData = {
+export type GetApiV1ReportsConsumptionSummaryData = {
   body?: never
   path?: never
   query?: never
-  url: '/api/v1/notifications/read-all'
+  url: '/api/v1/reports/consumption/summary'
 }
 
-export type PatchApiV1NotificationsReadAllErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-}
-
-export type PatchApiV1NotificationsReadAllError =
-  PatchApiV1NotificationsReadAllErrors[keyof PatchApiV1NotificationsReadAllErrors]
-
-export type PatchApiV1NotificationsReadAllResponses = {
-  /**
-   * 알림 전체 읽음 처리 성공
-   */
-  200: MarkAllNotificationsReadResponse
-}
-
-export type PatchApiV1NotificationsReadAllResponse =
-  PatchApiV1NotificationsReadAllResponses[keyof PatchApiV1NotificationsReadAllResponses]
-
-export type PatchApiV1NotificationsByNotificationIdReadData = {
-  body?: never
-  path: {
-    notificationId: number
-  }
-  query?: never
-  url: '/api/v1/notifications/{notificationId}/read'
-}
-
-export type PatchApiV1NotificationsByNotificationIdReadErrors = {
-  /**
-   * Bad Request
-   */
-  400: ValidationErrorResponse
+export type GetApiV1ReportsConsumptionSummaryErrors = {
   /**
    * Authentication required
    */
   401: UnauthorizedResponse
   /**
-   * 요청한 알림을 찾을 수 없습니다.
+   * Endpoint scaffolded but not implemented yet
    */
-  404: ErrorResponse
+  501: NotImplementedResponse
 }
 
-export type PatchApiV1NotificationsByNotificationIdReadError =
-  PatchApiV1NotificationsByNotificationIdReadErrors[keyof PatchApiV1NotificationsByNotificationIdReadErrors]
-
-export type PatchApiV1NotificationsByNotificationIdReadResponses = {
-  /**
-   * 알림 읽음 처리 성공
-   */
-  200: MarkNotificationReadResponse
-}
-
-export type PatchApiV1NotificationsByNotificationIdReadResponse =
-  PatchApiV1NotificationsByNotificationIdReadResponses[keyof PatchApiV1NotificationsByNotificationIdReadResponses]
-
-export type DeleteApiV1NotificationsByNotificationIdData = {
-  body?: never
-  path: {
-    notificationId: number
-  }
-  query?: never
-  url: '/api/v1/notifications/{notificationId}'
-}
-
-export type DeleteApiV1NotificationsByNotificationIdErrors = {
-  /**
-   * Bad Request
-   */
-  400: ValidationErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 요청한 알림을 찾을 수 없습니다.
-   */
-  404: ErrorResponse
-}
-
-export type DeleteApiV1NotificationsByNotificationIdError =
-  DeleteApiV1NotificationsByNotificationIdErrors[keyof DeleteApiV1NotificationsByNotificationIdErrors]
-
-export type DeleteApiV1NotificationsByNotificationIdResponses = {
-  /**
-   * 알림 삭제 성공
-   */
-  200: DeleteNotificationResponse
-}
-
-export type DeleteApiV1NotificationsByNotificationIdResponse =
-  DeleteApiV1NotificationsByNotificationIdResponses[keyof DeleteApiV1NotificationsByNotificationIdResponses]
-
-export type GetApiV1WishlistItemsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/api/v1/wishlist-items'
-}
-
-export type GetApiV1WishlistItemsErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-}
-
-export type GetApiV1WishlistItemsError =
-  GetApiV1WishlistItemsErrors[keyof GetApiV1WishlistItemsErrors]
-
-export type GetApiV1WishlistItemsResponses = {
-  /**
-   * 위시리스트 목록 조회 성공
-   */
-  200: {
-    success?: boolean
-    data?: Array<{
-      id: string
-      userId: string
-      categoryCode: string
-      productName: string
-      productUrl?: string | null
-      price?: string | null
-      productImageUrl?: string | null
-      reason?: string | null
-      waitType: string
-      waitUntil?: string | null
-      status: string
-      createdAt: string
-      updatedAt: string
-    }>
-  }
-}
-
-export type GetApiV1WishlistItemsResponse =
-  GetApiV1WishlistItemsResponses[keyof GetApiV1WishlistItemsResponses]
-
-export type PostApiV1WishlistItemsData = {
-  body: {
-    categoryCode: string
-    productName: string
-    productUrl?: string
-    price?: number
-    productImageUrl?: string
-    reason?: string
-    waitType?: '1H' | '1D' | '3D' | '1W'
-  }
-  path?: never
-  query?: never
-  url: '/api/v1/wishlist-items'
-}
-
-export type PostApiV1WishlistItemsErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-}
-
-export type PostApiV1WishlistItemsError =
-  PostApiV1WishlistItemsErrors[keyof PostApiV1WishlistItemsErrors]
-
-export type PostApiV1WishlistItemsResponses = {
-  /**
-   * 위시리스트 추가 성공
-   */
-  201: {
-    success?: boolean
-    data?: {
-      id: string
-      userId: string
-      categoryCode: string
-      productName: string
-      productUrl?: string | null
-      price?: string | null
-      productImageUrl?: string | null
-      reason?: string | null
-      waitType: string
-      waitUntil?: string | null
-      status: string
-      createdAt: string
-      updatedAt: string
-    }
-  }
-}
-
-export type PostApiV1WishlistItemsResponse =
-  PostApiV1WishlistItemsResponses[keyof PostApiV1WishlistItemsResponses]
-
-export type DeleteApiV1WishlistItemsByWishlistIdData = {
-  body?: never
-  path: {
-    wishlistId: number
-  }
-  query?: never
-  url: '/api/v1/wishlist-items/{wishlistId}'
-}
-
-export type DeleteApiV1WishlistItemsByWishlistIdErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 접근 권한이 없음 (본인 소유가 아님)
-   */
-  403: ErrorResponse
-  /**
-   * 존재하지 않는 항목
-   */
-  404: ErrorResponse
-}
-
-export type DeleteApiV1WishlistItemsByWishlistIdError =
-  DeleteApiV1WishlistItemsByWishlistIdErrors[keyof DeleteApiV1WishlistItemsByWishlistIdErrors]
-
-export type DeleteApiV1WishlistItemsByWishlistIdResponses = {
-  /**
-   * 위시리스트 삭제 성공
-   */
-  200: {
-    success?: boolean
-    message?: string
-  }
-}
-
-export type DeleteApiV1WishlistItemsByWishlistIdResponse =
-  DeleteApiV1WishlistItemsByWishlistIdResponses[keyof DeleteApiV1WishlistItemsByWishlistIdResponses]
-
-export type GetApiV1WishlistItemsByWishlistIdData = {
-  body?: never
-  path: {
-    wishlistId: number
-  }
-  query?: never
-  url: '/api/v1/wishlist-items/{wishlistId}'
-}
-
-export type GetApiV1WishlistItemsByWishlistIdErrors = {
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 접근 권한이 없음 (본인 소유가 아님)
-   */
-  403: ErrorResponse
-  /**
-   * 존재하지 않는 항목
-   */
-  404: ErrorResponse
-}
-
-export type GetApiV1WishlistItemsByWishlistIdError =
-  GetApiV1WishlistItemsByWishlistIdErrors[keyof GetApiV1WishlistItemsByWishlistIdErrors]
-
-export type GetApiV1WishlistItemsByWishlistIdResponses = {
-  /**
-   * 위시리스트 상세 조회 성공
-   */
-  200: {
-    success?: boolean
-    data?: {
-      id: string
-      userId: string
-      categoryCode: string
-      productName: string
-      productUrl?: string | null
-      price?: string | null
-      productImageUrl?: string | null
-      reason?: string | null
-      waitType: string
-      waitUntil?: string | null
-      status: string
-      createdAt: string
-      updatedAt: string
-    }
-  }
-}
-
-export type GetApiV1WishlistItemsByWishlistIdResponse =
-  GetApiV1WishlistItemsByWishlistIdResponses[keyof GetApiV1WishlistItemsByWishlistIdResponses]
-
-export type PatchApiV1WishlistItemsByWishlistIdData = {
-  body: {
-    categoryCode?: string
-    productName?: string
-    productUrl?: string
-    price?: number
-    productImageUrl?: string
-    reason?: string
-    waitType?: '1H' | '1D' | '3D' | '1W'
-  }
-  path: {
-    wishlistId: number
-  }
-  query?: never
-  url: '/api/v1/wishlist-items/{wishlistId}'
-}
-
-export type PatchApiV1WishlistItemsByWishlistIdErrors = {
-  /**
-   * 수정할 데이터가 주어지지 않음 (빈 body)
-   */
-  400: ErrorResponse
-  /**
-   * Authentication required
-   */
-  401: UnauthorizedResponse
-  /**
-   * 접근 권한이 없음 (본인 소유가 아님)
-   */
-  403: ErrorResponse
-  /**
-   * 존재하지 않는 항목
-   */
-  404: ErrorResponse
-}
-
-export type PatchApiV1WishlistItemsByWishlistIdError =
-  PatchApiV1WishlistItemsByWishlistIdErrors[keyof PatchApiV1WishlistItemsByWishlistIdErrors]
-
-export type PatchApiV1WishlistItemsByWishlistIdResponses = {
-  /**
-   * 위시리스트 수정 성공
-   */
-  200: {
-    success?: boolean
-    data?: {
-      id: string
-      userId: string
-      categoryCode: string
-      productName: string
-      productUrl?: string | null
-      price?: string | null
-      productImageUrl?: string | null
-      reason?: string | null
-      waitType: string
-      waitUntil?: string | null
-      status: string
-      createdAt: string
-      updatedAt: string
-    }
-  }
-}
-
-export type PatchApiV1WishlistItemsByWishlistIdResponse =
-  PatchApiV1WishlistItemsByWishlistIdResponses[keyof PatchApiV1WishlistItemsByWishlistIdResponses]
+export type GetApiV1ReportsConsumptionSummaryError =
+  GetApiV1ReportsConsumptionSummaryErrors[keyof GetApiV1ReportsConsumptionSummaryErrors]
 
 export type PostApiV1TemptationsByTemptationIdDecisionsData = {
   body: {
@@ -2593,17 +1933,677 @@ export type PostApiV1TemptationsByTemptationIdDecisionsResponses = {
    * 재판단 기록 추가 성공
    */
   201: {
-    success?: boolean
     data?: {
-      id?: string
-      wishlistItemId?: string
+      decidedAt?: string
       decisionType?: string
+      id?: string
       selectedWaitType?: string
       selectedWaitUntil?: string
-      decidedAt?: string
+      wishlistItemId?: string
     }
+    success?: boolean
   }
 }
 
 export type PostApiV1TemptationsByTemptationIdDecisionsResponse =
   PostApiV1TemptationsByTemptationIdDecisionsResponses[keyof PostApiV1TemptationsByTemptationIdDecisionsResponses]
+
+export type DeleteApiV1UsersMeData = {
+  body: {
+    password: string
+    reasonType?:
+      | 'LOW_FREQUENCY'
+      | 'MISSING_FEATURE'
+      | 'INCONVENIENT'
+      | 'PRIVACY_CONCERN'
+      | 'SWITCHING_SERVICE'
+      | 'OTHER'
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me'
+}
+
+export type DeleteApiV1UsersMeErrors = {
+  /**
+   * 비밀번호 불일치 또는 요청 값 검증 실패
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+}
+
+export type DeleteApiV1UsersMeError = DeleteApiV1UsersMeErrors[keyof DeleteApiV1UsersMeErrors]
+
+export type DeleteApiV1UsersMeResponses = {
+  /**
+   * 회원 탈퇴 성공
+   */
+  200: {
+    data?: unknown
+    message?: string
+    success?: boolean
+  }
+}
+
+export type DeleteApiV1UsersMeResponse =
+  DeleteApiV1UsersMeResponses[keyof DeleteApiV1UsersMeResponses]
+
+export type GetApiV1UsersMeData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/users/me'
+}
+
+export type GetApiV1UsersMeErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1UsersMeError = GetApiV1UsersMeErrors[keyof GetApiV1UsersMeErrors]
+
+export type GetApiV1UsersMeResponses = {
+  /**
+   * 회원 정보 조회 성공
+   */
+  200: GetMeResponse
+}
+
+export type GetApiV1UsersMeResponse = GetApiV1UsersMeResponses[keyof GetApiV1UsersMeResponses]
+
+export type PatchApiV1UsersMeData = {
+  body: {
+    birthDate?: string | null
+    gender?: 'FEMALE' | 'MALE'
+    interestTags?: Array<string>
+    nickname?: string
+    phoneNumber?: string | null
+    profileImageUrl?: string | null
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me'
+}
+
+export type PatchApiV1UsersMeErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type PatchApiV1UsersMeError = PatchApiV1UsersMeErrors[keyof PatchApiV1UsersMeErrors]
+
+export type PatchApiV1UsersMeResponses = {
+  /**
+   * 회원 정보 수정 성공
+   */
+  200: UpdateMeResponse
+}
+
+export type PatchApiV1UsersMeResponse = PatchApiV1UsersMeResponses[keyof PatchApiV1UsersMeResponses]
+
+export type GetApiV1UsersMeBudgetData = {
+  body?: never
+  path?: never
+  query?: {
+    yearMonth?: string
+  }
+  url: '/api/v1/users/me/budget'
+}
+
+export type GetApiV1UsersMeBudgetErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1UsersMeBudgetError =
+  GetApiV1UsersMeBudgetErrors[keyof GetApiV1UsersMeBudgetErrors]
+
+export type GetApiV1UsersMeBudgetResponses = {
+  /**
+   * 월별 수입/예산 조회 성공
+   */
+  200: GetMonthlyBudgetResponse
+}
+
+export type GetApiV1UsersMeBudgetResponse =
+  GetApiV1UsersMeBudgetResponses[keyof GetApiV1UsersMeBudgetResponses]
+
+export type PutApiV1UsersMeBudgetData = {
+  body: {
+    categoryBudgets?: Array<{
+      budgetAmount: number
+      categoryCode:
+        | 'FASHION'
+        | 'BEAUTY'
+        | 'FOOD_SNACK'
+        | 'CAFE_DESSERT'
+        | 'HOBBY_GOODS'
+        | 'ELECTRONICS'
+        | 'HEALTH_FITNESS'
+        | 'TRAVEL'
+        | 'ETC'
+    }>
+    hourlyWage?: number
+    monthlyBudget?: number
+    monthlyIncome?: number
+    yearMonth: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/budget'
+}
+
+export type PutApiV1UsersMeBudgetErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type PutApiV1UsersMeBudgetError =
+  PutApiV1UsersMeBudgetErrors[keyof PutApiV1UsersMeBudgetErrors]
+
+export type PutApiV1UsersMeBudgetResponses = {
+  /**
+   * 월별 수입/예산이 설정되었습니다.
+   */
+  200: UpsertMonthlyBudgetResponse
+}
+
+export type PutApiV1UsersMeBudgetResponse =
+  PutApiV1UsersMeBudgetResponses[keyof PutApiV1UsersMeBudgetResponses]
+
+export type GetApiV1UsersMeNotificationSettingsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/notification-settings'
+}
+
+export type GetApiV1UsersMeNotificationSettingsErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1UsersMeNotificationSettingsError =
+  GetApiV1UsersMeNotificationSettingsErrors[keyof GetApiV1UsersMeNotificationSettingsErrors]
+
+export type GetApiV1UsersMeNotificationSettingsResponses = {
+  /**
+   * 알림 설정 조회 성공
+   */
+  200: GetNotificationSettingsResponse
+}
+
+export type GetApiV1UsersMeNotificationSettingsResponse =
+  GetApiV1UsersMeNotificationSettingsResponses[keyof GetApiV1UsersMeNotificationSettingsResponses]
+
+export type PatchApiV1UsersMeNotificationSettingsData = {
+  body: {
+    notifyGeneralEnabled?: boolean
+    notifyGoalEnabled?: boolean
+    notifyPushEnabled?: boolean
+    notifyTemptationEnabled?: boolean
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/notification-settings'
+}
+
+export type PatchApiV1UsersMeNotificationSettingsErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+  /**
+   * 동시 요청 충돌 발생
+   */
+  409: ErrorResponse
+}
+
+export type PatchApiV1UsersMeNotificationSettingsError =
+  PatchApiV1UsersMeNotificationSettingsErrors[keyof PatchApiV1UsersMeNotificationSettingsErrors]
+
+export type PatchApiV1UsersMeNotificationSettingsResponses = {
+  /**
+   * 알림 설정 수정 성공
+   */
+  200: UpdateNotificationSettingsResponse
+}
+
+export type PatchApiV1UsersMeNotificationSettingsResponse =
+  PatchApiV1UsersMeNotificationSettingsResponses[keyof PatchApiV1UsersMeNotificationSettingsResponses]
+
+export type PatchApiV1UsersMePasswordData = {
+  body: {
+    currentPassword: string
+    newPassword: string & string & string
+    newPasswordConfirm: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/password'
+}
+
+export type PatchApiV1UsersMePasswordErrors = {
+  /**
+   * 현재 비밀번호 불일치 또는 요청 값 검증 실패
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type PatchApiV1UsersMePasswordError =
+  PatchApiV1UsersMePasswordErrors[keyof PatchApiV1UsersMePasswordErrors]
+
+export type PatchApiV1UsersMePasswordResponses = {
+  /**
+   * 비밀번호가 변경되었습니다.
+   */
+  200: {
+    data: unknown
+    message: string
+    success: true
+  }
+}
+
+export type PatchApiV1UsersMePasswordResponse =
+  PatchApiV1UsersMePasswordResponses[keyof PatchApiV1UsersMePasswordResponses]
+
+export type DeleteApiV1UsersMeSavingGoalData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/saving-goal'
+}
+
+export type DeleteApiV1UsersMeSavingGoalErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type DeleteApiV1UsersMeSavingGoalError =
+  DeleteApiV1UsersMeSavingGoalErrors[keyof DeleteApiV1UsersMeSavingGoalErrors]
+
+export type DeleteApiV1UsersMeSavingGoalResponses = {
+  /**
+   * 절약 목적 삭제 성공
+   */
+  200: DeleteSavingGoalResponse
+}
+
+export type DeleteApiV1UsersMeSavingGoalResponse =
+  DeleteApiV1UsersMeSavingGoalResponses[keyof DeleteApiV1UsersMeSavingGoalResponses]
+
+export type PutApiV1UsersMeSavingGoalData = {
+  body: {
+    savingGoalIsActive?: boolean
+    savingGoalText: string
+    targetSavingAmount: number
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/saving-goal'
+}
+
+export type PutApiV1UsersMeSavingGoalErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type PutApiV1UsersMeSavingGoalError =
+  PutApiV1UsersMeSavingGoalErrors[keyof PutApiV1UsersMeSavingGoalErrors]
+
+export type PutApiV1UsersMeSavingGoalResponses = {
+  /**
+   * 절약 목적 수정 성공
+   */
+  200: UpdateSavingGoalResponse
+}
+
+export type PutApiV1UsersMeSavingGoalResponse =
+  PutApiV1UsersMeSavingGoalResponses[keyof PutApiV1UsersMeSavingGoalResponses]
+
+export type GetApiV1WishlistItemsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/wishlist-items'
+}
+
+export type GetApiV1WishlistItemsErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+}
+
+export type GetApiV1WishlistItemsError =
+  GetApiV1WishlistItemsErrors[keyof GetApiV1WishlistItemsErrors]
+
+export type GetApiV1WishlistItemsResponses = {
+  /**
+   * 위시리스트 목록 조회 성공
+   */
+  200: {
+    data?: Array<{
+      categoryCode: string
+      createdAt: string
+      id: string
+      price?: string | null
+      productImageUrl?: string | null
+      productName: string
+      productUrl?: string | null
+      reason?: string | null
+      status: string
+      updatedAt: string
+      userId: string
+      waitType: string
+      waitUntil?: string | null
+    }>
+    success?: boolean
+  }
+}
+
+export type GetApiV1WishlistItemsResponse =
+  GetApiV1WishlistItemsResponses[keyof GetApiV1WishlistItemsResponses]
+
+export type PostApiV1WishlistItemsData = {
+  body: {
+    categoryCode: string
+    price?: number
+    productImageUrl?: string
+    productName: string
+    productUrl?: string
+    reason?: string
+    waitType?: '1H' | '1D' | '3D' | '1W'
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/wishlist-items'
+}
+
+export type PostApiV1WishlistItemsErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+}
+
+export type PostApiV1WishlistItemsError =
+  PostApiV1WishlistItemsErrors[keyof PostApiV1WishlistItemsErrors]
+
+export type PostApiV1WishlistItemsResponses = {
+  /**
+   * 위시리스트 추가 성공
+   */
+  201: {
+    data?: {
+      categoryCode: string
+      createdAt: string
+      id: string
+      price?: string | null
+      productImageUrl?: string | null
+      productName: string
+      productUrl?: string | null
+      reason?: string | null
+      status: string
+      updatedAt: string
+      userId: string
+      waitType: string
+      waitUntil?: string | null
+    }
+    success?: boolean
+  }
+}
+
+export type PostApiV1WishlistItemsResponse =
+  PostApiV1WishlistItemsResponses[keyof PostApiV1WishlistItemsResponses]
+
+export type DeleteApiV1WishlistItemsByWishlistIdData = {
+  body?: never
+  path: {
+    wishlistId: number
+  }
+  query?: never
+  url: '/api/v1/wishlist-items/{wishlistId}'
+}
+
+export type DeleteApiV1WishlistItemsByWishlistIdErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 접근 권한이 없음 (본인 소유가 아님)
+   */
+  403: ErrorResponse
+  /**
+   * 존재하지 않는 항목
+   */
+  404: ErrorResponse
+}
+
+export type DeleteApiV1WishlistItemsByWishlistIdError =
+  DeleteApiV1WishlistItemsByWishlistIdErrors[keyof DeleteApiV1WishlistItemsByWishlistIdErrors]
+
+export type DeleteApiV1WishlistItemsByWishlistIdResponses = {
+  /**
+   * 위시리스트 삭제 성공
+   */
+  200: {
+    message?: string
+    success?: boolean
+  }
+}
+
+export type DeleteApiV1WishlistItemsByWishlistIdResponse =
+  DeleteApiV1WishlistItemsByWishlistIdResponses[keyof DeleteApiV1WishlistItemsByWishlistIdResponses]
+
+export type GetApiV1WishlistItemsByWishlistIdData = {
+  body?: never
+  path: {
+    wishlistId: number
+  }
+  query?: never
+  url: '/api/v1/wishlist-items/{wishlistId}'
+}
+
+export type GetApiV1WishlistItemsByWishlistIdErrors = {
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 접근 권한이 없음 (본인 소유가 아님)
+   */
+  403: ErrorResponse
+  /**
+   * 존재하지 않는 항목
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1WishlistItemsByWishlistIdError =
+  GetApiV1WishlistItemsByWishlistIdErrors[keyof GetApiV1WishlistItemsByWishlistIdErrors]
+
+export type GetApiV1WishlistItemsByWishlistIdResponses = {
+  /**
+   * 위시리스트 상세 조회 성공
+   */
+  200: {
+    data?: {
+      categoryCode: string
+      createdAt: string
+      id: string
+      price?: string | null
+      productImageUrl?: string | null
+      productName: string
+      productUrl?: string | null
+      reason?: string | null
+      status: string
+      updatedAt: string
+      userId: string
+      waitType: string
+      waitUntil?: string | null
+    }
+    success?: boolean
+  }
+}
+
+export type GetApiV1WishlistItemsByWishlistIdResponse =
+  GetApiV1WishlistItemsByWishlistIdResponses[keyof GetApiV1WishlistItemsByWishlistIdResponses]
+
+export type PatchApiV1WishlistItemsByWishlistIdData = {
+  body: {
+    categoryCode?: string
+    price?: number
+    productImageUrl?: string
+    productName?: string
+    productUrl?: string
+    reason?: string
+    waitType?: '1H' | '1D' | '3D' | '1W'
+  }
+  path: {
+    wishlistId: number
+  }
+  query?: never
+  url: '/api/v1/wishlist-items/{wishlistId}'
+}
+
+export type PatchApiV1WishlistItemsByWishlistIdErrors = {
+  /**
+   * 수정할 데이터가 주어지지 않음 (빈 body)
+   */
+  400: ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 접근 권한이 없음 (본인 소유가 아님)
+   */
+  403: ErrorResponse
+  /**
+   * 존재하지 않는 항목
+   */
+  404: ErrorResponse
+}
+
+export type PatchApiV1WishlistItemsByWishlistIdError =
+  PatchApiV1WishlistItemsByWishlistIdErrors[keyof PatchApiV1WishlistItemsByWishlistIdErrors]
+
+export type PatchApiV1WishlistItemsByWishlistIdResponses = {
+  /**
+   * 위시리스트 수정 성공
+   */
+  200: {
+    data?: {
+      categoryCode: string
+      createdAt: string
+      id: string
+      price?: string | null
+      productImageUrl?: string | null
+      productName: string
+      productUrl?: string | null
+      reason?: string | null
+      status: string
+      updatedAt: string
+      userId: string
+      waitType: string
+      waitUntil?: string | null
+    }
+    success?: boolean
+  }
+}
+
+export type PatchApiV1WishlistItemsByWishlistIdResponse =
+  PatchApiV1WishlistItemsByWishlistIdResponses[keyof PatchApiV1WishlistItemsByWishlistIdResponses]
+
+export type GetHealthData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/health'
+}
+
+export type GetHealthResponses = {
+  /**
+   * Server health status
+   */
+  200: unknown
+}

@@ -13,7 +13,20 @@ if (!response.ok) {
   throw new Error(`OpenAPI 명세 조회 실패: ${response.status} ${response.statusText}`)
 }
 
-const schema = await response.json()
+// 서버가 같은 내용을 키 순서만 다르게 돌려주면 문자열 비교가 어긋나 drift로 잘못 잡힙니다.
+// 배열은 순서가 의미를 가지므로 그대로 두고, 객체 키만 재귀적으로 정렬해 비교 기준을 고정합니다.
+function canonicalize(value) {
+  if (Array.isArray(value)) return value.map(canonicalize)
+  if (value === null || typeof value !== 'object') return value
+
+  return Object.fromEntries(
+    Object.keys(value)
+      .sort()
+      .map((key) => [key, canonicalize(value[key])]),
+  )
+}
+
+const schema = canonicalize(await response.json())
 const nextSnapshot = `${JSON.stringify(schema, null, 2)}\n`
 
 if (checkOnly) {
