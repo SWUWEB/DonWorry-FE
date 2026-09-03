@@ -7,13 +7,6 @@ export function getFormattedDateLabel(date: Date = new Date()): string {
   return `${month}월 ${day}일 ${dayOfWeek}요일`
 }
 
-export function getDayIndex(length: number, date: Date = new Date()): number {
-  const start = new Date(date.getFullYear(), 0, 1)
-  const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-  const dayOfYear = Math.floor((today.getTime() - start.getTime()) / 86400000)
-  return dayOfYear % length
-}
-
 // 서버 응답(occurredAt)은 KST 기준 날짜 계약이므로, 브라우저 로컬 시간대와 무관하게
 // 항상 Asia/Seoul 기준으로 날짜를 뽑아냅니다.
 const KST_DATE_FORMATTER = new Intl.DateTimeFormat('ko-KR', {

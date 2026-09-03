@@ -1,20 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { getDayIndex } from '@/shared/utils/date'
 import styles from './SpendingQuestion.module.css'
 
-const QUESTIONS = [
-  '오늘 계획하지 않은 소비가 있었나요?',
-  '오늘 꼭 필요하지 않은 물건을 사지는 않았나요?',
-  '오늘 참아낸 소비가 있었나요?',
-  '오늘 충동적으로 소비한 것이 있었나요?',
-  '오늘 소비를 줄일 수 있었던 순간이 있었나요?',
-  '오늘 지출 목록을 돌아보셨나요?',
-  '오늘 예산 내에서 소비했나요?',
-]
+interface SpendingQuestionProps {
+  question: string
+}
 
-export default function SpendingQuestion() {
+export default function SpendingQuestion({ question }: SpendingQuestionProps) {
   const navigate = useNavigate()
-  const question = QUESTIONS[getDayIndex(QUESTIONS.length)]
 
   return (
     <div

@@ -7,38 +7,43 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
-import styles from './TemptationJudge.module.css'
 import type { Product } from '../types'
+import styles from './TemptationJudge.module.css'
 
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
     filteredProducts,
-    handleDelete,
-    isDeleting,
-    isDeleteSuccess,
-    isDeleteError,
-    isDeleteUnauthorized,
-    resetDeleteStatus,
+    isLoading,
+    isUnauthorized,
     handleExtend,
     isExtending,
     isExtendSuccess,
     isExtendError,
+    isExtendUnauthorized,
     resetExtendStatus,
+    handleJudgeDecision,
+    isDeciding,
+    isDecideSuccess,
+    isDecideError,
+    isDecideUnauthorized,
+    decideErrorKind,
+    resetDecideStatus,
   } = useWishlistContext()
 
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
-  // 삭제 요청 이전에 삭제할 상품 정보(name, category, price)를 보존(저장),
-  // 삭제 성공 시 이동할 화면에 전달
-  const [deletedProductInfo, setDeletedProductInfo] = useState<Pick<
-    Product,
-    'name' | 'category' | 'price'
-  > | null>(null)
+  // 살래요/안 살래요 중 어떤 결정을 보냈는지, 그 시점의 상품 정보를 기억해뒀다가 성공하면 그에 맞는
+  // 화면으로 이동합니다. 결정이 성공하면 목록 캐시에서 즉시 제거되어 product가 undefined가 되므로,
+  // 이동 시점에 필요한 정보를 product에서 다시 읽지 않고 클릭 시점의 스냅샷을 그대로 씁니다.
+  const [pendingDecision, setPendingDecision] = useState<{
+    type: 'BUY' | 'SKIP'
+    product: Product
+  } | null>(null)
 
-  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
+  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess && !isExtendError
 
   // 아직 고민 시간이 남은 상품은 재판단 대상이 아니므로 상세로 돌려보냅니다.
   // (상세 화면은 반대로 시간이 끝나면 이 화면으로 보냅니다 — 조건이 서로 배타적이라 왕복하지 않습니다.)
@@ -55,7 +60,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendClick = () => {
-    if (!product || isExtending) return
+    if (!product || isDeciding || isExtending) return
     setIsExtendConfirmOpen(true)
   }
 
@@ -65,7 +70,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendConfirm = () => {
-    if (!product || isExtending) return
+    if (!product || isDeciding || isExtending) return
     handleExtend(product.id, selectedExtend)
   }
 
@@ -81,50 +86,97 @@ export default function TemptationJudge() {
     resetExtendStatus()
   }
 
-  // TODO: 참은 소비 기록 저장 API 연동 필요.
-  // 연동 시에는 저장에 성공한 뒤 handleDelete를 호출하고,
-  // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
-  const handleNotBuy = () => {
-    if (!product || isDeleting || isExtending) return
-    setDeletedProductInfo({
-      name: product.name,
-      category: product.category,
-      price: product.price,
-    })
-    handleDelete(product.id)
+  // 구매/포기 결정 성공 시: 결정 종류에 맞는 화면으로 이동.
+  useEffect(() => {
+    if (!isDecideSuccess || !pendingDecision) return
+    resetDecideStatus()
+    const { type, product: decidedProduct } = pendingDecision
+
+    if (type === 'SKIP') {
+      navigate('/temptation/saved', {
+        state: {
+          name: decidedProduct.name,
+          category: decidedProduct.category,
+          price: decidedProduct.price,
+        },
+      })
+    } else {
+      // RecordInterventionPage는 { draft: RecordDraft } 형태의 state를 기대합니다.
+      navigate('/record/intervention', {
+        state: {
+          draft: {
+            title: decidedProduct.name,
+            amount: decidedProduct.price,
+            category: decidedProduct.category,
+            reason: decidedProduct.reason ?? '',
+            productUrl: decidedProduct.link ?? undefined,
+          },
+        },
+      })
+    }
+  }, [isDecideSuccess, pendingDecision, navigate, resetDecideStatus])
+
+  const handleDecideFailConfirm = () => {
+    resetDecideStatus()
+    setPendingDecision(null)
   }
 
-  useEffect(() => {
-    if (isDeleteSuccess && deletedProductInfo) {
-      resetDeleteStatus()
-      navigate('/temptation/saved', { state: deletedProductInfo })
-    }
-  }, [isDeleteSuccess, deletedProductInfo, resetDeleteStatus, navigate])
+  // 권한이 없거나 이미 처리된 상품은 이 화면에서 할 수 있는 일이 없으므로 목록으로 돌려보냅니다.
+  const handleTerminalDecideErrorConfirm = () => {
+    resetDecideStatus()
+    setPendingDecision(null)
+    navigate('/temptation')
+  }
 
-  const handleDeleteFailConfirm = () => {
-    resetDeleteStatus()
+  const isTerminalDecideError =
+    decideErrorKind === 'NOT_FOUND' ||
+    decideErrorKind === 'FORBIDDEN' ||
+    decideErrorKind === 'ALREADY_DECIDED'
+
+  const handleNotBuy = () => {
+    if (!product || isDeciding || isExtending) return
+    setPendingDecision({ type: 'SKIP', product })
+    handleJudgeDecision(product.id, 'SKIP')
   }
 
   const handleBuy = () => {
-    if (!product || isDeleting || isExtending) return
-    navigate('/record/intervention', {
-      state: {
-        from: 'temptation',
-        productId: product.id,
-        productName: product.name,
-        productPrice: product.price,
-        productCategory: product.category,
-      },
-    })
+    if (!product || isDeciding || isExtending) return
+    setPendingDecision({ type: 'BUY', product })
+    handleJudgeDecision(product.id, 'BUY')
+  }
+
+  const handleUnauthorizedConfirm = () => {
+    resetExtendStatus()
+    resetDecideStatus()
+    setPendingDecision(null)
+    navigate('/login')
+  }
+
+  if (isUnauthorized || isExtendUnauthorized || isDecideUnauthorized) {
+    return (
+      <ConfirmDialog
+        isOpen
+        title="로그인이 필요합니다."
+        description="로그인 후 이용해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleUnauthorizedConfirm}
+        onConfirm={handleUnauthorizedConfirm}
+      />
+    )
   }
 
   if (!product) {
+    // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
+    if (pendingDecision) return null
+    if (isLoading) return <p>불러오는 중...</p>
     return <p>상품을 찾을 수 없습니다.</p>
   }
 
   const totalHours = Math.round(
     (product.time.getTime() - product.createdAt.getTime()) / (60 * 60 * 1000),
   )
+  const isProcessing = isDeciding || isExtending
 
   return (
     <>
@@ -162,6 +214,7 @@ export default function TemptationJudge() {
                 type="button"
                 className={`${styles.chip} ${selectedExtend === option ? styles.chipSelected : ''}`}
                 onClick={() => setSelectedExtend(option)}
+                disabled={isProcessing}
               >
                 {option}
               </button>
@@ -172,7 +225,7 @@ export default function TemptationJudge() {
             type="button"
             className={styles.extendConfirmBtn}
             onClick={handleExtendClick}
-            disabled={isDeleting}
+            disabled={isProcessing}
           >
             {selectedExtend} 연장 확정하기
           </button>
@@ -193,7 +246,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.notBuyBtn}
               onClick={handleNotBuy}
-              disabled={isDeleting || isExtending}
+              disabled={isProcessing}
             >
               <span className={styles.decisionMain}>안 살래요</span>
               <span className={styles.decisionSub}>참을게요</span>
@@ -202,7 +255,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.buyBtn}
               onClick={handleBuy}
-              disabled={isDeleting || isExtending}
+              disabled={isProcessing}
             >
               <span className={styles.decisionMain}>살래요</span>
               <span className={styles.decisionSub}>점검 후 구매</span>
@@ -232,29 +285,43 @@ export default function TemptationJudge() {
       />
 
       <ConfirmDialog
-        isOpen={isDeleteError && !isDeleteUnauthorized}
-        title="처리하지 못했습니다."
-        description="잠시 후 다시 시도해주세요."
+        isOpen={isDecideError && !isDecideUnauthorized && !isTerminalDecideError}
+        title="결정을 저장하지 못했습니다."
+        description="다시 시도해주세요."
         onlyConfirm
         confirmText="확인"
-        onCancel={handleDeleteFailConfirm}
-        onConfirm={handleDeleteFailConfirm}
+        onCancel={handleDecideFailConfirm}
+        onConfirm={handleDecideFailConfirm}
       />
 
       <ConfirmDialog
-        isOpen={isDeleteUnauthorized}
-        title="로그인이 필요합니다."
-        description="로그인 후 이용해주세요."
+        isOpen={decideErrorKind === 'NOT_FOUND'}
+        title="상품을 찾을 수 없습니다."
+        description="이미 삭제되었거나 존재하지 않는 상품입니다."
         onlyConfirm
         confirmText="확인"
-        onCancel={() => {
-          resetDeleteStatus()
-          navigate('/login')
-        }}
-        onConfirm={() => {
-          resetDeleteStatus()
-          navigate('/login')
-        }}
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'ALREADY_DECIDED'}
+        title="이미 결정된 상품입니다."
+        description="다른 화면에서 이미 처리된 상품이에요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'FORBIDDEN'}
+        title="접근 권한이 없습니다."
+        description="본인의 위시리스트 항목만 결정할 수 있습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
       />
     </>
   )

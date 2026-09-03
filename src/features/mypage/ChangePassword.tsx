@@ -23,7 +23,7 @@ export default function ChangePassword() {
       />
 
       <main className={styles.container}>
-        <ChangePasswordForm />
+        <ChangePasswordForm onUnauthorized={() => navigate('/login', { replace: true })} />
       </main>
     </>
   )

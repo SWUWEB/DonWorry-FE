@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchWishlistItem } from '../api/wishlistApi'
-import { isUnauthorizedError } from '../utils/isUnauthorizedError'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import { getMutationErrorKind } from '../utils/wishlistErrors'
 
 export const useWishlistDetail = (id: string | undefined) => {

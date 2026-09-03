@@ -82,6 +82,7 @@ export function useSetBudget() {
     mutationFn: (body: SetBudgetRequest) => userApi.setBudget(body),
     onSuccess: (budget) => {
       queryClient.setQueryData(QUERY_KEYS.budget(budget.yearMonth), budget)
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me })
     },
   })
 }

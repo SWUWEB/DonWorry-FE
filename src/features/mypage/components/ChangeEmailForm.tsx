@@ -1,72 +1,68 @@
-import { useState } from 'react'
-import { HiOutlineCheckCircle, HiOutlineArrowPath } from 'react-icons/hi2'
+import { HiOutlineCheckCircle } from 'react-icons/hi2'
 
 import Button from '@/shared/components/Button'
-import InputField from '@/shared/components/InputField'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
+import { useMe } from '../hooks/useUser'
 
 import styles from './ChangeEmailForm.module.css'
 
-export default function ChangeEmailForm() {
-  const currentEmail = '00012@gmail.com'
+interface ChangeEmailFormProps {
+  onUnauthorized?: () => void
+}
 
-  const [email, setEmail] = useState('')
-  const [code, setCode] = useState('')
-
-  const isVerificationSent = false
-  const isExpired = false
+// TODO(BE 연동): OpenAPI에 이메일 변경·인증 endpoint가 추가되면 변경 폼과 mutation을 연결합니다.
+// 현재는 GET /users/me의 실제 이메일만 표시하고 변경 동작은 비활성화합니다.
+export default function ChangeEmailForm({ onUnauthorized = () => {} }: ChangeEmailFormProps) {
+  const { data: profile, isLoading, isError, error, refetch } = useMe()
+  const isUnauthorized = isUnauthorizedError(error)
 
   return (
-    <section className={styles.form}>
-      <div className={styles.currentEmailCard}>
-        <div>
-          <p className={styles.cardLabel}>현재 이메일</p>
-          <p className={styles.currentEmail}>{currentEmail}</p>
+    <>
+      <section className={styles.form}>
+        <div className={styles.currentEmailCard}>
+          <div>
+            <p className={styles.cardLabel}>현재 이메일</p>
+            <p className={styles.currentEmail}>
+              {isLoading ? '불러오는 중...' : (profile?.email ?? '확인할 수 없음')}
+            </p>
+          </div>
+
+          {profile?.email && <HiOutlineCheckCircle size={20} className={styles.checkIcon} />}
         </div>
 
-        <HiOutlineCheckCircle size={20} className={styles.checkIcon} />
-      </div>
+        {isError && !isUnauthorized && (
+          <div className={styles.errorRow}>
+            <p className={styles.errorText} role="alert">
+              현재 이메일을 불러오지 못했습니다.
+            </p>
+            <button type="button" className={styles.retryButton} onClick={() => refetch()}>
+              다시 시도
+            </button>
+          </div>
+        )}
 
-      <div className={styles.inputGroup}>
-        <InputField
-          label="새 이메일 입력"
-          placeholder="example@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
+        <div className={styles.noticeBox}>
+          <p className={styles.unsupportedText}>
+            현재 서버에서 이메일 변경 기능을 지원하지 않습니다. API가 제공되면 변경과 인증 기능을
+            연결할 예정입니다.
+          </p>
+        </div>
 
-      <div className={styles.inputGroup}>
-        <InputField
-          label="이메일 인증"
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          maxLength={6}
-          autoComplete="one-time-code"
-          placeholder="인증번호 6자리"
-          value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-          rightElement={isExpired && <span className={styles.expireText}>만료됨</span>}
-          helper={isVerificationSent ? '인증번호가 이메일로 발송되었습니다.' : undefined}
-        />
-      </div>
+        <div className={styles.buttonWrapper}>
+          <Button disabled>이메일 변경 준비 중</Button>
+        </div>
+      </section>
 
-      <div className={styles.noticeBox}>
-        <ul>
-          <li>인증 메일이 오지 않았나요?</li>
-          <li>스팸함을 확인해주세요.</li>
-          <li>5분 후 재발송 가능합니다.</li>
-        </ul>
-      </div>
-
-      <button type="button" className={styles.resendButton}>
-        <HiOutlineArrowPath size={16} />
-        인증번호 재발송
-      </button>
-
-      <div className={styles.buttonWrapper}>
-        <Button>저장하기</Button>
-      </div>
-    </section>
+      <ConfirmDialog
+        isOpen={isUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 다시 이용해주세요."
+        confirmText="로그인하기"
+        onlyConfirm
+        onCancel={onUnauthorized}
+        onConfirm={onUnauthorized}
+      />
+    </>
   )
 }

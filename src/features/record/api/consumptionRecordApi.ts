@@ -1,7 +1,9 @@
 import client from '@/api/client'
+import type { PostApiV1ConsumptionRecordsData } from '@/api/generated'
 import { formatDateKorean } from '@/shared/utils/date'
 import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import type { RecordItem, RecordType } from '@/features/record/mockRecords'
+import type { InterventionAnswer } from '@/features/intervention/api/interventionApi'
 
 type ApiRecordType = 'CONSUMED' | 'SKIPPED'
 
@@ -75,9 +77,10 @@ export interface ConsumptionRecordInput {
   reason?: string
   riskScore?: number
   productUrl?: string
+  interventionAnswers?: InterventionAnswer[]
 }
 
-function toRequestBody(input: ConsumptionRecordInput) {
+function toRequestBody(input: ConsumptionRecordInput): PostApiV1ConsumptionRecordsData['body'] {
   return {
     type: TYPE_TO_API[input.type],
     productName: input.productName,
@@ -86,6 +89,12 @@ function toRequestBody(input: ConsumptionRecordInput) {
     ...(input.reason && { reason: input.reason }),
     ...(input.riskScore !== undefined && { riskScore: input.riskScore }),
     ...(input.productUrl && { productUrl: input.productUrl }),
+    ...(input.interventionAnswers && {
+      interventionAnswers: input.interventionAnswers.map(({ questionId, answerValue }) => ({
+        questionId: Number(questionId),
+        answerValue,
+      })),
+    }),
   }
 }
 

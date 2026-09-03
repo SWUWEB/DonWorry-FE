@@ -9,7 +9,8 @@ import {
 const REFRESH_URL = '/api/v1/auth/refresh'
 
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  // 개발 환경에서는 Vite의 same-origin /api 프록시를 사용해 백엔드 CORS 제한을 피합니다.
+  baseURL: import.meta.env.DEV ? undefined : import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ client.interceptors.response.use(
       // 네트워크 오류·타임아웃·5xx 같은 일시적 실패까지 세션을 지우면, refresh token은
       // 아직 유효한데 재발급 시도가 잠깐 실패했다는 이유로 사용자가 강제 로그아웃됩니다.
       if (isAxiosError(refreshError) && refreshError.response?.status === 401) {
-        clearAuthSession()
+        clearAuthSession({ expired: true })
       }
       return Promise.reject(error)
     }

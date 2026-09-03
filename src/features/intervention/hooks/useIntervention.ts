@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { interventionApi } from '../api/interventionApi'
-import type { InterventionAnswer } from '../api/interventionApi'
+import type { RiskScoreInput } from '../api/interventionApi'
 
 export function useInterventionQuestions(category: string | undefined) {
   return useQuery({
@@ -13,6 +13,6 @@ export function useInterventionQuestions(category: string | undefined) {
 
 export function useRiskScore() {
   return useMutation({
-    mutationFn: (answers: InterventionAnswer[]) => interventionApi.getRiskScore(answers),
+    mutationFn: (input: RiskScoreInput) => interventionApi.getRiskScore(input),
   })
 }

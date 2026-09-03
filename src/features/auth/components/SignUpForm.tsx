@@ -5,11 +5,13 @@ import { useRef, useState } from 'react'
 import styles from './SignUpForm.module.css'
 import ErrorMessage from './ErrorMessage'
 import { useSignup } from '@/hooks/useSignup'
+import { useLogin } from '@/hooks/useLogin'
 import { useSendVerificationEmail } from '@/hooks/useSendVerificationEmail'
 import { useConfirmVerificationEmail } from '@/hooks/useConfirmVerificationEmail'
 import { useCheckEmail } from '@/hooks/useCheckEmail'
 import { useCheckLoginId } from '@/hooks/useCheckLoginId'
 import { isAxiosError } from 'axios'
+import { saveAuthSession } from '@/shared/auth/session'
 
 // 서버 오류 응답에서 사용자에게 보여줄 문구를 뽑아냅니다.
 // 400: 필드 단위 검증 메시지, 409: 이메일 중복, 429: 재시도까지 남은 시간 안내
@@ -50,7 +52,8 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 export default function SignUpForm() {
   const navigate = useNavigate()
-  const { mutate, isPending: isSubmitting } = useSignup()
+  const { mutate, isPending: isSigningUp } = useSignup()
+  const { mutateAsync: login, isPending: isLoggingIn } = useLogin()
   const { mutate: sendEmail, isPending: isSendingEmail } = useSendVerificationEmail()
   const { mutate: confirmEmail, isPending: isConfirmingEmail } = useConfirmVerificationEmail()
   const { mutate: checkEmail, isPending: isCheckingEmail } = useCheckEmail()
@@ -75,6 +78,7 @@ export default function SignUpForm() {
   const [emailStatus, setEmailStatus] = useState<FieldStatus>(null)
   const [codeStatus, setCodeStatus] = useState<FieldStatus>(null)
   const [submitError, setSubmitError] = useState('')
+  const isSubmitting = isSigningUp || isLoggingIn
 
   const [password, setPassword] = useState('')
   const [passwordCheck, setPasswordCheck] = useState('')
@@ -82,7 +86,7 @@ export default function SignUpForm() {
   const [phone, setPhone] = useState('')
 
   const isValidId = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,12}$/.test(id)
-  const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)
+  const isValidPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,100}$/.test(password)
   const isPasswordMatch = password === passwordCheck
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const isValidPhone = /^(01[016789])-?\d{3,4}-?\d{4}$/.test(phone)
@@ -113,8 +117,17 @@ export default function SignUpForm() {
         phoneNumber: phone,
       },
       {
-        onSuccess: () => {
-          navigate('/onboarding')
+        onSuccess: async () => {
+          try {
+            const response = await login({ loginId: id, password })
+            saveAuthSession(response.data)
+            navigate('/onboarding')
+          } catch {
+            navigate('/login', {
+              replace: true,
+              state: { notice: '회원가입이 완료되었습니다. 로그인 후 설정을 이어가주세요.' },
+            })
+          }
         },
         onError: (error) => {
           setSubmitError(getErrorMessage(error, '회원가입에 실패했습니다.'))
@@ -367,7 +380,7 @@ export default function SignUpForm() {
       <div className={styles.formField}>
         <InputField
           label="비밀번호"
-          placeholder="영문, 숫자, 특수문자 조합 8자 이상"
+          placeholder="영문, 숫자, 특수문자 조합 8~100자"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

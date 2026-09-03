@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { notificationApi } from '../api/notificationApi'
 import type { NotificationSettingsResponse } from '../api/notificationApi'
 import type { NotificationItem } from '../components/NotificationCard'
@@ -59,26 +58,10 @@ export function useReadAllNotifications() {
   })
 }
 
-// TODO: 조회 API(BE #89)가 배포되면 아래 404 폴백을 제거하세요.
-// 미배포 구간에만 쓰는 임시 처리이며, 401/500 등 실제 오류는 그대로 던져 재시도·에러 상태가 동작하게 둡니다.
-const DEFAULT_SETTINGS: NotificationSettingsResponse = {
-  all: true,
-  general: true,
-  goal: true,
-  retrial: true,
-}
-
 export function useNotificationSettings() {
   return useQuery({
     queryKey: QUERY_KEYS.settings,
-    queryFn: async () => {
-      try {
-        return await notificationApi.getSettings()
-      } catch (error) {
-        if (isAxiosError(error) && error.response?.status === 404) return DEFAULT_SETTINGS
-        throw error
-      }
-    },
+    queryFn: notificationApi.getSettings,
     staleTime: 1000 * 60 * 5,
   })
 }

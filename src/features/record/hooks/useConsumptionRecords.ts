@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { QueryClient } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
 import { consumptionRecordApi } from '../api/consumptionRecordApi'
 import type { ConsumptionRecordInput, RecordListFilter } from '../api/consumptionRecordApi'
 
@@ -32,10 +31,6 @@ export function useConsumptionRecordDetail(id: string | undefined) {
     queryFn: () => consumptionRecordApi.getDetail(id as string),
     enabled: Boolean(id),
     staleTime: 1000 * 60,
-    retry: (failureCount, err) => {
-      if (isAxiosError(err) && err.response?.status === 404) return false
-      return failureCount < 3
-    },
   })
 }
 

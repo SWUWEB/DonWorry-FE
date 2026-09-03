@@ -8,15 +8,19 @@ import {
   addWishlistItem,
   updateWishlistItem,
   deleteWishlistItem,
+  submitTemptationDecision,
+  WAIT_TYPE_MAP,
+  TIME_TO_WAIT_TYPE_MAP,
+  type TemptationDecisionType,
 } from '../api/wishlistApi'
-import { isUnauthorizedError } from '../utils/isUnauthorizedError'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import { getMutationErrorKind } from '../utils/wishlistErrors'
 
 export const useWishlist = () => {
   const queryClient = useQueryClient()
 
   const {
-    data: products = [],
+    data: serverProducts = [],
     isLoading,
     isError,
     error,
@@ -24,6 +28,15 @@ export const useWishlist = () => {
     queryKey: ['wishlistItems'],
     queryFn: fetchWishlistItems,
   })
+
+  // 결정(구매/포기)이 끝난 항목은 서버가 목록에서 걸러주기 전까지 화면에서 즉시 감춥니다.
+  const [localOverrides, setLocalOverrides] = useState<{ deletedIds: Set<string> }>({
+    deletedIds: new Set(),
+  })
+
+  const products = useMemo(() => {
+    return serverProducts.filter((p) => !localOverrides.deletedIds.has(p.id))
+  }, [serverProducts, localOverrides])
 
   const [filter, setFilter] = useState<FilterValue>('전체')
   const [sort, setSort] = useState<SortValue>('가나다순')
@@ -61,13 +74,22 @@ export const useWishlist = () => {
     queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
   }
 
+  // 목록에서 즉시 제거합니다(삭제, 구매/포기 결정 완료 등 항목이 더 이상 유효하지 않을 때 공통으로 사용).
+  const removeFromListCache = (id: string) => {
+    setLocalOverrides((prev) => ({
+      deletedIds: new Set(prev.deletedIds).add(id),
+    }))
+    queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
+  }
+
+  const handleAdd = (formData: WishFormData) => {
+    addMutation.mutate(formData)
+  }
+
   const deleteMutation = useMutation({
     mutationFn: deleteWishlistItem,
-    onSuccess: (_data, deletedId) => {
-      queryClient.setQueryData<Product[]>(['wishlistItems'], (old) =>
-        old?.filter((p) => p.id !== deletedId),
-      )
-      queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
+    onSuccess: (_data, id) => {
+      removeFromListCache(id)
     },
   })
 
@@ -75,31 +97,50 @@ export const useWishlist = () => {
     deleteMutation.mutate(id)
   }
 
-  const handleAdd = (formData: WishFormData) => {
-    addMutation.mutate(formData)
-  }
-
+  // 고민 시간 연장: 재판단(decisions) API의 DELAY로 기록합니다.
   const extendMutation = useMutation({
-    mutationFn: ({ id, formData }: { id: string; formData: WishFormData }) =>
-      updateWishlistItem(id, formData),
-    onSuccess: patchWishlistItemCache,
+    mutationFn: ({ id, timeOption }: { id: string; timeOption: (typeof TIME_OPTIONS)[number] }) =>
+      submitTemptationDecision(id, 'DELAY', TIME_TO_WAIT_TYPE_MAP[timeOption]),
   })
 
   const handleExtend = (id: string, timeOption: (typeof TIME_OPTIONS)[number]) => {
     const target = products.find((p) => p.id === id)
     if (!target) return
 
-    extendMutation.mutate({
-      id,
-      formData: {
-        link: target.link ?? undefined,
-        price: target.price,
-        name: target.name,
-        category: target.category,
-        time: timeOption,
-        reason: target.reason ?? '',
+    extendMutation.mutate(
+      { id, timeOption },
+      {
+        onSuccess: (result) => {
+          patchWishlistItemCache({
+            ...target,
+            time: result.selectedWaitUntil ? new Date(result.selectedWaitUntil) : target.time,
+            timeOption: result.selectedWaitType
+              ? (WAIT_TYPE_MAP[result.selectedWaitType] ?? timeOption)
+              : timeOption,
+          })
+        },
       },
-    })
+    )
+  }
+
+  // 재판단 화면의 구매/포기 결정: 성공 시 더 이상 대기 중이 아니므로 목록에서 제거합니다.
+  const decisionMutation = useMutation({
+    mutationFn: ({ id, decisionType }: { id: string; decisionType: TemptationDecisionType }) =>
+      submitTemptationDecision(id, decisionType),
+  })
+
+  const handleJudgeDecision = (id: string, decisionType: 'BUY' | 'SKIP') => {
+    decisionMutation.mutate(
+      { id, decisionType },
+      {
+        onSuccess: () => removeFromListCache(id),
+        onError: (error) => {
+          // 이미 결정됐거나 사라진 상품은 재시도해도 같은 결과라, 대기 목록에서 정리합니다.
+          const kind = getMutationErrorKind(error)
+          if (kind === 'NOT_FOUND' || kind === 'ALREADY_DECIDED') removeFromListCache(id)
+        },
+      },
+    )
   }
 
   const editMutation = useMutation({
@@ -119,13 +160,16 @@ export const useWishlist = () => {
     isUnauthorizedError(addMutation.error) ||
     isUnauthorizedError(editMutation.error) ||
     isUnauthorizedError(extendMutation.error) ||
-    isUnauthorizedError(deleteMutation.error)
+    isUnauthorizedError(deleteMutation.error) ||
+    isUnauthorizedError(decisionMutation.error)
 
-  // 삭제 401 에러 여부를 별도 노출 (상세 화면/재판단 화면에서 로그인 분기용)
   const isDeleteUnauthorized = isUnauthorizedError(deleteMutation.error)
+  const isExtendUnauthorized = isUnauthorizedError(extendMutation.error)
+  const isDecideUnauthorized = isUnauthorizedError(decisionMutation.error)
 
   const editErrorKind = getMutationErrorKind(editMutation.error) // 'EMPTY' | 'FORBIDDEN' | 'NOT_FOUND' | null
   const deleteErrorKind = getMutationErrorKind(deleteMutation.error)
+  const decideErrorKind = getMutationErrorKind(decisionMutation.error)
 
   return {
     keyword,
@@ -154,10 +198,18 @@ export const useWishlist = () => {
     isDeleteUnauthorized,
     deleteErrorKind,
     resetDeleteStatus: deleteMutation.reset,
+    isDeciding: decisionMutation.isPending,
+    isDecideSuccess: decisionMutation.isSuccess,
+    isDecideError: decisionMutation.isError,
+    isDecideUnauthorized,
+    decideErrorKind,
+    resetDecideStatus: decisionMutation.reset,
+    isExtendUnauthorized,
     isUnauthorized,
     handleDelete,
     handleAdd,
     handleExtend,
     handleEdit,
+    handleJudgeDecision,
   }
 }

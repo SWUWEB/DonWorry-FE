@@ -337,4 +337,37 @@ describe('consumptionRecordApi', () => {
       productUrl: 'https://example.com/products/chair',
     })
   })
+
+  it('create: 개입 답변 questionId를 Swagger 계약의 정수로 변환한다', async () => {
+    vi.mocked(client.post).mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: 'OK',
+        data: {
+          id: '4',
+          type: 'CONSUMED',
+          productName: '헤드폰',
+          price: 200000,
+          categoryCode: 'ELECTRONICS',
+          categoryLabel: '전자기기',
+          reason: null,
+          occurredAt: '2026-08-09T12:00:00.000Z',
+        },
+      },
+    })
+
+    await consumptionRecordApi.create({
+      type: 'consume',
+      productName: '헤드폰',
+      price: 200000,
+      interventionAnswers: [{ questionId: '12', answerValue: true }],
+    })
+
+    expect(client.post).toHaveBeenCalledWith('/api/v1/consumption-records', {
+      type: 'CONSUMED',
+      productName: '헤드폰',
+      price: 200000,
+      interventionAnswers: [{ questionId: 12, answerValue: true }],
+    })
+  })
 })
