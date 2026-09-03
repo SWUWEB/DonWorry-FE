@@ -15,15 +15,19 @@ export default function TemptationJudge() {
   const navigate = useNavigate()
   const {
     filteredProducts,
+    isLoading,
+    isUnauthorized,
     handleExtend,
     isExtending,
     isExtendSuccess,
     isExtendError,
+    isExtendUnauthorized,
     resetExtendStatus,
     handleJudgeDecision,
     isDeciding,
     isDecideSuccess,
     isDecideError,
+    isDecideUnauthorized,
     resetDecideStatus,
   } = useWishlistContext()
 
@@ -38,7 +42,7 @@ export default function TemptationJudge() {
     product: Product
   } | null>(null)
 
-  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
+  const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess && !isExtendError
 
   // 아직 고민 시간이 남은 상품은 재판단 대상이 아니므로 상세로 돌려보냅니다.
   // (상세 화면은 반대로 시간이 끝나면 이 화면으로 보냅니다 — 조건이 서로 배타적이라 왕복하지 않습니다.)
@@ -55,7 +59,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendClick = () => {
-    if (!product || isDeciding) return
+    if (!product || isDeciding || isExtending) return
     setIsExtendConfirmOpen(true)
   }
 
@@ -65,7 +69,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendConfirm = () => {
-    if (!product || isExtending) return
+    if (!product || isDeciding || isExtending) return
     handleExtend(product.id, selectedExtend)
   }
 
@@ -128,9 +132,31 @@ export default function TemptationJudge() {
     handleJudgeDecision(product.id, 'BUY')
   }
 
+  const handleUnauthorizedConfirm = () => {
+    resetExtendStatus()
+    resetDecideStatus()
+    setPendingDecision(null)
+    navigate('/login')
+  }
+
+  if (isUnauthorized || isExtendUnauthorized || isDecideUnauthorized) {
+    return (
+      <ConfirmDialog
+        isOpen
+        title="로그인이 필요합니다."
+        description="로그인 후 이용해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleUnauthorizedConfirm}
+        onConfirm={handleUnauthorizedConfirm}
+      />
+    )
+  }
+
   if (!product) {
     // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
     if (pendingDecision) return null
+    if (isLoading) return <p>불러오는 중...</p>
     return <p>상품을 찾을 수 없습니다.</p>
   }
 
@@ -175,6 +201,7 @@ export default function TemptationJudge() {
                 type="button"
                 className={`${styles.chip} ${selectedExtend === option ? styles.chipSelected : ''}`}
                 onClick={() => setSelectedExtend(option)}
+                disabled={isProcessing}
               >
                 {option}
               </button>
@@ -245,7 +272,7 @@ export default function TemptationJudge() {
       />
 
       <ConfirmDialog
-        isOpen={isDecideError}
+        isOpen={isDecideError && !isDecideUnauthorized}
         title="결정을 저장하지 못했습니다."
         description="다시 시도해주세요."
         onlyConfirm

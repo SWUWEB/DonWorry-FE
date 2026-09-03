@@ -153,6 +153,10 @@ export const useWishlist = () => {
     isUnauthorizedError(deleteMutation.error) ||
     isUnauthorizedError(decisionMutation.error)
 
+  const isDeleteUnauthorized = isUnauthorizedError(deleteMutation.error)
+  const isExtendUnauthorized = isUnauthorizedError(extendMutation.error)
+  const isDecideUnauthorized = isUnauthorizedError(decisionMutation.error)
+
   const editErrorKind = getMutationErrorKind(editMutation.error) // 'EMPTY' | 'FORBIDDEN' | 'NOT_FOUND' | null
   const deleteErrorKind = getMutationErrorKind(deleteMutation.error)
   const decideErrorKind = getMutationErrorKind(decisionMutation.error)
@@ -181,13 +185,16 @@ export const useWishlist = () => {
     isDeleting: deleteMutation.isPending,
     isDeleteSuccess: deleteMutation.isSuccess,
     isDeleteError: deleteMutation.isError,
+    isDeleteUnauthorized,
     deleteErrorKind,
     resetDeleteStatus: deleteMutation.reset,
     isDeciding: decisionMutation.isPending,
     isDecideSuccess: decisionMutation.isSuccess,
     isDecideError: decisionMutation.isError,
+    isDecideUnauthorized,
     decideErrorKind,
     resetDecideStatus: decisionMutation.reset,
+    isExtendUnauthorized,
     isUnauthorized,
     handleDelete,
     handleAdd,

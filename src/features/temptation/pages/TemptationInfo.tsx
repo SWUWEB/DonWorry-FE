@@ -11,17 +11,6 @@ import { useEffect, useState } from 'react'
 import { useWishlistContext } from '../hooks/WishlistContext'
 import { useWishlistDetail } from '../hooks/useWishlistDetail'
 
-const DELETE_ERROR_MESSAGE_MAP: Record<string, { title: string; description: string }> = {
-  FORBIDDEN: {
-    title: '접근 권한이 없습니다.',
-    description: '본인의 위시리스트 항목만 포기할 수 있습니다.',
-  },
-  NOT_FOUND: {
-    title: '상품을 찾을 수 없습니다.',
-    description: '이미 삭제되었거나 존재하지 않는 상품입니다.',
-  },
-}
-
 export default function TemptationInfo() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -31,6 +20,7 @@ export default function TemptationInfo() {
     isDeleting,
     isDeleteSuccess,
     isDeleteError,
+    isDeleteUnauthorized,
     deleteErrorKind,
     resetDeleteStatus,
   } = useWishlistContext()
@@ -38,8 +28,9 @@ export default function TemptationInfo() {
   const product = filteredProducts.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
+  const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess && !isDeleteError
 
-  const { isUnauthorized, errorKind } = useWishlistDetail(id)
+  const { isUnauthorized: isDetailUnauthorized, errorKind } = useWishlistDetail(id)
 
   // 고민 시간이 끝나면 재판단 화면으로 넘깁니다.
   // 이미 지난 채로 들어온 경우엔 즉시, 아직 남았다면 남은 시간만큼 기다린 뒤 이동합니다.
@@ -90,6 +81,26 @@ export default function TemptationInfo() {
     handleDelete(product.id)
   }
 
+  const handleRetryableDeleteErrorConfirm = () => {
+    resetDeleteStatus()
+  }
+
+  const handleDeleteNotFoundConfirm = () => {
+    resetDeleteStatus()
+    setIsGiveUpOpen(false)
+    navigate('/temptation')
+  }
+
+  const handleDeleteForbiddenConfirm = () => {
+    resetDeleteStatus()
+    setIsGiveUpOpen(false)
+  }
+
+  const handleUnauthorizedConfirm = () => {
+    resetDeleteStatus()
+    navigate('/login')
+  }
+
   const handleErrorConfirm = () => {
     navigate('/temptation')
   }
@@ -122,7 +133,7 @@ export default function TemptationInfo() {
     )
   }
 
-  if (isUnauthorized) {
+  if (isDetailUnauthorized || isDeleteUnauthorized) {
     return (
       <ConfirmDialog
         isOpen
@@ -130,8 +141,8 @@ export default function TemptationInfo() {
         description="로그인 후 이용해주세요."
         onlyConfirm
         confirmText="확인"
-        onCancel={() => navigate('/login')}
-        onConfirm={() => navigate('/login')}
+        onCancel={handleUnauthorizedConfirm}
+        onConfirm={handleUnauthorizedConfirm}
       />
     )
   }
@@ -141,8 +152,6 @@ export default function TemptationInfo() {
     if (isDeleteSuccess) return null
     return <p>상품을 찾을 수 없습니다.</p>
   }
-
-  const deleteErrorContent = deleteErrorKind ? DELETE_ERROR_MESSAGE_MAP[deleteErrorKind] : undefined
 
   return (
     <>
@@ -164,19 +173,49 @@ export default function TemptationInfo() {
       )}
 
       <ConfirmDialog
-        isOpen={isGiveUpOpen}
+        isOpen={isGiveUpDialogOpen}
         title="이 상품을 포기하시겠습니까?"
         description="포기한 금액은 참은 소비 기록에 반영됩니다."
         cancelText="취소"
         confirmText="포기하기"
         isLoading={isDeleting}
-        errorMessage={
-          isDeleteError
-            ? (deleteErrorContent?.description ?? '처리하지 못했습니다. 다시 시도해 주세요.')
-            : ''
-        }
         onCancel={handleGiveUpCancel}
         onConfirm={handleGiveUpConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={
+          isDeleteError &&
+          !isDeleteUnauthorized &&
+          deleteErrorKind !== 'NOT_FOUND' &&
+          deleteErrorKind !== 'FORBIDDEN'
+        }
+        title="처리하지 못했습니다."
+        description="잠시 후 다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleRetryableDeleteErrorConfirm}
+        onConfirm={handleRetryableDeleteErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteErrorKind === 'NOT_FOUND'}
+        title="상품을 찾을 수 없습니다."
+        description="이미 삭제되었거나 존재하지 않는 상품입니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteNotFoundConfirm}
+        onConfirm={handleDeleteNotFoundConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteErrorKind === 'FORBIDDEN'}
+        title="접근 권한이 없습니다."
+        description="본인의 위시리스트 항목만 삭제할 수 있습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteForbiddenConfirm}
+        onConfirm={handleDeleteForbiddenConfirm}
       />
     </>
   )
