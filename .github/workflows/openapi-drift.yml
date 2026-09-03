@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # push하지 않는 워크플로이므로 토큰을 git 설정에 남기지 않습니다.
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
