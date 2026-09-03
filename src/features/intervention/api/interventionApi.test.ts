@@ -77,6 +77,7 @@ describe('interventionApi', () => {
           riskScore: 4,
           riskLevel: 'HIGH',
           riskMessage: '충동적인 소비일 가능성이 높아요.',
+          workHoursNeeded: 15,
         },
       },
     })
@@ -86,15 +87,17 @@ describe('interventionApi', () => {
       { questionId: '2', answerValue: false },
     ]
 
-    const result = await interventionApi.getRiskScore(answers)
+    const result = await interventionApi.getRiskScore({ price: 150000, answers })
 
     expect(client.post).toHaveBeenCalledWith('/api/v1/interventions/risk-score', {
+      price: 150000,
       interventionAnswers: answers,
     })
     expect(result).toEqual({
       riskScore: 4,
       riskLevel: 'high',
       riskMessage: '충동적인 소비일 가능성이 높아요.',
+      workHoursNeeded: 15,
     })
   })
 })

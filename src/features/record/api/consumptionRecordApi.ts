@@ -76,7 +76,6 @@ export interface ConsumptionRecordInput {
   reason?: string
   riskScore?: number
   productUrl?: string
-  workHoursNeeded?: number
   interventionAnswers?: InterventionAnswer[]
 }
 
@@ -89,8 +88,12 @@ function toRequestBody(input: ConsumptionRecordInput) {
     ...(input.reason && { reason: input.reason }),
     ...(input.riskScore !== undefined && { riskScore: input.riskScore }),
     ...(input.productUrl && { productUrl: input.productUrl }),
-    ...(input.workHoursNeeded !== undefined && { workHoursNeeded: input.workHoursNeeded }),
-    ...(input.interventionAnswers && { interventionAnswers: input.interventionAnswers }),
+    ...(input.interventionAnswers && {
+      interventionAnswers: input.interventionAnswers.map(({ questionId, answerValue }) => ({
+        questionId: Number(questionId),
+        answerValue,
+      })),
+    }),
   }
 }
 
