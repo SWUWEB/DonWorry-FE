@@ -13,6 +13,7 @@ const monthlyBudgetResult = {
   spentAmount: '200000',
   remainingAmount: '800000',
   usageRate: 20,
+  hourlyWage: '10000',
   categoryBudgets: [
     {
       categoryCode: 'FOOD_SNACK',
@@ -46,6 +47,7 @@ describe('userApi budget', () => {
       spentAmount: 200000,
       remainingAmount: 800000,
       usageRate: 20,
+      hourlyWage: 10000,
       categoryBudgets: [
         {
           category: '음식',
@@ -97,6 +99,19 @@ describe('userApi budget', () => {
     expect(client.put).toHaveBeenCalledWith('/api/v1/users/me/budget', {
       yearMonth: '2026-08',
       monthlyIncome: 1200000,
+    })
+  })
+
+  it('시급을 Swagger의 hourlyWage 필드로 저장한다', async () => {
+    vi.mocked(client.put).mockResolvedValueOnce({
+      data: { success: true, message: 'OK', data: monthlyBudgetResult },
+    })
+
+    await userApi.setBudget({ yearMonth: '2026-08', hourlyWage: 12000 })
+
+    expect(client.put).toHaveBeenCalledWith('/api/v1/users/me/budget', {
+      yearMonth: '2026-08',
+      hourlyWage: 12000,
     })
   })
 })

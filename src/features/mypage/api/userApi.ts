@@ -77,6 +77,7 @@ export interface Budget {
   spentAmount: number
   remainingAmount: number
   usageRate: number
+  hourlyWage: number | null
   categoryBudgets: CategoryBudget[]
 }
 
@@ -92,6 +93,7 @@ export interface SetBudgetRequest {
   yearMonth: string
   monthlyIncome?: number
   monthlyBudget?: number
+  hourlyWage?: number
   categoryBudgets?: Pick<CategoryBudget, 'category' | 'budgetAmount'>[]
 }
 
@@ -102,6 +104,7 @@ interface MonthlyBudgetResult {
   spentAmount: string
   remainingAmount: string
   usageRate: number
+  hourlyWage: string | null
   categoryBudgets: {
     categoryCode: CategoryCode
     budgetAmount: string
@@ -119,6 +122,7 @@ function adaptBudget(result: MonthlyBudgetResult): Budget {
     spentAmount: Number(result.spentAmount),
     remainingAmount: Number(result.remainingAmount),
     usageRate: result.usageRate,
+    hourlyWage: result.hourlyWage === null ? null : Number(result.hourlyWage),
     categoryBudgets: result.categoryBudgets.map((category) => ({
       category: CATEGORY_CODE_TO_LABEL[category.categoryCode],
       budgetAmount: Number(category.budgetAmount),
@@ -132,6 +136,7 @@ function adaptBudget(result: MonthlyBudgetResult): Budget {
 export interface ChangePasswordRequest {
   currentPassword: string
   newPassword: string
+  newPasswordConfirm: string
 }
 
 export const userApi = {
@@ -175,6 +180,7 @@ export const userApi = {
       yearMonth: body.yearMonth,
       ...(body.monthlyIncome !== undefined && { monthlyIncome: body.monthlyIncome }),
       ...(body.monthlyBudget !== undefined && { monthlyBudget: body.monthlyBudget }),
+      ...(body.hourlyWage !== undefined && { hourlyWage: body.hourlyWage }),
       ...(body.categoryBudgets !== undefined && {
         categoryBudgets: body.categoryBudgets.map(({ category, budgetAmount }) => ({
           categoryCode: CATEGORY_LABEL_TO_CODE[category],
@@ -185,8 +191,6 @@ export const userApi = {
     return adaptBudget(data.data)
   },
 
-  // 스웨거상 성공(200) 응답이 명시돼 있지 않고 501(NotImplemented)만 문서화된,
-  // 백엔드에서 아직 구현 중인 엔드포인트입니다.
   changePassword: async (body: ChangePasswordRequest): Promise<void> => {
     await client.patch('/api/v1/users/me/password', body)
   },

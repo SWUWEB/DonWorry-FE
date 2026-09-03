@@ -35,9 +35,27 @@ describe('ChangePasswordForm', () => {
 
     await waitFor(() => {
       expect(changePassword).toHaveBeenCalledWith(
-        { currentPassword: 'CurrentPassword1!', newPassword: longPassword },
+        {
+          currentPassword: 'CurrentPassword1!',
+          newPassword: longPassword,
+          newPasswordConfirm: longPassword,
+        },
         expect.any(Object),
       )
     })
+  })
+
+  it('최종 401 응답이면 로그인 안내 후 전달받은 이동 함수를 실행한다', () => {
+    const onUnauthorized = vi.fn()
+    vi.mocked(useChangePassword).mockReturnValue({
+      mutate: changePassword,
+      isPending: false,
+      error: { isAxiosError: true, response: { status: 401 } },
+    } as unknown as ReturnType<typeof useChangePassword>)
+
+    render(<ChangePasswordForm onUnauthorized={onUnauthorized} />)
+
+    fireEvent.click(screen.getByRole('button', { name: '로그인하기' }))
+    expect(onUnauthorized).toHaveBeenCalledOnce()
   })
 })

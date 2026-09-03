@@ -63,6 +63,37 @@
   background: #f7fbfa;
 }
 
+.unsupportedText {
+  margin: 0;
+  color: #898989;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.errorRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.errorText {
+  margin: 0;
+  color: var(--color-sub-red, #e5484d);
+  font-size: 12px;
+}
+
+.retryButton {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-main-500);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .noticeBox ul {
   margin: 0;
   padding: 0;

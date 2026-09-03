@@ -55,6 +55,8 @@ export interface ConsumptionReportDetail {
 }
 
 export const consumptionReportApi = {
+  // TODO(BE 연동): /reports/consumption/summary의 501 응답이 해제되면 요약 조회 연동을 검토합니다.
+  // 현재 화면은 정상 제공되는 detail endpoint의 데이터로 구성합니다.
   getDetail: async (month?: string): Promise<ConsumptionReportDetail> => {
     const params = month ? { month } : {}
     const { data } = await client.get<{ data: ConsumptionReportDetail }>(
