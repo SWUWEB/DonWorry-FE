@@ -4,6 +4,8 @@ import {
   useUpdateAllSetting,
   useUpdateSubSettings,
 } from '../hooks/useNotifications'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import styles from './NotificationSettingsSheet.module.css'
 
 const SETTINGS_LIST = [
@@ -31,15 +33,30 @@ type SubSettings = { general: boolean; goal: boolean; retrial: boolean }
 
 interface Props {
   onClose: () => void
+  onUnauthorized?: () => void
 }
 
-export default function NotificationSettingsSheet({ onClose }: Props) {
-  const { data: serverSettings } = useNotificationSettings()
-  const { mutate: updateAll, isPending: isUpdatingAll } = useUpdateAllSetting()
-  const { mutate: updateSub, isPending: isUpdatingSub } = useUpdateSubSettings()
+export default function NotificationSettingsSheet({ onClose, onUnauthorized = () => {} }: Props) {
+  const {
+    data: serverSettings,
+    isLoading: isLoadingSettings,
+    isError: isSettingsError,
+    error: settingsError,
+    refetch: refetchSettings,
+  } = useNotificationSettings()
+  const {
+    mutate: updateAll,
+    isPending: isUpdatingAll,
+    error: updateAllError,
+  } = useUpdateAllSetting()
+  const {
+    mutate: updateSub,
+    isPending: isUpdatingSub,
+    error: updateSubError,
+  } = useUpdateSubSettings()
 
   // 서버가 동시 요청에 409를 반환하므로, 요청이 끝날 때까지 토글을 잠급니다.
-  const isSaving = isUpdatingAll || isUpdatingSub
+  const isSaving = isUpdatingAll || isUpdatingSub || isLoadingSettings || isSettingsError
 
   const [enabled, setEnabled] = useState<SubSettings>({
     general: true,
@@ -57,6 +74,10 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
   }, [serverSettings])
 
   const allOn = enabled.general && enabled.goal && enabled.retrial
+  const isUnauthorized =
+    isUnauthorizedError(settingsError) ||
+    isUnauthorizedError(updateAllError) ||
+    isUnauthorizedError(updateSubError)
 
   // 저장에 실패하면 화면만 바뀐 채 서버와 어긋나므로 이전 값으로 되돌립니다.
   const rollbackTo = (prev: SubSettings) => () => {
@@ -84,49 +105,78 @@ export default function NotificationSettingsSheet({ onClose }: Props) {
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.handle} />
-        <h2 className={styles.title}>어떤 알림을 받을까요?</h2>
+    <>
+      <div className={styles.overlay} onClick={onClose}>
+        <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.handle} />
+          <h2 className={styles.title}>어떤 알림을 받을까요?</h2>
 
-        {saveError && (
-          <p className={styles.errorText} role="alert">
-            설정을 저장하지 못했어요. 잠시 후 다시 시도해주세요.
-          </p>
-        )}
+          {isLoadingSettings && <p className={styles.statusText}>설정을 불러오는 중...</p>}
 
-        <div className={styles.masterItem}>
-          <span className={styles.masterLabel}>전체 알림</span>
-          <button
-            className={`${styles.toggle} ${allOn ? styles.on : ''}`}
-            onClick={toggleAll}
-            disabled={isSaving}
-            aria-label={`전체 알림 ${allOn ? '끄기' : '켜기'}`}
-          >
-            <span className={styles.toggleThumb} />
-          </button>
-        </div>
-
-        <ul className={styles.list}>
-          {SETTINGS_LIST.map((item) => (
-            <li key={item.id} className={styles.item}>
-              <span className={styles.dot} style={{ background: item.dotColor }} />
-              <div className={styles.textWrap}>
-                <span className={styles.label}>{item.label}</span>
-                <span className={styles.desc}>{item.description}</span>
-              </div>
+          {isSettingsError && !isUnauthorized && (
+            <div className={styles.errorRow}>
+              <p className={styles.errorText} role="alert">
+                알림 설정을 불러오지 못했어요.
+              </p>
               <button
-                className={`${styles.toggle} ${enabled[item.id] ? styles.on : ''}`}
-                onClick={() => toggle(item.id)}
-                disabled={isSaving}
-                aria-label={`${item.label} ${enabled[item.id] ? '끄기' : '켜기'}`}
+                type="button"
+                className={styles.retryButton}
+                onClick={() => refetchSettings()}
               >
-                <span className={styles.toggleThumb} />
+                다시 시도
               </button>
-            </li>
-          ))}
-        </ul>
+            </div>
+          )}
+
+          {saveError && (
+            <p className={styles.errorText} role="alert">
+              설정을 저장하지 못했어요. 잠시 후 다시 시도해주세요.
+            </p>
+          )}
+
+          <div className={styles.masterItem}>
+            <span className={styles.masterLabel}>전체 알림</span>
+            <button
+              className={`${styles.toggle} ${allOn ? styles.on : ''}`}
+              onClick={toggleAll}
+              disabled={isSaving}
+              aria-label={`전체 알림 ${allOn ? '끄기' : '켜기'}`}
+            >
+              <span className={styles.toggleThumb} />
+            </button>
+          </div>
+
+          <ul className={styles.list}>
+            {SETTINGS_LIST.map((item) => (
+              <li key={item.id} className={styles.item}>
+                <span className={styles.dot} style={{ background: item.dotColor }} />
+                <div className={styles.textWrap}>
+                  <span className={styles.label}>{item.label}</span>
+                  <span className={styles.desc}>{item.description}</span>
+                </div>
+                <button
+                  className={`${styles.toggle} ${enabled[item.id] ? styles.on : ''}`}
+                  onClick={() => toggle(item.id)}
+                  disabled={isSaving}
+                  aria-label={`${item.label} ${enabled[item.id] ? '끄기' : '켜기'}`}
+                >
+                  <span className={styles.toggleThumb} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+
+      <ConfirmDialog
+        isOpen={isUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 다시 이용해주세요."
+        confirmText="로그인하기"
+        onlyConfirm
+        onCancel={onUnauthorized}
+        onConfirm={onUnauthorized}
+      />
+    </>
   )
 }

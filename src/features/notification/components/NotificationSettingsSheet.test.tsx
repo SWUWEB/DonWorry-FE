@@ -20,6 +20,7 @@ const mockedUseUpdateSubSettings = vi.mocked(useUpdateSubSettings)
 
 const updateAll = vi.fn()
 const updateSub = vi.fn()
+const refetchSettings = vi.fn()
 
 function mockServerSettings(data: {
   all: boolean
@@ -47,6 +48,7 @@ describe('NotificationSettingsSheet 전체 알림 마스터 토글', () => {
   beforeEach(() => {
     updateAll.mockClear()
     updateSub.mockClear()
+    refetchSettings.mockClear()
     mockMutations()
     mockServerSettings({ all: true, general: true, goal: true, retrial: true })
   })
@@ -122,5 +124,34 @@ describe('NotificationSettingsSheet 전체 알림 마스터 토글', () => {
 
     expect(screen.getByRole('button', { name: '유혹 관리 알림 끄기' })).toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveTextContent('설정을 저장하지 못했어요')
+  })
+
+  it('설정 조회에 실패하면 토글을 잠그고 다시 조회할 수 있다', async () => {
+    mockedUseNotificationSettings.mockReturnValue({
+      isError: true,
+      refetch: refetchSettings,
+    } as unknown as ReturnType<typeof useNotificationSettings>)
+    const user = userEvent.setup()
+
+    render(<NotificationSettingsSheet onClose={() => {}} />)
+
+    expect(screen.getByRole('button', { name: '전체 알림 끄기' })).toBeDisabled()
+    await user.click(screen.getByRole('button', { name: '다시 시도' }))
+    expect(refetchSettings).toHaveBeenCalledOnce()
+  })
+
+  it('설정 조회의 최종 401 응답이면 로그인 이동을 안내한다', async () => {
+    const onUnauthorized = vi.fn()
+    mockedUseNotificationSettings.mockReturnValue({
+      isError: true,
+      error: { isAxiosError: true, response: { status: 401 } },
+      refetch: refetchSettings,
+    } as unknown as ReturnType<typeof useNotificationSettings>)
+    const user = userEvent.setup()
+
+    render(<NotificationSettingsSheet onClose={() => {}} onUnauthorized={onUnauthorized} />)
+
+    await user.click(screen.getByRole('button', { name: '로그인하기' }))
+    expect(onUnauthorized).toHaveBeenCalledOnce()
   })
 })

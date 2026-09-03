@@ -6,8 +6,11 @@ import type { NotificationItem } from '../components/NotificationCard'
 interface NotificationResult {
   id: string
   notificationType: 'TEMPTATION' | 'GOAL' | 'GENERAL'
+  title: string
+  body: string
   isRead: boolean
   readAt: string | null
+  notifyAt: string
   wishlistItemId: string | null
   createdAt: string
 }
@@ -80,13 +83,13 @@ function formatTime(isoString: string): string {
 }
 
 function adapt(n: NotificationResult): NotificationItem {
-  const { title, description } = CONTENT_MAP[n.notificationType]
+  const fallback = CONTENT_MAP[n.notificationType]
   return {
     id: n.id,
     type: TYPE_MAP[n.notificationType],
     iconVariant: ICON_MAP[n.notificationType],
-    title,
-    description,
+    title: n.title || fallback.title,
+    description: n.body || fallback.description,
     time: formatTime(n.createdAt),
     isRead: n.isRead,
   }

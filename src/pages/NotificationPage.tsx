@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IoSettingsOutline } from 'react-icons/io5'
 import Header from '@/components/layout/Header'
 import HeaderBackButton from '@/shared/components/HeaderBackButton'
@@ -9,8 +10,10 @@ import type { FilterType } from '@/features/notification/components/FilterTabs'
 import styles from './NotificationPage.module.css'
 
 export default function NotificationPage() {
+  const navigate = useNavigate()
   const [filter, setFilter] = useState<FilterType>('전체')
   const [sheetOpen, setSheetOpen] = useState(false)
+  const handleUnauthorized = () => navigate('/login', { replace: true })
 
   return (
     <>
@@ -24,8 +27,13 @@ export default function NotificationPage() {
         }
         subMain={<FilterTabs active={filter} onChange={setFilter} />}
       />
-      <Notification filter={filter} />
-      {sheetOpen && <NotificationSettingsSheet onClose={() => setSheetOpen(false)} />}
+      <Notification filter={filter} onUnauthorized={handleUnauthorized} />
+      {sheetOpen && (
+        <NotificationSettingsSheet
+          onClose={() => setSheetOpen(false)}
+          onUnauthorized={handleUnauthorized}
+        />
+      )}
     </>
   )
 }
