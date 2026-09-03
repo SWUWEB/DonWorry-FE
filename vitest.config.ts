@@ -28,10 +28,10 @@ export default defineConfig({
       // 현재 수치를 기준선으로 고정해 커버리지가 조용히 떨어지는 것을 막습니다.
       // 테스트를 늘리면 이 값도 함께 올려주세요.
       thresholds: {
-        statements: 22,
-        branches: 25,
+        statements: 23,
+        branches: 26,
         functions: 18,
-        lines: 23,
+        lines: 24,
       },
     },
   },

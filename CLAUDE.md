@@ -65,6 +65,8 @@ src/
 - 서버 응답 타입을 선언하고, 화면에서 사용할 형태로의 변환은 API 경계에서 처리한다.
 - 금액은 화면 모델에서 `number`, 날짜는 가능한 한 `Date`로 정규화한다.
 - 서버 상태는 React Query로 관리한다. 성공 후 관련 query key를 정확히 갱신하거나 무효화한다.
+- QueryClient는 `src/api/queryClient.ts`의 `createQueryClient()`로 만든다. 4xx는 재시도하지 않는 것이 전역 기본값이므로, 훅에서 `retry`를 다시 지정하지 않는다.
+- 라우트 오류는 `src/pages/RouteErrorPage.tsx`가 처리한다. 없는 경로, 배포 후 청크 로드 실패, 그 밖의 오류를 구분해 안내한다.
 - 캐시를 즉시 수정해야 하는 흐름에서는 `setQueryData` 후 `invalidateQueries`를 사용해 화면 깜빡임과 오래된 데이터 노출을 막는다.
 - API 스펙을 추측해 새 필드나 엔드포인트를 만들지 않는다. 기존 타입, 테스트, 호출부를 함께 확인한다.
 - API 계약이 바뀌면 `npm run api:sync`와 `npm run api:generate`를 실행하고 생성 타입을 요청 경계에 연결한다.

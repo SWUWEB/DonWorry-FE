@@ -65,6 +65,8 @@ src/test/                전역 테스트 설정
 - API URL, request body, response 필드를 추측하지 않는다. 관련 타입, 테스트, 기존 호출부를 확인한다.
 - API 계약이 바뀌면 `npm run api:sync`와 `npm run api:generate`를 실행하고 생성 타입을 요청 경계에 연결한다.
 - 서버 상태는 React Query로 관리한다. 성공 후 정확한 query key를 갱신하거나 무효화한다.
+- QueryClient는 `createQueryClient()`로 만든다. 4xx 재시도 금지가 전역 기본값이라 훅에서 `retry`를 다시 지정하지 않는다.
+- 라우트 오류 화면은 `RouteErrorPage`가 없는 경로·청크 로드 실패·일반 오류를 구분해 처리한다.
 - 즉각적인 화면 반영이 필요하면 `setQueryData` 후 `invalidateQueries`를 사용한다.
 - 비동기 기능에는 loading, success, empty, error 상태를 고려한다.
 - mutation 진행 중에는 관련 버튼을 비활성화해 중복 요청을 막는다.
