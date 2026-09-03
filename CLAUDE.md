@@ -21,6 +21,7 @@ npm install
 npm run dev
 npm run api:check
 npm test
+npm run test:coverage
 npm run lint
 npm run format:check
 npm run build
@@ -80,6 +81,9 @@ src/
 - 여러 요청이 동시에 401을 받아도 refresh 요청은 하나만 공유한다.
 - refresh 요청 자체가 401일 때만 인증 세션을 삭제한다. 네트워크 오류, timeout, 5xx에서는 세션을 지우지 않는다.
 - 토큰 저장과 삭제는 `src/shared/auth/session.ts`를 사용한다.
+- `session.ts`는 구독 가능한 store다. 저장·삭제와 다른 탭의 변경을 구독자에게 알린다.
+- 세션 상태를 화면에서 읽을 때는 `useAuthSession()`을 사용한다. `hasAuthSession()`을 직접 호출하면 이후 변경에 반응하지 않는다.
+- refresh 실패로 세션이 정리되면 `expired: true`로 표시되고, 가드가 로그인 화면에 만료 안내를 전달한다.
 
 필요한 환경 변수:
 

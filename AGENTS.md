@@ -21,6 +21,7 @@ npm install
 npm run dev
 npm run api:check
 npm test
+npm run test:coverage
 npm run lint
 npm run format:check
 npm run build
@@ -76,6 +77,8 @@ src/test/                전역 테스트 설정
 - 토큰 만료나 서버 거부는 여전히 각 화면에서 401 안내와 `/login` 이동을 처리한다.
 - 로그인 필요 안내에는 기존 `ConfirmDialog`를 우선 사용한다.
 - access token 첨부와 갱신은 공통 Axios 인터셉터가 담당한다.
+- 세션 상태는 `useAuthSession()`으로 구독한다. `hasAuthSession()` 직접 호출은 변경에 반응하지 않는다.
+- refresh 실패로 세션이 정리되면 가드가 즉시 로그인으로 보내고 만료 안내를 전달한다.
 - 여러 요청이 동시에 401을 받아도 refresh 요청은 하나만 공유한다.
 - refresh 요청 자체가 401일 때만 인증 세션을 삭제한다.
 - 네트워크 오류, timeout, 5xx로 refresh가 실패한 경우 세션을 삭제하지 않는다.

@@ -29,10 +29,52 @@
 
 ```bash
 npm install
+cp .env.example .env.local   # 값을 채운 뒤 실행합니다
 npm run dev
 ```
 
 Node.js 22.13 이상을 사용합니다.
+
+## 환경 변수
+
+`.env.example`을 `.env.local`로 복사해 값을 채웁니다. `.env.local`은 커밋되지 않습니다.
+
+| 변수 | 설명 |
+|------|------|
+| `VITE_API_BASE_URL` | 백엔드 API 주소. 개발 서버의 프록시 대상이자 프로덕션 번들의 baseURL |
+| `VITE_KAKAO_CLIENT_ID` | 카카오 개발자 콘솔의 REST API 키 |
+| `VITE_KAKAO_REDIRECT_URI` | 카카오 콘솔에 등록한 Redirect URI와 동일한 값 |
+
+개발 서버는 Vite 프록시로 동작해 `VITE_API_BASE_URL` 없이도 실행되지만, 프로덕션 번들은 이 값이 그대로 API baseURL이 됩니다. 배포 후에야 모든 요청이 깨지는 것을 막기 위해 값이 비어 있으면 `npm run build`가 실패합니다.
+
+## 테스트와 커버리지
+
+```bash
+npm test
+npm run test:coverage
+```
+
+커버리지는 현재 수치를 기준선으로 임계값이 걸려 있어, 기준 아래로 떨어지면 CI가 실패합니다. 테스트를 늘렸다면 `vitest.config.ts`의 `thresholds`도 함께 올려주세요.
+
+## 배포
+
+Vercel로 배포하며, GitHub Actions가 `vercel build` / `vercel deploy`를 실행합니다.
+
+| 트리거 | 환경 |
+|--------|------|
+| `main` 브랜치 push | 프로덕션 |
+| `develop` 브랜치 push, PR | 미리보기 |
+
+PR에는 미리보기 URL이 코멘트로 달리며, 같은 PR에 다시 푸시하면 코멘트가 갱신됩니다.
+
+준비물:
+
+- 저장소 시크릿 `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+- Vercel 프로젝트 환경 변수에 `VITE_API_BASE_URL`, `VITE_KAKAO_CLIENT_ID`, `VITE_KAKAO_REDIRECT_URI` 등록 (Preview / Production 각각)
+
+환경 변수는 `vercel pull`로 내려받아 빌드에 사용합니다. Vercel 쪽에 `VITE_API_BASE_URL`이 없으면 빌드 단계에서 실패하므로, 값이 빠진 채로 배포되지 않습니다.
+
+`vercel.json`의 rewrite는 클라이언트 라우팅용입니다. 이게 없으면 `/temptation/3` 같은 경로로 새로고침하거나 직접 접근할 때 404가 납니다.
 
 ## API 계약 동기화
 
