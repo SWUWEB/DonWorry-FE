@@ -19,6 +19,7 @@ DonWorry는 충동구매를 줄이기 위한 모바일 웹앱이다. 사용자�
 ```bash
 npm install
 npm run dev
+npm run api:check
 npm test
 npm run lint
 npm run format:check
@@ -54,6 +55,7 @@ src/
 - 도메인 로직은 가능한 한 해당 `features/<domain>` 아래에 둔다.
 - 여러 기능에서 재사용되는 코드만 `shared`로 이동한다.
 - `dist/`는 생성 결과물이므로 직접 수정하지 않는다.
+- `src/api/generated/`는 `openapi/openapi.json`에서 생성되므로 직접 수정하지 않는다.
 
 ## 데이터와 API 규칙
 
@@ -64,12 +66,14 @@ src/
 - 서버 상태는 React Query로 관리한다. 성공 후 관련 query key를 정확히 갱신하거나 무효화한다.
 - 캐시를 즉시 수정해야 하는 흐름에서는 `setQueryData` 후 `invalidateQueries`를 사용해 화면 깜빡임과 오래된 데이터 노출을 막는다.
 - API 스펙을 추측해 새 필드나 엔드포인트를 만들지 않는다. 기존 타입, 테스트, 호출부를 함께 확인한다.
+- API 계약이 바뀌면 `npm run api:sync`와 `npm run api:generate`를 실행하고 생성 타입을 요청 경계에 연결한다.
 
 ## 인증 규칙
 
-이 앱에는 전역 `ProtectedRoute`가 없다. 인증이 필요한 화면도 먼저 렌더링되고, API의 401 응답을 각 화면이 처리한다.
+인증이 필요한 화면은 `src/shared/auth/ProtectedRoute.tsx` 아래에 둔다. 가드는 저장된 access/refresh token이 모두 없을 때 로그인으로 보내고 원래 경로를 보존한다.
 
-- 인증이 필요한 새 화면에는 401 처리와 `/login` 이동을 반드시 구현한다.
+- 인증이 필요한 새 화면은 보호 라우트 그룹에 포함한다.
+- 토큰 만료나 서버 거부는 각 화면에서 401 처리와 `/login` 이동을 유지한다.
 - 사용자에게는 `ConfirmDialog`로 로그인 필요 상태를 안내한다.
 - access token은 요청 인터셉터에서 자동 첨부한다.
 - 401이면 refresh token으로 한 번 재발급하고 원 요청을 재시도한다.

@@ -19,6 +19,7 @@ DonWorry는 소비 및 참은 소비를 기록하고, 위시리스트의 상품�
 ```bash
 npm install
 npm run dev
+npm run api:check
 npm test
 npm run lint
 npm run format:check
@@ -52,6 +53,7 @@ src/test/                전역 테스트 설정
 - 기능 전용 코드는 `src/features/<domain>`에 둔다.
 - 두 개 이상의 기능에서 재사용되는 코드만 `src/shared`로 이동한다.
 - `dist/`와 같은 생성 결과물은 직접 편집하지 않는다.
+- `src/api/generated/`는 `openapi/openapi.json`에서 생성되므로 직접 편집하지 않는다.
 
 ## Coding Rules
 
@@ -60,6 +62,7 @@ src/test/                전역 테스트 설정
 - 화면 모델에서 금액은 `number`, 날짜는 가능한 한 `Date`로 정규화한다.
 - HTTP 요청은 반드시 `src/api/client.ts`의 Axios 인스턴스를 사용한다.
 - API URL, request body, response 필드를 추측하지 않는다. 관련 타입, 테스트, 기존 호출부를 확인한다.
+- API 계약이 바뀌면 `npm run api:sync`와 `npm run api:generate`를 실행하고 생성 타입을 요청 경계에 연결한다.
 - 서버 상태는 React Query로 관리한다. 성공 후 정확한 query key를 갱신하거나 무효화한다.
 - 즉각적인 화면 반영이 필요하면 `setQueryData` 후 `invalidateQueries`를 사용한다.
 - 비동기 기능에는 loading, success, empty, error 상태를 고려한다.
@@ -67,9 +70,10 @@ src/test/                전역 테스트 설정
 
 ## Authentication Invariants
 
-이 프로젝트에는 전역 `ProtectedRoute`가 없다. 인증이 필요한 각 화면에서 API의 401을 직접 처리한다.
+인증이 필요한 화면은 `src/shared/auth/ProtectedRoute.tsx` 아래에 둔다. 가드는 저장된 access/refresh token이 모두 없을 때 로그인으로 보내고 원래 경로를 보존한다.
 
-- 인증이 필요한 화면을 추가하거나 수정할 때 401 안내와 `/login` 이동을 확인한다.
+- 인증이 필요한 화면을 추가할 때 보호 라우트 그룹에 포함한다.
+- 토큰 만료나 서버 거부는 여전히 각 화면에서 401 안내와 `/login` 이동을 처리한다.
 - 로그인 필요 안내에는 기존 `ConfirmDialog`를 우선 사용한다.
 - access token 첨부와 갱신은 공통 Axios 인터셉터가 담당한다.
 - 여러 요청이 동시에 401을 받아도 refresh 요청은 하나만 공유한다.
