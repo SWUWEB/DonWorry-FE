@@ -137,3 +137,9 @@ export const updateWishlistItem = async (id: string, formData: WishFormData): Pr
     return mapToProduct(data.data)
   })
 }
+
+export const deleteWishlistItem = async (id: string): Promise<void> => {
+  return wishlistErrorHandling(async () => {
+    await client.delete(`/api/v1/wishlist-items/${id}`)
+  })
+}

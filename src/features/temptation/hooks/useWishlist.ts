@@ -3,7 +3,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CATEGORIES, TIME_OPTIONS } from '@/constants/product'
 import type { Category, FilterValue, SortValue, Product } from '../types'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
-import { fetchWishlistItems, addWishlistItem, updateWishlistItem } from '../api/wishlistApi'
+import {
+  fetchWishlistItems,
+  addWishlistItem,
+  updateWishlistItem,
+  deleteWishlistItem,
+} from '../api/wishlistApi'
 import { isUnauthorizedError } from '../utils/isUnauthorizedError'
 import { getMutationErrorKind } from '../utils/wishlistErrors'
 
@@ -11,7 +16,7 @@ export const useWishlist = () => {
   const queryClient = useQueryClient()
 
   const {
-    data: serverProducts = [],
+    data: products = [],
     isLoading,
     isError,
     error,
@@ -19,16 +24,6 @@ export const useWishlist = () => {
     queryKey: ['wishlistItems'],
     queryFn: fetchWishlistItems,
   })
-
-  // 연동 전 API에 대한 임시 방편
-  // 연동 후 해당 부분 삭제, serverProducts를 직접 사용하도록 변경
-  const [localOverrides, setLocalOverrides] = useState<{ deletedIds: Set<string> }>({
-    deletedIds: new Set(),
-  })
-
-  const products = useMemo(() => {
-    return serverProducts.filter((p) => !localOverrides.deletedIds.has(p.id))
-  }, [serverProducts, localOverrides])
 
   const [filter, setFilter] = useState<FilterValue>('전체')
   const [sort, setSort] = useState<SortValue>('가나다순')
@@ -66,11 +61,18 @@ export const useWishlist = () => {
     queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
   }
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteWishlistItem,
+    onSuccess: (_data, deletedId) => {
+      queryClient.setQueryData<Product[]>(['wishlistItems'], (old) =>
+        old?.filter((p) => p.id !== deletedId),
+      )
+      queryClient.invalidateQueries({ queryKey: ['wishlistItems'] })
+    },
+  })
+
   const handleDelete = (id: string) => {
-    console.warn(`API 연동 전! (id: ${id}) 다음 이슈에서 작업 예정`)
-    setLocalOverrides((prev) => ({
-      deletedIds: new Set(prev.deletedIds).add(id),
-    }))
+    deleteMutation.mutate(id)
   }
 
   const handleAdd = (formData: WishFormData) => {
@@ -116,9 +118,14 @@ export const useWishlist = () => {
     isUnauthorizedError(error) ||
     isUnauthorizedError(addMutation.error) ||
     isUnauthorizedError(editMutation.error) ||
-    isUnauthorizedError(extendMutation.error)
+    isUnauthorizedError(extendMutation.error) ||
+    isUnauthorizedError(deleteMutation.error)
+
+  // 삭제 401 에러 여부를 별도 노출 (상세 화면/재판단 화면에서 로그인 분기용)
+  const isDeleteUnauthorized = isUnauthorizedError(deleteMutation.error)
 
   const editErrorKind = getMutationErrorKind(editMutation.error) // 'EMPTY' | 'FORBIDDEN' | 'NOT_FOUND' | null
+  const deleteErrorKind = getMutationErrorKind(deleteMutation.error)
 
   return {
     keyword,
@@ -141,6 +148,12 @@ export const useWishlist = () => {
     isExtendSuccess: extendMutation.isSuccess,
     isExtendError: extendMutation.isError,
     resetExtendStatus: extendMutation.reset,
+    isDeleting: deleteMutation.isPending,
+    isDeleteSuccess: deleteMutation.isSuccess,
+    isDeleteError: deleteMutation.isError,
+    isDeleteUnauthorized,
+    deleteErrorKind,
+    resetDeleteStatus: deleteMutation.reset,
     isUnauthorized,
     handleDelete,
     handleAdd,

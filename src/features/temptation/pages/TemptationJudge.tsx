@@ -8,6 +8,7 @@ import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
 import styles from './TemptationJudge.module.css'
+import type { Product } from '../types'
 
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
@@ -15,6 +16,11 @@ export default function TemptationJudge() {
   const {
     filteredProducts,
     handleDelete,
+    isDeleting,
+    isDeleteSuccess,
+    isDeleteError,
+    isDeleteUnauthorized,
+    resetDeleteStatus,
     handleExtend,
     isExtending,
     isExtendSuccess,
@@ -24,8 +30,13 @@ export default function TemptationJudge() {
 
   const product = filteredProducts.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
+  // 삭제 요청 이전에 삭제할 상품 정보(name, category, price)를 보존(저장),
+  // 삭제 성공 시 이동할 화면에 전달
+  const [deletedProductInfo, setDeletedProductInfo] = useState<Pick<
+    Product,
+    'name' | 'category' | 'price'
+  > | null>(null)
 
   const isExtendDialogOpen = isExtendConfirmOpen && !isExtendSuccess
 
@@ -44,7 +55,7 @@ export default function TemptationJudge() {
   }
 
   const handleExtendClick = () => {
-    if (!product || isProcessing) return
+    if (!product || isExtending) return
     setIsExtendConfirmOpen(true)
   }
 
@@ -70,29 +81,32 @@ export default function TemptationJudge() {
     resetExtendStatus()
   }
 
+  // TODO: 참은 소비 기록 저장 API 연동 필요.
+  // 연동 시에는 저장에 성공한 뒤 handleDelete를 호출하고,
+  // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
   const handleNotBuy = () => {
-    if (!product || isProcessing) return
-    setIsProcessing(true)
+    if (!product || isDeleting || isExtending) return
+    setDeletedProductInfo({
+      name: product.name,
+      category: product.category,
+      price: product.price,
+    })
+    handleDelete(product.id)
+  }
 
-    // TODO: 참은 소비 기록 저장 API 연동 필요.
-    // 연동 시에는 저장에 성공한 뒤 handleDelete를 호출하고,
-    // 실패하면 삭제하지 않은 채 setIsProcessing(false)로 되돌리고 오류를 표시해야 합니다.
-    try {
-      handleDelete(product.id)
-      navigate('/temptation/saved', {
-        state: {
-          name: product.name,
-          category: product.category,
-          price: product.price,
-        },
-      })
-    } catch {
-      setIsProcessing(false)
+  useEffect(() => {
+    if (isDeleteSuccess && deletedProductInfo) {
+      resetDeleteStatus()
+      navigate('/temptation/saved', { state: deletedProductInfo })
     }
+  }, [isDeleteSuccess, deletedProductInfo, resetDeleteStatus, navigate])
+
+  const handleDeleteFailConfirm = () => {
+    resetDeleteStatus()
   }
 
   const handleBuy = () => {
-    if (!product || isProcessing) return
+    if (!product || isDeleting || isExtending) return
     navigate('/record/intervention', {
       state: {
         from: 'temptation',
@@ -158,7 +172,7 @@ export default function TemptationJudge() {
             type="button"
             className={styles.extendConfirmBtn}
             onClick={handleExtendClick}
-            disabled={isProcessing}
+            disabled={isDeleting}
           >
             {selectedExtend} 연장 확정하기
           </button>
@@ -179,7 +193,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.notBuyBtn}
               onClick={handleNotBuy}
-              disabled={isProcessing}
+              disabled={isDeleting || isExtending}
             >
               <span className={styles.decisionMain}>안 살래요</span>
               <span className={styles.decisionSub}>참을게요</span>
@@ -188,7 +202,7 @@ export default function TemptationJudge() {
               type="button"
               className={styles.buyBtn}
               onClick={handleBuy}
-              disabled={isProcessing}
+              disabled={isDeleting || isExtending}
             >
               <span className={styles.decisionMain}>살래요</span>
               <span className={styles.decisionSub}>점검 후 구매</span>
@@ -215,6 +229,32 @@ export default function TemptationJudge() {
         confirmText="확인"
         onCancel={handleExtendFailConfirm}
         onConfirm={handleExtendFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteError && !isDeleteUnauthorized}
+        title="처리하지 못했습니다."
+        description="잠시 후 다시 시도해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDeleteFailConfirm}
+        onConfirm={handleDeleteFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 이용해주세요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
+        onConfirm={() => {
+          resetDeleteStatus()
+          navigate('/login')
+        }}
       />
     </>
   )
