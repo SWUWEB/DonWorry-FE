@@ -1,4 +1,5 @@
 import client from '@/api/client'
+import type { PatchApiV1UsersMeNotificationSettingsData } from '@/api/generated'
 import type { NotificationItem } from '../components/NotificationCard'
 
 // ─── API 응답 타입 ────────────────────────────────────────────────────────────
@@ -23,6 +24,7 @@ export interface NotificationSettingsResponse {
 }
 
 const NOTIFICATION_SETTINGS_URL = '/api/v1/users/me/notification-settings'
+type NotificationSettingsRequest = PatchApiV1UsersMeNotificationSettingsData['body']
 
 interface NotificationSettingsResult {
   notifyGeneralEnabled: boolean
@@ -125,9 +127,10 @@ export const notificationApi = {
   },
 
   updateAllSetting: async (enabled: boolean): Promise<NotificationSettingsResponse> => {
+    const body: NotificationSettingsRequest = { notifyPushEnabled: enabled }
     const { data } = await client.patch<{ data: NotificationSettingsResult }>(
       NOTIFICATION_SETTINGS_URL,
-      { notifyPushEnabled: enabled },
+      body,
     )
     return adaptSettings(data.data)
   },
@@ -135,13 +138,14 @@ export const notificationApi = {
   updateSubSettings: async (
     settings: Omit<NotificationSettingsResponse, 'all'>,
   ): Promise<NotificationSettingsResponse> => {
+    const body: NotificationSettingsRequest = {
+      notifyGeneralEnabled: settings.general,
+      notifyGoalEnabled: settings.goal,
+      notifyTemptationEnabled: settings.retrial,
+    }
     const { data } = await client.patch<{ data: NotificationSettingsResult }>(
       NOTIFICATION_SETTINGS_URL,
-      {
-        notifyGeneralEnabled: settings.general,
-        notifyGoalEnabled: settings.goal,
-        notifyTemptationEnabled: settings.retrial,
-      },
+      body,
     )
     return adaptSettings(data.data)
   },

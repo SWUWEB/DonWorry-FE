@@ -1,4 +1,5 @@
 import client from '@/api/client'
+import type { PostApiV1InterventionsRiskScoreData } from '@/api/generated'
 import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import { formatDateKorean } from '@/shared/utils/date'
 
@@ -127,9 +128,13 @@ export const interventionApi = {
   },
 
   getRiskScore: async ({ price, answers }: RiskScoreInput): Promise<RiskAnalysis> => {
+    const body: PostApiV1InterventionsRiskScoreData['body'] = {
+      price,
+      interventionAnswers: answers,
+    }
     const { data } = await client.post<ApiResponse<RiskAnalysisResult>>(
       '/api/v1/interventions/risk-score',
-      { price, interventionAnswers: answers },
+      body,
     )
 
     return {
