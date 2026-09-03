@@ -56,6 +56,27 @@ describe('auth session store', () => {
     expect(getAuthSessionSnapshot()).toEqual({ isAuthenticated: false, expired: false })
   })
 
+  it('다른 탭에서 다시 로그인하면 남아 있던 만료 표시를 지운다', () => {
+    const unsubscribe = subscribeAuthSession(() => {})
+
+    // 이 탭에서 refresh 실패로 만료 처리된 상태
+    saveAuthSession(tokens)
+    clearAuthSession({ expired: true })
+    expect(getAuthSessionSnapshot().expired).toBe(true)
+
+    // 다른 탭에서 로그인 → storage 이벤트로 전달
+    localStorage.setItem('accessToken', 'access')
+    localStorage.setItem('refreshToken', 'refresh')
+    window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }))
+
+    // 이후 다른 탭에서 정상 로그아웃해도 만료 안내가 뜨면 안 됩니다.
+    localStorage.clear()
+    window.dispatchEvent(new StorageEvent('storage', { key: null }))
+
+    expect(getAuthSessionSnapshot()).toEqual({ isAuthenticated: false, expired: false })
+    unsubscribe()
+  })
+
   it('다른 탭에서 토큰이 바뀌면 구독자에게 알린다', () => {
     const listener = vi.fn()
     const unsubscribe = subscribeAuthSession(listener)

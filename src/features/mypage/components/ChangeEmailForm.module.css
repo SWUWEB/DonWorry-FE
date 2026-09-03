@@ -65,7 +65,7 @@
 
 .unsupportedText {
   margin: 0;
-  color: #898989;
+  color: var(--color-gray-300);
   font-size: 12px;
   line-height: 18px;
 }
@@ -104,7 +104,7 @@
   position: relative;
   margin-bottom: 6px;
   padding-left: 14px;
-  color: #898989;
+  color: var(--color-gray-300);
   font-size: 12px;
   line-height: 18px;
 }

@@ -55,8 +55,10 @@ export default function ResetPasswordVerify() {
         onSuccess: () => setResent(true),
         onError: (error: unknown) => {
           if (isAxiosError<RateLimitErrorBody>(error) && error.response?.status === 429) {
-            const retry = error.response.data.retryAfterSeconds
-            const base = error.response.data.message ?? '요청이 너무 잦습니다.'
+            // 429 응답에 본문이 없거나 형태가 다를 수 있어 그대로 읽지 않습니다.
+            const body: RateLimitErrorBody = error.response.data ?? {}
+            const retry = body.retryAfterSeconds
+            const base = body.message ?? '요청이 너무 잦습니다.'
             setError(retry ? `${base} (${retry}초 후 다시 시도해주세요.)` : base)
             return
           }

@@ -61,4 +61,19 @@ describe('ResetPasswordVerify', () => {
       screen.getByText('요청이 너무 잦습니다. (30초 후 다시 시도해주세요.)'),
     ).toBeInTheDocument()
   })
+
+  it('본문이 없는 429 응답에서도 기본 안내를 보여준다', () => {
+    renderPage()
+    fireEvent.click(screen.getByRole('button', { name: '코드 재전송' }))
+
+    const options = resendMock.mock.calls[0][1]
+    act(() =>
+      options.onError({
+        isAxiosError: true,
+        response: { status: 429, data: null },
+      }),
+    )
+
+    expect(screen.getByText('요청이 너무 잦습니다.')).toBeInTheDocument()
+  })
 })

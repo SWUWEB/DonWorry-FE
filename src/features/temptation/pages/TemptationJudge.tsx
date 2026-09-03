@@ -28,6 +28,7 @@ export default function TemptationJudge() {
     isDecideSuccess,
     isDecideError,
     isDecideUnauthorized,
+    decideErrorKind,
     resetDecideStatus,
   } = useWishlistContext()
 
@@ -119,6 +120,18 @@ export default function TemptationJudge() {
     resetDecideStatus()
     setPendingDecision(null)
   }
+
+  // 권한이 없거나 이미 처리된 상품은 이 화면에서 할 수 있는 일이 없으므로 목록으로 돌려보냅니다.
+  const handleTerminalDecideErrorConfirm = () => {
+    resetDecideStatus()
+    setPendingDecision(null)
+    navigate('/temptation')
+  }
+
+  const isTerminalDecideError =
+    decideErrorKind === 'NOT_FOUND' ||
+    decideErrorKind === 'FORBIDDEN' ||
+    decideErrorKind === 'ALREADY_DECIDED'
 
   const handleNotBuy = () => {
     if (!product || isDeciding || isExtending) return
@@ -272,13 +285,43 @@ export default function TemptationJudge() {
       />
 
       <ConfirmDialog
-        isOpen={isDecideError && !isDecideUnauthorized}
+        isOpen={isDecideError && !isDecideUnauthorized && !isTerminalDecideError}
         title="결정을 저장하지 못했습니다."
         description="다시 시도해주세요."
         onlyConfirm
         confirmText="확인"
         onCancel={handleDecideFailConfirm}
         onConfirm={handleDecideFailConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'NOT_FOUND'}
+        title="상품을 찾을 수 없습니다."
+        description="이미 삭제되었거나 존재하지 않는 상품입니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'ALREADY_DECIDED'}
+        title="이미 결정된 상품입니다."
+        description="다른 화면에서 이미 처리된 상품이에요."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'FORBIDDEN'}
+        title="접근 권한이 없습니다."
+        description="본인의 위시리스트 항목만 결정할 수 있습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleTerminalDecideErrorConfirm}
+        onConfirm={handleTerminalDecideErrorConfirm}
       />
     </>
   )

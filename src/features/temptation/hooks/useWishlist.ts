@@ -130,7 +130,17 @@ export const useWishlist = () => {
   })
 
   const handleJudgeDecision = (id: string, decisionType: 'BUY' | 'SKIP') => {
-    decisionMutation.mutate({ id, decisionType }, { onSuccess: () => removeFromListCache(id) })
+    decisionMutation.mutate(
+      { id, decisionType },
+      {
+        onSuccess: () => removeFromListCache(id),
+        onError: (error) => {
+          // 이미 결정됐거나 사라진 상품은 재시도해도 같은 결과라, 대기 목록에서 정리합니다.
+          const kind = getMutationErrorKind(error)
+          if (kind === 'NOT_FOUND' || kind === 'ALREADY_DECIDED') removeFromListCache(id)
+        },
+      },
+    )
   }
 
   const editMutation = useMutation({

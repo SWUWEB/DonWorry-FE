@@ -31,6 +31,11 @@ function handleStorage(event: StorageEvent): void {
   if (event.key !== null && event.key !== ACCESS_TOKEN_KEY && event.key !== REFRESH_TOKEN_KEY) {
     return
   }
+
+  // 다른 탭에서 다시 로그인했다면 이 탭이 들고 있던 만료 표시는 더 이상 유효하지 않습니다.
+  // 남겨두면 이후 정상 로그아웃에서도 만료 안내가 잘못 뜹니다.
+  if (readIsAuthenticated()) expiredFlag = false
+
   notify()
 }
 
