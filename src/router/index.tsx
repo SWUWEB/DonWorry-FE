@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import AppLayout from '@/components/layout/AppLayout'
 import { WishlistProvider } from '@/features/temptation/hooks/WishlistProvider'
 import NotFoundPage from '@/pages/NotFoundPage'
+import RouteErrorPage from '@/pages/RouteErrorPage'
 import ProtectedRoute from '@/shared/auth/ProtectedRoute'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
@@ -43,7 +44,7 @@ const OnboardingCompletePage = lazy(() => import('@/pages/OnboardingCompletePage
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
-    errorElement: <NotFoundPage />,
+    errorElement: <RouteErrorPage />,
     children: [
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignUpPage /> },
