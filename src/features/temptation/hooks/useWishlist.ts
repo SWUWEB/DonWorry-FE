@@ -13,7 +13,7 @@ import {
   TIME_TO_WAIT_TYPE_MAP,
   type TemptationDecisionType,
 } from '../api/wishlistApi'
-import { isUnauthorizedError } from '../utils/isUnauthorizedError'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import { getMutationErrorKind } from '../utils/wishlistErrors'
 
 export const useWishlist = () => {
