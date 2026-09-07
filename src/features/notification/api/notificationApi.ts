@@ -1,4 +1,5 @@
 import client from '@/api/client'
+import type { PatchApiV1UsersMeNotificationSettingsData } from '@/api/generated'
 import type { NotificationItem } from '../components/NotificationCard'
 
 // ─── API 응답 타입 ────────────────────────────────────────────────────────────
@@ -6,8 +7,11 @@ import type { NotificationItem } from '../components/NotificationCard'
 interface NotificationResult {
   id: string
   notificationType: 'TEMPTATION' | 'GOAL' | 'GENERAL'
+  title: string
+  body: string
   isRead: boolean
   readAt: string | null
+  notifyAt: string
   wishlistItemId: string | null
   createdAt: string
 }
@@ -20,6 +24,7 @@ export interface NotificationSettingsResponse {
 }
 
 const NOTIFICATION_SETTINGS_URL = '/api/v1/users/me/notification-settings'
+type NotificationSettingsRequest = PatchApiV1UsersMeNotificationSettingsData['body']
 
 interface NotificationSettingsResult {
   notifyGeneralEnabled: boolean
@@ -80,13 +85,13 @@ function formatTime(isoString: string): string {
 }
 
 function adapt(n: NotificationResult): NotificationItem {
-  const { title, description } = CONTENT_MAP[n.notificationType]
+  const fallback = CONTENT_MAP[n.notificationType]
   return {
     id: n.id,
     type: TYPE_MAP[n.notificationType],
     iconVariant: ICON_MAP[n.notificationType],
-    title,
-    description,
+    title: n.title || fallback.title,
+    description: n.body || fallback.description,
     time: formatTime(n.createdAt),
     isRead: n.isRead,
   }
@@ -122,9 +127,10 @@ export const notificationApi = {
   },
 
   updateAllSetting: async (enabled: boolean): Promise<NotificationSettingsResponse> => {
+    const body: NotificationSettingsRequest = { notifyPushEnabled: enabled }
     const { data } = await client.patch<{ data: NotificationSettingsResult }>(
       NOTIFICATION_SETTINGS_URL,
-      { notifyPushEnabled: enabled },
+      body,
     )
     return adaptSettings(data.data)
   },
@@ -132,13 +138,14 @@ export const notificationApi = {
   updateSubSettings: async (
     settings: Omit<NotificationSettingsResponse, 'all'>,
   ): Promise<NotificationSettingsResponse> => {
+    const body: NotificationSettingsRequest = {
+      notifyGeneralEnabled: settings.general,
+      notifyGoalEnabled: settings.goal,
+      notifyTemptationEnabled: settings.retrial,
+    }
     const { data } = await client.patch<{ data: NotificationSettingsResult }>(
       NOTIFICATION_SETTINGS_URL,
-      {
-        notifyGeneralEnabled: settings.general,
-        notifyGoalEnabled: settings.goal,
-        notifyTemptationEnabled: settings.retrial,
-      },
+      body,
     )
     return adaptSettings(data.data)
   },

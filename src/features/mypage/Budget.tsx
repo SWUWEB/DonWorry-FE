@@ -23,7 +23,7 @@ export default function Budget() {
       />
 
       <main className={styles.container}>
-        <BudgetSettingCard />
+        <BudgetSettingCard onUnauthorized={() => navigate('/login', { replace: true })} />
       </main>
     </>
   )

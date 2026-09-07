@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { IoPencilOutline } from 'react-icons/io5'
 import InputField from '@/shared/components/InputField'
 import { formatKRW } from '@/shared/utils/currency'
+import { calculateWorkHours } from '@/shared/utils/workHours'
 import styles from './HourlyWageCard.module.css'
 
 interface HourlyWageCardProps {
@@ -10,12 +11,6 @@ interface HourlyWageCardProps {
   spentAmount: number
   monthLabel: string
   onChangeHourlyWage: (value: string) => void
-}
-
-function calculateHours(amount: number | null, hourlyWage: number): number | null {
-  if (amount === null || !Number.isFinite(amount)) return null
-  if (!Number.isFinite(hourlyWage) || hourlyWage <= 0) return null
-  return Math.round((amount / hourlyWage) * 10) / 10
 }
 
 function toDigits(value: string) {
@@ -47,8 +42,8 @@ export default function HourlyWageCard({
 }: HourlyWageCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const wageAmount = Number(hourlyWage)
-  const workedHours = calculateHours(monthlyIncome, wageAmount)
-  const spentHours = calculateHours(spentAmount, wageAmount)
+  const workedHours = calculateWorkHours(monthlyIncome, wageAmount)
+  const spentHours = calculateWorkHours(spentAmount, wageAmount)
 
   return (
     <section className={styles.card}>

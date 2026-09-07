@@ -1,0 +1,6654 @@
+{
+  "components": {
+    "responses": {
+      "ConsumptionRecordBadRequest": {
+        "content": {
+          "application/json": {
+            "examples": {
+              "duplicateQuestionAnswer": {
+                "summary": "질문 답변 중복 등록",
+                "value": {
+                  "code": "CONSUMPTION_RECORD4003",
+                  "errors": {
+                    "fieldErrors": {
+                      "body": [
+                        "Duplicate questionId in interventionAnswers is not allowed."
+                      ]
+                    },
+                    "formErrors": []
+                  },
+                  "message": "동일한 질문에 대한 답변을 중복해서 등록할 수 없습니다.",
+                  "success": false
+                }
+              },
+              "invalidCategoryCode": {
+                "summary": "허용되지 않은 카테고리 코드",
+                "value": {
+                  "code": "CONSUMPTION_RECORD4002",
+                  "errors": {
+                    "fieldErrors": {
+                      "body": [
+                        "Invalid category code"
+                      ]
+                    },
+                    "formErrors": []
+                  },
+                  "message": "허용되지 않은 카테고리 코드입니다.",
+                  "success": false
+                }
+              },
+              "invalidOccurredAt": {
+                "summary": "occurredAt 형식 오류",
+                "value": {
+                  "code": "CONSUMPTION_RECORD4001",
+                  "errors": {
+                    "fieldErrors": {
+                      "body": [
+                        "occurredAt must be a non-empty ISO datetime string"
+                      ]
+                    },
+                    "formErrors": []
+                  },
+                  "message": "occurredAt은 유효한 ISO 8601 날짜/시간 문자열이어야 합니다.",
+                  "success": false
+                }
+              },
+              "invalidRequest": {
+                "summary": "DTO 검증 실패",
+                "value": {
+                  "code": "COMMON4001",
+                  "errors": {
+                    "fieldErrors": {
+                      "body": [
+                        "Invalid input"
+                      ]
+                    },
+                    "formErrors": []
+                  },
+                  "message": "Invalid request",
+                  "success": false
+                }
+              }
+            },
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              ]
+            }
+          }
+        },
+        "description": "Invalid consumption record request"
+      },
+      "ConsumptionRecordInternalServerError": {
+        "content": {
+          "application/json": {
+            "example": {
+              "code": "CONSUMPTION_RECORD5001",
+              "message": "Internal server error",
+              "success": false
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "Unexpected consumption record processing error"
+      },
+      "ConsumptionRecordNotFound": {
+        "content": {
+          "application/json": {
+            "example": {
+              "code": "CONSUMPTION_RECORD4041",
+              "message": "요청한 소비 기록을 찾을 수 없습니다.",
+              "success": false
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "Consumption record not found or inaccessible"
+      },
+      "ConsumptionRecordOrQuestionNotFound": {
+        "content": {
+          "application/json": {
+            "examples": {
+              "questionNotFound": {
+                "summary": "질문 없음 또는 비활성",
+                "value": {
+                  "code": "CONSUMPTION_RECORD4042",
+                  "message": "요청한 질문을 찾을 수 없습니다.",
+                  "success": false
+                }
+              },
+              "recordNotFound": {
+                "summary": "소비 기록 없음 또는 접근 불가",
+                "value": {
+                  "code": "CONSUMPTION_RECORD4041",
+                  "message": "요청한 소비 기록을 찾을 수 없습니다.",
+                  "success": false
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description": "Consumption record or intervention question not found"
+      },
+      "ConsumptionRecordValidationBadRequest": {
+        "content": {
+          "application/json": {
+            "example": {
+              "code": "COMMON4001",
+              "errors": {
+                "fieldErrors": {},
+                "formErrors": []
+              },
+              "message": "Invalid request",
+              "success": false
+            },
+            "schema": {
+              "$ref": "#/components/schemas/ValidationErrorResponse"
+            }
+          }
+        },
+        "description": "Invalid path or query parameter"
+      },
+      "NotImplemented": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NotImplementedResponse"
+            }
+          }
+        },
+        "description": "Endpoint scaffolded but not implemented yet"
+      },
+      "Unauthorized": {
+        "content": {
+          "application/json": {
+            "examples": {
+              "invalidToken": {
+                "summary": "Access token invalid or expired",
+                "value": {
+                  "message": "Invalid or expired token",
+                  "success": false
+                }
+              },
+              "missingToken": {
+                "summary": "Access token missing",
+                "value": {
+                  "message": "Authentication required",
+                  "success": false
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/components/schemas/UnauthorizedResponse"
+            }
+          }
+        },
+        "description": "Authentication required"
+      }
+    },
+    "schemas": {
+      "CheckEmailResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "available": {
+                "example": true,
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "OK",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "CheckLoginIdResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "available": {
+                "example": true,
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "OK",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "CheerMessageResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "achievementRate": {
+                "description": "목표 금액 대비 누적 참은 소비 금액의 달성률(소수점 이하 버림, 최대 100)",
+                "example": 72,
+                "maximum": 100,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "message": {
+                "example": "목표가 바로 앞이에요! 조금만 더 힘내요.",
+                "type": "string"
+              },
+              "messageLevel": {
+                "description": "달성률 0~19, 20~49, 50~69, 70~89, 90~100 구간",
+                "enum": [
+                  "LEVEL_1",
+                  "LEVEL_2",
+                  "LEVEL_3",
+                  "LEVEL_4",
+                  "LEVEL_5"
+                ],
+                "example": "LEVEL_4",
+                "type": "string"
+              }
+            },
+            "required": [
+              "achievementRate",
+              "message",
+              "messageLevel"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "응원 메시지 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "ConsumptionRatioResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "consumedAmount": {
+                "example": 52000,
+                "minimum": 0,
+                "type": "number"
+              },
+              "consumedRatio": {
+                "example": 35,
+                "maximum": 100,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "period": {
+                "properties": {
+                  "days": {
+                    "enum": [
+                      28
+                    ],
+                    "type": "integer"
+                  },
+                  "endDate": {
+                    "example": "2026-04-17",
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "example": "2026-03-21",
+                    "format": "date",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "startDate",
+                  "endDate",
+                  "days"
+                ],
+                "type": "object"
+              },
+              "skippedAmount": {
+                "example": 96500,
+                "minimum": 0,
+                "type": "number"
+              },
+              "skippedRatio": {
+                "example": 65,
+                "maximum": 100,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "totalAmount": {
+                "example": 148500,
+                "minimum": 0,
+                "type": "number"
+              }
+            },
+            "required": [
+              "period",
+              "totalAmount",
+              "skippedAmount",
+              "consumedAmount",
+              "skippedRatio",
+              "consumedRatio"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "최근 소비 비율 조회에 성공했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "ConsumptionRecordCreatedResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConsumptionRecordResult"
+          },
+          "message": {
+            "example": "소비 기록 생성에 성공했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumptionRecordDetailResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConsumptionRecordDetailResult"
+          },
+          "message": {
+            "example": "OK",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumptionRecordDetailResult": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConsumptionRecordResult"
+          },
+          {
+            "properties": {
+              "recentCategoryConsumptionCount": {
+                "description": "현재 기록을 제외한 최근 28일간 동일 카테고리의 실제 소비 횟수",
+                "example": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "recentCategoryConsumptions": {
+                "description": "현재 기록을 제외한 최근 28일간 동일 카테고리의 실제 소비 내역",
+                "items": {
+                  "$ref": "#/components/schemas/ConsumptionRecordResult"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "ConsumptionRecordListResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ConsumptionRecordResult"
+            },
+            "type": "array"
+          },
+          "message": {
+            "example": "OK",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumptionRecordResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConsumptionRecordResult"
+          },
+          "message": {
+            "example": "OK",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumptionRecordResult": {
+        "properties": {
+          "categoryCode": {
+            "example": "CAFE_DESSERT",
+            "type": "string"
+          },
+          "categoryLabel": {
+            "example": "카페/디저트",
+            "type": "string"
+          },
+          "createdAt": {
+            "example": "2026-07-02T14:52:20.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "example": "1",
+            "type": "string"
+          },
+          "interventionAnswers": {
+            "items": {
+              "properties": {
+                "answerValue": {
+                  "example": true,
+                  "type": "boolean"
+                },
+                "id": {
+                  "example": "1",
+                  "type": "string"
+                },
+                "questionId": {
+                  "example": "1",
+                  "type": "string"
+                },
+                "questionText": {
+                  "example": "이 소비를 하기 전에 한 번 더 생각해보셨나요?",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "occurredAt": {
+            "example": "2026-07-02T14:52:20.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "price": {
+            "example": 12000,
+            "nullable": true,
+            "type": "number"
+          },
+          "productName": {
+            "example": "쿠팡 상품",
+            "type": "string"
+          },
+          "productUrl": {
+            "example": "https://example.com/products/1",
+            "format": "uri",
+            "nullable": true,
+            "type": "string"
+          },
+          "reason": {
+            "example": "친구와 시간을 보내고 싶어서",
+            "nullable": true,
+            "type": "string"
+          },
+          "riskScore": {
+            "example": 3,
+            "maximum": 5,
+            "minimum": 0,
+            "nullable": true,
+            "type": "integer"
+          },
+          "type": {
+            "example": "CONSUMED",
+            "type": "string"
+          },
+          "updatedAt": {
+            "example": "2026-07-02T14:52:20.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "workHoursNeeded": {
+            "example": 0.5,
+            "minimum": 0,
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumptionReportDetailResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "categoryDefenseSummary": {
+                "items": {
+                  "properties": {
+                    "categoryCode": {
+                      "example": "FOOD_SNACK",
+                      "type": "string"
+                    },
+                    "categoryLabel": {
+                      "example": "음식",
+                      "type": "string"
+                    },
+                    "consumedAmount": {
+                      "example": 18000,
+                      "minimum": 0,
+                      "type": "number"
+                    },
+                    "defenseRate": {
+                      "example": 85,
+                      "maximum": 100,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "skippedAmount": {
+                      "example": 102000,
+                      "minimum": 0,
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "categoryCode",
+                    "categoryLabel",
+                    "skippedAmount",
+                    "consumedAmount",
+                    "defenseRate"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "goalAchievement": {
+                "properties": {
+                  "achievementRate": {
+                    "example": 69,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "remainingAmount": {
+                    "example": 155000,
+                    "minimum": 0,
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "savedAmount": {
+                    "example": 345000,
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "status": {
+                    "enum": [
+                      "NOT_SET",
+                      "IN_PROGRESS",
+                      "ACHIEVED"
+                    ],
+                    "example": "IN_PROGRESS",
+                    "type": "string"
+                  },
+                  "targetAmount": {
+                    "example": 500000,
+                    "minimum": 0,
+                    "nullable": true,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "status",
+                  "achievementRate",
+                  "savedAmount"
+                ],
+                "type": "object"
+              },
+              "insights": {
+                "properties": {
+                  "hasEnoughData": {
+                    "description": "실제 소비 기록이 3건 이상인지 여부 (false일 경우 인사이트 미제공)",
+                    "example": true,
+                    "type": "boolean"
+                  },
+                  "insights": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "example": 300000,
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "channel": {
+                          "example": "instagram.com",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "count": {
+                          "example": 5,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "hour": {
+                          "example": 23,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "ratio": {
+                          "example": 40,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "type": {
+                          "enum": [
+                            "VULNERABLE_TIME",
+                            "INFLOW_CHANNEL"
+                          ],
+                          "type": "string"
+                        },
+                        "weekdayLabel": {
+                          "example": "금",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "hasEnoughData",
+                  "insights"
+                ],
+                "type": "object"
+              },
+              "reportMonth": {
+                "example": "2026-05",
+                "type": "string"
+              },
+              "savingStatus": {
+                "properties": {
+                  "consumed": {
+                    "properties": {
+                      "amount": {
+                        "example": 120000,
+                        "minimum": 0,
+                        "type": "number"
+                      },
+                      "count": {
+                        "example": 6,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "amount",
+                      "count"
+                    ],
+                    "type": "object"
+                  },
+                  "skipped": {
+                    "properties": {
+                      "amount": {
+                        "example": 345000,
+                        "minimum": 0,
+                        "type": "number"
+                      },
+                      "count": {
+                        "example": 18,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "amount",
+                      "count"
+                    ],
+                    "type": "object"
+                  },
+                  "totalAttemptCount": {
+                    "example": 24,
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "totalAttemptCount",
+                  "skipped",
+                  "consumed"
+                ],
+                "type": "object"
+              },
+              "totalConsumption": {
+                "properties": {
+                  "categories": {
+                    "description": "소비 금액이 큰 상위 4개 카테고리 + 그 외(합산) 목록",
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "example": 200000,
+                          "minimum": 0,
+                          "type": "number"
+                        },
+                        "categoryCode": {
+                          "example": "FOOD_SNACK",
+                          "type": "string"
+                        },
+                        "categoryLabel": {
+                          "example": "음식",
+                          "type": "string"
+                        },
+                        "ratio": {
+                          "example": 33,
+                          "maximum": 100,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "categoryCode",
+                        "categoryLabel",
+                        "amount",
+                        "ratio"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "totalAmount": {
+                    "example": 750000,
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "totalAmount",
+                  "categories"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "reportMonth",
+              "totalConsumption",
+              "savingStatus",
+              "goalAchievement",
+              "insights",
+              "categoryDefenseSummary"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "상세 소비 분석 리포트 조회에 성공했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "DailyQuestionResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "date": {
+                "example": "2026-07-30",
+                "format": "date",
+                "type": "string"
+              },
+              "questionText": {
+                "example": "오늘 계획하지 않은 소비가 있었나요?",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "오늘의 소비 질문 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "DeleteNotificationResponse": {
+        "properties": {
+          "data": {
+            "example": null,
+            "nullable": true
+          },
+          "message": {
+            "example": "알림 삭제 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "DeleteSavingGoalResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "id": {
+                "example": "1",
+                "type": "string"
+              },
+              "savingGoalIsActive": {
+                "example": false,
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "절약 목적 삭제 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "EmailVerificationConfirmResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "email": {
+                "example": "user@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "emailVerificationToken": {
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "이메일 인증이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "EmailVerificationResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "codeTtlSeconds": {
+                "example": 600,
+                "type": "integer"
+              },
+              "debugCode": {
+                "description": "Development only. Returned when SMTP delivery is skipped or fails.",
+                "example": "123456",
+                "type": "string"
+              },
+              "email": {
+                "example": "user@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "resendCooldownSeconds": {
+                "example": 60,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "이메일 인증 요청이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "code": {
+            "example": "COMMON4001",
+            "type": "string"
+          },
+          "message": {
+            "example": "Invalid request",
+            "type": "string"
+          },
+          "success": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "GetMeResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "birthDate": {
+                "example": "1998-05-02",
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "email": {
+                "example": "hong@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "gender": {
+                "enum": [
+                  "FEMALE",
+                  "MALE"
+                ],
+                "example": "FEMALE",
+                "nullable": true,
+                "type": "string"
+              },
+              "hasPassword": {
+                "example": true,
+                "type": "boolean"
+              },
+              "hourlyWage": {
+                "example": "10030",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "example": "1",
+                "type": "string"
+              },
+              "interestTagsJson": {
+                "example": [
+                  "쇼핑",
+                  "카페"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "type": "array"
+              },
+              "loginProvider": {
+                "enum": [
+                  "LOCAL",
+                  "KAKAO"
+                ],
+                "example": "LOCAL",
+                "type": "string"
+              },
+              "nickname": {
+                "example": "홍길동",
+                "type": "string"
+              },
+              "phoneNumber": {
+                "example": "010-1234-5678",
+                "nullable": true,
+                "type": "string"
+              },
+              "profileImageUrl": {
+                "example": "https://image.com/profile.png",
+                "nullable": true,
+                "type": "string"
+              },
+              "savingGoalText": {
+                "example": "목돈 마련",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "회원 정보 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "GetMonthlyBudgetResponse": {
+        "properties": {
+          "data": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MonthlyBudgetResult"
+              }
+            ]
+          },
+          "message": {
+            "example": "월별 수입/예산 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "GetNotificationSettingsResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "notifyGeneralEnabled": {
+                "example": true,
+                "type": "boolean"
+              },
+              "notifyGoalEnabled": {
+                "example": true,
+                "type": "boolean"
+              },
+              "notifyPushEnabled": {
+                "example": false,
+                "type": "boolean"
+              },
+              "notifyTemptationEnabled": {
+                "example": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "notifyGeneralEnabled",
+              "notifyGoalEnabled",
+              "notifyTemptationEnabled",
+              "notifyPushEnabled"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "알림 설정 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "GetOnboardingResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "interestTags": {
+                "example": [
+                  "식비",
+                  "쇼핑"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "type": "array"
+              },
+              "savingGoalText": {
+                "example": "여행",
+                "nullable": true,
+                "type": "string"
+              },
+              "targetSavingAmount": {
+                "example": "500000",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "온보딩 정보 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "HomeSummaryResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "consumptionChart": {
+                "properties": {
+                  "categories": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "example": 200000,
+                          "type": "number"
+                        },
+                        "categoryCode": {
+                          "example": "FOOD_SNACK",
+                          "type": "string"
+                        },
+                        "categoryLabel": {
+                          "example": "음식",
+                          "type": "string"
+                        },
+                        "ratio": {
+                          "example": 33,
+                          "type": "integer"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "hasData": {
+                    "type": "boolean"
+                  },
+                  "others": {
+                    "nullable": true,
+                    "properties": {
+                      "amount": {
+                        "example": 50000,
+                        "type": "number"
+                      },
+                      "ratio": {
+                        "example": 9,
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "summaryText": {
+                    "example": "이번 달에는 음식 소비가 전체 지출의 33%를 차지했어요.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "goalAchievement": {
+                "properties": {
+                  "message": {
+                    "example": "이번 달 목표 70% 달성했어요 🎯",
+                    "type": "string"
+                  },
+                  "rate": {
+                    "example": 70,
+                    "type": "integer"
+                  },
+                  "remainingAmount": {
+                    "example": 150000,
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "status": {
+                    "enum": [
+                      "NOT_SET",
+                      "IN_PROGRESS",
+                      "ACHIEVED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "remainingBudget": {
+                "properties": {
+                  "amount": {
+                    "example": 150000,
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "message": {
+                    "example": "목표까지 남았어요",
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "NOT_SET",
+                      "WITHIN",
+                      "EXCEEDED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "thisMonthSpending": {
+                "properties": {
+                  "amount": {
+                    "example": 350000,
+                    "type": "number"
+                  },
+                  "comparisonMessage": {
+                    "example": "지난달보다 +12%",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "comparisonRate": {
+                    "example": 12,
+                    "nullable": true,
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "홈 요약 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InterventionQuestionsResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "questions": {
+                "items": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "options": {
+                      "items": {
+                        "properties": {
+                          "answerValue": {
+                            "type": "boolean"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "answerValue",
+                          "label"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "questionId": {
+                      "example": "1",
+                      "type": "string"
+                    },
+                    "questionText": {
+                      "type": "string"
+                    },
+                    "sortOrder": {
+                      "maximum": 3,
+                      "minimum": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "questionId",
+                    "questionText",
+                    "description",
+                    "sortOrder",
+                    "options"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "type": "array"
+              },
+              "recentCategoryConsumption": {
+                "properties": {
+                  "categoryCode": {
+                    "example": "CAFE_DESSERT",
+                    "type": "string"
+                  },
+                  "records": {
+                    "items": {
+                      "properties": {
+                        "consumptionRecordId": {
+                          "example": "15",
+                          "type": "string"
+                        },
+                        "occurredAt": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "price": {
+                          "example": 6100,
+                          "type": "number"
+                        },
+                        "productName": {
+                          "example": "투썸플레이스 신봉점",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "consumptionRecordId",
+                        "productName",
+                        "price",
+                        "occurredAt"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 3,
+                    "type": "array"
+                  },
+                  "totalCount": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "categoryCode",
+                  "totalCount",
+                  "records"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "questions",
+              "recentCategoryConsumption"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "개입 질문 목록 조회에 성공했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "KakaoAccountConflictResponse": {
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH4094"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "example": "이미 다른 계정에 연결된 카카오 계정입니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              false
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "KakaoLinkEmailVerificationResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "codeTtlSeconds": {
+                "example": 600,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "debugCode": {
+                "description": "Non-production environments only.",
+                "example": "123456",
+                "pattern": "^\\d{6}$",
+                "type": "string"
+              },
+              "email": {
+                "example": "user@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "resendCooldownSeconds": {
+                "example": 60,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "email",
+              "codeTtlSeconds",
+              "resendCooldownSeconds"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "계정 연결 이메일 인증 요청이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "KakaoLinkRequiredResponse": {
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH4093"
+            ],
+            "type": "string"
+          },
+          "data": {
+            "properties": {
+              "expiresInSeconds": {
+                "example": 600,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "linkingToken": {
+                "description": "기존 LOCAL 계정의 본인 확인에 사용하는 일회용 토큰",
+                "type": "string"
+              },
+              "verificationMethods": {
+                "example": [
+                  "PASSWORD",
+                  "EMAIL"
+                ],
+                "items": {
+                  "enum": [
+                    "PASSWORD",
+                    "EMAIL"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "linkingToken",
+              "verificationMethods",
+              "expiresInSeconds"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "동일한 이메일로 가입된 계정의 본인 확인이 필요합니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              false
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "code",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "KakaoLinkTokenErrorResponse": {
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH4014"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "example": "계정 연결 정보가 만료되었거나 올바르지 않습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              false
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "KakaoLinkVerificationErrorResponse": {
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH4013"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "example": "계정 연결을 위한 본인 확인에 실패했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              false
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "ListNotificationsResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationResult"
+            },
+            "type": "array"
+          },
+          "message": {
+            "example": "알림 목록 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "LoginResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "accessToken": {
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "type": "string"
+              },
+              "refreshToken": {
+                "example": "5JxQdKc0yW5rYIYqunzBMT4o62AofWYWfAVvUdGdXug",
+                "type": "string"
+              },
+              "tokenType": {
+                "example": "Bearer",
+                "type": "string"
+              },
+              "user": {
+                "properties": {
+                  "email": {
+                    "example": "user@example.com",
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "loginId": {
+                    "example": "gachi123",
+                    "type": "string"
+                  },
+                  "name": {
+                    "example": "홍길동",
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "example": "010-0000-0000",
+                    "type": "string"
+                  },
+                  "userId": {
+                    "example": "1",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "로그인이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "MarkAllNotificationsReadResponse": {
+        "properties": {
+          "data": {
+            "example": null,
+            "nullable": true
+          },
+          "message": {
+            "example": "알림 전체 읽음 처리 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "MarkNotificationReadResponse": {
+        "properties": {
+          "data": {
+            "example": null,
+            "nullable": true
+          },
+          "message": {
+            "example": "알림 읽음 처리 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "MonthlyBudgetResult": {
+        "properties": {
+          "categoryBudgets": {
+            "description": "카테고리별 예산 상세 목록",
+            "items": {
+              "properties": {
+                "budgetAmount": {
+                  "example": "400000",
+                  "type": "string"
+                },
+                "categoryCode": {
+                  "example": "FOOD_SNACK",
+                  "type": "string"
+                },
+                "remainingAmount": {
+                  "example": "113000",
+                  "type": "string"
+                },
+                "spentAmount": {
+                  "example": "287000",
+                  "type": "string"
+                },
+                "usageRate": {
+                  "example": 72,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "hourlyWage": {
+            "description": "시급 (미설정 시 null)",
+            "example": "10030",
+            "nullable": true,
+            "type": "string"
+          },
+          "monthlyBudget": {
+            "description": "월 예산",
+            "example": "500000",
+            "type": "string"
+          },
+          "monthlyIncome": {
+            "description": "월 수입",
+            "example": "1000000",
+            "nullable": true,
+            "type": "string"
+          },
+          "remainingAmount": {
+            "description": "수입 기준 잔액",
+            "example": "700000",
+            "type": "string"
+          },
+          "spentAmount": {
+            "description": "총 지출 금액",
+            "example": "300000",
+            "type": "string"
+          },
+          "spentHours": {
+            "description": "지출에 쓴 시간 = round(월 지출 ÷ 시급, 소수 1자리), 시급 미설정 시 null",
+            "example": 74.3,
+            "nullable": true,
+            "type": "number"
+          },
+          "usageRate": {
+            "description": "수입 대비 총 사용률(%)",
+            "example": 30,
+            "type": "integer"
+          },
+          "workedHours": {
+            "description": "이번 달 근무 시간 = round(월 수입 ÷ 시급), 시급 또는 월 수입 미설정 시 null",
+            "example": 52,
+            "nullable": true,
+            "type": "integer"
+          },
+          "yearMonth": {
+            "description": "YYYY-MM",
+            "example": "2026-08",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotImplementedResponse": {
+        "properties": {
+          "message": {
+            "example": "auth API is not implemented yet",
+            "type": "string"
+          },
+          "success": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "NotificationResult": {
+        "properties": {
+          "body": {
+            "example": "'아이폰 17 pro' 대기 시간이 끝났어요. 아직도 사고 싶으신가요?",
+            "type": "string"
+          },
+          "createdAt": {
+            "example": "2026-07-30T09:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "example": "1",
+            "type": "string"
+          },
+          "isRead": {
+            "example": false,
+            "type": "boolean"
+          },
+          "notificationType": {
+            "enum": [
+              "TEMPTATION",
+              "GOAL",
+              "GENERAL"
+            ],
+            "example": "TEMPTATION",
+            "type": "string"
+          },
+          "notifyAt": {
+            "example": "2026-07-30T09:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "readAt": {
+            "example": null,
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "example": "결단의 시간이 왔어요!",
+            "type": "string"
+          },
+          "wishlistItemId": {
+            "example": "3",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PasswordResetConfirmResponse": {
+        "properties": {
+          "data": {
+            "nullable": true,
+            "type": "object"
+          },
+          "message": {
+            "example": "비밀번호 재설정이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "PasswordResetRequestResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "codeTtlSeconds": {
+                "example": 600,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "resendCooldownSeconds": {
+                "example": 60,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "codeTtlSeconds",
+              "resendCooldownSeconds"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "입력한 이메일로 계정 복구 안내를 전송했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "RateLimitErrorResponse": {
+        "properties": {
+          "code": {
+            "example": "AUTH4291",
+            "type": "string"
+          },
+          "message": {
+            "example": "이메일 인증 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+            "type": "string"
+          },
+          "rateLimitType": {
+            "description": "적용된 이메일 인증 제한 종류",
+            "enum": [
+              "RESEND_COOLDOWN",
+              "SEND_LIMIT",
+              "CONFIRM_LOCK",
+              "PASSWORD_RESET_CONFIRM_LOCK",
+              "KAKAO_LINK_PASSWORD_LOCK"
+            ],
+            "example": "RESEND_COOLDOWN",
+            "type": "string"
+          },
+          "retryAfterSeconds": {
+            "description": "요청 시점을 기준으로 다시 시도할 수 있을 때까지 남은 초",
+            "example": 42,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "retryAt": {
+            "description": "다시 시도할 수 있는 UTC 시각",
+            "example": "2026-07-09T12:34:56.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "success": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "code",
+          "message",
+          "retryAfterSeconds",
+          "retryAt",
+          "rateLimitType"
+        ],
+        "type": "object"
+      },
+      "RefreshTokenResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "accessToken": {
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "type": "string"
+              },
+              "refreshToken": {
+                "description": "Rotated refresh token. Use this value for the next refresh request.",
+                "example": "5JxQdKc0yW5rYIYqunzBMT4o62AofWYWfAVvUdGdXug",
+                "type": "string"
+              },
+              "tokenType": {
+                "example": "Bearer",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "토큰 재발급이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "RiskAnalysisResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "riskLevel": {
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH"
+                ],
+                "type": "string"
+              },
+              "riskMessage": {
+                "type": "string"
+              },
+              "riskScore": {
+                "maximum": 5,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "workHoursNeeded": {
+                "example": 25.92,
+                "minimum": 0,
+                "nullable": true,
+                "type": "number"
+              }
+            },
+            "required": [
+              "riskScore",
+              "riskLevel",
+              "riskMessage",
+              "workHoursNeeded"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "소비 위험도 계산에 성공했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
+      "SignupResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "email": {
+                "example": "user@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "loginId": {
+                "example": "gachi123",
+                "type": "string"
+              },
+              "name": {
+                "example": "홍길동",
+                "type": "string"
+              },
+              "phoneNumber": {
+                "example": "010-0000-0000",
+                "type": "string"
+              },
+              "userId": {
+                "example": "1",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "회원가입이 완료되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UnauthorizedResponse": {
+        "properties": {
+          "message": {
+            "example": "Authentication required",
+            "type": "string"
+          },
+          "success": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ],
+        "type": "object"
+      },
+      "UpdateMeResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "birthDate": {
+                "example": "1998-05-02",
+                "format": "date",
+                "nullable": true,
+                "type": "string"
+              },
+              "gender": {
+                "enum": [
+                  "FEMALE",
+                  "MALE"
+                ],
+                "example": "FEMALE",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "example": "1",
+                "type": "string"
+              },
+              "interestTagsJson": {
+                "example": [
+                  "패션",
+                  "뷰티"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "type": "array"
+              },
+              "nickname": {
+                "example": "홍길동",
+                "type": "string"
+              },
+              "phoneNumber": {
+                "example": "010-1234-5678",
+                "nullable": true,
+                "type": "string"
+              },
+              "profileImageUrl": {
+                "example": "https://image.com/profile.png",
+                "nullable": true,
+                "type": "string"
+              },
+              "savingGoalText": {
+                "example": "여행",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "회원 정보 수정 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateNotificationSettingsResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "notifyGeneralEnabled": {
+                "example": true,
+                "type": "boolean"
+              },
+              "notifyGoalEnabled": {
+                "example": true,
+                "type": "boolean"
+              },
+              "notifyPushEnabled": {
+                "example": true,
+                "type": "boolean"
+              },
+              "notifyTemptationEnabled": {
+                "example": true,
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "알림 설정 수정 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateOnboardingResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "interestTags": {
+                "example": [
+                  "식비",
+                  "쇼핑"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "savingGoalText": {
+                "example": "여행",
+                "type": "string"
+              },
+              "targetSavingAmount": {
+                "example": "500000",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "온보딩 정보 저장 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateSavingGoalResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "id": {
+                "example": "1",
+                "type": "string"
+              },
+              "savingGoalIsActive": {
+                "example": true,
+                "type": "boolean"
+              },
+              "savingGoalText": {
+                "example": "목돈 마련",
+                "type": "string"
+              },
+              "targetSavingAmount": {
+                "example": "1000000",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "절약 목적 수정 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "UpsertMonthlyBudgetResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MonthlyBudgetResult"
+          },
+          "message": {
+            "example": "월별 수입/예산이 설정되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ValidationErrorResponse": {
+        "properties": {
+          "code": {
+            "example": "COMMON4001",
+            "type": "string"
+          },
+          "errors": {
+            "properties": {
+              "fieldErrors": {
+                "additionalProperties": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "example": {
+                  "email": [
+                    "올바른 이메일 형식이 아닙니다."
+                  ]
+                },
+                "type": "object"
+              },
+              "formErrors": {
+                "example": [],
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "Invalid request",
+            "type": "string"
+          },
+          "success": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "description": "JWT access token. Swagger UI will send it as Authorization: Bearer <token>.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "DonWorry backend API documentation",
+    "title": "DonWorry API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/api/v1/auth/check-email": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "format": "email",
+              "maxLength": 255,
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckEmailResponse"
+                }
+              }
+            },
+            "description": "Email availability"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          }
+        },
+        "security": [],
+        "summary": "이메일 중복 확인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/check-login-id": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "loginId",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9]{6,12}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckLoginIdResponse"
+                }
+              }
+            },
+            "description": "Login id availability"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          }
+        },
+        "security": [],
+        "summary": "아이디 중복 확인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/email-verifications": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailVerificationResponse"
+                }
+              }
+            },
+            "description": "Email verification code sent"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Duplicated email"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "resendCooldown": {
+                    "summary": "60초 재전송 쿨다운",
+                    "value": {
+                      "code": "AUTH4291",
+                      "message": "이메일 인증 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+                      "rateLimitType": "RESEND_COOLDOWN",
+                      "retryAfterSeconds": 42,
+                      "retryAt": "2026-07-09T12:34:56.000Z",
+                      "success": false
+                    }
+                  },
+                  "sendLimit": {
+                    "summary": "발송 횟수 제한",
+                    "value": {
+                      "code": "AUTH4291",
+                      "message": "이메일 인증 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+                      "rateLimitType": "SEND_LIMIT",
+                      "retryAfterSeconds": 120,
+                      "retryAt": "2026-07-09T12:36:56.000Z",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Email verification request rate limited",
+            "headers": {
+              "Retry-After": {
+                "description": "요청을 다시 시도할 수 있을 때까지 남은 초",
+                "schema": {
+                  "example": 42,
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "이메일 인증 요청",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/email-verifications/confirm": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "code": {
+                    "pattern": "^\\d{6}$",
+                    "type": "string"
+                  },
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "code"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailVerificationConfirmResponse"
+                }
+              }
+            },
+            "description": "Email verification confirmed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Invalid request, expired code, wrong code, or already used code"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Duplicated email"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "AUTH4291",
+                  "message": "이메일 인증 확인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+                  "rateLimitType": "CONFIRM_LOCK",
+                  "retryAfterSeconds": 300,
+                  "retryAt": "2026-07-09T12:39:56.000Z",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Email verification confirm rate limited",
+            "headers": {
+              "Retry-After": {
+                "description": "인증 확인을 다시 시도할 수 있을 때까지 남은 초",
+                "schema": {
+                  "example": 300,
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "이메일 인증 확인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/kakao/link": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "linkingToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "linkingToken",
+                  "password"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Kakao account linked"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/KakaoLinkTokenErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/KakaoLinkVerificationErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Invalid linking token or account verification failed"
+          },
+          "409": {
+            "description": "Kakao account conflict"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Too many attempts"
+          }
+        },
+        "security": [],
+        "summary": "LOCAL 비밀번호로 카카오 계정 연결",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/kakao/link/email-verifications": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "linkingToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "linkingToken"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KakaoLinkEmailVerificationResponse"
+                }
+              }
+            },
+            "description": "Kakao account linking email verification code sent"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KakaoLinkTokenErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid linking token"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Email verification request rate limited"
+          }
+        },
+        "security": [],
+        "summary": "카카오 계정 연결 이메일 인증 요청",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/kakao/link/email-verifications/confirm": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "pattern": "^\\d{6}$",
+                    "type": "string"
+                  },
+                  "linkingToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "linkingToken",
+                  "code"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Kakao account linked"
+          },
+          "400": {
+            "description": "Invalid email verification code"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KakaoLinkTokenErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid linking token"
+          },
+          "409": {
+            "description": "Kakao account conflict"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Too many attempts"
+          }
+        },
+        "security": [],
+        "summary": "이메일 인증으로 카카오 계정 연결",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/kakao/login": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "authorizationCode": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "authorizationCode"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Kakao login completed"
+          },
+          "400": {
+            "description": "Required Kakao account information is missing"
+          },
+          "401": {
+            "description": "Invalid or expired Kakao authorization code"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/KakaoLinkRequiredResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/KakaoAccountConflictResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Local account verification is required or Kakao account conflict"
+          },
+          "502": {
+            "description": "Kakao API communication failed"
+          }
+        },
+        "security": [],
+        "summary": "카카오 로그인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "loginId": {
+                    "pattern": "^[A-Za-z0-9]{6,12}$",
+                    "type": "string"
+                  },
+                  "password": {
+                    "allOf": [
+                      {
+                        "pattern": "[A-Za-z]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[0-9]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[^A-Za-z0-9]",
+                        "type": "string"
+                      }
+                    ],
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "loginId",
+                  "password"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Login completed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid login id or password"
+          }
+        },
+        "security": [],
+        "summary": "로그인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "description": "현재 refresh token family의 미사용 refresh token만 폐기합니다. 다른 기기 또는 다른 token family의 세션은 유지됩니다. Access token은 서버에서 즉시 폐기되지 않으므로 로그아웃 성공 후 클라이언트가 access token과 refresh token을 모두 삭제해야 합니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "refreshToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refreshToken"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "현재 로그인 세션 종료 완료. 응답 본문은 없습니다."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Access token 인증 실패 또는 유효하지 않거나 다른 사용자가 소유한 refresh token"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "로그아웃",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/password-reset/confirm": {
+      "patch": {
+        "description": "이메일로 발급된 인증 코드를 확인해 비밀번호를 변경하고, 해당 사용자의 기존 리프레시 토큰을 모두 폐기합니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "pattern": "^\\d{6}$",
+                    "type": "string"
+                  },
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "allOf": [
+                      {
+                        "pattern": "[A-Za-z]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[0-9]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[^A-Za-z0-9]",
+                        "type": "string"
+                      }
+                    ],
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "newPasswordConfirm": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "code",
+                  "newPassword",
+                  "newPasswordConfirm"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordResetConfirmResponse"
+                }
+              }
+            },
+            "description": "Password reset completed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Invalid request, code, password, expired code, or already used code"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "AUTH4291",
+                  "message": "비밀번호 재설정 인증 확인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+                  "rateLimitType": "PASSWORD_RESET_CONFIRM_LOCK",
+                  "retryAfterSeconds": 300,
+                  "retryAt": "2026-07-09T12:39:56.000Z",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Password reset confirmation rate limited",
+            "headers": {
+              "Retry-After": {
+                "description": "인증 확인을 다시 시도할 수 있을 때까지 남은 초",
+                "schema": {
+                  "example": 300,
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "비밀번호 재설정 완료",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/password-reset/request": {
+      "post": {
+        "description": "계정 존재 여부와 로그인 방식을 노출하지 않고 항상 동일한 성공 응답을 반환합니다. LOCAL 비밀번호 로그인이 가능한 계정에는 재설정 인증 코드를, 카카오 전용 계정에는 카카오 로그인 안내를 발송합니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordResetRequestResponse"
+                }
+              }
+            },
+            "description": "Password reset guidance accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Password reset request rate limited",
+            "headers": {
+              "Retry-After": {
+                "description": "요청을 다시 시도할 수 있을 때까지 남은 초",
+                "schema": {
+                  "example": 42,
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "비밀번호 재설정 요청",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "refreshToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refreshToken"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            },
+            "description": "Access token refreshed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid, expired, used, or revoked refresh token"
+          }
+        },
+        "security": [],
+        "summary": "토큰 재발급",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/signup": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  },
+                  "emailVerificationToken": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "loginId": {
+                    "pattern": "^[A-Za-z0-9]{6,12}$",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "password": {
+                    "allOf": [
+                      {
+                        "pattern": "[A-Za-z]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[0-9]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[^A-Za-z0-9]",
+                        "type": "string"
+                      }
+                    ],
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "passwordConfirm": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "pattern": "^01[016789]-?\\d{3,4}-?\\d{4}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "loginId",
+                  "email",
+                  "emailVerificationToken",
+                  "password",
+                  "passwordConfirm",
+                  "phoneNumber"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            },
+            "description": "Signup completed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Invalid request or email verification token"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Duplicated email or login id"
+          }
+        },
+        "security": [],
+        "summary": "회원가입",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/consumption-records": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "default": "ALL",
+              "enum": [
+                "ALL",
+                "CONSUMED",
+                "SKIPPED"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionRecordListResponse"
+                }
+              }
+            },
+            "description": "Consumption record list"
+          },
+          "400": {
+            "$ref": "#/components/responses/ConsumptionRecordValidationBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ConsumptionRecordInternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "소비 기록 목록 조회",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      },
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "category_code": "CAFE_DESSERT",
+                "interventionAnswers": [
+                  {
+                    "answerValue": true,
+                    "questionId": 1
+                  }
+                ],
+                "price": 4500,
+                "productName": "아이스 아메리카노",
+                "productUrl": "https://example.com/products/americano",
+                "reason": "친구와 시간을 보내고 싶어서",
+                "riskScore": 3,
+                "type": "CONSUMED"
+              },
+              "schema": {
+                "properties": {
+                  "category_code": {
+                    "maxLength": 50,
+                    "type": "string"
+                  },
+                  "interventionAnswers": {
+                    "items": {
+                      "properties": {
+                        "answerValue": {
+                          "type": "boolean"
+                        },
+                        "questionId": {
+                          "format": "int64",
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "questionId",
+                        "answerValue"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "occurredAt": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "productName": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "productUrl": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "riskScore": {
+                    "maximum": 5,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "type": {
+                    "enum": [
+                      "CONSUMED",
+                      "SKIPPED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "productName",
+                  "price"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "occurredAt을 생략하면 서버의 현재 시각을 소비 발생 시각으로 저장합니다.",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionRecordCreatedResponse"
+                }
+              }
+            },
+            "description": "Consumption record created"
+          },
+          "400": {
+            "$ref": "#/components/responses/ConsumptionRecordBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "CONSUMPTION_RECORD4042",
+                  "message": "요청한 질문을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "CONSUMPTION_RECORD5001",
+                  "message": "Internal server error",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "소비 기록 입력",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      }
+    },
+    "/api/v1/consumption-records/ratio": {
+      "get": {
+        "description": "로그인 사용자의 KST 기준 오늘 포함 최근 28일 SKIPPED/CONSUMED 금액 합계와 비율을 조회합니다.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionRatioResponse"
+                }
+              }
+            },
+            "description": "최근 소비 비율 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ConsumptionRecordInternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "최근 28일 소비 비율 조회",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      }
+    },
+    "/api/v1/consumption-records/{consumptionRecordId}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "consumptionRecordId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "example": null,
+                      "nullable": true
+                    },
+                    "message": {
+                      "example": "OK",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Consumption record deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/ConsumptionRecordValidationBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ConsumptionRecordNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ConsumptionRecordInternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "소비 기록 삭제",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "consumptionRecordId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionRecordDetailResponse"
+                }
+              }
+            },
+            "description": "Consumption record detail"
+          },
+          "400": {
+            "$ref": "#/components/responses/ConsumptionRecordValidationBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ConsumptionRecordNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ConsumptionRecordInternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "소비 기록 상세",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "consumptionRecordId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "category_code": {
+                    "maxLength": 50,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "interventionAnswers": {
+                    "items": {
+                      "properties": {
+                        "answerValue": {
+                          "type": "boolean"
+                        },
+                        "questionId": {
+                          "format": "int64",
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "questionId",
+                        "answerValue"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "occurredAt": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "minimum": 0,
+                    "type": "number"
+                  },
+                  "productName": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "productUrl": {
+                    "format": "uri",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 255,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "riskScore": {
+                    "maximum": 5,
+                    "minimum": 0,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "type": {
+                    "enum": [
+                      "CONSUMED",
+                      "SKIPPED"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionRecordResponse"
+                }
+              }
+            },
+            "description": "Consumption record updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/ConsumptionRecordBadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ConsumptionRecordOrQuestionNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ConsumptionRecordInternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "소비 기록 수정",
+        "tags": [
+          "ConsumptionRecords"
+        ]
+      }
+    },
+    "/api/v1/home/cheer-message": {
+      "get": {
+        "description": "누적 참은 소비 금액으로 목표 달성률을 계산하고, 동일 사용자·동일 날짜에 동일한 메시지를 반환합니다. 날짜 기준은 KST입니다.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheerMessageResponse"
+                }
+              }
+            },
+            "description": "응원 메시지 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "goalNotSet": {
+                    "value": {
+                      "code": "GOAL4041",
+                      "message": "목표 금액이 설정되지 않았습니다.",
+                      "success": false
+                    }
+                  },
+                  "userNotFound": {
+                    "value": {
+                      "code": "USER4041",
+                      "message": "사용자를 찾을 수 없습니다.",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "목표 금액 미설정 또는 사용자 미존재"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "응원 메시지 조회",
+        "tags": [
+          "Home"
+        ]
+      }
+    },
+    "/api/v1/home/daily-question": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyQuestionResponse"
+                }
+              }
+            },
+            "description": "오늘의 소비 질문 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "오늘의 소비 질문 조회",
+        "tags": [
+          "Home"
+        ]
+      }
+    },
+    "/api/v1/home/summary": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomeSummaryResponse"
+                }
+              }
+            },
+            "description": "홈 요약 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "홈 요약 조회",
+        "tags": [
+          "Home"
+        ]
+      }
+    },
+    "/api/v1/intervention-questions": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category_code",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterventionQuestionsResponse"
+                }
+              }
+            },
+            "description": "개입 질문 목록 조회 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Query 검증 실패 또는 허용되지 않은 category_code"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "활성 Q1~Q3를 찾을 수 없음 (INTERVENTION4041)"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "질문 또는 최근 소비 기록 조회 실패 (INTERVENTION5001)"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "개입 질문 목록 및 최근 동일 카테고리 소비 조회",
+        "tags": [
+          "Interventions"
+        ]
+      }
+    },
+    "/api/v1/interventions/risk-score": {
+      "post": {
+        "description": "Q1~Q3 답변을 모두 전달해야 하며 중복 questionId, 누락 질문, 존재하지 않거나 비활성인 질문을 검증합니다. 상품 가격과 사용자 시급으로 필요 노동시간을 계산하며, 시급 미설정 시 null을 반환합니다. 소비 기록은 생성하거나 수정하지 않습니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "interventionAnswers": {
+                    "items": {
+                      "properties": {
+                        "answerValue": {
+                          "type": "boolean"
+                        },
+                        "questionId": {
+                          "anyOf": [
+                            {
+                              "exclusiveMinimum": true,
+                              "maximum": 9007199254740991,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            {
+                              "pattern": "^[1-9]\\d*$",
+                              "type": "string"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "questionId",
+                        "answerValue"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "price": {
+                    "minimum": 0,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "price",
+                  "interventionAnswers"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAnalysisResponse"
+                }
+              }
+            },
+            "description": "소비 위험도 계산 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "DTO 검증 실패(COMMON4001), 중복 질문(CONSUMPTION_RECORD4003), 필수 질문 누락(RISK4001)"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "질문이 존재하지 않거나 비활성 상태(CONSUMPTION_RECORD4042)"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "위험도 계산 실패(RISK5001)"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "개입 질문 답변 기반 소비 위험도 계산",
+        "tags": [
+          "Interventions"
+        ]
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "default": "ALL",
+              "enum": [
+                "ALL",
+                "GENERAL",
+                "GOAL",
+                "TEMPTATION"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "LATEST",
+              "enum": [
+                "LATEST",
+                "OLDEST",
+                "UNREAD_FIRST"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListNotificationsResponse"
+                }
+              }
+            },
+            "description": "알림 목록 조회 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 목록 조회",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "patch": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkAllNotificationsReadResponse"
+                }
+              }
+            },
+            "description": "알림 전체 읽음 처리 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 전체 읽음 처리",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notificationId}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notificationId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteNotificationResponse"
+                }
+              }
+            },
+            "description": "알림 삭제 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "NOTIFICATION4041",
+                  "message": "요청한 알림을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "요청한 알림을 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 삭제",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notificationId}/read": {
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notificationId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkNotificationReadResponse"
+                }
+              }
+            },
+            "description": "알림 읽음 처리 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "NOTIFICATION4041",
+                  "message": "요청한 알림을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "요청한 알림을 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 읽음 처리",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/onboarding": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOnboardingResponse"
+                }
+              }
+            },
+            "description": "온보딩 정보 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "온보딩 정보 조회",
+        "tags": [
+          "Onboarding"
+        ]
+      },
+      "put": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "interestTags": {
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    },
+                    "maxItems": 3,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "savingGoalText": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "targetSavingAmount": {
+                    "format": "int64",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "interestTags",
+                  "savingGoalText",
+                  "targetSavingAmount"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateOnboardingResponse"
+                }
+              }
+            },
+            "description": "온보딩 정보 저장 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "온보딩 정보 저장/수정",
+        "tags": [
+          "Onboarding"
+        ]
+      }
+    },
+    "/api/v1/product-url/parse": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "productUrl": {
+                    "pattern": "^https?:\\/\\/.+",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "productUrl"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "occurredAt": {
+                          "example": "2026-05-17T12:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "price": {
+                          "example": 6100,
+                          "type": "number"
+                        },
+                        "productName": {
+                          "example": "투썸플레이스 신봉점",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "productName",
+                        "price",
+                        "occurredAt"
+                      ],
+                      "type": "object"
+                    },
+                    "message": {
+                      "example": "url 파싱에 성공했습니다.",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "상품 URL 파싱 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalidRequest": {
+                    "summary": "URL 형식 오류",
+                    "value": {
+                      "code": "COMMON4001",
+                      "message": "Invalid request",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "잘못된 URL 또는 접근할 수 없는 내부 주소"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "PRODUCT_URL4221",
+                  "message": "상품 정보를 파싱하지 못했습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "상품 정보 파싱 실패"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "responseTooLarge": {
+                    "summary": "외부 상품 페이지 응답 크기 초과",
+                    "value": {
+                      "code": "PRODUCT_URL5022",
+                      "message": "상품 페이지의 응답 크기가 너무 큽니다.",
+                      "success": false
+                    }
+                  },
+                  "upstreamFailure": {
+                    "summary": "외부 상품 페이지 접근 실패",
+                    "value": {
+                      "code": "PRODUCT_URL5021",
+                      "message": "외부 상품 페이지에 접근할 수 없습니다.",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "외부 상품 페이지 요청 실패"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "PRODUCT_URL5041",
+                  "message": "외부 상품 페이지 응답 시간이 초과되었습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "외부 상품 페이지 응답 시간 초과"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "상품 URL 파싱",
+        "tags": [
+          "ProductUrl"
+        ]
+      }
+    },
+    "/api/v1/reports/consumption/detail": {
+      "get": {
+        "description": "현재 및 과거 월 조회 가능 (미래 월 불가 / month 미입력 시 현재 연월)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "schema": {
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumptionReportDetailResponse"
+                }
+              }
+            },
+            "description": "상세 소비 분석 리포트 조회 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "REPORT4001",
+                  "message": "미래 월은 조회할 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "잘못된 요청"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "상세 소비 분석 리포트 조회",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/consumption/summary": {
+      "get": {
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "간단 소비 분석 리포트 조회",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/temptations/{temptationId}/decisions": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "temptationId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "decisionType": {
+                    "enum": [
+                      "BUY",
+                      "SKIP",
+                      "DELAY"
+                    ],
+                    "type": "string"
+                  },
+                  "selectedWaitType": {
+                    "enum": [
+                      "1H",
+                      "1D",
+                      "3D",
+                      "1W"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "decisionType"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "decidedAt": {
+                          "example": "2026-07-31T14:37:35.857Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "decisionType": {
+                          "example": "DELAY",
+                          "type": "string"
+                        },
+                        "id": {
+                          "example": "6",
+                          "type": "string"
+                        },
+                        "selectedWaitType": {
+                          "example": "ONE_DAY",
+                          "type": "string"
+                        },
+                        "selectedWaitUntil": {
+                          "example": "2026-08-01T14:37:35.850Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "wishlistItemId": {
+                          "example": "2",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "재판단 기록 추가 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "MISSING_WAIT_TYPE": {
+                    "summary": "고민 연장 시 대기 시간 미선택 (WISH4002)",
+                    "value": {
+                      "code": "WISH4002",
+                      "message": "고민 시간 연장 시 추가 대기 시간 선택은 필수입니다.",
+                      "success": false
+                    }
+                  },
+                  "NOT_YET_REDECISION_TIME": {
+                    "summary": "아직 재판단 시간이 지나지 않음 (WISH4003)",
+                    "value": {
+                      "code": "WISH4003",
+                      "message": "아직 고민 시간이 끝나지 않아 추가 연장을 할 수 없습니다.",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "유효하지 않은 요청 데이터"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4031",
+                  "message": "접근 권한이 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "접근 권한 없음 (타인의 항목)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4041",
+                  "message": "해당 위시리스트 항목을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "존재하지 않는 항목"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4091",
+                  "message": "이미 재판단이 완료되었거나 대기 상태가 아닌 항목입니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "이미 처리가 완료되었거나 대기 상태가 아닌 항목"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "재판단 기록 추가",
+        "tags": [
+          "Temptations"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "delete": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "password": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "reasonType": {
+                    "enum": [
+                      "LOW_FREQUENCY",
+                      "MISSING_FEATURE",
+                      "INCONVENIENT",
+                      "PRIVACY_CONCERN",
+                      "SWITCHING_SERVICE",
+                      "OTHER"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "password"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "example": null,
+                      "nullable": true
+                    },
+                    "message": {
+                      "example": "회원 탈퇴 성공",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "회원 탈퇴 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalidPassword": {
+                    "summary": "비밀번호 불일치",
+                    "value": {
+                      "code": "USER4001",
+                      "message": "비밀번호가 올바르지 않습니다.",
+                      "success": false
+                    }
+                  },
+                  "validationFailed": {
+                    "summary": "요청 값 검증 실패",
+                    "value": {
+                      "code": "COMMON4001",
+                      "errors": {
+                        "fieldErrors": {
+                          "body": [
+                            "비밀번호를 입력해주세요."
+                          ]
+                        },
+                        "formErrors": []
+                      },
+                      "message": "Invalid request",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "비밀번호 불일치 또는 요청 값 검증 실패"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "회원 탈퇴",
+        "tags": [
+          "Users"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMeResponse"
+                }
+              }
+            },
+            "description": "회원 정보 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "내 정보 조회",
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "birthDate": {
+                    "format": "date",
+                    "nullable": true,
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "enum": [
+                      "FEMALE",
+                      "MALE"
+                    ],
+                    "type": "string"
+                  },
+                  "interestTags": {
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    },
+                    "maxItems": 20,
+                    "type": "array"
+                  },
+                  "nickname": {
+                    "maxLength": 20,
+                    "minLength": 2,
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "nullable": true,
+                    "pattern": "^01[016789]-?\\d{3,4}-?\\d{4}$",
+                    "type": "string"
+                  },
+                  "profileImageUrl": {
+                    "format": "uri",
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMeResponse"
+                }
+              }
+            },
+            "description": "회원 정보 수정 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "내 정보 수정",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/me/budget": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "yearMonth",
+            "required": false,
+            "schema": {
+              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMonthlyBudgetResponse"
+                }
+              }
+            },
+            "description": "월별 수입/예산 조회 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "월별 수입/예산 조회",
+        "tags": [
+          "Users"
+        ]
+      },
+      "put": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "categoryBudgets": {
+                    "items": {
+                      "properties": {
+                        "budgetAmount": {
+                          "format": "int64",
+                          "type": "integer"
+                        },
+                        "categoryCode": {
+                          "enum": [
+                            "FASHION",
+                            "BEAUTY",
+                            "FOOD_SNACK",
+                            "CAFE_DESSERT",
+                            "HOBBY_GOODS",
+                            "ELECTRONICS",
+                            "HEALTH_FITNESS",
+                            "TRAVEL",
+                            "ETC"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "categoryCode",
+                        "budgetAmount"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "hourlyWage": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "monthlyBudget": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "monthlyIncome": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "yearMonth": {
+                    "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "yearMonth"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpsertMonthlyBudgetResponse"
+                }
+              }
+            },
+            "description": "월별 수입/예산이 설정되었습니다."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "월별 수입/예산 설정",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/me/notification-settings": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNotificationSettingsResponse"
+                }
+              }
+            },
+            "description": "알림 설정 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 설정 조회",
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "description": "전체 알림과 세부 알림은 동일한 요청에서 함께 변경할 수 없습니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "notifyGeneralEnabled": {
+                    "type": "boolean"
+                  },
+                  "notifyGoalEnabled": {
+                    "type": "boolean"
+                  },
+                  "notifyPushEnabled": {
+                    "type": "boolean"
+                  },
+                  "notifyTemptationEnabled": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateNotificationSettingsResponse"
+                }
+              }
+            },
+            "description": "알림 설정 수정 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4091",
+                  "message": "동시 요청 충돌이 발생했습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "동시 요청 충돌 발생"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "알림 설정 수정",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/me/password": {
+      "patch": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "currentPassword": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "allOf": [
+                      {
+                        "pattern": "[A-Za-z]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[0-9]",
+                        "type": "string"
+                      },
+                      {
+                        "pattern": "[^A-Za-z0-9]",
+                        "type": "string"
+                      }
+                    ],
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "newPasswordConfirm": {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "currentPassword",
+                  "newPassword",
+                  "newPasswordConfirm"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "example": null,
+                      "nullable": true
+                    },
+                    "message": {
+                      "example": "비밀번호가 변경되었습니다.",
+                      "type": "string"
+                    },
+                    "success": {
+                      "enum": [
+                        true
+                      ],
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "비밀번호가 변경되었습니다."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalidCurrentPassword": {
+                    "summary": "현재 비밀번호 불일치",
+                    "value": {
+                      "code": "USER4001",
+                      "message": "현재 비밀번호가 올바르지 않습니다.",
+                      "success": false
+                    }
+                  },
+                  "validationFailed": {
+                    "summary": "요청 값 검증 실패",
+                    "value": {
+                      "code": "COMMON4001",
+                      "message": "Invalid request",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "현재 비밀번호 불일치 또는 요청 값 검증 실패"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "비밀번호 변경",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/me/saving-goal": {
+      "delete": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSavingGoalResponse"
+                }
+              }
+            },
+            "description": "절약 목적 삭제 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "절약 목적 삭제/해제",
+        "tags": [
+          "Users"
+        ]
+      },
+      "put": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "savingGoalIsActive": {
+                    "type": "boolean"
+                  },
+                  "savingGoalText": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "targetSavingAmount": {
+                    "format": "int64",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "savingGoalText",
+                  "targetSavingAmount"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSavingGoalResponse"
+                }
+              }
+            },
+            "description": "절약 목적 수정 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "절약 목적 설정/수정",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/wishlist-items": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "properties": {
+                          "categoryCode": {
+                            "example": "ELECTRONICS",
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "example": "2026-07-16T18:00:00.000Z",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "example": "1",
+                            "type": "string"
+                          },
+                          "price": {
+                            "example": "2500000",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "productImageUrl": {
+                            "example": "https://images.com/macbook.png",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "productName": {
+                            "example": "맥북 프로",
+                            "type": "string"
+                          },
+                          "productUrl": {
+                            "example": "https://apple.com/kr/macbook",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "reason": {
+                            "example": "개발 작업용 스펙 업그레이드",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "example": "WAITING",
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "example": "2026-07-16T18:00:00.000Z",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "userId": {
+                            "example": "1",
+                            "type": "string"
+                          },
+                          "waitType": {
+                            "example": "ONE_WEEK",
+                            "type": "string"
+                          },
+                          "waitUntil": {
+                            "example": "2026-07-23T18:00:00.000Z",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "categoryCode",
+                          "productName",
+                          "waitType",
+                          "status",
+                          "createdAt",
+                          "updatedAt"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "위시리스트 목록 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "위시리스트 목록 조회",
+        "tags": [
+          "WishlistItems"
+        ]
+      },
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "categoryCode": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "productImageUrl": {
+                    "format": "uri",
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "productName": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "productUrl": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "waitType": {
+                    "default": "1H",
+                    "enum": [
+                      "1H",
+                      "1D",
+                      "3D",
+                      "1W"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "categoryCode",
+                  "productName"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "categoryCode": {
+                          "example": "ELECTRONICS",
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "example": "2026-07-16T18:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "id": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "price": {
+                          "example": "2500000",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productImageUrl": {
+                          "example": "https://images.com/macbook.png",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productName": {
+                          "example": "맥북 프로",
+                          "type": "string"
+                        },
+                        "productUrl": {
+                          "example": "https://apple.com/kr/macbook",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "reason": {
+                          "example": "개발 작업용 스펙 업그레이드",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "example": "WAITING",
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "example": "2026-07-16T18:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "userId": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "waitType": {
+                          "example": "ONE_WEEK",
+                          "type": "string"
+                        },
+                        "waitUntil": {
+                          "example": "2026-07-23T18:00:00.000Z",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "userId",
+                        "categoryCode",
+                        "productName",
+                        "waitType",
+                        "status",
+                        "createdAt",
+                        "updatedAt"
+                      ],
+                      "type": "object"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "위시리스트 추가 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "위시리스트 추가",
+        "tags": [
+          "WishlistItems"
+        ]
+      }
+    },
+    "/api/v1/wishlist-items/{wishlistId}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "wishlistId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "example": "삭제 성공",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "위시리스트 삭제 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4031",
+                  "message": "접근 권한이 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "접근 권한이 없음 (본인 소유가 아님)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4041",
+                  "message": "해당 위시리스트 항목을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "존재하지 않는 항목"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "위시리스트 삭제",
+        "tags": [
+          "WishlistItems"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "wishlistId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "categoryCode": {
+                          "example": "ELECTRONICS",
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "example": "2026-07-16T18:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "id": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "price": {
+                          "example": "2500000",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productImageUrl": {
+                          "example": "https://images.com/macbook.png",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productName": {
+                          "example": "맥북 프로",
+                          "type": "string"
+                        },
+                        "productUrl": {
+                          "example": "https://apple.com/kr/macbook",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "reason": {
+                          "example": "개발 작업용 스펙 업그레이드",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "example": "WAITING",
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "example": "2026-07-16T18:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "userId": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "waitType": {
+                          "example": "ONE_WEEK",
+                          "type": "string"
+                        },
+                        "waitUntil": {
+                          "example": "2026-07-23T18:00:00.000Z",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "userId",
+                        "categoryCode",
+                        "productName",
+                        "waitType",
+                        "status",
+                        "createdAt",
+                        "updatedAt"
+                      ],
+                      "type": "object"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "위시리스트 상세 조회 성공"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4031",
+                  "message": "접근 권한이 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "접근 권한이 없음 (본인 소유가 아님)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4041",
+                  "message": "해당 위시리스트 항목을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "존재하지 않는 항목"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "위시리스트 상세 조회",
+        "tags": [
+          "WishlistItems"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "wishlistId",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "categoryCode": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "productImageUrl": {
+                    "format": "uri",
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "productName": {
+                    "maxLength": 255,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "productUrl": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "waitType": {
+                    "enum": [
+                      "1H",
+                      "1D",
+                      "3D",
+                      "1W"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "categoryCode": {
+                          "example": "ELECTRONICS",
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "example": "2026-07-16T18:00:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "id": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "price": {
+                          "example": "1500000",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productImageUrl": {
+                          "example": "https://images.com/ipad.png",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "productName": {
+                          "example": "아이패드 프로",
+                          "type": "string"
+                        },
+                        "productUrl": {
+                          "example": "https://apple.com/kr/ipad",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "reason": {
+                          "example": "필기 및 드로잉용",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "example": "WAITING",
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "example": "2026-07-17T10:30:00.000Z",
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "userId": {
+                          "example": "1",
+                          "type": "string"
+                        },
+                        "waitType": {
+                          "example": "ONE_DAY",
+                          "type": "string"
+                        },
+                        "waitUntil": {
+                          "example": "2026-07-17T18:00:00.000Z",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "userId",
+                        "categoryCode",
+                        "productName",
+                        "waitType",
+                        "status",
+                        "createdAt",
+                        "updatedAt"
+                      ],
+                      "type": "object"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "위시리스트 수정 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4001",
+                  "message": "수정할 값이 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "수정할 데이터가 주어지지 않음 (빈 body)"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4031",
+                  "message": "접근 권한이 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "접근 권한이 없음 (본인 소유가 아님)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "WISH4041",
+                  "message": "해당 위시리스트 항목을 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "존재하지 않는 항목"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "위시리스트 수정",
+        "tags": [
+          "WishlistItems"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Server health status"
+          }
+        },
+        "security": [],
+        "summary": "Health check",
+        "tags": [
+          "Health"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Current server",
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Users"
+    },
+    {
+      "name": "Onboarding"
+    },
+    {
+      "name": "Home"
+    },
+    {
+      "name": "ConsumptionRecords"
+    },
+    {
+      "name": "Interventions"
+    },
+    {
+      "name": "ProductUrl"
+    },
+    {
+      "name": "Reports"
+    },
+    {
+      "name": "Notifications"
+    },
+    {
+      "name": "WishlistItems"
+    },
+    {
+      "name": "Temptations"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import client from '@/api/client'
+import type { PostApiV1InterventionsRiskScoreData } from '@/api/generated'
 import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import { formatDateKorean } from '@/shared/utils/date'
 
@@ -43,6 +44,7 @@ interface RiskAnalysisResult {
   riskScore: number
   riskLevel: ApiRiskLevel
   riskMessage: string
+  workHoursNeeded: number | null
 }
 
 export interface InterventionOption {
@@ -81,6 +83,12 @@ export interface RiskAnalysis {
   riskScore: number
   riskLevel: RiskLevel
   riskMessage: string
+  workHoursNeeded: number | null
+}
+
+export interface RiskScoreInput {
+  price: number
+  answers: InterventionAnswer[]
 }
 
 const RISK_LEVEL_TO_FRONT: Record<ApiRiskLevel, RiskLevel> = {
@@ -119,16 +127,21 @@ export const interventionApi = {
     }
   },
 
-  getRiskScore: async (answers: InterventionAnswer[]): Promise<RiskAnalysis> => {
+  getRiskScore: async ({ price, answers }: RiskScoreInput): Promise<RiskAnalysis> => {
+    const body: PostApiV1InterventionsRiskScoreData['body'] = {
+      price,
+      interventionAnswers: answers,
+    }
     const { data } = await client.post<ApiResponse<RiskAnalysisResult>>(
       '/api/v1/interventions/risk-score',
-      { interventionAnswers: answers },
+      body,
     )
 
     return {
       riskScore: data.data.riskScore,
       riskLevel: RISK_LEVEL_TO_FRONT[data.data.riskLevel],
       riskMessage: data.data.riskMessage,
+      workHoursNeeded: data.data.workHoursNeeded ?? null,
     }
   },
 }

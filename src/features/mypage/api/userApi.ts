@@ -1,4 +1,11 @@
 import client from '@/api/client'
+import type {
+  DeleteApiV1UsersMeData,
+  PatchApiV1UsersMeData,
+  PatchApiV1UsersMePasswordData,
+  PutApiV1UsersMeBudgetData,
+  PutApiV1UsersMeSavingGoalData,
+} from '@/api/generated'
 import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import { CATEGORY_CODE_TO_LABEL } from '@/constants/budgetCategory'
 import type { CategoryCode, CategoryLabel } from '@/constants/budgetCategory'
@@ -29,28 +36,12 @@ export type UpdatedUserProfile = Omit<
   'email' | 'loginProvider' | 'hasPassword' | 'hourlyWage'
 >
 
-export interface UpdateProfileRequest {
-  nickname?: string
-  profileImageUrl?: string | null
-  interestTags?: string[]
-  phoneNumber?: string | null
-  birthDate?: string | null
-  gender?: 'FEMALE' | 'MALE'
-}
+export type UpdateProfileRequest = PatchApiV1UsersMeData['body']
 
 // 스웨거 DELETE /users/me 요청 스키마의 reasonType enum 전체 목록
-export type WithdrawReasonType =
-  | 'LOW_FREQUENCY'
-  | 'MISSING_FEATURE'
-  | 'INCONVENIENT'
-  | 'PRIVACY_CONCERN'
-  | 'SWITCHING_SERVICE'
-  | 'OTHER'
+export type WithdrawReasonType = NonNullable<DeleteApiV1UsersMeData['body']['reasonType']>
 
-export interface WithdrawRequest {
-  password: string
-  reasonType?: WithdrawReasonType
-}
+export type WithdrawRequest = DeleteApiV1UsersMeData['body']
 
 export interface SavingGoal {
   id: string
@@ -59,11 +50,7 @@ export interface SavingGoal {
   savingGoalIsActive: boolean
 }
 
-export interface SetSavingGoalRequest {
-  savingGoalText: string
-  targetSavingAmount: number
-  savingGoalIsActive?: boolean
-}
+export type SetSavingGoalRequest = PutApiV1UsersMeSavingGoalData['body']
 
 export interface DeleteSavingGoalResult {
   id: string
@@ -77,6 +64,7 @@ export interface Budget {
   spentAmount: number
   remainingAmount: number
   usageRate: number
+  hourlyWage: number | null
   categoryBudgets: CategoryBudget[]
 }
 
@@ -92,6 +80,7 @@ export interface SetBudgetRequest {
   yearMonth: string
   monthlyIncome?: number
   monthlyBudget?: number
+  hourlyWage?: number
   categoryBudgets?: Pick<CategoryBudget, 'category' | 'budgetAmount'>[]
 }
 
@@ -102,6 +91,7 @@ interface MonthlyBudgetResult {
   spentAmount: string
   remainingAmount: string
   usageRate: number
+  hourlyWage: string | null
   categoryBudgets: {
     categoryCode: CategoryCode
     budgetAmount: string
@@ -119,6 +109,7 @@ function adaptBudget(result: MonthlyBudgetResult): Budget {
     spentAmount: Number(result.spentAmount),
     remainingAmount: Number(result.remainingAmount),
     usageRate: result.usageRate,
+    hourlyWage: result.hourlyWage === null ? null : Number(result.hourlyWage),
     categoryBudgets: result.categoryBudgets.map((category) => ({
       category: CATEGORY_CODE_TO_LABEL[category.categoryCode],
       budgetAmount: Number(category.budgetAmount),
@@ -129,10 +120,7 @@ function adaptBudget(result: MonthlyBudgetResult): Budget {
   }
 }
 
-export interface ChangePasswordRequest {
-  currentPassword: string
-  newPassword: string
-}
+export type ChangePasswordRequest = PatchApiV1UsersMePasswordData['body']
 
 export const userApi = {
   getMe: async (): Promise<UserProfile> => {
@@ -171,22 +159,25 @@ export const userApi = {
   },
 
   setBudget: async (body: SetBudgetRequest): Promise<Budget> => {
-    const { data } = await client.put<ApiResponse<MonthlyBudgetResult>>('/api/v1/users/me/budget', {
+    const requestBody: PutApiV1UsersMeBudgetData['body'] = {
       yearMonth: body.yearMonth,
       ...(body.monthlyIncome !== undefined && { monthlyIncome: body.monthlyIncome }),
       ...(body.monthlyBudget !== undefined && { monthlyBudget: body.monthlyBudget }),
+      ...(body.hourlyWage !== undefined && { hourlyWage: body.hourlyWage }),
       ...(body.categoryBudgets !== undefined && {
         categoryBudgets: body.categoryBudgets.map(({ category, budgetAmount }) => ({
-          categoryCode: CATEGORY_LABEL_TO_CODE[category],
+          categoryCode: CATEGORY_LABEL_TO_CODE[category] as CategoryCode,
           budgetAmount,
         })),
       }),
-    })
+    }
+    const { data } = await client.put<ApiResponse<MonthlyBudgetResult>>(
+      '/api/v1/users/me/budget',
+      requestBody,
+    )
     return adaptBudget(data.data)
   },
 
-  // 스웨거상 성공(200) 응답이 명시돼 있지 않고 501(NotImplemented)만 문서화된,
-  // 백엔드에서 아직 구현 중인 엔드포인트입니다.
   changePassword: async (body: ChangePasswordRequest): Promise<void> => {
     await client.patch('/api/v1/users/me/password', body)
   },

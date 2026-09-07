@@ -39,6 +39,8 @@ export default function Home() {
     categories,
     categorySummaryText,
     hasRecords,
+    cheerMessage,
+    dailyQuestion,
   } = data
 
   return (
@@ -63,8 +65,8 @@ export default function Home() {
           achievementRate={achievementRate}
           remainingAmount={achievementRemainingAmount}
         />
-        <EncouragementCard />
-        <SpendingQuestion />
+        <EncouragementCard message={cheerMessage} />
+        <SpendingQuestion question={dailyQuestion} />
       </div>
     </main>
   )

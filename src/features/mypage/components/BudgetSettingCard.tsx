@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
 import { IoChevronBack, IoChevronForward, IoPencilOutline } from 'react-icons/io5'
 import Button from '@/shared/components/Button'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import InputField from '@/shared/components/InputField'
 import { formatKRW } from '@/shared/utils/currency'
 import { getCurrentYearMonth, shiftYearMonth } from '@/shared/utils/date'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import type { Category } from '@/features/temptation/types'
 import { useBudget, useMe, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
@@ -64,14 +66,18 @@ function EditableAmountRow({ label, helper, value, onChange }: EditableAmountRow
   )
 }
 
-export default function BudgetSettingCard() {
+interface BudgetSettingCardProps {
+  onUnauthorized?: () => void
+}
+
+export default function BudgetSettingCard({ onUnauthorized = () => {} }: BudgetSettingCardProps) {
   const [yearMonth, setYearMonth] = useState(getCurrentYearMonth())
   const isCurrentMonth = yearMonth === getCurrentYearMonth()
   const [year, month] = yearMonth.split('-')
 
-  const { data: budget, isLoading, isError, refetch } = useBudget(yearMonth)
-  const { data: profile } = useMe()
-  const { mutate: setBudget, isPending } = useSetBudget()
+  const { data: budget, isLoading, isError, error: budgetError, refetch } = useBudget(yearMonth)
+  const { data: profile, error: profileError } = useMe()
+  const { mutate: setBudget, isPending, error: setBudgetError } = useSetBudget()
 
   const [income, setIncome] = useState('')
   const [categoryEntries, setCategoryEntries] = useState<CategoryBudgetEntry[]>([])
@@ -90,10 +96,15 @@ export default function BudgetSettingCard() {
         spentAmount,
       })) ?? [],
     )
+    setHourlyWageOverride(null)
   }, [budget, yearMonth])
 
   const totalBudget = categoryEntries.reduce((sum, entry) => sum + entry.budgetAmount, 0)
-  const hourlyWage = hourlyWageOverride ?? profile?.hourlyWage ?? ''
+  const savedHourlyWage =
+    budget?.hourlyWage !== null && budget?.hourlyWage !== undefined
+      ? String(budget.hourlyWage)
+      : (profile?.hourlyWage ?? '')
+  const hourlyWage = hourlyWageOverride ?? savedHourlyWage
 
   const handleChangeCategoryBudget = (category: Category, budgetAmount: number) => {
     setCategoryEntries((prev) =>
@@ -118,17 +129,22 @@ export default function BudgetSettingCard() {
   const handleSave = () => {
     const hasIncome = income.trim() !== ''
     const hasCategoryBudgets = categoryEntries.length > 0
+    const hasHourlyWageChange = hourlyWageOverride !== null
 
-    if (!hasIncome && !hasCategoryBudgets) {
-      setError('수입 또는 카테고리별 예산을 설정해주세요.')
+    if (!hasIncome && !hasCategoryBudgets && !hasHourlyWageChange) {
+      setError('수입, 시급 또는 카테고리별 예산을 설정해주세요.')
       return
     }
 
     // API는 monthlyIncome에 null을 받지 않으므로, 기존 수입을 지운 경우 0을 명시해 초기화합니다.
     const incomeAmount = hasIncome ? Number(income) : budget?.monthlyIncome != null ? 0 : undefined
+    const hourlyWageAmount = hasHourlyWageChange ? Number(hourlyWageOverride || 0) : undefined
 
-    if (incomeAmount !== undefined && !Number.isFinite(incomeAmount)) {
-      setError('수입 금액을 다시 확인해주세요.')
+    if (
+      (incomeAmount !== undefined && !Number.isFinite(incomeAmount)) ||
+      (hourlyWageAmount !== undefined && !Number.isFinite(hourlyWageAmount))
+    ) {
+      setError('입력한 금액을 다시 확인해주세요.')
       return
     }
 
@@ -139,6 +155,7 @@ export default function BudgetSettingCard() {
       {
         yearMonth,
         ...(incomeAmount !== undefined && { monthlyIncome: incomeAmount }),
+        ...(hourlyWageAmount !== undefined && { hourlyWage: hourlyWageAmount }),
         ...(hasCategoryBudgets && {
           monthlyBudget: totalBudget,
           categoryBudgets: categoryEntries.map(({ category, budgetAmount }) => ({
@@ -172,6 +189,10 @@ export default function BudgetSettingCard() {
   const parsedIncome = Number(income)
   const incomeError =
     income.trim() !== '' && !Number.isFinite(parsedIncome) ? '수입 금액을 다시 확인해주세요.' : ''
+  const isUnauthorized =
+    isUnauthorizedError(budgetError) ||
+    isUnauthorizedError(profileError) ||
+    isUnauthorizedError(setBudgetError)
 
   return (
     <>
@@ -246,7 +267,11 @@ export default function BudgetSettingCard() {
             monthlyIncome={incomeError ? null : parsedIncome}
             spentAmount={consumedAmount}
             monthLabel={isCurrentMonth ? '이번 달' : `${Number(month)}월`}
-            onChangeHourlyWage={setHourlyWageOverride}
+            onChangeHourlyWage={(value) => {
+              setHourlyWageOverride(value)
+              setError('')
+              setSaved(false)
+            }}
           />
 
           <CategoryBudgetSection
@@ -267,6 +292,16 @@ export default function BudgetSettingCard() {
           </Button>
         </>
       )}
+
+      <ConfirmDialog
+        isOpen={isUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 다시 이용해주세요."
+        confirmText="로그인하기"
+        onlyConfirm
+        onCancel={onUnauthorized}
+        onConfirm={onUnauthorized}
+      />
     </>
   )
 }

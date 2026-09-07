@@ -23,4 +23,6 @@ export interface HomeData {
   categories: CategoryData[]
   categorySummaryText: string
   hasRecords: boolean
+  cheerMessage: string
+  dailyQuestion: string
 }

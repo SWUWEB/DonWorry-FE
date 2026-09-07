@@ -44,6 +44,7 @@ describe('BudgetSettingCard', () => {
         spentAmount: 200000,
         remainingAmount: 800000,
         usageRate: 20,
+        hourlyWage: 10000,
         categoryBudgets: [
           {
             category: '음식',
@@ -148,6 +149,27 @@ describe('BudgetSettingCard', () => {
     })
   })
 
+  it('수정한 시급을 예산 저장 요청에 포함한다', async () => {
+    render(<BudgetSettingCard />)
+
+    fireEvent.click(screen.getByRole('button', { name: /10,000원/ }))
+    fireEvent.change(screen.getByLabelText('시급'), { target: { value: '12000' } })
+    fireEvent.click(screen.getByRole('button', { name: '저장하기' }))
+
+    await waitFor(() => {
+      expect(setBudget).toHaveBeenCalledWith(
+        {
+          yearMonth: currentYearMonth,
+          monthlyIncome: 1000000,
+          monthlyBudget: 300000,
+          hourlyWage: 12000,
+          categoryBudgets: [{ category: '음식', budgetAmount: 300000 }],
+        },
+        expect.any(Object),
+      )
+    })
+  })
+
   it('저장 응답으로 예산 캐시가 갱신되어도 성공 메시지를 유지한다', async () => {
     setBudget.mockImplementationOnce((_body: unknown, options: { onSuccess: () => void }) =>
       options.onSuccess(),
@@ -165,5 +187,21 @@ describe('BudgetSettingCard', () => {
     rerender(<BudgetSettingCard />)
 
     await waitFor(() => expect(screen.getByText('저장되었습니다.')).toBeInTheDocument())
+  })
+
+  it('예산 조회의 최종 401 응답이면 로그인 이동을 안내한다', () => {
+    const onUnauthorized = vi.fn()
+    vi.mocked(useBudget).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { isAxiosError: true, response: { status: 401 } },
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useBudget>)
+
+    render(<BudgetSettingCard onUnauthorized={onUnauthorized} />)
+
+    fireEvent.click(screen.getByRole('button', { name: '로그인하기' }))
+    expect(onUnauthorized).toHaveBeenCalledOnce()
   })
 })

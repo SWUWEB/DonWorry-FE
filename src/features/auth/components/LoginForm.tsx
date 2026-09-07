@@ -5,17 +5,19 @@ import LoginLink from './LoginLink'
 import ErrorMessage from './ErrorMessage'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import styles from './LoginForm.module.css'
 import { useLogin } from '@/hooks/useLogin'
 import { saveAuthSession } from '@/shared/auth/session'
+import { getLoginNotice, getLoginRedirectPath } from '@/shared/auth/redirect'
 import { getKakaoAuthorizeUrl } from '../kakaoOAuth'
 
 export default function LoginForm() {
+  const location = useLocation()
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(() => getLoginNotice(location.state))
 
   const navigate = useNavigate()
   const { mutate, isPending } = useLogin()
@@ -44,7 +46,7 @@ export default function LoginForm() {
         onSuccess: (response) => {
           saveAuthSession(response.data)
 
-          navigate('/')
+          navigate(getLoginRedirectPath(location.state), { replace: true })
         },
 
         onError: (error) => {

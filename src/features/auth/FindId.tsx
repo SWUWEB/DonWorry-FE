@@ -1,59 +1,18 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import InputField from '@/shared/components/InputField'
-import Button from '@/shared/components/Button'
 import AuthLayout from './components/AuthLayout'
 import AuthPageHeader from './components/AuthPageHeader'
 import InfoBanner from './components/InfoBanner'
 
-const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-
+// TODO(BE 연동): OpenAPI에 아이디 찾기 endpoint가 추가되면 이메일 입력·발송 흐름을 연결합니다.
+// 현재는 실제 요청 없이 성공한 것처럼 보이지 않도록 준비 중 안내만 표시합니다.
 export default function FindId() {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [sentTo, setSentTo] = useState('')
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-
-    if (!isValidEmail(email)) {
-      setError('올바른 이메일 형식이 아닙니다.')
-      return
-    }
-
-    setError('')
-
-    // TODO: API 연동 시 실제 아이디 조회/발송 요청으로 교체
-    setSentTo(email)
-  }
-
   return (
     <AuthLayout
       header={
         <AuthPageHeader title="아이디 찾기" description="가입한 이메일로 아이디를 전송해드려요." />
       }
     >
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <InputField
-          label="이메일"
-          placeholder="이메일을 입력해주세요"
-          type="email"
-          value={email}
-          onChange={(event) => {
-            setEmail(event.target.value)
-            setError('')
-            setSentTo('')
-          }}
-          error={error}
-        />
-
-        {sentTo && (
-          <InfoBanner message="입력하신 이메일로 아이디를 전송했습니다. 이메일을 확인해주세요." />
-        )}
-
-        <Button type="submit">아이디 전송</Button>
-      </form>
+      <InfoBanner message="현재 아이디 찾기 기능은 준비 중입니다. 서버 API가 제공되면 바로 이용할 수 있어요." />
 
       <p className="m-0 mt-1 text-center text-sm text-text-primary">
         비밀번호를 잊으셨나요?{' '}

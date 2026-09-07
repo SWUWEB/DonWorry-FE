@@ -52,6 +52,30 @@
   color: var(--color-sub-red, #e5484d);
 }
 
+.statusText {
+  margin: 0;
+  color: var(--color-gray-300);
+  font-size: 13px;
+}
+
+.errorRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.retryButton {
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-main-500);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .masterItem {
   display: flex;
   align-items: center;

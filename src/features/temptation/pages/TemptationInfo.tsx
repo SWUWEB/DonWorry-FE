@@ -28,11 +28,9 @@ export default function TemptationInfo() {
   const product = filteredProducts.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
-  const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess
+  const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess && !isDeleteError
 
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const { isUnauthorized, errorKind } = useWishlistDetail(id)
+  const { isUnauthorized: isDetailUnauthorized, errorKind } = useWishlistDetail(id)
 
   // 고민 시간이 끝나면 재판단 화면으로 넘깁니다.
   // 이미 지난 채로 들어온 경우엔 즉시, 아직 남았다면 남은 시간만큼 기다린 뒤 이동합니다.
@@ -52,13 +50,12 @@ export default function TemptationInfo() {
     return () => clearTimeout(timer)
   }, [id, deadlineMs, navigate])
 
-  // 삭제 성공 시 리셋 및 이동 처리
+  // 포기하기 성공 시 목록 화면으로 이동합니다.
   useEffect(() => {
-    if (isDeleteSuccess) {
-      resetDeleteStatus()
-      navigate('/temptation')
-    }
-  }, [isDeleteSuccess, resetDeleteStatus, navigate])
+    if (!isDeleteSuccess) return
+    resetDeleteStatus()
+    navigate('/temptation')
+  }, [isDeleteSuccess, navigate, resetDeleteStatus])
 
   const handleBack = () => {
     navigate('/temptation')
@@ -69,23 +66,39 @@ export default function TemptationInfo() {
   }
 
   const handleGiveUpOpen = () => {
-    setErrorMessage('')
+    resetDeleteStatus()
     setIsGiveUpOpen(true)
   }
 
   const handleGiveUpCancel = () => {
     if (isDeleting) return
     setIsGiveUpOpen(false)
-    setErrorMessage('')
+    resetDeleteStatus()
   }
 
-  const handleGiveUpConfirm = async () => {
-    if (!product) return
+  const handleGiveUpConfirm = () => {
+    if (!product || isDeleting) return
     handleDelete(product.id)
   }
 
-  const handleDeleteFailConfirm = () => {
+  const handleRetryableDeleteErrorConfirm = () => {
     resetDeleteStatus()
+  }
+
+  const handleDeleteNotFoundConfirm = () => {
+    resetDeleteStatus()
+    setIsGiveUpOpen(false)
+    navigate('/temptation')
+  }
+
+  const handleDeleteForbiddenConfirm = () => {
+    resetDeleteStatus()
+    setIsGiveUpOpen(false)
+  }
+
+  const handleUnauthorizedConfirm = () => {
+    resetDeleteStatus()
+    navigate('/login')
   }
 
   const handleErrorConfirm = () => {
@@ -120,7 +133,7 @@ export default function TemptationInfo() {
     )
   }
 
-  if (isUnauthorized) {
+  if (isDetailUnauthorized || isDeleteUnauthorized) {
     return (
       <ConfirmDialog
         isOpen
@@ -128,20 +141,14 @@ export default function TemptationInfo() {
         description="로그인 후 이용해주세요."
         onlyConfirm
         confirmText="확인"
-        onCancel={() => {
-          resetDeleteStatus()
-          navigate('/login')
-        }}
-        onConfirm={() => {
-          resetDeleteStatus()
-          navigate('/login')
-        }}
+        onCancel={handleUnauthorizedConfirm}
+        onConfirm={handleUnauthorizedConfirm}
       />
     )
   }
 
   if (!product) {
-    // 이동하는 동안 잠시 동안 빈 화면을 렌더링하도록 함
+    // 방금 포기하기가 성공해 목록에서 사라진 직후라면 곧 /temptation으로 이동하니 빈 화면만 보여줍니다.
     if (isDeleteSuccess) return null
     return <p>상품을 찾을 수 없습니다.</p>
   }
@@ -172,19 +179,23 @@ export default function TemptationInfo() {
         cancelText="취소"
         confirmText="포기하기"
         isLoading={isDeleting}
-        errorMessage={errorMessage}
         onCancel={handleGiveUpCancel}
         onConfirm={handleGiveUpConfirm}
       />
 
       <ConfirmDialog
-        isOpen={isDeleteError && deleteErrorKind === null && !isDeleteUnauthorized}
+        isOpen={
+          isDeleteError &&
+          !isDeleteUnauthorized &&
+          deleteErrorKind !== 'NOT_FOUND' &&
+          deleteErrorKind !== 'FORBIDDEN'
+        }
         title="처리하지 못했습니다."
         description="잠시 후 다시 시도해주세요."
         onlyConfirm
         confirmText="확인"
-        onCancel={handleDeleteFailConfirm}
-        onConfirm={handleDeleteFailConfirm}
+        onCancel={handleRetryableDeleteErrorConfirm}
+        onConfirm={handleRetryableDeleteErrorConfirm}
       />
 
       <ConfirmDialog
@@ -193,11 +204,8 @@ export default function TemptationInfo() {
         description="이미 삭제되었거나 존재하지 않는 상품입니다."
         onlyConfirm
         confirmText="확인"
-        onCancel={handleDeleteFailConfirm}
-        onConfirm={() => {
-          resetDeleteStatus()
-          navigate('/temptation')
-        }}
+        onCancel={handleDeleteNotFoundConfirm}
+        onConfirm={handleDeleteNotFoundConfirm}
       />
 
       <ConfirmDialog
@@ -206,8 +214,8 @@ export default function TemptationInfo() {
         description="본인의 위시리스트 항목만 삭제할 수 있습니다."
         onlyConfirm
         confirmText="확인"
-        onCancel={handleDeleteFailConfirm}
-        onConfirm={handleDeleteFailConfirm}
+        onCancel={handleDeleteForbiddenConfirm}
+        onConfirm={handleDeleteForbiddenConfirm}
       />
     </>
   )

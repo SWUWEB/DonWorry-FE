@@ -9,6 +9,8 @@ import {
 } from '@/features/intervention/hooks/useIntervention'
 import type { InterventionAnswer } from '@/features/intervention/api/interventionApi'
 import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import styles from '../styles/RecordInterventionPage.module.css'
 
 export default function RecordInterventionPage() {
@@ -26,14 +28,32 @@ export default function RecordInterventionPage() {
     data,
     isLoading: isLoadingQuestions,
     isError: isQuestionsError,
+    error: questionsError,
     refetch: refetchQuestions,
   } = useInterventionQuestions(draft?.category)
   const riskScoreMutation = useRiskScore()
 
   const [step, setStep] = useState(1)
   const [answers, setAnswers] = useState<InterventionAnswer[]>([])
+  const isUnauthorized =
+    isUnauthorizedError(questionsError) || isUnauthorizedError(riskScoreMutation.error)
 
   if (!draft) return null
+
+  if (isUnauthorized) {
+    const goToLogin = () => navigate('/login', { replace: true })
+    return (
+      <ConfirmDialog
+        isOpen
+        title="로그인이 필요합니다."
+        description="로그인 후 다시 이용해주세요."
+        confirmText="로그인하기"
+        onlyConfirm
+        onCancel={goToLogin}
+        onConfirm={goToLogin}
+      />
+    )
+  }
 
   if (isLoadingQuestions) {
     return <p className={styles.message}>불러오는 중...</p>
@@ -84,11 +104,17 @@ export default function RecordInterventionPage() {
       return
     }
 
-    riskScoreMutation.mutate(nextAnswers, {
-      onSuccess: (risk) => {
-        navigate('/record/intervention/result', { replace: true, state: { draft, risk } })
+    riskScoreMutation.mutate(
+      { price: draft.amount, answers: nextAnswers },
+      {
+        onSuccess: (risk) => {
+          navigate('/record/intervention/result', {
+            replace: true,
+            state: { draft, risk, answers: nextAnswers },
+          })
+        },
       },
-    })
+    )
   }
 
   const handleBack = () => {

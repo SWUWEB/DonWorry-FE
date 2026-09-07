@@ -23,7 +23,7 @@ export default function ChangeEmail() {
       />
 
       <main className={styles.container}>
-        <ChangeEmailForm />
+        <ChangeEmailForm onUnauthorized={() => navigate('/login', { replace: true })} />
       </main>
     </>
   )
