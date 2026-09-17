@@ -30,6 +30,13 @@ describe('userApi budget', () => {
     vi.clearAllMocks()
   })
 
+  it('목표 삭제 endpoint를 호출하고 응답을 반환한다', async () => {
+    const result = { id: '1', savingGoalIsActive: false }
+    vi.mocked(client.delete).mockResolvedValueOnce({ data: { data: result } })
+    await expect(userApi.deleteSavingGoal()).resolves.toEqual(result)
+    expect(client.delete).toHaveBeenCalledWith('/api/v1/users/me/saving-goal')
+  })
+
   it('월별 예산 응답의 금액과 카테고리 코드를 화면 모델로 변환한다', async () => {
     vi.mocked(client.get).mockResolvedValueOnce({
       data: { success: true, message: 'OK', data: monthlyBudgetResult },
