@@ -35,7 +35,7 @@ export default function GoalAmount() {
           isError={isError}
         />
 
-        <GoalSettingCard />
+        <GoalSettingCard onUnauthorized={() => navigate('/login')} />
       </main>
     </>
   )
