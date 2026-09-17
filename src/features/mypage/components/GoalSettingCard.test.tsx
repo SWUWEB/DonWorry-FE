@@ -135,6 +135,87 @@ describe('GoalSettingCard', () => {
     expect(deleteSavingGoal).toHaveBeenCalledTimes(2)
   })
 
+  it.each([
+    { profileError: true, reportError: false },
+    { profileError: false, reportError: true },
+    { profileError: true, reportError: true },
+  ])(
+    '삭제 후 재조회 실패에도 완료 안내와 빈 목표를 유지한다: %j',
+    ({ profileError, reportError }) => {
+      const { rerender } = render(<GoalSettingCard />)
+      fireEvent.click(screen.getByRole('button', { name: '목표 삭제' }))
+      fireEvent.click(screen.getByRole('button', { name: '삭제하기' }))
+
+      // 삭제 훅이 캐시를 비운 뒤 후속 GET만 실패한 상태입니다.
+      const profileQuery = vi.mocked(useMe).getMockImplementation()!()
+      const reportQuery = vi.mocked(useConsumptionReport).getMockImplementation()!()
+      const clearedProfile = { ...profileQuery.data!, savingGoalText: null }
+      const clearedReport = {
+        ...reportQuery.data!,
+        goalAchievement: {
+          ...reportQuery.data!.goalAchievement,
+          status: 'NOT_SET' as const,
+          targetAmount: null,
+          remainingAmount: null,
+          achievementRate: 0,
+        },
+      }
+      vi.mocked(useMe).mockReturnValue({
+        ...profileQuery,
+        data: clearedProfile,
+        isError: profileError,
+      } as ReturnType<typeof useMe>)
+      vi.mocked(useConsumptionReport).mockReturnValue({
+        ...reportQuery,
+        data: clearedReport,
+        isError: reportError,
+      } as ReturnType<typeof useConsumptionReport>)
+      act(() => deleteSavingGoal.mock.calls[0][1].onSuccess())
+      rerender(<GoalSettingCard />)
+
+      expect(screen.getByRole('status')).toHaveTextContent('목표가 삭제되었습니다.')
+      expect(screen.getByRole('alert')).toHaveTextContent('최신 목표 정보를 불러오지 못했습니다.')
+      expect(screen.getByLabelText('목표 이름')).toHaveValue('')
+      expect(screen.getByLabelText('목표 금액')).toHaveValue('')
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: '목표 삭제' })).not.toBeInTheDocument()
+
+      fireEvent.change(screen.getByLabelText('목표 이름'), { target: { value: '새 목표' } })
+      fireEvent.click(screen.getByRole('button', { name: '다시 시도' }))
+      expect(profileQuery.refetch).toHaveBeenCalledOnce()
+      expect(reportQuery.refetch).toHaveBeenCalledOnce()
+      expect(deleteSavingGoal).toHaveBeenCalledOnce()
+
+      vi.mocked(useMe).mockReturnValue({
+        ...profileQuery,
+        data: clearedProfile,
+        isError: false,
+      } as ReturnType<typeof useMe>)
+      vi.mocked(useConsumptionReport).mockReturnValue({
+        ...reportQuery,
+        data: clearedReport,
+        isError: false,
+      } as ReturnType<typeof useConsumptionReport>)
+      rerender(<GoalSettingCard />)
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      expect(screen.getByLabelText('목표 이름')).toHaveValue('새 목표')
+    },
+  )
+
+  it('캐시 없이 첫 조회가 실패하면 기존 오류 화면과 재시도를 표시한다', () => {
+    const profileQuery = vi.mocked(useMe).getMockImplementation()!()
+    vi.mocked(useMe).mockReturnValue({
+      ...profileQuery,
+      data: undefined,
+      isError: true,
+    } as ReturnType<typeof useMe>)
+    render(<GoalSettingCard />)
+    expect(screen.getByRole('alert')).toHaveTextContent('목표 정보를 불러오지 못했습니다.')
+    expect(screen.queryByLabelText('목표 이름')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '다시 시도' }))
+    expect(profileQuery.refetch).toHaveBeenCalledOnce()
+  })
+
   it('삭제 중에는 저장, 편집, 재삭제와 확인창 닫기를 막는다', () => {
     const { rerender } = render(<GoalSettingCard />)
     fireEvent.click(screen.getByRole('button', { name: '목표 삭제' }))

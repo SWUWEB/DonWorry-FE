@@ -32,7 +32,7 @@ export default function GoalAmount() {
           achievedAmount={goal?.savedAmount ?? 0}
           achievementRate={goal?.achievementRate ?? 0}
           isLoading={isLoading}
-          isError={isError}
+          isError={isError && !report}
         />
 
         <GoalSettingCard onUnauthorized={() => navigate('/login')} />

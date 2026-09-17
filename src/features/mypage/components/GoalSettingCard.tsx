@@ -59,7 +59,7 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
     )
   }
 
-  if (isProfileError || isReportError || !profile || !report) {
+  if (!profile || !report) {
     return (
       <section className={styles.card}>
         <h2 className={styles.title}>목표 설정</h2>
@@ -140,6 +140,21 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
   return (
     <section className={styles.card}>
       <h2 className={styles.title}>목표 설정</h2>
+
+      {(isProfileError || isReportError) && (
+        <div>
+          <p className={styles.formError} role="alert">
+            최신 목표 정보를 불러오지 못했습니다. 현재 표시된 정보를 유지합니다.
+          </p>
+          <Button
+            variant="outline"
+            disabled={isBusy}
+            onClick={() => void Promise.all([refetchProfile(), refetchReport()])}
+          >
+            다시 시도
+          </Button>
+        </div>
+      )}
 
       <div className={styles.inputGroup}>
         <InputField
