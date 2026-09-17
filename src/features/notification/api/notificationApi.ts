@@ -50,6 +50,15 @@ const TYPE_MAP = {
   GENERAL: '일반',
 } as const
 
+export const NOTIFICATION_TYPE_TO_SETTING_KEY = {
+  TEMPTATION: 'retrial',
+  GOAL: 'goal',
+  GENERAL: 'general',
+} as const satisfies Record<
+  NotificationResult['notificationType'],
+  keyof Omit<NotificationSettingsResponse, 'all'>
+>
+
 const ICON_MAP = {
   TEMPTATION: 'lightning',
   GOAL: 'check',
@@ -89,11 +98,13 @@ function adapt(n: NotificationResult): NotificationItem {
   return {
     id: n.id,
     type: TYPE_MAP[n.notificationType],
+    notificationType: n.notificationType,
     iconVariant: ICON_MAP[n.notificationType],
     title: n.title || fallback.title,
     description: n.body || fallback.description,
     time: formatTime(n.createdAt),
     isRead: n.isRead,
+    wishlistItemId: n.wishlistItemId,
   }
 }
 

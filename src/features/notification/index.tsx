@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IoChevronDown } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
@@ -8,7 +9,11 @@ import {
   useNotifications,
   useReadNotification,
   useDeleteNotification,
+  useReadAllNotifications,
+  useNotificationSettings,
+  useUpdateSubSettings,
 } from './hooks/useNotifications'
+import { NOTIFICATION_TYPE_TO_SETTING_KEY } from './api/notificationApi'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 
@@ -44,6 +49,7 @@ export default function Notification({
   const [readIds, setReadIds] = useState<Set<string>>(new Set())
   const sortRef = useRef<HTMLDivElement>(null)
 
+  const navigate = useNavigate()
   const {
     data: serverNotifications = [],
     isLoading,
@@ -53,6 +59,9 @@ export default function Notification({
   } = useNotifications(FILTER_MAP[filter], SORT_MAP[sort])
   const { mutate: readOne, error: readError } = useReadNotification()
   const { mutate: deleteNotification, error: deleteError } = useDeleteNotification()
+  const { mutate: readAll, isPending: isReadingAll } = useReadAllNotifications()
+  const { data: notificationSettings } = useNotificationSettings()
+  const { mutate: updateSubSettings } = useUpdateSubSettings()
 
   const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
@@ -92,10 +101,38 @@ export default function Notification({
     })
   }
 
+  const handleReadAll = () => {
+    if (isReadingAll || unreadCount === 0) return
+    setReadIds((prev) => new Set([...prev, ...notifications.map((n) => n.id)]))
+    readAll()
+  }
+
+  const handleNavigateToWishlist = (wishlistItemId: string) => {
+    navigate(`/temptation/${wishlistItemId}`)
+  }
+
+  const handleMute = (notificationType: NotificationItem['notificationType']) => {
+    if (!notificationSettings) return
+    const { general, goal, retrial } = notificationSettings
+    updateSubSettings({
+      general,
+      goal,
+      retrial,
+      [NOTIFICATION_TYPE_TO_SETTING_KEY[notificationType]]: false,
+    })
+  }
+
   return (
     <>
       <main className={styles.main}>
         <div className={styles.sortRow}>
+          <button
+            className={styles.readAllBtn}
+            onClick={handleReadAll}
+            disabled={isReadingAll || unreadCount === 0}
+          >
+            전체 읽음
+          </button>
           <div className={styles.sortWrap} ref={sortRef}>
             <button className={styles.sortBtn} onClick={() => setSortOpen((prev) => !prev)}>
               {sort}
@@ -133,7 +170,13 @@ export default function Notification({
             !isError &&
             notifications.map((item) => (
               <li key={item.id}>
-                <NotificationCard {...item} onRead={handleRead} onDelete={deleteNotification} />
+                <NotificationCard
+                  {...item}
+                  onRead={handleRead}
+                  onDelete={deleteNotification}
+                  onNavigateToWishlist={handleNavigateToWishlist}
+                  onMute={handleMute}
+                />
               </li>
             ))}
           {!isLoading && !isError && notifications.length === 0 && (
