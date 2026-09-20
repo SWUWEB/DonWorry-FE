@@ -23,6 +23,11 @@ interface FormProps {
   onFetchProductData?: (link: string) => Promise<{ name: string; price: number }>
 }
 
+async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
+  console.log('fetchProductData called with link:', link)
+  throw new Error('Not implemented')
+}
+
 const DEFAULT_FORM_DATA: FormData = {
   link: '',
   price: 0,
@@ -42,7 +47,7 @@ export function ProductForm({
   initialData,
   onSubmit,
   onDirtyChange,
-  onFetchProductData,
+  onFetchProductData = fetchProductData,
 }: FormProps) {
   const mergedInitial: FormData = {
     link: initialData?.link ?? DEFAULT_FORM_DATA.link,
@@ -83,7 +88,6 @@ export function ProductForm({
   }
 
   const handleLinkFetch = async () => {
-    if (!onFetchProductData) return
     const trimmedLink = data.link?.trim() ?? ''
     if (!trimmedLink || !isValidUrl(trimmedLink)) {
       setUrlFormatError(true)
@@ -93,7 +97,7 @@ export function ProductForm({
     setLinkStatus({ loading: true, error: false, success: false })
 
     try {
-      const result = await fetchProductData(trimmedLink)
+      const result = await onFetchProductData(trimmedLink)
       if (requestLinkRef.current !== trimmedLink) return
       const hasExistingInput = data.name.trim() !== '' || data.price > 0
       if (hasExistingInput) {
@@ -297,9 +301,4 @@ export function ProductForm({
       />
     </>
   )
-}
-
-async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
-  console.log('fetchProductData called with link:', link)
-  throw new Error('Not implemented')
 }
