@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { BottomAdd } from '../components/temptationAdd/ProductAdd'
 import { ProductForm } from '@/components/layout/ProductForm'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
+import { productUrlApi } from '../api/productUrlApi'
+import { getProductUrlErrorMessage } from '../api/productUrlError'
 
 export default function TemptationMain() {
   const {
@@ -25,6 +27,14 @@ export default function TemptationMain() {
   const handleWishAdd = (data: WishFormData) => {
     handleAdd(data)
     setIsAddOpen(false)
+  }
+  const handleFetchProductData = async (link: string) => {
+    try {
+      const response = await productUrlApi.parse(link)
+      return { name: response.productName, price: response.price }
+    } catch (err) {
+      throw new Error(getProductUrlErrorMessage(err), { cause: err })
+    }
   }
 
   return (
@@ -57,7 +67,11 @@ export default function TemptationMain() {
 
       <BottomAdd isOpen={isAddOpen} onClose={() => setIsAddOpen(false)}>
         <div className={styles.bottomSheet}>
-          <ProductForm formId="add-wishlist-form" onSubmit={handleWishAdd} />
+          <ProductForm
+            onFetchProductData={handleFetchProductData}
+            formId="add-wishlist-form"
+            onSubmit={handleWishAdd}
+          />
           <button type="submit" form="add-wishlist-form" className={styles.sheetBtn}>
             위시리스트에 저장하기
           </button>
