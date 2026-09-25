@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { userApi } from '../api/userApi'
+import type { ConsumptionReportDetail } from '../api/consumptionReportApi'
+import { getCurrentYearMonth } from '@/shared/utils/date'
 import type {
   ChangePasswordRequest,
   SetBudgetRequest,
   SetSavingGoalRequest,
   UpdateProfileRequest,
+  UserProfile,
 } from '../api/userApi'
 
 const QUERY_KEYS = {
@@ -54,9 +57,34 @@ export function useDeleteSavingGoal() {
   return useMutation({
     mutationFn: userApi.deleteSavingGoal,
     onSuccess: async () => {
+      // 진행 중인 조회가 삭제 이전의 목표를 다시 덮어쓰지 않도록 취소합니다.
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: QUERY_KEYS.me }),
+        queryClient.cancelQueries({ queryKey: ['consumption-report'] }),
+      ])
+      queryClient.setQueryData<UserProfile>(QUERY_KEYS.me, (profile) =>
+        profile ? { ...profile, savingGoalText: null } : profile,
+      )
+      queryClient.setQueryData<ConsumptionReportDetail>(
+        ['consumption-report', 'detail', getCurrentYearMonth()],
+        (report) =>
+          report
+            ? {
+                ...report,
+                goalAchievement: {
+                  ...report.goalAchievement,
+                  status: 'NOT_SET',
+                  targetAmount: null,
+                  remainingAmount: null,
+                  achievementRate: 0,
+                },
+              }
+            : report,
+      )
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
         queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
+        queryClient.invalidateQueries({ queryKey: ['home'] }),
       ])
     },
   })

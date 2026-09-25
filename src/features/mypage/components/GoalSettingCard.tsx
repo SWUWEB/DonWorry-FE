@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
-import { useMe, useSetSavingGoal } from '../hooks/useUser'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
+import { useDeleteSavingGoal, useMe, useSetSavingGoal } from '../hooks/useUser'
 import { useConsumptionReport } from '../hooks/useConsumptionReport'
 import styles from './GoalSettingCard.module.css'
 
-export default function GoalSettingCard() {
+interface GoalSettingCardProps {
+  onUnauthorized?: () => void
+}
+
+export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSettingCardProps) {
   const {
     data: profile,
     isLoading: isProfileLoading,
@@ -20,12 +26,18 @@ export default function GoalSettingCard() {
     refetch: refetchReport,
   } = useConsumptionReport()
   const { mutate: setSavingGoal, isPending } = useSetSavingGoal()
+  const { mutate: deleteSavingGoal, isPending: isDeleting } = useDeleteSavingGoal()
 
   const [goalText, setGoalText] = useState('')
   const [goalAmount, setGoalAmount] = useState('')
   const [isActive, setIsActive] = useState(true)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+  const [deleted, setDeleted] = useState(false)
+  const [isUnauthorized, setIsUnauthorized] = useState(false)
+  const isBusy = isPending || isDeleting
 
   useEffect(() => {
     // 서버에 저장된 목표 이름과 현재 월의 목표 금액을 편집 상태로 반영합니다.
@@ -47,7 +59,7 @@ export default function GoalSettingCard() {
     )
   }
 
-  if (isProfileError || isReportError || !profile || !report) {
+  if (!profile || !report) {
     return (
       <section className={styles.card}>
         <h2 className={styles.title}>목표 설정</h2>
@@ -65,6 +77,7 @@ export default function GoalSettingCard() {
   }
 
   const handleSave = () => {
+    if (isBusy) return
     if (!goalText.trim()) {
       setError('목표 이름을 입력해주세요.')
       return
@@ -78,6 +91,7 @@ export default function GoalSettingCard() {
 
     setError('')
     setSaved(false)
+    setDeleted(false)
 
     setSavingGoal(
       { savingGoalText: goalText, targetSavingAmount: amount, savingGoalIsActive: isActive },
@@ -99,18 +113,59 @@ export default function GoalSettingCard() {
     )
   }
 
+  const handleDelete = () => {
+    if (isBusy) return
+    setDeleteError('')
+    deleteSavingGoal(undefined, {
+      onSuccess: () => {
+        setIsDeleteOpen(false)
+        setGoalText('')
+        setGoalAmount('')
+        setIsActive(true)
+        setError('')
+        setSaved(false)
+        setDeleted(true)
+      },
+      onError: (err) => {
+        if (isUnauthorizedError(err)) {
+          setIsDeleteOpen(false)
+          setIsUnauthorized(true)
+          return
+        }
+        setDeleteError('목표를 삭제하지 못했습니다. 잠시 후 다시 시도해주세요.')
+      },
+    })
+  }
+
   return (
     <section className={styles.card}>
       <h2 className={styles.title}>목표 설정</h2>
+
+      {(isProfileError || isReportError) && (
+        <div>
+          <p className={styles.formError} role="alert">
+            최신 목표 정보를 불러오지 못했습니다. 현재 표시된 정보를 유지합니다.
+          </p>
+          <Button
+            variant="outline"
+            disabled={isBusy}
+            onClick={() => void Promise.all([refetchProfile(), refetchReport()])}
+          >
+            다시 시도
+          </Button>
+        </div>
+      )}
 
       <div className={styles.inputGroup}>
         <InputField
           label="목표 이름"
           placeholder="예: 여행 자금, 목돈 마련"
           value={goalText}
+          readOnly={isBusy}
           onChange={(e) => {
             setGoalText(e.target.value)
             setSaved(false)
+            setDeleted(false)
           }}
         />
       </div>
@@ -121,9 +176,11 @@ export default function GoalSettingCard() {
           placeholder="금액을 입력하세요"
           inputMode="numeric"
           value={goalAmount}
+          readOnly={isBusy}
           onChange={(e) => {
             setGoalAmount(e.target.value.replace(/[^0-9]/g, ''))
             setSaved(false)
+            setDeleted(false)
           }}
           rightElement={<span className={styles.unit}>원</span>}
         />
@@ -140,6 +197,7 @@ export default function GoalSettingCard() {
           type="button"
           className={`${styles.toggle} ${isActive ? styles.toggleOn : styles.toggleOff}`}
           aria-label={`목표 달성 표시 ${isActive ? '끄기' : '켜기'}`}
+          disabled={isBusy}
           onClick={() => {
             setIsActive((prev) => !prev)
             setSaved(false)
@@ -155,10 +213,48 @@ export default function GoalSettingCard() {
         </p>
       )}
       {saved && <p className={styles.formSuccess}>저장되었습니다.</p>}
+      {deleted && (
+        <p className={styles.formSuccess} role="status">
+          목표가 삭제되었습니다. 새 목표를 설정해보세요.
+        </p>
+      )}
 
-      <Button onClick={handleSave} disabled={isPending}>
+      <Button onClick={handleSave} disabled={isBusy}>
         {isPending ? '저장 중...' : '저장하기'}
       </Button>
+      {profile.savingGoalText && (
+        <Button
+          variant="outline"
+          disabled={isBusy}
+          onClick={() => {
+            setDeleteError('')
+            setIsDeleteOpen(true)
+          }}
+        >
+          목표 삭제
+        </Button>
+      )}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        title="목표를 삭제할까요?"
+        description="현재 목표가 해제됩니다. 삭제 후 새 목표를 설정할 수 있어요."
+        confirmText={isDeleting ? '삭제 중...' : '삭제하기'}
+        isLoading={isDeleting}
+        errorMessage={deleteError}
+        onCancel={() => {
+          if (!isDeleting) setIsDeleteOpen(false)
+        }}
+        onConfirm={handleDelete}
+      />
+      <ConfirmDialog
+        isOpen={isUnauthorized}
+        title="로그인이 필요합니다."
+        description="로그인 후 다시 이용해주세요."
+        confirmText="로그인하기"
+        onlyConfirm
+        onCancel={onUnauthorized}
+        onConfirm={onUnauthorized}
+      />
     </section>
   )
 }
