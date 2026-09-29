@@ -20,6 +20,12 @@ interface FormProps {
   initialData?: Partial<FormData>
   onSubmit: (data: FormData, meta: { timeChanged: boolean }) => void
   onDirtyChange?: (isDirty: boolean) => void
+  onFetchProductData?: (link: string) => Promise<{ name: string; price: number }>
+}
+
+async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
+  console.log('fetchProductData called with link:', link)
+  throw new Error('Not implemented')
 }
 
 const DEFAULT_FORM_DATA: FormData = {
@@ -41,6 +47,7 @@ export function ProductForm({
   initialData,
   onSubmit,
   onDirtyChange,
+  onFetchProductData = fetchProductData,
 }: FormProps) {
   const mergedInitial: FormData = {
     link: initialData?.link ?? DEFAULT_FORM_DATA.link,
@@ -53,6 +60,7 @@ export function ProductForm({
 
   const initialSnapshotRef = useRef<FormData>(mergedInitial)
   const [data, setData] = useState<FormData>(mergedInitial)
+  const requestLinkRef = useRef<string>('')
 
   const [linkStatus, setLinkStatus] = useState<{
     loading: boolean
@@ -85,10 +93,12 @@ export function ProductForm({
       setUrlFormatError(true)
       return
     }
+    requestLinkRef.current = trimmedLink
     setLinkStatus({ loading: true, error: false, success: false })
 
     try {
-      const result = await fetchProductData(trimmedLink)
+      const result = await onFetchProductData(trimmedLink)
+      if (requestLinkRef.current !== trimmedLink) return
       const hasExistingInput = data.name.trim() !== '' || data.price > 0
       if (hasExistingInput) {
         setPendingFetchResult(result)
@@ -98,6 +108,7 @@ export function ProductForm({
         applyFetchedResult(result)
       }
     } catch {
+      if (requestLinkRef.current !== trimmedLink) return
       setLinkStatus({ loading: false, error: true, success: false })
     }
   }
@@ -290,9 +301,4 @@ export function ProductForm({
       />
     </>
   )
-}
-
-async function fetchProductData(link: string): Promise<{ name: string; price: number }> {
-  console.log('fetchProductData called with link:', link)
-  throw new Error('Not implemented')
 }

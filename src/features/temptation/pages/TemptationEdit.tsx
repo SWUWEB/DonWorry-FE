@@ -8,6 +8,8 @@ import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { useWishlistContext } from '../hooks/WishlistContext'
 import styles from './TemptationEdit.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { productUrlApi } from '../api/productUrlApi'
+import { getProductUrlErrorMessage } from '../api/productUrlError'
 
 export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>()
@@ -57,6 +59,15 @@ export default function TemptationEdit() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [isDirty])
 
+  const handleFetchProductData = async (link: string) => {
+    try {
+      const response = await productUrlApi.parse(link)
+      return { name: response.productName, price: response.price }
+    } catch (err) {
+      throw new Error(getProductUrlErrorMessage(err), { cause: err })
+    }
+  }
+
   const handleBack = () => {
     navigate(`/temptation/${id}`)
   }
@@ -99,6 +110,7 @@ export default function TemptationEdit() {
       />
       <div className={styles.wrapper}>
         <ProductForm
+          onFetchProductData={handleFetchProductData}
           formId="edit-wishlist-form"
           initialData={{
             link: product.link ?? '',
