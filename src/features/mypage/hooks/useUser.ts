@@ -47,6 +47,7 @@ export function useSetSavingGoal() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
         queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
+        queryClient.invalidateQueries({ queryKey: ['home'] }),
       ])
     },
   })
@@ -111,6 +112,7 @@ export function useSetBudget() {
     onSuccess: (budget) => {
       queryClient.setQueryData(QUERY_KEYS.budget(budget.yearMonth), budget)
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
     },
   })
 }
