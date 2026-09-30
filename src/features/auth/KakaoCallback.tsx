@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { kakaoLogin } from '@/api/auth'
 import type { KakaoLinkRequiredResponse } from '@/api/auth'
+import { onboardingApi } from '@/features/onboarding/api/onboardingApi'
 import Button from '@/shared/components/Button'
 import ErrorMessage from './components/ErrorMessage'
 import LoginHeader from './components/LoginHeader'
@@ -48,9 +49,22 @@ export default function KakaoCallback() {
     // 맞물리면 응답이 와도 onSuccess/onError가 호출되지 않는 경우가 있어(재현 확인됨),
     // 마운트 시 1회만 실행되는 이 흐름은 API 함수를 직접 호출해 처리합니다.
     kakaoLogin({ authorizationCode: code })
-      .then((response) => {
+      .then(async (response) => {
         saveAuthSession(response.data)
-        navigate('/', { replace: true })
+
+        // 카카오 로그인 응답에는 신규 가입 여부가 내려오지 않아, 온보딩 저장 여부로
+        // 신규 사용자(회원가입 흐름과 동일하게 온보딩 필요)인지 판단합니다.
+        try {
+          const onboarding = await onboardingApi.get()
+          const hasOnboarded = Boolean(
+            onboarding.interestTags?.length ||
+            onboarding.savingGoalText ||
+            onboarding.targetSavingAmount,
+          )
+          navigate(hasOnboarded ? '/' : '/onboarding', { replace: true })
+        } catch {
+          navigate('/', { replace: true })
+        }
       })
       .catch((error: unknown) => {
         // 409는 AUTH4093(계정 연결 필요) 외에 AUTH4094(이미 다른 계정에 연결된 카카오 계정)도
