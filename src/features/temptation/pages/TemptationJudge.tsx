@@ -8,6 +8,7 @@ import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
 import type { Product } from '../types'
+import { WishlistJudgeSkeleton } from '../components/skeleton/WishlistSkeleton'
 import styles from './TemptationJudge.module.css'
 
 export default function TemptationJudge() {
@@ -169,7 +170,20 @@ export default function TemptationJudge() {
   if (!product) {
     // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
     if (pendingDecision) return null
-    if (isLoading) return <p>불러오는 중...</p>
+    if (isLoading) {
+      return (
+        <WishlistJudgeSkeleton
+          headerText={
+            <div className={styles.headerText}>
+              <h2 className={styles.headerTitle}>고민 시간 종료</h2>
+              <p className={styles.headerDescription}>
+                이제 결정할 시간이에요. 신중하게 선택해보세요.
+              </p>
+            </div>
+          }
+        />
+      )
+    }
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

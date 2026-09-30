@@ -9,6 +9,7 @@ import styles from './TemptationInfo.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useEffect, useState } from 'react'
 import { useWishlistContext } from '../hooks/WishlistContext'
+import { WishlistDetailSkeleton } from '../components/skeleton/WishlistSkeleton'
 import { useWishlistDetail } from '../hooks/useWishlistDetail'
 
 export default function TemptationInfo() {
@@ -16,6 +17,7 @@ export default function TemptationInfo() {
   const navigate = useNavigate()
   const {
     filteredProducts,
+    isLoading,
     handleDelete,
     isDeleting,
     isDeleteSuccess,
@@ -150,6 +152,7 @@ export default function TemptationInfo() {
   if (!product) {
     // 방금 포기하기가 성공해 목록에서 사라진 직후라면 곧 /temptation으로 이동하니 빈 화면만 보여줍니다.
     if (isDeleteSuccess) return null
+    if (isLoading) return <WishlistDetailSkeleton backTo="/temptation" />
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

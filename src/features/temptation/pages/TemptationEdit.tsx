@@ -6,6 +6,7 @@ import { InfoHeader } from '../components/temptationInfo/InfoHeader'
 import { ProductForm } from '@/components/layout/ProductForm'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { useWishlistContext } from '../hooks/WishlistContext'
+import { WishlistDetailSkeleton } from '../components/skeleton/WishlistSkeleton'
 import styles from './TemptationEdit.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { productUrlApi } from '../api/productUrlApi'
@@ -16,6 +17,7 @@ export default function TemptationEdit() {
   const navigate = useNavigate()
   const {
     filteredProducts,
+    isLoading,
     handleEdit,
     isEditing,
     isEditSuccess,
@@ -98,6 +100,7 @@ export default function TemptationEdit() {
   }
 
   if (!product) {
+    if (isLoading) return <WishlistDetailSkeleton backTo={`/temptation/${id}`} variant="edit" />
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

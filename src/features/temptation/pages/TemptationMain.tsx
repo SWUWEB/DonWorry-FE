@@ -10,6 +10,7 @@ import { ProductForm } from '@/components/layout/ProductForm'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { productUrlApi } from '../api/productUrlApi'
 import { getProductUrlErrorMessage } from '../api/productUrlError'
+import { WishlistListSkeleton } from '../components/skeleton/WishlistSkeleton'
 
 export default function TemptationMain() {
   const {
@@ -21,6 +22,7 @@ export default function TemptationMain() {
     categoriesToRender,
     handleDelete,
     handleAdd,
+    isLoading,
   } = useWishlistContext()
 
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -41,25 +43,31 @@ export default function TemptationMain() {
     <div className={styles.temptationMain}>
       <CategoryFilterTabs selected={filter} onSelect={setFilter} />
 
-      <div className={styles.topLine}>
-        <p className={styles.countText}>
-          참고 있는 유혹{' '}
-          <strong className={styles.countHighlight}>{filteredProducts.length}</strong>
-        </p>
-        <div className={styles.sortContainer}>
-          <span className={styles.sortLabel}>정렬 기준</span>
-          <SortTabs selected={sort} onSelect={setSort} />
-        </div>
-      </div>
+      {isLoading ? (
+        <WishlistListSkeleton />
+      ) : (
+        <>
+          <div className={styles.topLine}>
+            <p className={styles.countText}>
+              참고 있는 유혹{' '}
+              <strong className={styles.countHighlight}>{filteredProducts.length}</strong>
+            </p>
+            <div className={styles.sortContainer}>
+              <span className={styles.sortLabel}>정렬 기준</span>
+              <SortTabs selected={sort} onSelect={setSort} />
+            </div>
+          </div>
 
-      {categoriesToRender.map((category) => (
-        <CategoryProductBox
-          key={category}
-          category={category}
-          products={filteredProducts.filter((p) => p.category === category)}
-          onDelete={handleDelete}
-        />
-      ))}
+          {categoriesToRender.map((category) => (
+            <CategoryProductBox
+              key={category}
+              category={category}
+              products={filteredProducts.filter((p) => p.category === category)}
+              onDelete={handleDelete}
+            />
+          ))}
+        </>
+      )}
 
       <button className={styles.addBtn} onClick={() => setIsAddOpen(true)}>
         <BiPlus size={45} />
