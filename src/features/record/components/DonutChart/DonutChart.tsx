@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react'
 import { Pie, PieChart } from 'recharts'
 import styles from './DonutChart.module.css'
 
+const EMPTY_FILL = 'var(--color-gray-100, #dddddd)'
+
 interface DonutSegment {
   percent: number
   fill: string
@@ -25,11 +27,14 @@ export default function DonutChart({
 
   const centerFillPercent = ((innerRadius * 2) / size) * 100
 
+  const total = segments.reduce((sum, segment) => sum + segment.percent, 0)
+  const chartData = total > 0 ? segments : [{ percent: 1, fill: EMPTY_FILL }]
+
   return (
     <div className={styles.wrapper} style={{ '--donut-size': `${size}px` } as CSSProperties}>
       <PieChart width={size} height={size}>
         <Pie
-          data={segments}
+          data={chartData}
           dataKey="percent"
           cx="50%"
           cy="50%"
