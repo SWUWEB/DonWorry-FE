@@ -61,7 +61,7 @@ export default function Notification({
   const { mutate: deleteNotification, error: deleteError } = useDeleteNotification()
   const { mutate: readAll, isPending: isReadingAll } = useReadAllNotifications()
   const { data: notificationSettings } = useNotificationSettings()
-  const { mutate: updateSubSettings } = useUpdateSubSettings()
+  const { mutate: updateSubSettings, isPending: isUpdatingSettings } = useUpdateSubSettings()
 
   const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
@@ -103,8 +103,17 @@ export default function Notification({
 
   const handleReadAll = () => {
     if (isReadingAll || unreadCount === 0) return
-    setReadIds((prev) => new Set([...prev, ...notifications.map((n) => n.id)]))
-    readAll()
+    const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id)
+    setReadIds((prev) => new Set([...prev, ...unreadIds]))
+    // 실패하면 서버는 읽지 않음인데 화면만 읽음으로 남으므로, 이 요청이 추가한 ID만 되돌립니다.
+    readAll(undefined, {
+      onError: () =>
+        setReadIds((prev) => {
+          const next = new Set(prev)
+          unreadIds.forEach((id) => next.delete(id))
+          return next
+        }),
+    })
   }
 
   const handleNavigateToWishlist = (wishlistItemId: string) => {
@@ -112,7 +121,9 @@ export default function Notification({
   }
 
   const handleMute = (notificationType: NotificationItem['notificationType']) => {
-    if (!notificationSettings) return
+    // 캐시된 설정 전체를 PATCH하는 구조라, 진행 중인 요청이 있으면 그 응답이
+    // 최신 상태를 반영하기 전까지 다음 요청을 막아 서버 측 동시 수정 충돌을 피합니다.
+    if (!notificationSettings || isUpdatingSettings) return
     const { general, goal, retrial } = notificationSettings
     updateSubSettings({
       general,

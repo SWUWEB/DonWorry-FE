@@ -102,7 +102,13 @@ export default function NotificationCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') handleCardClick()
+        // 더보기 버튼 등 카드 내부 요소에서 버블링된 키 입력은 무시하고,
+        // 카드 자신에 포커스가 있을 때만 활성화합니다.
+        if (e.target !== e.currentTarget) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleCardClick()
+        }
       }}
     >
       <div className={styles.iconWrap} style={{ background: bg, border: `1px solid ${border}` }}>
