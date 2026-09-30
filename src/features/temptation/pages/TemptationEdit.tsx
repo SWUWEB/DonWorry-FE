@@ -18,6 +18,7 @@ export default function TemptationEdit() {
   const {
     products,
     isLoading,
+    isFetching,
     handleEdit,
     isEditing,
     isEditSuccess,
@@ -100,7 +101,9 @@ export default function TemptationEdit() {
   }
 
   if (!product) {
-    if (isLoading) return <WishlistDetailSkeleton backTo={`/temptation/${id}`} variant="edit" />
+    if (isLoading || isFetching) {
+      return <WishlistDetailSkeleton backTo={`/temptation/${id}`} variant="edit" />
+    }
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

@@ -17,6 +17,7 @@ export default function TemptationJudge() {
   const {
     products,
     isLoading,
+    isFetching,
     isUnauthorized,
     handleExtend,
     isExtending,
@@ -170,7 +171,7 @@ export default function TemptationJudge() {
   if (!product) {
     // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
     if (pendingDecision) return null
-    if (isLoading) {
+    if (isLoading || isFetching) {
       return (
         <WishlistJudgeSkeleton
           headerText={
