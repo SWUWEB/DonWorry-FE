@@ -21,8 +21,8 @@
 .inputWithButton {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 20px;
 }
 
 .row {
@@ -75,5 +75,8 @@
   cursor: pointer;
 }
 .formField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   margin-bottom: 20px;
 }
