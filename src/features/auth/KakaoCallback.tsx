@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { isAxiosError } from 'axios'
 import { kakaoLogin } from '@/api/auth'
 import type { KakaoLinkRequiredResponse } from '@/api/auth'
+import Header from '@/components/layout/Header'
+import HomeSkeleton from '@/features/home/components/HomeSkeleton'
 import Button from '@/shared/components/Button'
 import ErrorMessage from './components/ErrorMessage'
 import LoginHeader from './components/LoginHeader'
@@ -75,24 +77,31 @@ export default function KakaoCallback() {
       })
   }, [searchParams, navigate])
 
+  if (!errorMessage) {
+    // 로그인에 성공하면 곧바로 홈으로 이동하므로, 처리 중에는 홈 화면의 뼈대를 먼저 보여줍니다.
+    // 아직 로그인 전이라 헤더 버튼 등이 눌리지 않도록 inert로 막습니다.
+    return (
+      <div role="status" aria-label="카카오 로그인 처리 중" className={styles.kakaoPending}>
+        <div inert className={styles.kakaoPending}>
+          <Header />
+          <HomeSkeleton />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <main className={styles.container}>
       <div className={styles.authWrapper}>
         <LoginHeader
           className={styles.topSection}
           title="카카오 로그인"
-          description={errorMessage ? '로그인에 실패했어요.' : '로그인 처리 중이에요...'}
+          description="로그인에 실패했어요."
         />
 
         <section className={styles.card}>
-          {errorMessage && (
-            <>
-              <ErrorMessage message={errorMessage} />
-              <Button onClick={() => navigate('/login', { replace: true })}>
-                로그인으로 돌아가기
-              </Button>
-            </>
-          )}
+          <ErrorMessage message={errorMessage} />
+          <Button onClick={() => navigate('/login', { replace: true })}>로그인으로 돌아가기</Button>
         </section>
       </div>
     </main>
