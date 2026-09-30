@@ -5,6 +5,7 @@ import InputField from '@/shared/components/InputField'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
 import { useDeleteSavingGoal, useSavingGoal, useSetSavingGoal } from '../hooks/useUser'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './GoalSettingCard.module.css'
 
 interface GoalSettingCardProps {
@@ -50,10 +51,17 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
 
   if (isLoading) {
     return (
-      <section className={styles.card}>
+      <SkeletonGroup label="목표 정보 불러오는 중" className={styles.card}>
         <h2 className={styles.title}>목표 설정</h2>
-        <p className={styles.status}>목표 정보를 불러오는 중...</p>
-      </section>
+        {[0, 1].map((i) => (
+          <div key={i} className={styles.inputGroup}>
+            <Skeleton width={70} height={14} />
+            <Skeleton height={48} radius={12} />
+          </div>
+        ))}
+        <Skeleton height={44} radius={12} />
+        <Skeleton height={52} radius={12} />
+      </SkeletonGroup>
     )
   }
 

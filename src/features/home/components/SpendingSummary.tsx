@@ -80,9 +80,9 @@ export default function SpendingSummary({
       <div className={styles.card}>
         <p className={styles.label}>이번 달 지출</p>
         <div className={styles.amountRow}>
-          {spendingTrend === 'up' && <UpArrowIcon color="#EB0000" />}
-          {spendingTrend === 'down' && <DownArrowIcon color="#2946D8" />}
-          <p className={styles.amountRed}>{formatKRW(monthlySpending)}</p>
+          {spendingTrend === 'up' && <UpArrowIcon color="currentColor" />}
+          {spendingTrend === 'down' && <DownArrowIcon color="currentColor" />}
+          <p className={styles.amount}>{formatKRW(monthlySpending)}</p>
         </div>
         {comparisonMessage && <p className={styles.sub}>{comparisonMessage}</p>}
       </div>
@@ -107,9 +107,13 @@ export default function SpendingSummary({
       >
         <p className={styles.label}>남은 예산</p>
         {!isBudgetUnset && (
-          <div className={styles.amountRow}>
-            {isOverBudget ? <UpArrowIcon color="#EB0000" /> : <DownArrowIcon color="#2946D8" />}
-            <p className={isOverBudget ? styles.amountRed : styles.amountBlue}>
+          <div className={`${styles.amountRow} ${isOverBudget ? styles.over : styles.remaining}`}>
+            {isOverBudget ? (
+              <UpArrowIcon color="currentColor" />
+            ) : (
+              <DownArrowIcon color="currentColor" />
+            )}
+            <p className={styles.amount}>
               {isOverBudget ? '-' : ''}
               {budgetAmount}
             </p>

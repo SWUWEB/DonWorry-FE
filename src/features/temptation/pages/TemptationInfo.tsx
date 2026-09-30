@@ -9,13 +9,16 @@ import styles from './TemptationInfo.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { useEffect, useState } from 'react'
 import { useWishlistContext } from '../hooks/WishlistContext'
+import { WishlistDetailSkeleton } from '../components/skeleton/WishlistSkeleton'
 import { useWishlistDetail } from '../hooks/useWishlistDetail'
 
 export default function TemptationInfo() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
+    isLoading,
+    isFetching,
     handleDelete,
     isDeleting,
     isDeleteSuccess,
@@ -25,12 +28,16 @@ export default function TemptationInfo() {
     resetDeleteStatus,
   } = useWishlistContext()
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
   const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess && !isDeleteError
 
-  const { isUnauthorized: isDetailUnauthorized, errorKind } = useWishlistDetail(id)
+  const {
+    isUnauthorized: isDetailUnauthorized,
+    errorKind,
+    isLoading: isDetailLoading,
+  } = useWishlistDetail(id)
 
   // 고민 시간이 끝나면 재판단 화면으로 넘깁니다.
   // 이미 지난 채로 들어온 경우엔 즉시, 아직 남았다면 남은 시간만큼 기다린 뒤 이동합니다.
@@ -150,6 +157,9 @@ export default function TemptationInfo() {
   if (!product) {
     // 방금 포기하기가 성공해 목록에서 사라진 직후라면 곧 /temptation으로 이동하니 빈 화면만 보여줍니다.
     if (isDeleteSuccess) return null
+    if (isLoading || isFetching || isDetailLoading) {
+      return <WishlistDetailSkeleton backTo="/temptation" />
+    }
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

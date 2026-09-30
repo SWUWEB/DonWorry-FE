@@ -22,6 +22,7 @@ export const useWishlist = () => {
   const {
     data: serverProducts = [],
     isLoading,
+    isFetching,
     isError,
     error,
   } = useQuery({
@@ -178,9 +179,11 @@ export const useWishlist = () => {
     setFilter,
     sort,
     setSort,
+    products,
     filteredProducts,
     categoriesToRender,
     isLoading,
+    isFetching,
     isError,
     isAdding: addMutation.isPending,
     isEditing: editMutation.isPending,

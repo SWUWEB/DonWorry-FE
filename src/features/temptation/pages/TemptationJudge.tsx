@@ -8,14 +8,16 @@ import { useWishlistContext } from '../hooks/WishlistContext'
 import { ProductSummaryCard } from '../components/temptationJudge/ProductSummaryCard'
 import { TIME_OPTIONS } from '@/constants/product'
 import type { Product } from '../types'
+import { WishlistJudgeSkeleton } from '../components/skeleton/WishlistSkeleton'
 import styles from './TemptationJudge.module.css'
 
 export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
     isLoading,
+    isFetching,
     isUnauthorized,
     handleExtend,
     isExtending,
@@ -32,7 +34,7 @@ export default function TemptationJudge() {
     resetDecideStatus,
   } = useWishlistContext()
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
   // 살래요/안 살래요 중 어떤 결정을 보냈는지, 그 시점의 상품 정보를 기억해뒀다가 성공하면 그에 맞는
@@ -169,7 +171,20 @@ export default function TemptationJudge() {
   if (!product) {
     // 방금 결정이 성공해 목록에서 사라진 직후라면 곧 다른 화면으로 이동하니 빈 화면만 보여줍니다.
     if (pendingDecision) return null
-    if (isLoading) return <p>불러오는 중...</p>
+    if (isLoading || isFetching) {
+      return (
+        <WishlistJudgeSkeleton
+          headerText={
+            <div className={styles.headerText}>
+              <h2 className={styles.headerTitle}>고민 시간 종료</h2>
+              <p className={styles.headerDescription}>
+                이제 결정할 시간이에요. 신중하게 선택해보세요.
+              </p>
+            </div>
+          }
+        />
+      )
+    }
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

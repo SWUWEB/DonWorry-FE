@@ -5,6 +5,7 @@ import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
 import { useMe, useUpdateMe } from '../hooks/useUser'
 
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './ProfileForm.module.css'
 
 type Gender = 'female' | 'male'
@@ -52,7 +53,21 @@ export default function ProfileForm() {
   }, [profile])
 
   if (isLoading) {
-    return <p className={styles.status}>회원 정보를 불러오는 중...</p>
+    return (
+      <SkeletonGroup label="회원 정보 불러오는 중" className={styles.form}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className={styles.inputGroup}>
+            <Skeleton width={60} height={14} />
+            <Skeleton height={48} radius={12} />
+          </div>
+        ))}
+        <div className={styles.inputGroup}>
+          <Skeleton width={40} height={14} />
+          <Skeleton width={140} height={20} />
+        </div>
+        <Skeleton height={52} radius={12} />
+      </SkeletonGroup>
+    )
   }
 
   if (isError || !profile) {

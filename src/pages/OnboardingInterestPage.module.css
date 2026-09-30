@@ -217,3 +217,10 @@
   cursor: pointer;
   box-shadow: 0px 4px 12px rgba(47, 127, 130, 0.3);
 }
+
+.skeletonTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 40px 0 44px;
+}

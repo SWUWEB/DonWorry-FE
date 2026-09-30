@@ -1,0 +1,76 @@
+/* 실제 화면(TemptationMain, TemptationInfo)의 여백과 맞춥니다. */
+.topLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 20px;
+}
+
+.productBox {
+  margin-bottom: 30px;
+}
+
+.category {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.productContainer {
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: 14px;
+  padding: 0 16px;
+}
+
+.productItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 0;
+}
+
+.productItem + .productItem {
+  border-top: 1.5px solid var(--color-gray-100);
+}
+
+.productBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.infoHeader {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 100px;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 12px;
+}
+
+.buttonRow > * {
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -1,3 +1,4 @@
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './SummaryCard.module.css'
 import legendBg from '@/assets/legend-bg.svg'
 import DonutChart from '@/features/record/components/DonutChart'
@@ -9,9 +10,17 @@ export default function SummaryCard() {
 
   if (isLoading) {
     return (
-      <section className={styles.summary}>
-        <p className={styles.message}>불러오는 중...</p>
-      </section>
+      <SkeletonGroup label="소비 비율 불러오는 중" className={styles.summary}>
+        <div className={styles.card}>
+          <div className={styles.left}>
+            <Skeleton width={120} height={18} />
+            <Skeleton width={140} height={30} />
+            <Skeleton width="100%" height={73} radius={16} className={styles.skeletonLegend} />
+            <Skeleton width={180} height={12} />
+          </div>
+          <Skeleton width={130} height={130} circle />
+        </div>
+      </SkeletonGroup>
     )
   }
 

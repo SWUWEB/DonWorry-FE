@@ -1,3 +1,4 @@
+import coin from '@/assets/images/coin.png'
 import { formatKRW } from '@/shared/utils/currency'
 import type { GoalAchievementStatus } from '../types'
 import styles from './GoalProgress.module.css'
@@ -17,7 +18,6 @@ export default function GoalProgress({
 
   return (
     <div className={styles.card}>
-      <p className={styles.sectionLabel}>목표 달성률</p>
       <div className={styles.cardHeader}>
         <span className={styles.cardTitle}>이번 달 절약 목표</span>
         <span className={styles.badge}>{percent}% 달성</span>
@@ -33,6 +33,7 @@ export default function GoalProgress({
         >
           <div className={styles.progressBar} style={{ width: `${percent}%` }} />
         </div>
+        <img src={coin} alt="" className={styles.progressCoin} style={{ left: `${percent}%` }} />
       </div>
 
       {goalStatus === 'NOT_SET' ? (

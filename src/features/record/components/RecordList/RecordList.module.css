@@ -28,3 +28,24 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.skeletonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.skeletonInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}

@@ -6,6 +6,7 @@ import { InfoHeader } from '../components/temptationInfo/InfoHeader'
 import { ProductForm } from '@/components/layout/ProductForm'
 import type { FormData as WishFormData } from '@/components/layout/ProductForm'
 import { useWishlistContext } from '../hooks/WishlistContext'
+import { WishlistDetailSkeleton } from '../components/skeleton/WishlistSkeleton'
 import styles from './TemptationEdit.module.css'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { productUrlApi } from '../api/productUrlApi'
@@ -15,7 +16,9 @@ export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
+    isLoading,
+    isFetching,
     handleEdit,
     isEditing,
     isEditSuccess,
@@ -40,7 +43,7 @@ export default function TemptationEdit() {
     ? errorMessageMap[editErrorKind]
     : { title: '수정사항을 저장하지 못했습니다.', description: '다시 시도해주세요.' }
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
   const [isDirty, setIsDirty] = useState(false)
 
   const blocker = useBlocker(
@@ -98,6 +101,9 @@ export default function TemptationEdit() {
   }
 
   if (!product) {
+    if (isLoading || isFetching) {
+      return <WishlistDetailSkeleton backTo={`/temptation/${id}`} variant="edit" />
+    }
     return <p>상품을 찾을 수 없습니다.</p>
   }
 

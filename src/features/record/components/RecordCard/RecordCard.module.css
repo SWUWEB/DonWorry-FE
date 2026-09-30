@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 
   width: 100%;
   padding: 8px;
@@ -12,12 +13,14 @@
 
 .left {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: 12px;
+  /* 긴 상품명이 금액 영역을 밀어내지 않고 남은 폭 안에서 줄바꿈되게 합니다. */
+  min-width: 0;
 }
 
-.thumbnail,
-.thumbnailPlaceholder {
+.thumbnail {
   width: 46px;
   height: 46px;
 
@@ -32,10 +35,17 @@
   object-fit: cover;
 }
 
+.fallbackThumbnail {
+  background: var(--color-text-white);
+  border: 1px solid var(--color-main-100);
+  box-sizing: border-box;
+}
+
 .info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .title {
@@ -46,6 +56,8 @@
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .category {
@@ -58,6 +70,8 @@
 
 .amount {
   color: var(--color-text-primary);
+  flex-shrink: 0;
+  white-space: nowrap;
   text-align: right;
   font-size: 16px;
   font-style: normal;

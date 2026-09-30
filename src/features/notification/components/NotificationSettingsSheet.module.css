@@ -52,12 +52,6 @@
   color: var(--color-sub-red, #e5484d);
 }
 
-.statusText {
-  margin: 0;
-  color: var(--color-gray-300);
-  font-size: 13px;
-}
-
 .errorRow {
   display: flex;
   align-items: center;
