@@ -14,6 +14,7 @@ import {
   useUpdateSubSettings,
 } from './hooks/useNotifications'
 import { NOTIFICATION_TYPE_TO_SETTING_KEY } from './api/notificationApi'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 
@@ -167,8 +168,21 @@ export default function Notification({
             )}
           </div>
         </div>
+        {isLoading && (
+          <SkeletonGroup label="알림 불러오는 중" className={styles.list}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className={styles.skeletonCard}>
+                <Skeleton width={43} height={43} radius={12} />
+                <div className={styles.skeletonText}>
+                  <Skeleton width="50%" height={15} />
+                  <Skeleton width="85%" height={13} />
+                  <Skeleton width={60} height={11} />
+                </div>
+              </div>
+            ))}
+          </SkeletonGroup>
+        )}
         <ul className={styles.list}>
-          {isLoading && <li className={styles.empty}>알림을 불러오는 중...</li>}
           {isError && (
             <li className={styles.empty}>
               <p>알림을 불러오지 못했습니다.</p>

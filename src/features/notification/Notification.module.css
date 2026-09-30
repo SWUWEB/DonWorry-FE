@@ -115,3 +115,25 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* NotificationCard와 같은 크기의 카드 뼈대 */
+.skeletonCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 90px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fefefe;
+  box-shadow:
+    0 2px 6px 0 rgba(0, 0, 0, 0.08),
+    0 1px 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.skeletonText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}

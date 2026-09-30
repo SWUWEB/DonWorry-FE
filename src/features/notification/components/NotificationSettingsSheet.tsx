@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import {
   useNotificationSettings,
   useUpdateAllSetting,
@@ -6,6 +7,7 @@ import {
 } from '../hooks/useNotifications'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './NotificationSettingsSheet.module.css'
 
 const SETTINGS_LIST = [
@@ -111,8 +113,6 @@ export default function NotificationSettingsSheet({ onClose, onUnauthorized = ()
           <div className={styles.handle} />
           <h2 className={styles.title}>어떤 알림을 받을까요?</h2>
 
-          {isLoadingSettings && <p className={styles.statusText}>설정을 불러오는 중...</p>}
-
           {isSettingsError && !isUnauthorized && (
             <div className={styles.errorRow}>
               <p className={styles.errorText} role="alert">
@@ -134,37 +134,47 @@ export default function NotificationSettingsSheet({ onClose, onUnauthorized = ()
             </p>
           )}
 
-          <div className={styles.masterItem}>
-            <span className={styles.masterLabel}>전체 알림</span>
-            <button
-              className={`${styles.toggle} ${allOn ? styles.on : ''}`}
-              onClick={toggleAll}
-              disabled={isSaving}
-              aria-label={`전체 알림 ${allOn ? '끄기' : '켜기'}`}
-            >
-              <span className={styles.toggleThumb} />
-            </button>
-          </div>
-
-          <ul className={styles.list}>
-            {SETTINGS_LIST.map((item) => (
-              <li key={item.id} className={styles.item}>
-                <span className={styles.dot} style={{ background: item.dotColor }} />
-                <div className={styles.textWrap}>
-                  <span className={styles.label}>{item.label}</span>
-                  <span className={styles.desc}>{item.description}</span>
-                </div>
+          <SkeletonGroupIf when={isLoadingSettings} label="알림 설정 불러오는 중">
+            <div className={styles.masterItem}>
+              <span className={styles.masterLabel}>전체 알림</span>
+              {isLoadingSettings ? (
+                <ToggleSkeleton />
+              ) : (
                 <button
-                  className={`${styles.toggle} ${enabled[item.id] ? styles.on : ''}`}
-                  onClick={() => toggle(item.id)}
+                  className={`${styles.toggle} ${allOn ? styles.on : ''}`}
+                  onClick={toggleAll}
                   disabled={isSaving}
-                  aria-label={`${item.label} ${enabled[item.id] ? '끄기' : '켜기'}`}
+                  aria-label={`전체 알림 ${allOn ? '끄기' : '켜기'}`}
                 >
                   <span className={styles.toggleThumb} />
                 </button>
-              </li>
-            ))}
-          </ul>
+              )}
+            </div>
+
+            <ul className={styles.list}>
+              {SETTINGS_LIST.map((item) => (
+                <li key={item.id} className={styles.item}>
+                  <span className={styles.dot} style={{ background: item.dotColor }} />
+                  <div className={styles.textWrap}>
+                    <span className={styles.label}>{item.label}</span>
+                    <span className={styles.desc}>{item.description}</span>
+                  </div>
+                  {isLoadingSettings ? (
+                    <ToggleSkeleton />
+                  ) : (
+                    <button
+                      className={`${styles.toggle} ${enabled[item.id] ? styles.on : ''}`}
+                      onClick={() => toggle(item.id)}
+                      disabled={isSaving}
+                      aria-label={`${item.label} ${enabled[item.id] ? '끄기' : '켜기'}`}
+                    >
+                      <span className={styles.toggleThumb} />
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </SkeletonGroupIf>
         </div>
       </div>
 
@@ -179,4 +189,21 @@ export default function NotificationSettingsSheet({ onClose, onUnauthorized = ()
       />
     </>
   )
+}
+
+// 설정값을 받기 전에는 켜짐/꺼짐을 알 수 없으므로 토글 자리만 표시합니다.
+function ToggleSkeleton() {
+  return <Skeleton width={46} height={25} radius={20} />
+}
+
+function SkeletonGroupIf({
+  when,
+  label,
+  children,
+}: {
+  when: boolean
+  label: string
+  children: ReactNode
+}) {
+  return when ? <SkeletonGroup label={label}>{children}</SkeletonGroup> : <>{children}</>
 }
