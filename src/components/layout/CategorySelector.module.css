@@ -31,6 +31,11 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 }
 
+.chipSelected:hover {
+  color: var(--color-main-500, #2f7f82);
+  background-color: #e5f2f1;
+}
+
 .hidden {
   position: absolute;
   width: 1px;

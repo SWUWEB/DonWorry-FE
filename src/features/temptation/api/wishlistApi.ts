@@ -140,7 +140,7 @@ export const addWishlistItem = async (formData: WishFormData): Promise<Product> 
   const { data } = await client.post<WishlistItemApiResponse>('/api/v1/wishlist-items', {
     categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
     productName: formData.name,
-    productUrl: formData.link,
+    ...(formData.link ? { productUrl: formData.link } : {}),
     price: formData.price,
     reason: formData.reason,
     waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
@@ -153,7 +153,7 @@ export const updateWishlistItem = async (id: string, formData: WishFormData): Pr
     const { data } = await client.patch<WishlistItemApiResponse>(`/api/v1/wishlist-items/${id}`, {
       categoryCode: CATEGORY_TO_CODE_MAP[formData.category],
       productName: formData.name,
-      productUrl: formData.link,
+      ...(formData.link ? { productUrl: formData.link } : {}),
       price: formData.price,
       reason: formData.reason,
       waitType: TIME_TO_WAIT_TYPE_MAP[formData.time],
