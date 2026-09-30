@@ -171,3 +171,15 @@
   font-weight: 500;
   color: var(--color-text-green);
 }
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.skeletonField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -3,6 +3,7 @@ import { formatKRW } from '@/shared/utils/currency'
 import { useConsumptionReport } from '../hooks/useConsumptionReport'
 import DonutChart from './DonutChart'
 import CategoryItem from './CategoryItem'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './ConsumptionReportForm.module.css'
 import SavingStatusCard from './SavingStatusCard'
 import SavingCategoryItem from './SavingCategoryItem'
@@ -109,7 +110,30 @@ export default function ConsumptionReportForm() {
         )}
       </div>
 
-      {isLoading && <p className={styles.status}>불러오는 중...</p>}
+      {isLoading && (
+        <SkeletonGroup label="소비 리포트 불러오는 중" className={styles.skeleton}>
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>총 소비 요약</h2>
+            <div className={styles.summaryContent}>
+              <Skeleton width={120} height={120} circle />
+              <div className={`${styles.legend} ${styles.skeletonLegend}`}>
+                {[0, 1, 2, 3].map((i) => (
+                  <Skeleton key={i} height={14} />
+                ))}
+              </div>
+            </div>
+          </section>
+          <section className={styles.card}>
+            <Skeleton width={120} height={18} />
+            <Skeleton height={90} radius={12} className={styles.skeletonBlock} />
+          </section>
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>나의 충동 소비 패턴</h2>
+            <Skeleton height={64} radius={12} />
+            <Skeleton height={64} radius={12} className={styles.skeletonBlock} />
+          </section>
+        </SkeletonGroup>
+      )}
       {isError && (
         <div className={styles.status}>
           <p>데이터를 불러오지 못했습니다.</p>

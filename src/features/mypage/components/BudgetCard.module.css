@@ -37,3 +37,12 @@
   font-size: 12px;
   font-weight: 500;
 }
+
+.skeleton {
+  margin-top: 6px;
+}
+
+/* 진한 민트 카드 위에서도 보이도록 반투명 흰색으로 표시합니다. */
+.skeleton > span {
+  background: rgba(255, 255, 255, 0.3);
+}

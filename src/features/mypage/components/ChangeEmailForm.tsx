@@ -9,6 +9,7 @@ import { useChangeEmail, useMe, useSendEmailChangeCode } from '../hooks/useUser'
 import { useCountdown } from '@/shared/hooks/useCountdown'
 import { getApiErrorMessage, getRetryAfterSeconds } from '@/shared/utils/apiError'
 
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './ChangeEmailForm.module.css'
 
 interface ChangeEmailFormProps {
@@ -102,9 +103,13 @@ export default function ChangeEmailForm({ onUnauthorized = () => {} }: ChangeEma
         <div className={styles.currentEmailCard}>
           <div>
             <p className={styles.cardLabel}>현재 이메일</p>
-            <p className={styles.currentEmail}>
-              {isLoading ? '불러오는 중...' : (profile?.email ?? '확인할 수 없음')}
-            </p>
+            {isLoading ? (
+              <SkeletonGroup label="현재 이메일 불러오는 중" className={styles.currentEmail}>
+                <Skeleton width={180} height={18} />
+              </SkeletonGroup>
+            ) : (
+              <p className={styles.currentEmail}>{profile?.email ?? '확인할 수 없음'}</p>
+            )}
           </div>
 
           {profile?.email && <HiOutlineCheckCircle size={20} className={styles.checkIcon} />}

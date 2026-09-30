@@ -27,17 +27,10 @@ export default function MyPage() {
       </header>
 
       <ProfileCard
-        name={
-          isProfileLoading
-            ? '불러오는 중...'
-            : isProfileError
-              ? '회원 정보 조회 실패'
-              : profile
-                ? `${profile.nickname}님`
-                : '회원님'
-        }
+        name={isProfileError ? '회원 정보 조회 실패' : profile ? `${profile.nickname}님` : '회원님'}
         subtitle={profile?.email ?? profile?.phoneNumber ?? undefined}
         profileImageUrl={profile?.profileImageUrl}
+        isLoading={isProfileLoading}
       />
 
       <BudgetCard

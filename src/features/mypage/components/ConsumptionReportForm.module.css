@@ -150,3 +150,17 @@
   text-align: center;
   padding: 12px 0;
 }
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeletonLegend {
+  flex: 1;
+}
+
+.skeletonBlock {
+  margin-top: 12px;
+}

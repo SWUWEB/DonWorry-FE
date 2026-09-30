@@ -11,6 +11,7 @@ import type { Category } from '@/features/temptation/types'
 import { useBudget, useMe, useSetBudget } from '../hooks/useUser'
 import CategoryBudgetSection, { type CategoryBudgetEntry } from './CategoryBudgetSection'
 import HourlyWageCard from './HourlyWageCard'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './BudgetSettingCard.module.css'
 
 function toDigits(value: string) {
@@ -210,7 +211,21 @@ export default function BudgetSettingCard({ onUnauthorized = () => {} }: BudgetS
         </button>
       </div>
 
-      {isLoading && <p className={styles.message}>불러오는 중...</p>}
+      {isLoading && (
+        <SkeletonGroup label="예산 정보 불러오는 중" className={styles.skeleton}>
+          <div className={styles.skeletonField}>
+            <Skeleton width={90} height={14} />
+            <Skeleton height={48} radius={12} />
+          </div>
+          <div className={styles.skeletonField}>
+            <Skeleton width={120} height={14} />
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} height={56} radius={12} />
+            ))}
+          </div>
+          <Skeleton height={52} radius={12} />
+        </SkeletonGroup>
+      )}
 
       {isError && (
         <div className={styles.message}>
