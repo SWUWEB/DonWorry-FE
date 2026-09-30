@@ -199,6 +199,39 @@
       }
     },
     "schemas": {
+      "ChangeEmailResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "email": {
+                "example": "new@example.com",
+                "format": "email",
+                "type": "string"
+              }
+            },
+            "required": [
+              "email"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "이메일이 변경되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
       "CheckEmailResponse": {
         "properties": {
           "data": {
@@ -911,6 +944,56 @@
         },
         "type": "object"
       },
+      "EmailChangeVerificationResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "codeTtlSeconds": {
+                "example": 600,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "debugCode": {
+                "description": "Development only. Returned when SMTP delivery is skipped or fails.",
+                "example": "123456",
+                "type": "string"
+              },
+              "newEmail": {
+                "example": "new@example.com",
+                "format": "email",
+                "type": "string"
+              },
+              "resendCooldownSeconds": {
+                "example": 60,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "newEmail",
+              "codeTtlSeconds",
+              "resendCooldownSeconds"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "이메일 변경 인증번호가 발송되었습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "type": "object"
+      },
       "EmailVerificationConfirmResponse": {
         "properties": {
           "data": {
@@ -1178,6 +1261,48 @@
           },
           "message": {
             "example": "온보딩 정보 조회 성공",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "GetSavingGoalResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "achievementRate": {
+                "example": 60,
+                "nullable": true,
+                "type": "integer"
+              },
+              "savedAmount": {
+                "example": "600000",
+                "nullable": true,
+                "type": "string"
+              },
+              "savingGoalIsActive": {
+                "example": true,
+                "type": "boolean"
+              },
+              "savingGoalText": {
+                "example": "목돈 마련",
+                "nullable": true,
+                "type": "string"
+              },
+              "targetSavingAmount": {
+                "example": "1000000",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "절약 목적 조회 성공",
             "type": "string"
           },
           "success": {
@@ -1654,6 +1779,39 @@
             "type": "boolean"
           }
         },
+        "type": "object"
+      },
+      "LoginIdRecoveryRequestResponse": {
+        "properties": {
+          "data": {
+            "properties": {
+              "resendCooldownSeconds": {
+                "example": 60,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "resendCooldownSeconds"
+            ],
+            "type": "object"
+          },
+          "message": {
+            "example": "입력한 이메일로 아이디 안내를 전송했습니다.",
+            "type": "string"
+          },
+          "success": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
         "type": "object"
       },
       "LoginResponse": {
@@ -2286,8 +2444,14 @@
         "properties": {
           "data": {
             "properties": {
-              "id": {
-                "example": "1",
+              "achievementRate": {
+                "example": 60,
+                "nullable": true,
+                "type": "integer"
+              },
+              "savedAmount": {
+                "example": "600000",
+                "nullable": true,
                 "type": "string"
               },
               "savingGoalIsActive": {
@@ -2296,10 +2460,12 @@
               },
               "savingGoalText": {
                 "example": "목돈 마련",
+                "nullable": true,
                 "type": "string"
               },
               "targetSavingAmount": {
                 "example": "1000000",
+                "nullable": true,
                 "type": "string"
               }
             },
@@ -3045,6 +3211,81 @@
         },
         "security": [],
         "summary": "로그인",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login-id-recovery/request": {
+      "post": {
+        "description": "가입 여부와 로그인 방식을 노출하지 않고 항상 동일한 성공 응답을 반환합니다. 일반 로그인 계정에는 로그인 아이디를, 카카오 전용 계정에는 카카오 로그인 안내를 발송합니다.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginIdRecoveryRequestResponse"
+                }
+              }
+            },
+            "description": "Login ID recovery guidance accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "Login ID recovery request rate limited",
+            "headers": {
+              "Retry-After": {
+                "description": "요청을 다시 시도할 수 있을 때까지 남은 초",
+                "schema": {
+                  "example": 42,
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "가입 이메일 기반 아이디 찾기 요청",
         "tags": [
           "Auth"
         ]
@@ -5482,6 +5723,205 @@
         ]
       }
     },
+    "/api/v1/users/me/email": {
+      "patch": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "pattern": "^\\d{6}$",
+                    "type": "string"
+                  },
+                  "newEmail": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "newEmail",
+                  "code"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeEmailResponse"
+                }
+              }
+            },
+            "description": "이메일 변경 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "인증 코드 오류 또는 요청 값 검증 실패"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "이미 가입된 이메일"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "이메일 인증 확인 시도 제한"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "인증된 이메일로 변경",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users/me/email-verifications": {
+      "post": {
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "newEmail": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "newEmail"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailChangeVerificationResponse"
+                }
+              }
+            },
+            "description": "이메일 변경 인증번호 발송 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "요청 값 검증 실패"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "AUTH4091",
+                  "message": "이미 가입된 이메일입니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "이미 가입된 이메일"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponse"
+                }
+              }
+            },
+            "description": "이메일 인증 요청 제한"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "이메일 변경 인증번호 발송",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
     "/api/v1/users/me/notification-settings": {
       "get": {
         "responses": {
@@ -5804,6 +6244,57 @@
           "Users"
         ]
       },
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSavingGoalResponse"
+                }
+              }
+            },
+            "description": "절약 목적 조회 성공"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "code": "USER4041",
+                  "message": "사용자를 찾을 수 없습니다.",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "사용자를 찾을 수 없습니다."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "절약 목적 조회",
+        "tags": [
+          "Users"
+        ]
+      },
       "put": {
         "parameters": [],
         "requestBody": {
@@ -5824,10 +6315,6 @@
                     "type": "integer"
                   }
                 },
-                "required": [
-                  "savingGoalText",
-                  "targetSavingAmount"
-                ],
                 "type": "object"
               }
             }

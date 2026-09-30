@@ -4,6 +4,14 @@ export type ClientOptions = {
   baseUrl: `${string}://${string}` | (string & {})
 }
 
+export type ChangeEmailResponse = {
+  data: {
+    email: string
+  }
+  message: string
+  success: true
+}
+
 export type CheckEmailResponse = {
   data?: {
     available?: boolean
@@ -194,6 +202,20 @@ export type DeleteSavingGoalResponse = {
   success?: boolean
 }
 
+export type EmailChangeVerificationResponse = {
+  data: {
+    codeTtlSeconds: number
+    /**
+     * Development only. Returned when SMTP delivery is skipped or fails.
+     */
+    debugCode?: string
+    newEmail: string
+    resendCooldownSeconds: number
+  }
+  message: string
+  success: true
+}
+
 export type EmailVerificationConfirmResponse = {
   data?: {
     email?: string
@@ -262,6 +284,18 @@ export type GetNotificationSettingsResponse = {
 export type GetOnboardingResponse = {
   data?: {
     interestTags?: Array<string> | null
+    savingGoalText?: string | null
+    targetSavingAmount?: string | null
+  }
+  message?: string
+  success?: boolean
+}
+
+export type GetSavingGoalResponse = {
+  data?: {
+    achievementRate?: number | null
+    savedAmount?: string | null
+    savingGoalIsActive?: boolean
     savingGoalText?: string | null
     targetSavingAmount?: string | null
   }
@@ -405,6 +439,14 @@ export type ListNotificationsResponse = {
   data?: Array<NotificationResult>
   message?: string
   success?: boolean
+}
+
+export type LoginIdRecoveryRequestResponse = {
+  data: {
+    resendCooldownSeconds: number
+  }
+  message: string
+  success: true
 }
 
 export type LoginResponse = {
@@ -621,10 +663,11 @@ export type UpdateOnboardingResponse = {
 
 export type UpdateSavingGoalResponse = {
   data?: {
-    id?: string
+    achievementRate?: number | null
+    savedAmount?: string | null
     savingGoalIsActive?: boolean
-    savingGoalText?: string
-    targetSavingAmount?: string
+    savingGoalText?: string | null
+    targetSavingAmount?: string | null
   }
   message?: string
   success?: boolean
@@ -967,6 +1010,39 @@ export type PostApiV1AuthLoginResponses = {
 
 export type PostApiV1AuthLoginResponse =
   PostApiV1AuthLoginResponses[keyof PostApiV1AuthLoginResponses]
+
+export type PostApiV1AuthLoginIdRecoveryRequestData = {
+  body: {
+    email: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/auth/login-id-recovery/request'
+}
+
+export type PostApiV1AuthLoginIdRecoveryRequestErrors = {
+  /**
+   * Invalid request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Login ID recovery request rate limited
+   */
+  429: RateLimitErrorResponse
+}
+
+export type PostApiV1AuthLoginIdRecoveryRequestError =
+  PostApiV1AuthLoginIdRecoveryRequestErrors[keyof PostApiV1AuthLoginIdRecoveryRequestErrors]
+
+export type PostApiV1AuthLoginIdRecoveryRequestResponses = {
+  /**
+   * Login ID recovery guidance accepted
+   */
+  200: LoginIdRecoveryRequestResponse
+}
+
+export type PostApiV1AuthLoginIdRecoveryRequestResponse =
+  PostApiV1AuthLoginIdRecoveryRequestResponses[keyof PostApiV1AuthLoginIdRecoveryRequestResponses]
 
 export type PostApiV1AuthLogoutData = {
   body: {
@@ -2150,6 +2226,97 @@ export type PutApiV1UsersMeBudgetResponses = {
 export type PutApiV1UsersMeBudgetResponse =
   PutApiV1UsersMeBudgetResponses[keyof PutApiV1UsersMeBudgetResponses]
 
+export type PatchApiV1UsersMeEmailData = {
+  body: {
+    code: string
+    newEmail: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/email'
+}
+
+export type PatchApiV1UsersMeEmailErrors = {
+  /**
+   * 인증 코드 오류 또는 요청 값 검증 실패
+   */
+  400: ValidationErrorResponse | ErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+  /**
+   * 이미 가입된 이메일
+   */
+  409: ErrorResponse
+  /**
+   * 이메일 인증 확인 시도 제한
+   */
+  429: RateLimitErrorResponse
+}
+
+export type PatchApiV1UsersMeEmailError =
+  PatchApiV1UsersMeEmailErrors[keyof PatchApiV1UsersMeEmailErrors]
+
+export type PatchApiV1UsersMeEmailResponses = {
+  /**
+   * 이메일 변경 성공
+   */
+  200: ChangeEmailResponse
+}
+
+export type PatchApiV1UsersMeEmailResponse =
+  PatchApiV1UsersMeEmailResponses[keyof PatchApiV1UsersMeEmailResponses]
+
+export type PostApiV1UsersMeEmailVerificationsData = {
+  body: {
+    newEmail: string
+  }
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/email-verifications'
+}
+
+export type PostApiV1UsersMeEmailVerificationsErrors = {
+  /**
+   * 요청 값 검증 실패
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+  /**
+   * 이미 가입된 이메일
+   */
+  409: ErrorResponse
+  /**
+   * 이메일 인증 요청 제한
+   */
+  429: RateLimitErrorResponse
+}
+
+export type PostApiV1UsersMeEmailVerificationsError =
+  PostApiV1UsersMeEmailVerificationsErrors[keyof PostApiV1UsersMeEmailVerificationsErrors]
+
+export type PostApiV1UsersMeEmailVerificationsResponses = {
+  /**
+   * 이메일 변경 인증번호 발송 성공
+   */
+  200: EmailChangeVerificationResponse
+}
+
+export type PostApiV1UsersMeEmailVerificationsResponse =
+  PostApiV1UsersMeEmailVerificationsResponses[keyof PostApiV1UsersMeEmailVerificationsResponses]
+
 export type GetApiV1UsersMeNotificationSettingsData = {
   body?: never
   path?: never
@@ -2299,11 +2466,46 @@ export type DeleteApiV1UsersMeSavingGoalResponses = {
 export type DeleteApiV1UsersMeSavingGoalResponse =
   DeleteApiV1UsersMeSavingGoalResponses[keyof DeleteApiV1UsersMeSavingGoalResponses]
 
+export type GetApiV1UsersMeSavingGoalData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/api/v1/users/me/saving-goal'
+}
+
+export type GetApiV1UsersMeSavingGoalErrors = {
+  /**
+   * Bad Request
+   */
+  400: ValidationErrorResponse
+  /**
+   * Authentication required
+   */
+  401: UnauthorizedResponse
+  /**
+   * 사용자를 찾을 수 없습니다.
+   */
+  404: ErrorResponse
+}
+
+export type GetApiV1UsersMeSavingGoalError =
+  GetApiV1UsersMeSavingGoalErrors[keyof GetApiV1UsersMeSavingGoalErrors]
+
+export type GetApiV1UsersMeSavingGoalResponses = {
+  /**
+   * 절약 목적 조회 성공
+   */
+  200: GetSavingGoalResponse
+}
+
+export type GetApiV1UsersMeSavingGoalResponse =
+  GetApiV1UsersMeSavingGoalResponses[keyof GetApiV1UsersMeSavingGoalResponses]
+
 export type PutApiV1UsersMeSavingGoalData = {
   body: {
     savingGoalIsActive?: boolean
-    savingGoalText: string
-    targetSavingAmount: number
+    savingGoalText?: string
+    targetSavingAmount?: number
   }
   path?: never
   query?: never
