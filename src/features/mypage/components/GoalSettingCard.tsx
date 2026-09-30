@@ -4,8 +4,7 @@ import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
-import { useDeleteSavingGoal, useMe, useSetSavingGoal } from '../hooks/useUser'
-import { useConsumptionReport } from '../hooks/useConsumptionReport'
+import { useDeleteSavingGoal, useSavingGoal, useSetSavingGoal } from '../hooks/useUser'
 import styles from './GoalSettingCard.module.css'
 
 interface GoalSettingCardProps {
@@ -13,18 +12,7 @@ interface GoalSettingCardProps {
 }
 
 export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSettingCardProps) {
-  const {
-    data: profile,
-    isLoading: isProfileLoading,
-    isError: isProfileError,
-    refetch: refetchProfile,
-  } = useMe()
-  const {
-    data: report,
-    isLoading: isReportLoading,
-    isError: isReportError,
-    refetch: refetchReport,
-  } = useConsumptionReport()
+  const { data: goal, isLoading, isError, error: queryError, refetch } = useSavingGoal()
   const { mutate: setSavingGoal, isPending } = useSetSavingGoal()
   const { mutate: deleteSavingGoal, isPending: isDeleting } = useDeleteSavingGoal()
 
@@ -40,17 +28,27 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
   const isBusy = isPending || isDeleting
 
   useEffect(() => {
-    // 서버에 저장된 목표 이름과 현재 월의 목표 금액을 편집 상태로 반영합니다.
+    // 전용 조회 응답을 사용해 비활성 목표의 금액과 활성 여부도 그대로 복원합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGoalText(profile?.savingGoalText ?? '')
-    const targetAmount = report?.goalAchievement.targetAmount
+    setGoalText(goal?.savingGoalText ?? '')
+    const targetAmount = goal?.targetSavingAmount
     setGoalAmount(targetAmount == null ? '' : String(targetAmount))
-    // GET /users/me에는 활성 여부가 없으므로, 저장된 목표가 있으면서 리포트가 NOT_SET이면
-    // 비활성 목표로 간주합니다. 새 목표는 기존 UX대로 활성 상태에서 시작합니다.
-    setIsActive(!profile?.savingGoalText || report?.goalAchievement.status !== 'NOT_SET')
-  }, [profile, report])
+    setIsActive(goal?.savingGoalText ? goal.savingGoalIsActive : true)
+  }, [goal])
 
-  if (isProfileLoading || isReportLoading) {
+  const unauthorizedDialog = (
+    <ConfirmDialog
+      isOpen={isUnauthorized || isUnauthorizedError(queryError)}
+      title="로그인이 필요합니다."
+      description="로그인 후 다시 이용해주세요."
+      confirmText="로그인하기"
+      onlyConfirm
+      onCancel={onUnauthorized}
+      onConfirm={onUnauthorized}
+    />
+  )
+
+  if (isLoading) {
     return (
       <section className={styles.card}>
         <h2 className={styles.title}>목표 설정</h2>
@@ -59,19 +57,17 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
     )
   }
 
-  if (!profile || !report) {
+  if (!goal) {
     return (
       <section className={styles.card}>
         <h2 className={styles.title}>목표 설정</h2>
         <p className={styles.formError} role="alert">
           목표 정보를 불러오지 못했습니다.
         </p>
-        <Button
-          variant="outline"
-          onClick={() => void Promise.all([refetchProfile(), refetchReport()])}
-        >
+        <Button variant="outline" onClick={() => void refetch()}>
           다시 시도
         </Button>
+        {unauthorizedDialog}
       </section>
     )
   }
@@ -98,6 +94,10 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
       {
         onSuccess: () => setSaved(true),
         onError: (err) => {
+          if (isUnauthorizedError(err)) {
+            setIsUnauthorized(true)
+            return
+          }
           const fieldError = isAxiosError(err)
             ? Object.values(
                 (err.response?.data as { errors?: { fieldErrors?: Record<string, string[]> } })
@@ -141,16 +141,12 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
     <section className={styles.card}>
       <h2 className={styles.title}>목표 설정</h2>
 
-      {(isProfileError || isReportError) && (
+      {isError && (
         <div>
           <p className={styles.formError} role="alert">
             최신 목표 정보를 불러오지 못했습니다. 현재 표시된 정보를 유지합니다.
           </p>
-          <Button
-            variant="outline"
-            disabled={isBusy}
-            onClick={() => void Promise.all([refetchProfile(), refetchReport()])}
-          >
+          <Button variant="outline" disabled={isBusy} onClick={() => void refetch()}>
             다시 시도
           </Button>
         </div>
@@ -222,7 +218,7 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
       <Button onClick={handleSave} disabled={isBusy}>
         {isPending ? '저장 중...' : '저장하기'}
       </Button>
-      {profile.savingGoalText && (
+      {goal.savingGoalText && (
         <Button
           variant="outline"
           disabled={isBusy}
@@ -246,15 +242,7 @@ export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSetti
         }}
         onConfirm={handleDelete}
       />
-      <ConfirmDialog
-        isOpen={isUnauthorized}
-        title="로그인이 필요합니다."
-        description="로그인 후 다시 이용해주세요."
-        confirmText="로그인하기"
-        onlyConfirm
-        onCancel={onUnauthorized}
-        onConfirm={onUnauthorized}
-      />
+      {unauthorizedDialog}
     </section>
   )
 }
