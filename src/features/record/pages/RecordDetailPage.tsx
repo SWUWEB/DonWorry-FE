@@ -8,6 +8,7 @@ import RecentSpendingList from '@/features/intervention/components/RecentSpendin
 import { useConsumptionRecordDetail } from '@/features/record/hooks/useConsumptionRecords'
 import { formatKRW } from '@/shared/utils/currency'
 import { formatDateCompact } from '@/shared/utils/date'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './RecordDetailPage.module.css'
 
 export default function RecordDetailPage() {
@@ -24,7 +25,36 @@ export default function RecordDetailPage() {
   }, [isNotFound, navigate])
 
   if (isLoading) {
-    return <p className={styles.message}>불러오는 중...</p>
+    return (
+      <SkeletonGroup label="소비 기록 불러오는 중">
+        <Header
+          onBellClick={() => navigate('/notification')}
+          subLeft={<HeaderBackButton />}
+          subTitle="소비 상세"
+          subMain={
+            <div className={styles.summary}>
+              <div className={styles.titleRow}>
+                <Skeleton width={56} height={22} radius={11} />
+                <Skeleton width={140} height={20} />
+              </div>
+              <Skeleton width={150} height={28} />
+              <Skeleton width={100} height={14} />
+            </div>
+          }
+        />
+        <div className={styles.content}>
+          <div className={styles.skeletonSection}>
+            <Skeleton width={100} height={16} />
+            <Skeleton height={60} radius={12} />
+          </div>
+          <div className={styles.skeletonSection}>
+            <Skeleton width={160} height={16} />
+            <Skeleton height={52} radius={12} />
+            <Skeleton height={52} radius={12} />
+          </div>
+        </div>
+      </SkeletonGroup>
+    )
   }
 
   if (isNotFound) return null

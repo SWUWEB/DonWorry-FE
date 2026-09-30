@@ -11,6 +11,7 @@ import type { InterventionAnswer } from '@/features/intervention/api/interventio
 import type { RecordDraft } from '@/features/record/pages/RecordCreatePage'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from '../styles/RecordInterventionPage.module.css'
 
 export default function RecordInterventionPage() {
@@ -56,7 +57,22 @@ export default function RecordInterventionPage() {
   }
 
   if (isLoadingQuestions) {
-    return <p className={styles.message}>불러오는 중...</p>
+    // 질문은 항상 3개(아래 isValidQuestions)라 헤더는 첫 단계 상태로 먼저 보여줍니다.
+    return (
+      <SkeletonGroup label="질문 불러오는 중" className={styles.container}>
+        <InterventionHeader step={1} totalSteps={3} onBack={() => navigate(-1)} />
+        <div className={`${styles.content} ${styles.skeletonContent}`}>
+          <Skeleton width={36} height={22} />
+          <Skeleton width="80%" height={22} />
+          <Skeleton width="90%" height={14} />
+          <Skeleton width="60%" height={14} />
+        </div>
+        <div className={styles.buttons}>
+          <Skeleton height={52} radius={12} />
+          <Skeleton height={52} radius={12} />
+        </div>
+      </SkeletonGroup>
+    )
   }
 
   if (isQuestionsError || !data) {

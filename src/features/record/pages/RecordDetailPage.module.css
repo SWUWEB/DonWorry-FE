@@ -116,3 +116,10 @@
   line-height: normal;
   color: var(--color-text-primary, #243130);
 }
+
+.skeletonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}

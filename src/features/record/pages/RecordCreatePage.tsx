@@ -20,6 +20,7 @@ import {
   useDeleteConsumptionRecord,
 } from '@/features/record/hooks/useConsumptionRecords'
 import { useParseProductUrl } from '@/features/record/hooks/useProductUrl'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './RecordCreatePage.module.css'
 
 const RECORD_TYPE_OPTIONS: { label: string; value: RecordType }[] = [
@@ -58,7 +59,23 @@ export default function RecordCreatePage() {
   if (isEditMode && isNotFound) return null
 
   if (isEditMode && isLoadingRecord) {
-    return <p className={styles.message}>불러오는 중...</p>
+    return (
+      <SkeletonGroup label="소비 기록 불러오는 중" className={styles.container}>
+        <Header
+          subLeft={<HeaderBackButton />}
+          subTitle="소비 기록 수정"
+          subMain={<Skeleton height={40} radius={20} />}
+        />
+        <div className={styles.form}>
+          {[48, 48, 48, 48, 120].map((height, i) => (
+            <div key={i} className={styles.field}>
+              <Skeleton width={90} height={14} />
+              <Skeleton height={height} radius={12} />
+            </div>
+          ))}
+        </div>
+      </SkeletonGroup>
+    )
   }
 
   if (isEditMode && isDetailError) {

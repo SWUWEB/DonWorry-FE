@@ -145,3 +145,7 @@
 .save {
   background: var(--color-main-400, #389698);
 }
+
+.skeletonLegend {
+  max-width: 280px;
+}

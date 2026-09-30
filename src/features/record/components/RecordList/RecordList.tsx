@@ -1,3 +1,4 @@
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './RecordList.module.css'
 import DateSection from '../DateSection'
 import RecordCard from '../RecordCard'
@@ -14,7 +15,23 @@ export default function RecordList({ filter }: RecordListProps) {
   const { data, isLoading, isError, refetch } = useConsumptionRecords(filter)
 
   if (isLoading) {
-    return <p className={styles.message}>불러오는 중...</p>
+    return (
+      <SkeletonGroup label="소비 기록 불러오는 중" className={styles.container}>
+        <div className={styles.skeletonSection}>
+          <Skeleton width={110} height={16} />
+          {Array.from({ length: 5 }, (_, i) => (
+            <div key={i} className={styles.skeletonRow}>
+              <Skeleton width={46} height={46} radius={7} />
+              <div className={styles.skeletonInfo}>
+                <Skeleton width="70%" height={16} />
+                <Skeleton width={56} height={12} />
+              </div>
+              <Skeleton width={76} height={18} />
+            </div>
+          ))}
+        </div>
+      </SkeletonGroup>
+    )
   }
 
   if (isError) {
