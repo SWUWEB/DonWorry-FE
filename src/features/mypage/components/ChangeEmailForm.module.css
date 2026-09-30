@@ -50,9 +50,17 @@
 }
 
 .expireText {
-  color: #aaaaaa;
+  margin: 0;
+  color: var(--color-gray-300);
   font-size: 12px;
-  font-weight: 700;
+  line-height: 1.5;
+}
+
+.timer {
+  color: var(--color-main-500);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .noticeBox {

@@ -3,7 +3,7 @@ import client from '@/api/client'
 import { userApi } from './userApi'
 
 vi.mock('@/api/client', () => ({
-  default: { get: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn() },
+  default: { get: vi.fn(), post: vi.fn(), patch: vi.fn(), put: vi.fn(), delete: vi.fn() },
 }))
 
 const monthlyBudgetResult = {
@@ -28,6 +28,83 @@ const monthlyBudgetResult = {
 describe('userApi budget', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  it('전용 목표 조회에서 비활성 여부와 금액을 복원한다', async () => {
+    vi.mocked(client.get).mockResolvedValueOnce({
+      data: {
+        data: {
+          savingGoalText: '여행',
+          targetSavingAmount: '500000',
+          savingGoalIsActive: false,
+          savedAmount: '10000',
+          achievementRate: 2,
+        },
+      },
+    })
+    await expect(userApi.getSavingGoal()).resolves.toEqual({
+      savingGoalText: '여행',
+      targetSavingAmount: 500000,
+      savingGoalIsActive: false,
+      savedAmount: 10000,
+      achievementRate: 2,
+    })
+    expect(client.get).toHaveBeenCalledWith('/api/v1/users/me/saving-goal')
+  })
+
+  it('미설정 목표의 null 금액을 0으로 바꾸지 않는다', async () => {
+    const goal = {
+      savingGoalText: null,
+      targetSavingAmount: null,
+      savingGoalIsActive: false,
+      savedAmount: null,
+      achievementRate: null,
+    }
+    vi.mocked(client.get).mockResolvedValueOnce({ data: { data: goal } })
+    await expect(userApi.getSavingGoal()).resolves.toEqual(goal)
+  })
+
+  it('목표 활성 상태만 저장할 수 있고 새 저장 응답을 변환한다', async () => {
+    vi.mocked(client.put).mockResolvedValueOnce({
+      data: {
+        data: {
+          savingGoalText: '여행',
+          targetSavingAmount: '500000',
+          savingGoalIsActive: true,
+          savedAmount: '0',
+          achievementRate: 0,
+        },
+      },
+    })
+    const result = await userApi.setSavingGoal({ savingGoalIsActive: true })
+    expect(client.put).toHaveBeenCalledWith('/api/v1/users/me/saving-goal', {
+      savingGoalIsActive: true,
+    })
+    expect(result.targetSavingAmount).toBe(500000)
+    expect(result.savedAmount).toBe(0)
+  })
+
+  it('이메일 변경 인증 요청과 확인에 Swagger 필드명을 사용한다', async () => {
+    const verification = {
+      newEmail: 'new@example.com',
+      codeTtlSeconds: 600,
+      resendCooldownSeconds: 60,
+    }
+    vi.mocked(client.post).mockResolvedValueOnce({ data: { data: verification } })
+    await expect(userApi.sendEmailChangeCode({ newEmail: 'new@example.com' })).resolves.toEqual(
+      verification,
+    )
+    expect(client.post).toHaveBeenCalledWith('/api/v1/users/me/email-verifications', {
+      newEmail: 'new@example.com',
+    })
+    vi.mocked(client.patch).mockResolvedValueOnce({ data: { data: { email: 'new@example.com' } } })
+    await expect(
+      userApi.changeEmail({ newEmail: 'new@example.com', code: '123456' }),
+    ).resolves.toEqual({ email: 'new@example.com' })
+    expect(client.patch).toHaveBeenCalledWith('/api/v1/users/me/email', {
+      newEmail: 'new@example.com',
+      code: '123456',
+    })
   })
 
   it('목표 삭제 endpoint를 호출하고 응답을 반환한다', async () => {

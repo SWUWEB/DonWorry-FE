@@ -5,9 +5,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createQueryClient } from '@/api/queryClient'
 import { getCurrentYearMonth } from '@/shared/utils/date'
 import { userApi } from '../api/userApi'
-import { useDeleteSavingGoal } from './useUser'
+import { useChangeEmail, useDeleteSavingGoal, useSetSavingGoal } from './useUser'
 
-vi.mock('../api/userApi', () => ({ userApi: { deleteSavingGoal: vi.fn() } }))
+vi.mock('../api/userApi', () => ({
+  userApi: {
+    deleteSavingGoal: vi.fn(),
+    setSavingGoal: vi.fn(),
+    changeEmail: vi.fn(),
+  },
+}))
 
 describe('목표 삭제 캐시 동기화', () => {
   beforeEach(() => vi.clearAllMocks())
@@ -29,6 +35,10 @@ describe('목표 삭제 캐시 동기화', () => {
     queryClient.setQueryData(['user', 'me'], profile)
     queryClient.setQueryData(reportKey, report)
     queryClient.setQueryData(['home'], { achievementRate: 2 })
+    queryClient.setQueryData(['user', 'saving-goal'], {
+      savingGoalText: '여행 자금',
+      targetSavingAmount: 500000,
+    })
     const { result } = renderHook(() => useDeleteSavingGoal(), {
       wrapper: ({ children }: PropsWithChildren) => (
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -54,7 +64,14 @@ describe('목표 삭제 캐시 동기화', () => {
         achievementRate: 0,
       },
     })
-    for (const key of [['user', 'me'], reportKey, ['home']]) {
+    expect(queryClient.getQueryData(['user', 'saving-goal'])).toEqual({
+      savingGoalText: null,
+      targetSavingAmount: null,
+      savingGoalIsActive: false,
+      savedAmount: null,
+      achievementRate: null,
+    })
+    for (const key of [['user', 'me'], ['user', 'saving-goal'], reportKey, ['home']]) {
       expect(queryClient.getQueryState(key)?.isInvalidated).toBe(true)
     }
     queryClient.clear()
@@ -69,6 +86,56 @@ describe('목표 삭제 캐시 동기화', () => {
     expect(queryClient.getQueryData(['user', 'me'])).toEqual(profile)
     expect(queryClient.getQueryData(reportKey)).toEqual(report)
     expect(queryClient.getQueryState(['home'])?.isInvalidated).toBe(false)
+    queryClient.clear()
+  })
+})
+
+describe('저장 후 화면 갱신', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  function setup() {
+    const queryClient = createQueryClient()
+    const wrapper = ({ children }: PropsWithChildren) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    )
+    return { queryClient, wrapper }
+  }
+
+  it('목표 저장 응답을 즉시 반영하고 리포트를 갱신한다', async () => {
+    const { queryClient, wrapper } = setup()
+    const goal = {
+      savingGoalText: '여행',
+      targetSavingAmount: 100000,
+      savingGoalIsActive: true,
+      savedAmount: 10000,
+      achievementRate: 10,
+    }
+    queryClient.setQueryData(['consumption-report', 'detail'], {})
+    queryClient.setQueryData(['home'], { achievementRate: 0 })
+    vi.mocked(userApi.setSavingGoal).mockResolvedValue(goal)
+    const { result } = renderHook(() => useSetSavingGoal(), { wrapper })
+    await act(async () => {
+      await result.current.mutateAsync({ savingGoalText: '여행', targetSavingAmount: 100000 })
+    })
+    expect(queryClient.getQueryData(['user', 'saving-goal'])).toEqual(goal)
+    expect(queryClient.getQueryState(['consumption-report', 'detail'])?.isInvalidated).toBe(true)
+    expect(queryClient.getQueryState(['home'])?.isInvalidated).toBe(true)
+    queryClient.clear()
+  })
+
+  it('이메일 변경 후 프로필의 다른 필드를 유지한다', async () => {
+    const { queryClient, wrapper } = setup()
+    queryClient.setQueryData(['user', 'me'], { email: 'old@example.com', nickname: '테스터' })
+    vi.mocked(userApi.changeEmail).mockResolvedValue({ email: 'new@example.com' })
+    const { result } = renderHook(() => useChangeEmail(), { wrapper })
+    await act(async () => {
+      await result.current.mutateAsync({ newEmail: 'new@example.com', code: '123456' })
+    })
+    expect(queryClient.getQueryData(['user', 'me'])).toEqual({
+      email: 'new@example.com',
+      nickname: '테스터',
+    })
+    expect(queryClient.getQueryState(['user', 'me'])?.isInvalidated).toBe(true)
     queryClient.clear()
   })
 })

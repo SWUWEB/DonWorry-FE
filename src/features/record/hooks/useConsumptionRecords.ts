@@ -15,6 +15,7 @@ function invalidateConsumptionDerivedQueries(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: ['user', 'budget'] }),
     queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
     queryClient.invalidateQueries({ queryKey: ['home'] }),
+    queryClient.invalidateQueries({ queryKey: ['user', 'saving-goal'] }),
   ])
 }
 

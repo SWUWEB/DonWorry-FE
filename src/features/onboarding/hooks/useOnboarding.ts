@@ -19,6 +19,10 @@ export function useUpdateOnboarding() {
     mutationFn: (payload: UpdateOnboardingPayload) => onboardingApi.update(payload),
     onSuccess: (result) => {
       queryClient.setQueryData(QUERY_KEYS.detail, result)
+      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+      queryClient.invalidateQueries({ queryKey: ['user', 'saving-goal'] })
+      queryClient.invalidateQueries({ queryKey: ['consumption-report'] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
     },
   })
 }

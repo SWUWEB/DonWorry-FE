@@ -5,12 +5,11 @@ import styles from './GoalAmount.module.css'
 
 import CurrentGoalCard from './components/CurrentGoalCard'
 import GoalSettingCard from './components/GoalSettingCard'
-import { useConsumptionReport } from './hooks/useConsumptionReport'
+import { useSavingGoal } from './hooks/useUser'
 
 export default function GoalAmount() {
   const navigate = useNavigate()
-  const { data: report, isLoading, isError } = useConsumptionReport()
-  const goal = report?.goalAchievement
+  const { data: goal, isLoading, isError } = useSavingGoal()
 
   return (
     <>
@@ -28,11 +27,11 @@ export default function GoalAmount() {
 
       <main className={styles.container}>
         <CurrentGoalCard
-          goalAmount={goal?.targetAmount ?? null}
+          goalAmount={goal?.targetSavingAmount ?? null}
           achievedAmount={goal?.savedAmount ?? 0}
           achievementRate={goal?.achievementRate ?? 0}
           isLoading={isLoading}
-          isError={isError && !report}
+          isError={isError && !goal}
         />
 
         <GoalSettingCard onUnauthorized={() => navigate('/login')} />

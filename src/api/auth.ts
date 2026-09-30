@@ -1,4 +1,18 @@
 import client from './client'
+import type {
+  PostApiV1AuthLoginIdRecoveryRequestData,
+  LoginIdRecoveryRequestResponse,
+} from './generated'
+
+export const requestLoginIdRecovery = async (
+  body: PostApiV1AuthLoginIdRecoveryRequestData['body'],
+): Promise<LoginIdRecoveryRequestResponse> => {
+  const { data } = await client.post<LoginIdRecoveryRequestResponse>(
+    '/api/v1/auth/login-id-recovery/request',
+    body,
+  )
+  return data
+}
 
 export interface SignUpRequest {
   name: string

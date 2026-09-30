@@ -5,6 +5,12 @@ import type {
   PatchApiV1UsersMePasswordData,
   PutApiV1UsersMeBudgetData,
   PutApiV1UsersMeSavingGoalData,
+  GetSavingGoalResponse,
+  UpdateSavingGoalResponse,
+  PostApiV1UsersMeEmailVerificationsData,
+  PatchApiV1UsersMeEmailData,
+  EmailChangeVerificationResponse,
+  ChangeEmailResponse,
 } from '@/api/generated'
 import { CATEGORY_LABEL_TO_CODE } from '@/constants/product'
 import { CATEGORY_CODE_TO_LABEL } from '@/constants/budgetCategory'
@@ -44,11 +50,27 @@ export type WithdrawReasonType = NonNullable<DeleteApiV1UsersMeData['body']['rea
 export type WithdrawRequest = DeleteApiV1UsersMeData['body']
 
 export interface SavingGoal {
-  id: string
-  savingGoalText: string
-  targetSavingAmount: string
+  savingGoalText: string | null
+  targetSavingAmount: number | null
   savingGoalIsActive: boolean
+  savedAmount: number | null
+  achievementRate: number | null
 }
+
+function adaptSavingGoal(result: GetSavingGoalResponse['data']): SavingGoal {
+  if (!result) throw new Error('목표 정보를 불러오지 못했습니다.')
+  return {
+    savingGoalText: result.savingGoalText ?? null,
+    targetSavingAmount:
+      result.targetSavingAmount == null ? null : Number(result.targetSavingAmount),
+    savingGoalIsActive: result.savingGoalIsActive ?? false,
+    savedAmount: result.savedAmount == null ? null : Number(result.savedAmount),
+    achievementRate: result.achievementRate ?? null,
+  }
+}
+
+export type SendEmailChangeRequest = PostApiV1UsersMeEmailVerificationsData['body']
+export type ChangeEmailRequest = PatchApiV1UsersMeEmailData['body']
 
 export type SetSavingGoalRequest = PutApiV1UsersMeSavingGoalData['body']
 
@@ -137,8 +159,29 @@ export const userApi = {
     await client.delete('/api/v1/users/me', { data: body })
   },
 
+  getSavingGoal: async (): Promise<SavingGoal> => {
+    const { data } = await client.get<GetSavingGoalResponse>('/api/v1/users/me/saving-goal')
+    return adaptSavingGoal(data.data)
+  },
+
   setSavingGoal: async (body: SetSavingGoalRequest): Promise<SavingGoal> => {
-    const { data } = await client.put<ApiResponse<SavingGoal>>('/api/v1/users/me/saving-goal', body)
+    const { data } = await client.put<UpdateSavingGoalResponse>(
+      '/api/v1/users/me/saving-goal',
+      body,
+    )
+    return adaptSavingGoal(data.data)
+  },
+
+  sendEmailChangeCode: async (body: SendEmailChangeRequest) => {
+    const { data } = await client.post<EmailChangeVerificationResponse>(
+      '/api/v1/users/me/email-verifications',
+      body,
+    )
+    return data.data
+  },
+
+  changeEmail: async (body: ChangeEmailRequest) => {
+    const { data } = await client.patch<ChangeEmailResponse>('/api/v1/users/me/email', body)
     return data.data
   },
 
