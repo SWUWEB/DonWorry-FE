@@ -15,7 +15,7 @@ export default function TemptationJudge() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
     isLoading,
     isUnauthorized,
     handleExtend,
@@ -33,7 +33,7 @@ export default function TemptationJudge() {
     resetDecideStatus,
   } = useWishlistContext()
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
   const [selectedExtend, setSelectedExtend] = useState<(typeof TIME_OPTIONS)[number]>('1일')
   const [isExtendConfirmOpen, setIsExtendConfirmOpen] = useState(false)
   // 살래요/안 살래요 중 어떤 결정을 보냈는지, 그 시점의 상품 정보를 기억해뒀다가 성공하면 그에 맞는

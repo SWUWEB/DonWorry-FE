@@ -16,7 +16,7 @@ export default function TemptationInfo() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
     isLoading,
     handleDelete,
     isDeleting,
@@ -27,7 +27,7 @@ export default function TemptationInfo() {
     resetDeleteStatus,
   } = useWishlistContext()
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
 
   const [isGiveUpOpen, setIsGiveUpOpen] = useState(false)
   const isGiveUpDialogOpen = isGiveUpOpen && !isDeleteSuccess && !isDeleteError

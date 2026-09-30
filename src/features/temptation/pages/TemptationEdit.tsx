@@ -16,7 +16,7 @@ export default function TemptationEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const {
-    filteredProducts,
+    products,
     isLoading,
     handleEdit,
     isEditing,
@@ -42,7 +42,7 @@ export default function TemptationEdit() {
     ? errorMessageMap[editErrorKind]
     : { title: '수정사항을 저장하지 못했습니다.', description: '다시 시도해주세요.' }
 
-  const product = filteredProducts.find((p) => p.id === id)
+  const product = products.find((p) => p.id === id)
   const [isDirty, setIsDirty] = useState(false)
 
   const blocker = useBlocker(

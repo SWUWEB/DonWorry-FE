@@ -178,6 +178,7 @@ export const useWishlist = () => {
     setFilter,
     sort,
     setSort,
+    products,
     filteredProducts,
     categoriesToRender,
     isLoading,

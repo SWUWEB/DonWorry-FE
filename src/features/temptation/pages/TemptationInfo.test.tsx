@@ -18,7 +18,7 @@ vi.mock('../hooks/useWishlistDetail', () => ({
 
 function mockContext(overrides: Partial<ReturnType<typeof useWishlistContext>>) {
   vi.mocked(useWishlistContext).mockReturnValue({
-    filteredProducts: [],
+    products: [],
     isLoading: false,
     handleDelete: vi.fn(),
     isDeleting: false,
