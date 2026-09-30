@@ -70,5 +70,7 @@ describe('소비 기록 mutation 캐시 동기화', () => {
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['consumption-records'] })
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['user', 'budget'] })
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['consumption-report'] })
+    expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['home'] })
+    expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['user', 'saving-goal'] })
   })
 })
