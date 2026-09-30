@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { RecordType } from '@/features/record/mockRecords'
+import defaultThumbnail from '@/assets/images/default-thumbnail.webp'
 import { formatKRW } from '@/shared/utils/currency'
 import styles from './RecordCard.module.css'
 
@@ -26,7 +27,11 @@ export default function RecordCard({
         {thumbnail ? (
           <img src={thumbnail} alt={title} className={styles.thumbnail} />
         ) : (
-          <div className={styles.thumbnailPlaceholder} />
+          <img
+            src={defaultThumbnail}
+            alt=""
+            className={`${styles.thumbnail} ${styles.fallbackThumbnail}`}
+          />
         )}
 
         <div className={styles.info}>
