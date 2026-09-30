@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
@@ -67,7 +67,7 @@ describe('RecordCreatePage 수정 모드', () => {
 
     await router.navigate(-1)
 
-    await waitFor(() => expect(router.state.location.pathname).toBe('/record'))
-    expect(screen.getByText('소비 기록 목록')).toBeInTheDocument()
+    expect(await screen.findByText('소비 기록 목록')).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/record')
   })
 })
