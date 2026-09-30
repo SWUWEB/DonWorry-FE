@@ -8,8 +8,24 @@
 
 .sortRow {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   padding-top: 12px;
+}
+
+.readAllBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-gray-300);
+  cursor: pointer;
+}
+
+.readAllBtn:disabled {
+  color: var(--color-gray-100);
+  cursor: default;
 }
 
 .sortWrap {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IoChevronDown } from 'react-icons/io5'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
@@ -8,7 +9,11 @@ import {
   useNotifications,
   useReadNotification,
   useDeleteNotification,
+  useReadAllNotifications,
+  useNotificationSettings,
+  useUpdateSubSettings,
 } from './hooks/useNotifications'
+import { NOTIFICATION_TYPE_TO_SETTING_KEY } from './api/notificationApi'
 import styles from './Notification.module.css'
 import type { NotificationItem } from './components/NotificationCard'
 
@@ -44,6 +49,7 @@ export default function Notification({
   const [readIds, setReadIds] = useState<Set<string>>(new Set())
   const sortRef = useRef<HTMLDivElement>(null)
 
+  const navigate = useNavigate()
   const {
     data: serverNotifications = [],
     isLoading,
@@ -53,6 +59,9 @@ export default function Notification({
   } = useNotifications(FILTER_MAP[filter], SORT_MAP[sort])
   const { mutate: readOne, error: readError } = useReadNotification()
   const { mutate: deleteNotification, error: deleteError } = useDeleteNotification()
+  const { mutate: readAll, isPending: isReadingAll } = useReadAllNotifications()
+  const { data: notificationSettings } = useNotificationSettings()
+  const { mutate: updateSubSettings, isPending: isUpdatingSettings } = useUpdateSubSettings()
 
   const notifications: NotificationItem[] = serverNotifications.map((n) => ({
     ...n,
@@ -92,10 +101,49 @@ export default function Notification({
     })
   }
 
+  const handleReadAll = () => {
+    if (isReadingAll || unreadCount === 0) return
+    const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id)
+    setReadIds((prev) => new Set([...prev, ...unreadIds]))
+    // 실패하면 서버는 읽지 않음인데 화면만 읽음으로 남으므로, 이 요청이 추가한 ID만 되돌립니다.
+    readAll(undefined, {
+      onError: () =>
+        setReadIds((prev) => {
+          const next = new Set(prev)
+          unreadIds.forEach((id) => next.delete(id))
+          return next
+        }),
+    })
+  }
+
+  const handleNavigateToWishlist = (wishlistItemId: string) => {
+    navigate(`/temptation/${wishlistItemId}`)
+  }
+
+  const handleMute = (notificationType: NotificationItem['notificationType']) => {
+    // 캐시된 설정 전체를 PATCH하는 구조라, 진행 중인 요청이 있으면 그 응답이
+    // 최신 상태를 반영하기 전까지 다음 요청을 막아 서버 측 동시 수정 충돌을 피합니다.
+    if (!notificationSettings || isUpdatingSettings) return
+    const { general, goal, retrial } = notificationSettings
+    updateSubSettings({
+      general,
+      goal,
+      retrial,
+      [NOTIFICATION_TYPE_TO_SETTING_KEY[notificationType]]: false,
+    })
+  }
+
   return (
     <>
       <main className={styles.main}>
         <div className={styles.sortRow}>
+          <button
+            className={styles.readAllBtn}
+            onClick={handleReadAll}
+            disabled={isReadingAll || unreadCount === 0}
+          >
+            전체 읽음
+          </button>
           <div className={styles.sortWrap} ref={sortRef}>
             <button className={styles.sortBtn} onClick={() => setSortOpen((prev) => !prev)}>
               {sort}
@@ -133,7 +181,13 @@ export default function Notification({
             !isError &&
             notifications.map((item) => (
               <li key={item.id}>
-                <NotificationCard {...item} onRead={handleRead} onDelete={deleteNotification} />
+                <NotificationCard
+                  {...item}
+                  onRead={handleRead}
+                  onDelete={deleteNotification}
+                  onNavigateToWishlist={handleNavigateToWishlist}
+                  onMute={handleMute}
+                />
               </li>
             ))}
           {!isLoading && !isError && notifications.length === 0 && (

@@ -17,11 +17,13 @@ export interface NotificationItem {
   // 서버가 id를 문자열로 내려주므로 변환 없이 그대로 사용합니다(정밀도 손실·NaN 방지).
   id: string
   type: Exclude<FilterType, '전체'>
+  notificationType: 'TEMPTATION' | 'GOAL' | 'GENERAL'
   iconVariant: 'lightning' | 'check' | 'calendar' | 'heart'
   title: string
   description: string
   time: string
   isRead: boolean
+  wishlistItemId: string | null
 }
 
 const ICON_CONFIG: Record<
@@ -41,6 +43,8 @@ const ICON_CONFIG: Record<
 interface Props extends NotificationItem {
   onRead: (id: string) => void
   onDelete?: (id: string) => void
+  onNavigateToWishlist?: (wishlistItemId: string) => void
+  onMute?: (notificationType: NotificationItem['notificationType']) => void
 }
 
 export default function NotificationCard({
@@ -50,14 +54,23 @@ export default function NotificationCard({
   time,
   iconVariant,
   isRead,
+  notificationType,
+  wishlistItemId,
   onRead,
   onDelete,
+  onNavigateToWishlist,
+  onMute,
 }: Props) {
   const { bg, color, border, Icon } = ICON_CONFIG[iconVariant]
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const handleCardClick = () => {
+    onRead(id)
+    if (wishlistItemId) onNavigateToWishlist?.(wishlistItemId)
+  }
 
   useEffect(() => {
     if (!menuOpen) return
@@ -85,11 +98,17 @@ export default function NotificationCard({
   return (
     <div
       className={`${styles.card} ${isRead ? styles.read : ''}`}
-      onClick={() => onRead(id)}
+      onClick={handleCardClick}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') onRead(id)
+        // 더보기 버튼 등 카드 내부 요소에서 버블링된 키 입력은 무시하고,
+        // 카드 자신에 포커스가 있을 때만 활성화합니다.
+        if (e.target !== e.currentTarget) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleCardClick()
+        }
       }}
     >
       <div className={styles.iconWrap} style={{ background: bg, border: `1px solid ${border}` }}>
@@ -136,6 +155,7 @@ export default function NotificationCard({
               onClick={(e) => {
                 e.stopPropagation()
                 setMenuOpen(false)
+                onMute?.(notificationType)
               }}
             >
               <IoNotificationsOffOutline size={16} />
