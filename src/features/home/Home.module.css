@@ -6,8 +6,27 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 0 20px 32px;
+  gap: 28px;
+  padding: 28px 16px 40px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.contentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .errorState {

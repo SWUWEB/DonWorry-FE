@@ -45,28 +45,40 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <HomeBanner goalStatus={goalStatus} achievementRate={achievementRate} />
+      <HomeBanner
+        goalStatus={goalStatus}
+        achievementRate={achievementRate}
+        remainingAmount={achievementRemainingAmount}
+      />
       <div className={styles.content}>
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>이번 달 한 눈에</h2>
+          <SpendingSummary
+            monthlySpending={monthlySpending}
+            comparisonRate={comparisonRate}
+            comparisonMessage={comparisonMessage}
+            budgetStatus={budgetStatus}
+            remainingBudget={remainingBudget}
+            budgetMessage={budgetMessage}
+          />
+        </section>
         <CategoryChart
           categories={categories}
           hasRecords={hasRecords}
           summaryText={categorySummaryText}
-        />
-        <SpendingSummary
-          monthlySpending={monthlySpending}
-          comparisonRate={comparisonRate}
-          comparisonMessage={comparisonMessage}
-          budgetStatus={budgetStatus}
-          remainingBudget={remainingBudget}
-          budgetMessage={budgetMessage}
         />
         <GoalProgress
           goalStatus={goalStatus}
           achievementRate={achievementRate}
           remainingAmount={achievementRemainingAmount}
         />
-        <EncouragementCard message={cheerMessage} />
-        <SpendingQuestion question={dailyQuestion} />
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>오늘의 콘텐츠</h2>
+          <div className={styles.contentList}>
+            <EncouragementCard message={cheerMessage} />
+            <SpendingQuestion question={dailyQuestion} />
+          </div>
+        </section>
       </div>
     </main>
   )

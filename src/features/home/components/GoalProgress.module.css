@@ -1,41 +1,35 @@
-.sectionLabel {
-  margin: 0 0 8px;
-  font-size: 12px;
-  color: var(--color-gray-300);
-}
-
 .card {
-  background: white;
+  background: var(--color-text-white);
+  border: 1px solid var(--color-main-100);
   border-radius: 16px;
-  padding: 17px;
-  box-shadow:
-    0 2px 6px 0 rgba(0, 0, 0, 0.08),
-    0 1px 2px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px 0 rgba(36, 49, 48, 0.06);
+  padding: 20px 16px;
 }
 
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .cardTitle {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .badge {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-main-500);
-  background-color: #e8f4f4;
-  padding: 2px 8px;
+  background-color: var(--color-main-100);
+  padding: 4px 10px;
   border-radius: 999px;
 }
 
 .progressTrackWrap {
+  position: relative;
   padding-top: 8px;
 }
 
@@ -44,6 +38,17 @@
   background-color: #e0eeee;
   border-radius: 999px;
   overflow: hidden;
+}
+
+.progressCoin {
+  position: absolute;
+  /* 트랙(padding-top 8px + 높이 12px)의 세로 중앙에 맞춥니다. */
+  top: 14px;
+  width: 32px;
+  height: auto;
+  transform: translate(-50%, -50%);
+  transition: left 0.5s ease;
+  pointer-events: none;
 }
 
 .progressBar {
@@ -65,8 +70,8 @@
 }
 
 .remaining {
-  margin: 12px 0 0;
-  font-size: 12px;
+  margin: 20px 0 0;
+  font-size: 14px;
   color: var(--color-text-primary);
   text-align: center;
 }

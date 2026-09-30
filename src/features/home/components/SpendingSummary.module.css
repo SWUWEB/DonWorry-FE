@@ -6,16 +6,15 @@
 .card {
   flex: 1;
   background: var(--color-text-white);
-  border-radius: 14px;
-  padding: 15px 17px;
-  box-shadow:
-    0 2px 6px 0 rgba(0, 0, 0, 0.08),
-    0 1px 2px 0 rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-main-100);
+  border-radius: 16px;
+  padding: 18px 16px;
+  box-shadow: 0 2px 8px 0 rgba(36, 49, 48, 0.06);
 }
 
 .label {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-primary);
 }
 
@@ -23,25 +22,27 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 6px;
+  margin-top: 8px;
+  color: var(--color-text-primary);
 }
 
-.amountRed {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 700;
+.remaining {
+  color: var(--color-main-500);
+}
+
+.over {
   color: var(--color-text-red);
 }
 
-.amountBlue {
+.amount {
   margin: 0;
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--color-text-blue);
+  white-space: nowrap;
 }
 
 .sub {
-  margin: 6px 0 0;
-  font-size: 11px;
+  margin: 8px 0 0;
+  font-size: 12px;
   color: var(--color-gray-300);
 }

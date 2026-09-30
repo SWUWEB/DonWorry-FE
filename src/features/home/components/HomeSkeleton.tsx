@@ -7,11 +7,11 @@ export default function HomeSkeleton() {
         <div className={`${styles.line} ${styles.lineShort}`} />
         <div className={`${styles.line} ${styles.lineLong}`} />
       </div>
-      <div className={styles.card} aria-hidden="true" />
       <div className={styles.row} aria-hidden="true">
         <div className={styles.halfCard} />
         <div className={styles.halfCard} />
       </div>
+      <div className={styles.card} aria-hidden="true" />
       <div className={styles.card} aria-hidden="true" />
       <div className={styles.smallCard} aria-hidden="true" />
       <div className={styles.smallCard} aria-hidden="true" />
