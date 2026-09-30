@@ -12,6 +12,7 @@ import { useCheckEmail } from '@/hooks/useCheckEmail'
 import { useCheckLoginId } from '@/hooks/useCheckLoginId'
 import { isAxiosError } from 'axios'
 import { saveAuthSession } from '@/shared/auth/session'
+import inputStyles from '@/shared/components/InputField/InputField.module.css'
 
 // 서버 오류 응답에서 사용자에게 보여줄 문구를 뽑아냅니다.
 // 400: 필드 단위 검증 메시지, 409: 이메일 중복, 429: 재시도까지 남은 시간 안내
@@ -292,18 +293,22 @@ export default function SignUpForm() {
             중복확인
           </button>
         </div>
+
+        <div className={inputStyles.messageArea}>
+          {idStatus ? (
+            <ErrorMessage type={idStatus.type} message={idStatus.message} />
+          ) : (
+            id.length > 0 && (
+              <ErrorMessage
+                type={isValidId ? 'success' : 'error'}
+                message={
+                  isValidId ? '올바른 아이디 형식입니다.' : '영문, 숫자 조합 6~12자로 입력해주세요.'
+                }
+              />
+            )
+          )}
+        </div>
       </div>
-
-      {id.length > 0 && (
-        <ErrorMessage
-          type={isValidId ? 'success' : 'error'}
-          message={
-            isValidId ? '올바른 아이디 형식입니다.' : '영문, 숫자 조합 6~12자로 입력해주세요.'
-          }
-        />
-      )}
-
-      {idStatus && <ErrorMessage type={idStatus.type} message={idStatus.message} />}
 
       <div className={styles.inputWithButton}>
         <label htmlFor="email" className={styles.label}>
@@ -339,17 +344,22 @@ export default function SignUpForm() {
             인증하기
           </button>
         </div>
+
+        <div className={inputStyles.messageArea}>
+          {emailStatus ? (
+            <ErrorMessage type={emailStatus.type} message={emailStatus.message} />
+          ) : (
+            email.length > 0 && (
+              <ErrorMessage
+                type={isValidEmail ? 'success' : 'error'}
+                message={
+                  isValidEmail ? '올바른 이메일 형식입니다.' : '올바른 이메일 형식이 아닙니다.'
+                }
+              />
+            )
+          )}
+        </div>
       </div>
-
-      {email.length > 0 && (
-        <ErrorMessage
-          type={isValidEmail ? 'success' : 'error'}
-          message={isValidEmail ? '올바른 이메일 형식입니다.' : '올바른 이메일 형식이 아닙니다.'}
-        />
-      )}
-
-      {emailStatus && <ErrorMessage type={emailStatus.type} message={emailStatus.message} />}
-
       <div className={styles.inputWithButton}>
         <label htmlFor="verificationCode" className={styles.label}>
           인증번호
@@ -374,7 +384,9 @@ export default function SignUpForm() {
           </button>
         </div>
 
-        {codeStatus && <ErrorMessage type={codeStatus.type} message={codeStatus.message} />}
+        <div className={inputStyles.messageArea}>
+          {codeStatus && <ErrorMessage type={codeStatus.type} message={codeStatus.message} />}
+        </div>
       </div>
 
       <div className={styles.formField}>
@@ -386,14 +398,16 @@ export default function SignUpForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {password.length > 0 && (
-          <ErrorMessage
-            type={isValidPassword ? 'success' : 'error'}
-            message={
-              isValidPassword ? '올바른 비밀번호입니다.' : '비밀번호가 조건을 만족하지 않습니다.'
-            }
-          />
-        )}
+        <div className={inputStyles.messageArea}>
+          {password.length > 0 && (
+            <ErrorMessage
+              type={isValidPassword ? 'success' : 'error'}
+              message={
+                isValidPassword ? '올바른 비밀번호입니다.' : '비밀번호가 조건을 만족하지 않습니다.'
+              }
+            />
+          )}
+        </div>
       </div>
 
       <div className={styles.formField}>
@@ -405,12 +419,14 @@ export default function SignUpForm() {
           onChange={(e) => setPasswordCheck(e.target.value)}
         />
 
-        {password.length > 0 && passwordCheck.length > 0 && (
-          <ErrorMessage
-            type={isPasswordMatch ? 'success' : 'error'}
-            message={isPasswordMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
-          />
-        )}
+        <div className={inputStyles.messageArea}>
+          {password.length > 0 && passwordCheck.length > 0 && (
+            <ErrorMessage
+              type={isPasswordMatch ? 'success' : 'error'}
+              message={isPasswordMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+            />
+          )}
+        </div>
       </div>
 
       <div className={styles.formField}>
@@ -421,14 +437,18 @@ export default function SignUpForm() {
           onChange={(e) => setPhone(e.target.value)}
         />
 
-        {phone.length > 0 && (
-          <ErrorMessage
-            type={isValidPhone ? 'success' : 'error'}
-            message={
-              isValidPhone ? '올바른 전화번호 형식입니다.' : '010-0000-0000 형식으로 입력해주세요.'
-            }
-          />
-        )}
+        <div className={inputStyles.messageArea}>
+          {phone.length > 0 && (
+            <ErrorMessage
+              type={isValidPhone ? 'success' : 'error'}
+              message={
+                isValidPhone
+                  ? '올바른 전화번호 형식입니다.'
+                  : '010-0000-0000 형식으로 입력해주세요.'
+              }
+            />
+          )}
+        </div>
       </div>
 
       {submitError && <ErrorMessage message={submitError} />}

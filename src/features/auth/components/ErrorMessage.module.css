@@ -1,14 +1,14 @@
 .error {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0;
+  line-height: 18px;
   font-size: 12px;
   font-weight: 500;
   color: #ff3b30;
 }
 
 .success {
-  margin-top: -12px;
-  margin-bottom: 10px;
+  margin: 0;
+  line-height: 18px;
   font-size: 12px;
   font-weight: 500;
   color: #22c55e;

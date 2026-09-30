@@ -69,11 +69,17 @@
 .errorText {
   margin: 0;
   font-size: 12px;
+  line-height: 18px;
   color: var(--color-text-red);
 }
 
 .helperText {
   margin: 0;
   font-size: 12px;
+  line-height: 18px;
   color: var(--color-gray-200);
+}
+
+.messageArea {
+  min-height: 10px;
 }
