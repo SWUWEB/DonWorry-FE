@@ -8,10 +8,12 @@ import type {
   SetSavingGoalRequest,
   UpdateProfileRequest,
   UserProfile,
+  SavingGoal,
 } from '../api/userApi'
 
 const QUERY_KEYS = {
   me: ['user', 'me'] as const,
+  savingGoal: ['user', 'saving-goal'] as const,
   budget: (yearMonth: string) => ['user', 'budget', yearMonth] as const,
 }
 
@@ -43,8 +45,11 @@ export function useSetSavingGoal() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (body: SetSavingGoalRequest) => userApi.setSavingGoal(body),
-    onSuccess: async () => {
+    onSuccess: async (goal) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.savingGoal })
+      queryClient.setQueryData(QUERY_KEYS.savingGoal, goal)
       await Promise.all([
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.savingGoal }),
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
         queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
         queryClient.invalidateQueries({ queryKey: ['home'] }),
@@ -60,9 +65,17 @@ export function useDeleteSavingGoal() {
     onSuccess: async () => {
       // 진행 중인 조회가 삭제 이전의 목표를 다시 덮어쓰지 않도록 취소합니다.
       await Promise.all([
+        queryClient.cancelQueries({ queryKey: QUERY_KEYS.savingGoal }),
         queryClient.cancelQueries({ queryKey: QUERY_KEYS.me }),
         queryClient.cancelQueries({ queryKey: ['consumption-report'] }),
       ])
+      queryClient.setQueryData<SavingGoal>(QUERY_KEYS.savingGoal, {
+        savingGoalText: null,
+        targetSavingAmount: null,
+        savingGoalIsActive: false,
+        savedAmount: null,
+        achievementRate: null,
+      })
       queryClient.setQueryData<UserProfile>(QUERY_KEYS.me, (profile) =>
         profile ? { ...profile, savingGoalText: null } : profile,
       )
@@ -83,6 +96,7 @@ export function useDeleteSavingGoal() {
             : report,
       )
       await Promise.all([
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.savingGoal }),
         queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me }),
         queryClient.invalidateQueries({ queryKey: ['consumption-report'] }),
         queryClient.invalidateQueries({ queryKey: ['home'] }),
@@ -96,6 +110,32 @@ export function useBudget(yearMonth: string) {
     queryKey: QUERY_KEYS.budget(yearMonth),
     queryFn: () => userApi.getBudget(yearMonth),
     staleTime: 1000 * 60 * 5,
+  })
+}
+
+export function useSavingGoal() {
+  return useQuery({
+    queryKey: QUERY_KEYS.savingGoal,
+    queryFn: userApi.getSavingGoal,
+    staleTime: 1000 * 60,
+  })
+}
+
+export function useSendEmailChangeCode() {
+  return useMutation({ mutationFn: userApi.sendEmailChangeCode })
+}
+
+export function useChangeEmail() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: userApi.changeEmail,
+    onSuccess: async ({ email }) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.me })
+      queryClient.setQueryData<UserProfile>(QUERY_KEYS.me, (profile) =>
+        profile ? { ...profile, email } : profile,
+      )
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.me })
+    },
   })
 }
 
