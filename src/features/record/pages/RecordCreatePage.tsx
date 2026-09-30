@@ -130,7 +130,7 @@ function RecordCreateForm({ id, editingRecord }: { id?: string; editingRecord?: 
             productUrl: normalizedProductUrl,
           },
         },
-        { onSuccess: () => navigate(`/record/${id}`) },
+        { onSuccess: () => navigate(-1) },
       )
       return
     }
