@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
 import styles from './OnboardingInterestPage.module.css'
 import { getOnboardingDraft, saveOnboardingDraft } from './onboardingSession'
 import { useOnboarding } from '@/features/onboarding/hooks/useOnboarding'
@@ -69,7 +70,30 @@ export default function OnboardingInterestPage() {
     navigate('/onboarding/step2')
   }
 
-  if (isOnboardingLoading) return <div className={styles.page} />
+  if (isOnboardingLoading) {
+    // 이미 온보딩을 마친 사용자는 곧 홈으로 이동하므로, 실제 선택지 대신 중립적인 뼈대만 보여줍니다.
+    return (
+      <SkeletonGroup label="온보딩 정보 불러오는 중" className={styles.page}>
+        <div className={styles.content}>
+          <div className={styles.dots}>
+            <Skeleton width={24} height={8} radius={999} />
+            <Skeleton width={8} height={8} circle />
+            <Skeleton width={8} height={8} circle />
+          </div>
+          <div className={styles.skeletonTitle}>
+            <Skeleton width={120} height={28} />
+            <Skeleton width={220} height={28} />
+            <Skeleton width={260} height={14} />
+          </div>
+          <div className={styles.chips}>
+            {[88, 104, 96, 120, 88, 112, 96, 80, 100].map((width, i) => (
+              <Skeleton key={i} width={width} height={44} radius={999} />
+            ))}
+          </div>
+        </div>
+      </SkeletonGroup>
+    )
+  }
   if (alreadyOnboarded) return <Navigate to="/" replace />
 
   return (
