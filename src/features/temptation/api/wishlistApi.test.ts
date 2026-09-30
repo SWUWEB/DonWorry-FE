@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import client from '@/api/client'
-import { fetchWishlistItems } from './wishlistApi'
+import type { FormData as WishFormData } from '@/components/layout/ProductForm'
+import { addWishlistItem, fetchWishlistItems, updateWishlistItem } from './wishlistApi'
 
 vi.mock('@/api/client')
 
@@ -44,5 +45,58 @@ describe('wishlistApi', () => {
         createdAt: new Date('2026-07-16T18:00:00.000Z'),
       },
     ])
+  })
+})
+
+describe.each([
+  { method: 'post' as const, url: '/api/v1/wishlist-items' },
+  { method: 'patch' as const, url: '/api/v1/wishlist-items/1' },
+])('wishlistApi $method payload', ({ method, url }) => {
+  it.each([undefined, '', 'https://example.com/product'])('handles link %s', async (link) => {
+    const formData: WishFormData = {
+      name: '맥북 프로',
+      category: '전자기기',
+      price: 2500000,
+      reason: '개발 작업용 스펙 업그레이드',
+      time: '1일',
+      link,
+    }
+    vi.mocked(client[method]).mockResolvedValueOnce({
+      data: {
+        success: true,
+        data: {
+          id: '1',
+          categoryCode: 'ELECTRONICS',
+          productName: formData.name,
+          price: String(formData.price),
+          productUrl: link || null,
+          reason: formData.reason,
+          waitType: '1D',
+          waitUntil: null,
+          createdAt: '2026-07-16T18:00:00.000Z',
+        },
+      },
+    })
+
+    if (method === 'post') {
+      await addWishlistItem(formData)
+    } else {
+      await updateWishlistItem('1', formData)
+    }
+
+    const [requestUrl, body] = vi.mocked(client[method]).mock.lastCall!
+    expect(requestUrl).toBe(url)
+    expect(body).toMatchObject({
+      categoryCode: 'ELECTRONICS',
+      productName: formData.name,
+      price: formData.price,
+      reason: formData.reason,
+      waitType: '1D',
+    })
+    if (link) {
+      expect(body).toHaveProperty('productUrl', link)
+    } else {
+      expect(body).not.toHaveProperty('productUrl')
+    }
   })
 })
