@@ -185,7 +185,7 @@ export default function TemptationJudge() {
         />
       )
     }
-    return <p>상품을 찾을 수 없습니다.</p>
+    return <p className={styles.emptyState}>상품을 찾을 수 없습니다.</p>
   }
 
   const totalHours = Math.round(
@@ -317,6 +317,16 @@ export default function TemptationJudge() {
         confirmText="확인"
         onCancel={handleTerminalDecideErrorConfirm}
         onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={decideErrorKind === 'PRICE_REQUIRED'}
+        title="가격 정보가 필요합니다."
+        description="가격이 등록되지 않은 상품은 결정을 내릴 수 없습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={() => resetDecideStatus()}
+        onConfirm={() => resetDecideStatus()}
       />
 
       <ConfirmDialog

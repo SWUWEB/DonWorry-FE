@@ -160,7 +160,7 @@ export default function TemptationInfo() {
     if (isLoading || isFetching || isDetailLoading) {
       return <WishlistDetailSkeleton backTo="/temptation" />
     }
-    return <p>상품을 찾을 수 없습니다.</p>
+    return <p className={styles.emptyState}>상품을 찾을 수 없습니다.</p>
   }
 
   return (
