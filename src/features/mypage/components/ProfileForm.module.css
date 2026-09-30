@@ -22,6 +22,49 @@
   font-weight: 600;
 }
 
+.birthField {
+  position: relative;
+}
+
+.birthField input {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.birthDisplay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: 12px;
+  background: var(--color-text-white);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.birthPlaceholder {
+  color: var(--color-gray-200);
+}
+
+.birthDisplay svg {
+  flex-shrink: 0;
+  color: var(--color-text-primary);
+}
+
+.birthField:focus-within .birthDisplay {
+  border-color: var(--color-main-500);
+}
+
 .genderGroup {
   display: flex;
   gap: 24px;
@@ -32,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #b4b4b4;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

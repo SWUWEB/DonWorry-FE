@@ -11,19 +11,19 @@ export default function MenuSection() {
 
       <section className={styles.card}>
         <MenuItem
-          icon="solar:wallet-money-outline"
+          icon="lucide:wallet"
           title="월별 수입/예산 관리"
           onClick={() => navigate('/budget')}
         />
 
         <MenuItem
-          icon="mynaui:target"
+          icon="lucide:target"
           title="목표 금액 설정"
           onClick={() => navigate('/goal-amount')}
         />
 
         <MenuItem
-          icon="mynaui:chart-column-solid"
+          icon="lucide:chart-column"
           title="상세 소비 분석 리포트"
           onClick={() => navigate('/consumption-report')}
         />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
+import { HiOutlineCalendarDays } from 'react-icons/hi2'
 import Button from '@/shared/components/Button'
 import InputField from '@/shared/components/InputField'
 import { useMe, useUpdateMe } from '../hooks/useUser'
@@ -18,6 +19,16 @@ const GENDER_FROM_API: Record<'FEMALE' | 'MALE', Gender> = {
   MALE: 'male',
 }
 
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  const prefixLength = digits.startsWith('02') ? 2 : 3
+  if (digits.length <= prefixLength) return digits
+  if (digits.length <= prefixLength + 4) {
+    return `${digits.slice(0, prefixLength)}-${digits.slice(prefixLength)}`
+  }
+  return `${digits.slice(0, prefixLength)}-${digits.slice(prefixLength, -4)}-${digits.slice(-4)}`
+}
+
 export default function ProfileForm() {
   const { data: profile, isLoading, isError, refetch } = useMe()
   const { mutate: updateMe, isPending } = useUpdateMe()
@@ -34,7 +45,7 @@ export default function ProfileForm() {
       // 서버에서 불러온 값을 편집 가능한 로컬 상태로 최초 1회 반영합니다.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setNickname(profile.nickname)
-      setPhone(profile.phoneNumber ?? '')
+      setPhone(formatPhone(profile.phoneNumber ?? ''))
       setBirth(profile.birthDate ?? '')
       setGender(profile.gender ? GENDER_FROM_API[profile.gender] : null)
     }
@@ -67,7 +78,7 @@ export default function ProfileForm() {
     updateMe(
       {
         nickname,
-        phoneNumber: phone || null,
+        phoneNumber: phone.replace(/\D/g, '') || null,
         birthDate: birth || null,
         ...(gender && { gender: GENDER_TO_API[gender] }),
       },
@@ -107,17 +118,47 @@ export default function ProfileForm() {
       <div className={styles.inputGroup}>
         <InputField
           label="전화번호"
-          placeholder="- 없이 입력해주세요."
+          placeholder="전화번호를 입력해주세요."
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel-national"
+          readOnly={isPending}
           value={phone}
           onChange={(e) => {
-            setPhone(e.target.value)
+            const input = e.currentTarget
+            const digitsBeforeCaret = input.value
+              .slice(0, input.selectionStart ?? input.value.length)
+              .replace(/\D/g, '').length
+            const formatted = formatPhone(input.value)
+            setPhone(formatted)
+            // 자동 삽입된 하이픈 때문에 중간 편집 시 커서가 끝으로 이동하지 않게 합니다.
+            let caret = 0
+            let digitCount = 0
+            while (caret < formatted.length && digitCount < digitsBeforeCaret) {
+              if (/\d/.test(formatted[caret])) digitCount += 1
+              caret += 1
+            }
+            requestAnimationFrame(() => {
+              if (document.activeElement === input) input.setSelectionRange(caret, caret)
+            })
             setError('')
             setSaved(false)
           }}
         />
       </div>
 
-      <div className={styles.inputGroup}>
+      <div
+        className={`${styles.inputGroup} ${styles.birthField}`}
+        onClick={(event) => {
+          if (event.target instanceof HTMLInputElement) {
+            try {
+              event.target.showPicker?.()
+            } catch {
+              // showPicker를 지원하지 않는 환경에서는 기본 날짜 선택 동작을 유지합니다.
+            }
+          }
+        }}
+      >
         <InputField
           label="생년월일"
           type="date"
@@ -128,6 +169,13 @@ export default function ProfileForm() {
             setSaved(false)
           }}
         />
+        <span
+          className={`${styles.birthDisplay} ${!birth ? styles.birthPlaceholder : ''}`}
+          aria-hidden="true"
+        >
+          <span>{birth ? birth.replaceAll('-', '.') : '생년월일을 선택해주세요.'}</span>
+          <HiOutlineCalendarDays size={18} />
+        </span>
       </div>
 
       <div className={styles.inputGroup}>
