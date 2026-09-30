@@ -159,13 +159,19 @@ export default function ChangeEmailForm({ onUnauthorized = () => {} }: ChangeEma
 
         {sentEmail && (
           <div className={styles.inputGroup}>
-            <p className={styles.expireText} role="status">
-              {expiry.remainingSeconds > 0
-                ? `${sentEmail}로 인증번호를 보냈습니다. 남은 시간 ${expiry.remainingSeconds}초`
-                : '인증번호가 만료되었습니다. 다시 요청해주세요.'}
-            </p>
+            {expiry.remainingSeconds === 0 && (
+              <p className={styles.expireText} role="status">
+                인증번호가 만료되었습니다. 다시 요청해주세요.
+              </p>
+            )}
             <InputField
               label="인증번호"
+              rightElement={
+                <span className={styles.timer} role="timer" aria-label="인증번호 남은 시간">
+                  {String(Math.floor(expiry.remainingSeconds / 60)).padStart(2, '0')}:
+                  {String(expiry.remainingSeconds % 60).padStart(2, '0')}
+                </span>
+              }
               inputMode="numeric"
               autoComplete="one-time-code"
               maxLength={6}
