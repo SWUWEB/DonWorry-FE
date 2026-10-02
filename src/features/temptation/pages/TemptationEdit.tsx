@@ -48,7 +48,7 @@ export default function TemptationEdit() {
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
-      isDirty && currentLocation.pathname !== nextLocation.pathname,
+      isDirty && !isEditSuccess && currentLocation.pathname !== nextLocation.pathname,
   )
 
   useEffect(() => {

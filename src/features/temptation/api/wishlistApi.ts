@@ -83,6 +83,12 @@ const WAIT_TYPE_MAP: Record<string, (typeof TIME_OPTIONS)[number]> = {
   '1D': '1일',
   '3D': '3일',
   '1W': '7일',
+
+  // 임시로 내려오는 enum 값 방어용
+  ONE_HOUR: '1시간',
+  ONE_DAY: '1일',
+  THREE_DAYS: '3일',
+  ONE_WEEK: '7일',
 }
 
 const TIME_TO_WAIT_TYPE_MAP: Record<(typeof TIME_OPTIONS)[number], string> = {
