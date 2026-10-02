@@ -8,7 +8,12 @@ import { kakaoLogin } from '@/api/auth'
 import { createQueryClient } from '@/api/queryClient'
 import { onboardingApi } from '@/features/onboarding/api/onboardingApi'
 import type { OnboardingResult } from '@/features/onboarding/api/onboardingApi'
-import { clearAuthSession, getAccessToken } from '@/shared/auth/session'
+import {
+  clearAuthSession,
+  getAccessToken,
+  getRefreshToken,
+  saveAuthSession,
+} from '@/shared/auth/session'
 import { SESSION_EXPIRED_NOTICE } from '@/shared/auth/redirect'
 import KakaoCallback from './KakaoCallback'
 
@@ -186,6 +191,30 @@ describe('KakaoCallback', () => {
     expect(await screen.findByText('로그인 화면')).toBeInTheDocument()
     expect(router.state.location.state).toEqual({ notice: SESSION_EXPIRED_NOTICE })
     expect(onboardingApi.get).toHaveBeenCalledTimes(1)
+  })
+
+  it('토큰 재발급 후 재시도한 요청도 401이면 세션을 정리하고 로그인으로 이동한다', async () => {
+    vi.mocked(onboardingApi.get).mockImplementation(async () => {
+      saveAuthSession({ accessToken: 'refreshed-access', refreshToken: 'refreshed-refresh' })
+      throw { isAxiosError: true, response: { status: 401 } }
+    })
+    renderCallback('?code=abc&state=s1')
+
+    expect(await screen.findByText('로그인 화면')).toBeInTheDocument()
+    expect(getAccessToken()).toBeNull()
+    expect(getRefreshToken()).toBeNull()
+  })
+
+  it('토큰 재발급이 일시적으로 실패해 401이 전달되면 세션을 유지한다', async () => {
+    vi.mocked(onboardingApi.get).mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 401 },
+    })
+    renderCallback('?code=abc&state=s1')
+
+    expect(await screen.findByText('로그인 화면')).toBeInTheDocument()
+    expect(getAccessToken()).toBe('access')
+    expect(getRefreshToken()).toBe('refresh')
   })
 
   it('계정 연결이 필요하면 온보딩을 조회하지 않고 기존 연결 화면으로 이동한다', async () => {

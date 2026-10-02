@@ -13,7 +13,7 @@ import ErrorMessage from './components/ErrorMessage'
 import LoginHeader from './components/LoginHeader'
 import { getKakaoLoginErrorMessage, isKakaoLinkRequired } from './kakaoErrors'
 import { consumeKakaoState } from './kakaoOAuth'
-import { saveAuthSession } from '@/shared/auth/session'
+import { clearAuthSession, getAccessToken, saveAuthSession } from '@/shared/auth/session'
 import { SESSION_EXPIRED_NOTICE } from '@/shared/auth/redirect'
 import styles from './Login.module.css'
 
@@ -75,6 +75,12 @@ export default function KakaoCallback() {
           navigate(hasOnboarded ? '/' : '/onboarding', { replace: true })
         } catch (error: unknown) {
           if (isAxiosError(error) && error.response?.status === 401) {
+            // 토큰이 로그인 응답과 달라졌다면 재발급은 성공했지만 재시도 요청도 401을 받은 것이라
+            // 인터셉터가 세션을 지우지 않습니다. 재발급이 일시적으로 실패한 경우는 세션을 유지합니다.
+            const accessToken = getAccessToken()
+            if (accessToken && accessToken !== response.data.accessToken) {
+              clearAuthSession()
+            }
             navigate('/login', {
               replace: true,
               state: { notice: SESSION_EXPIRED_NOTICE },
