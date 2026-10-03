@@ -34,6 +34,10 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 }
 
+.group.chip .itemSelected:hover {
+  color: var(--color-main-500);
+}
+
 /* chipScroll: chip과 같은 모양이지만 줄바꿈 없이 가로 스크롤 */
 .group.chipScroll {
   flex-wrap: nowrap;

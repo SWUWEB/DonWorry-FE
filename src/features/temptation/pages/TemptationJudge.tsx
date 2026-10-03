@@ -135,6 +135,9 @@ export default function TemptationJudge() {
     decideErrorKind === 'FORBIDDEN' ||
     decideErrorKind === 'ALREADY_DECIDED'
 
+  // 가격이 없는 상품은 전용 안내를 보여주므로 일반 실패 안내와 함께 열리지 않게 합니다.
+  const isPriceRequiredDecideError = decideErrorKind === 'PRICE_REQUIRED'
+
   const handleNotBuy = () => {
     if (!product || isDeciding || isExtending) return
     setPendingDecision({ type: 'SKIP', product })
@@ -185,7 +188,7 @@ export default function TemptationJudge() {
         />
       )
     }
-    return <p>상품을 찾을 수 없습니다.</p>
+    return <p className={styles.emptyState}>상품을 찾을 수 없습니다.</p>
   }
 
   const totalHours = Math.round(
@@ -300,7 +303,12 @@ export default function TemptationJudge() {
       />
 
       <ConfirmDialog
-        isOpen={isDecideError && !isDecideUnauthorized && !isTerminalDecideError}
+        isOpen={
+          isDecideError &&
+          !isDecideUnauthorized &&
+          !isTerminalDecideError &&
+          !isPriceRequiredDecideError
+        }
         title="결정을 저장하지 못했습니다."
         description="다시 시도해주세요."
         onlyConfirm
@@ -317,6 +325,16 @@ export default function TemptationJudge() {
         confirmText="확인"
         onCancel={handleTerminalDecideErrorConfirm}
         onConfirm={handleTerminalDecideErrorConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={isPriceRequiredDecideError}
+        title="가격 정보가 필요합니다."
+        description="가격이 등록되지 않은 상품은 결정을 내릴 수 없습니다."
+        onlyConfirm
+        confirmText="확인"
+        onCancel={handleDecideFailConfirm}
+        onConfirm={handleDecideFailConfirm}
       />
 
       <ConfirmDialog
