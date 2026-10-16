@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 0 15px 40px;
+  min-height: calc(100vh - 180px);
+}
+
+.headerContent {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.pageDescription {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1;
+  color: #898989;
+}

@@ -1,0 +1,138 @@
+.form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--account-card-radius, 16px);
+  background: #ffffff;
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
+}
+
+.warningBox {
+  padding: 20px;
+  border-radius: 12px;
+  background: #f7fbfa;
+}
+
+.warningHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.warningIcon {
+  color: #e5484d;
+}
+
+.warningTitle {
+  color: #101828;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.warningList {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.warningList li {
+  position: relative;
+  margin-bottom: 12px;
+  padding-left: 16px;
+  color: #898989;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.warningList li::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #c0cece;
+  font-size: 18px;
+  content: '•';
+}
+
+.warningList li:last-child {
+  margin-bottom: 0;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.optional {
+  margin-left: 4px;
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  height: 48px;
+  padding: 0 46px 0 16px;
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: 12px;
+  outline: none;
+  background: white;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  appearance: none;
+  transition: border-color 0.15s;
+}
+
+.select:focus {
+  border-color: var(--color-main-500);
+}
+
+.placeholder {
+  color: #d1d5dc;
+}
+
+.selectIcon {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  color: var(--color-main-500);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.actionGroup {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.withdrawButton {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+  background: #ffbebe;
+  color: #ee0000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelButton {
+  width: 100%;
+}

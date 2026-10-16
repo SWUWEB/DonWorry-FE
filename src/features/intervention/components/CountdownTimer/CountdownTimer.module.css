@@ -1,0 +1,16 @@
+.time {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-main-500, #2f7f82);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

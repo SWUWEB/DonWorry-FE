@@ -1,0 +1,42 @@
+.card {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: var(--account-card-radius, 16px);
+  overflow: hidden;
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
+}
+
+.menuButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: none;
+  border-bottom: 1px solid #f1f1f1;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.menuButton:last-child {
+  border-bottom: none;
+}
+
+.icon {
+  color: #c0c0c0;
+  flex-shrink: 0;
+}
+
+.withdraw {
+  color: #ff8484;
+}
+
+.withdraw .icon {
+  color: #ffb4b4;
+}

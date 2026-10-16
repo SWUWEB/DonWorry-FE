@@ -1,0 +1,313 @@
+import client from './client'
+import type {
+  PostApiV1AuthLoginIdRecoveryRequestData,
+  LoginIdRecoveryRequestResponse,
+} from './generated'
+
+export const requestLoginIdRecovery = async (
+  body: PostApiV1AuthLoginIdRecoveryRequestData['body'],
+): Promise<LoginIdRecoveryRequestResponse> => {
+  const { data } = await client.post<LoginIdRecoveryRequestResponse>(
+    '/api/v1/auth/login-id-recovery/request',
+    body,
+  )
+  return data
+}
+
+export interface SignUpRequest {
+  name: string
+  loginId: string
+  email: string
+  emailVerificationToken: string
+  password: string
+  passwordConfirm: string
+  phoneNumber: string
+}
+
+export interface SignUpResponse {
+  success: boolean
+  message: string
+
+  data: {
+    userId: string
+    loginId: string
+    name: string
+    email: string
+    phoneNumber: string
+  }
+}
+
+export const signUp = async (body: SignUpRequest): Promise<SignUpResponse> => {
+  const { data } = await client.post<SignUpResponse>('/api/v1/auth/signup', body)
+
+  return data
+}
+
+export interface CheckEmailRequest {
+  email: string
+}
+
+export interface CheckEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    available: boolean
+  }
+}
+
+export interface SendEmailRequest {
+  email: string
+}
+
+export interface ConfirmEmailRequest {
+  email: string
+  code: string
+}
+
+export interface SendEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+    // 개발 편의용 필드라 운영 환경에서는 내려오지 않을 수 있습니다.
+    debugCode?: string
+  }
+}
+
+export interface ConfirmEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    emailVerificationToken: string
+  }
+}
+
+//이메일 중복확인
+
+export const checkEmail = async (email: string): Promise<CheckEmailResponse> => {
+  const { data } = await client.get<CheckEmailResponse>('/api/v1/auth/check-email', {
+    params: {
+      email,
+    },
+  })
+
+  return data
+}
+
+//아이디 중복확인
+
+export interface CheckLoginIdResponse {
+  success: boolean
+  message: string
+
+  data: {
+    available: boolean
+  }
+}
+
+export const checkLoginId = async (loginId: string): Promise<CheckLoginIdResponse> => {
+  const { data } = await client.get<CheckLoginIdResponse>('/api/v1/auth/check-login-id', {
+    params: {
+      loginId,
+    },
+  })
+
+  return data
+}
+
+export const sendVerificationEmail = async (body: SendEmailRequest): Promise<SendEmailResponse> => {
+  const { data } = await client.post<SendEmailResponse>('/api/v1/auth/email-verifications', body)
+
+  return data
+}
+
+export const confirmVerificationEmail = async (
+  body: ConfirmEmailRequest,
+): Promise<ConfirmEmailResponse> => {
+  const { data } = await client.post<ConfirmEmailResponse>(
+    '/api/v1/auth/email-verifications/confirm',
+    body,
+  )
+
+  return data
+}
+
+// 로그인
+
+export interface LoginRequest {
+  loginId: string
+  password: string
+}
+
+export interface LoginResponse {
+  success: boolean
+  message: string
+
+  data: {
+    accessToken: string
+    refreshToken: string
+    tokenType: string
+
+    user: {
+      userId: string
+      loginId: string
+      name: string
+      email: string
+      phoneNumber: string
+    }
+  }
+}
+
+export const login = async (body: LoginRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/login', body)
+
+  return data
+}
+
+// 로그아웃
+
+export interface LogoutRequest {
+  refreshToken: string
+}
+
+export const logout = async (body: LogoutRequest): Promise<void> => {
+  await client.post('/api/v1/auth/logout', body)
+}
+
+// 카카오
+export interface KakaoLoginRequest {
+  authorizationCode: string
+}
+
+// 409: 동일 이메일의 로컬 계정이 이미 있어 본인 확인(계정 연결)이 필요할 때의 응답 바디
+export interface KakaoLinkRequiredResponse {
+  success: false
+  code: string
+  message: string
+  data: {
+    linkingToken: string
+    verificationMethods: ('PASSWORD' | 'EMAIL')[]
+    expiresInSeconds: number
+  }
+}
+
+export const kakaoLogin = async (body: KakaoLoginRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/kakao/login', body)
+
+  return data
+}
+
+// 카카오 계정 연결 (비밀번호 인증)
+
+export interface KakaoLinkRequest {
+  linkingToken: string
+  password: string
+}
+
+export const kakaoLink = async (body: KakaoLinkRequest): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>('/api/v1/auth/kakao/link', body)
+
+  return data
+}
+
+//카카오 계정 연결 이메일 인증요청
+export interface KakaoLinkEmailRequest {
+  linkingToken: string
+}
+
+export interface KakaoLinkEmailResponse {
+  success: boolean
+  message: string
+
+  data: {
+    email: string
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+    debugCode?: string
+  }
+}
+
+export const sendKakaoLinkEmail = async (
+  body: KakaoLinkEmailRequest,
+): Promise<KakaoLinkEmailResponse> => {
+  const { data } = await client.post<KakaoLinkEmailResponse>(
+    '/api/v1/auth/kakao/link/email-verifications',
+    body,
+  )
+
+  return data
+}
+
+//이메일 인증으로 카카오계정연결
+export interface ConfirmKakaoLinkEmailRequest {
+  linkingToken: string
+  code: string
+}
+
+export const confirmKakaoLinkEmail = async (
+  body: ConfirmKakaoLinkEmailRequest,
+): Promise<LoginResponse> => {
+  const { data } = await client.post<LoginResponse>(
+    '/api/v1/auth/kakao/link/email-verifications/confirm',
+    body,
+  )
+
+  return data
+}
+
+// 비밀번호 재설정 요청
+export interface PasswordResetRequest {
+  email: string
+}
+
+export interface PasswordResetResponse {
+  success: boolean
+  message: string
+  data: {
+    codeTtlSeconds: number
+    resendCooldownSeconds: number
+  }
+}
+
+export const requestPasswordReset = async (
+  body: PasswordResetRequest,
+): Promise<PasswordResetResponse> => {
+  const { data } = await client.post<PasswordResetResponse>(
+    '/api/v1/auth/password-reset/request',
+    body,
+  )
+
+  return data
+}
+
+//비밀번호 재설정 완료
+export interface PasswordResetConfirmRequest {
+  email: string
+  code: string
+  newPassword: string
+  newPasswordConfirm: string
+}
+
+export interface PasswordResetConfirmResponse {
+  success: boolean
+  message: string
+}
+
+export const confirmPasswordReset = async (
+  body: PasswordResetConfirmRequest,
+): Promise<PasswordResetConfirmResponse> => {
+  const { data } = await client.patch<PasswordResetConfirmResponse>(
+    '/api/v1/auth/password-reset/confirm',
+    body,
+  )
+
+  return data
+}
+
+// 로그인 중복확인

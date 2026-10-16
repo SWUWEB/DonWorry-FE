@@ -1,0 +1,154 @@
+.section {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-gray-100);
+  border-radius: 20px;
+  background: var(--color-text-white);
+  box-shadow: var(--budget-card-shadow, 0 4px 14px rgba(36, 49, 48, 0.06));
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.totalBadge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-main-50, #e6f3f2);
+  color: var(--color-main-500);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.row {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-gray-50, #f2f2f2);
+}
+
+.row:first-of-type {
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.categoryName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.remaining {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-gray-200);
+}
+
+.budgetButton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.budgetAmount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.editHint {
+  font-size: 10px;
+  color: var(--color-gray-200);
+}
+
+.budgetInput {
+  width: 100px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-main-500);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--color-text-primary);
+}
+
+.progressTrack {
+  margin-top: 12px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-gray-50, #f0f0f0);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-main-500);
+}
+
+.progressRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-gray-200);
+}
+
+.percent {
+  font-weight: 700;
+}
+
+.addButton {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1px dashed var(--color-gray-100);
+  border-radius: 12px;
+  background: none;
+  color: var(--color-gray-200);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.categoryPicker {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-main-500);
+  border-radius: 12px;
+  background: var(--color-text-white);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}

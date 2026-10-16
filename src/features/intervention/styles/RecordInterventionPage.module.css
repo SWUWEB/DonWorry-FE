@@ -1,0 +1,74 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--color-text-white, #fefefe);
+}
+
+.content {
+  flex: 1;
+  padding: 32px 27px 0;
+}
+
+.heading {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-text-primary, #243130);
+}
+
+.description {
+  margin: 0 0 24px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
+.description p {
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 27px 32px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  font-size: 14px;
+  color: var(--color-gray-300, #5b6b6a);
+  text-align: center;
+}
+
+.retryButton {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.errorText {
+  margin: 0 27px 12px;
+  font-size: 13px;
+  color: #eb0000;
+  text-align: center;
+}
+
+.skeletonContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

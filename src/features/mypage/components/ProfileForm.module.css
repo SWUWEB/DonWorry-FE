@@ -1,0 +1,118 @@
+.form,
+.status {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--account-card-radius, 16px);
+  background: #ffffff;
+  box-shadow: var(--account-card-shadow, 0 4px 16px rgba(36, 49, 48, 0.08));
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.birthField {
+  position: relative;
+}
+
+.birthField input {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.birthDisplay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: 12px;
+  background: var(--color-text-white);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.birthPlaceholder {
+  color: var(--color-gray-200);
+}
+
+.birthDisplay svg {
+  flex-shrink: 0;
+  color: var(--color-text-primary);
+}
+
+.birthField:focus-within .birthDisplay {
+  border-color: var(--color-main-500);
+}
+
+.genderGroup {
+  display: flex;
+  gap: 24px;
+  margin-top: 4px;
+}
+
+.genderItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.genderItem input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.status {
+  color: var(--color-gray-300);
+  font-size: 14px;
+}
+
+.status p {
+  margin: 0;
+}
+
+.formError,
+.formSuccess {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.formError {
+  color: var(--color-text-red);
+}
+
+.formSuccess {
+  color: var(--color-text-green);
+}
+
+.buttonWrapper {
+  display: flex;
+  width: 100%;
+  margin-top: 4px;
+}

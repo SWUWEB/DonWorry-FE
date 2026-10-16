@@ -1,0 +1,23 @@
+.skeleton {
+  display: block;
+  flex-shrink: 0;
+  max-width: 100%;
+  background: var(--color-main-200);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

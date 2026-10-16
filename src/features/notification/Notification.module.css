@@ -1,0 +1,139 @@
+.main {
+  flex: 1;
+  padding: 8px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sortRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+}
+
+.readAllBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-gray-300);
+  cursor: pointer;
+}
+
+.readAllBtn:disabled {
+  color: var(--color-gray-100);
+  cursor: default;
+}
+
+.sortWrap {
+  position: relative;
+}
+
+.sortBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.iconUp {
+  transform: rotate(180deg);
+}
+
+.sortDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #fff;
+  border: 1px solid var(--color-gray-100);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  min-width: 150px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.sortOption {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.sortOption:hover {
+  background: var(--color-main-100);
+}
+
+.sortOptionActive {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-gray-300);
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+.empty p {
+  margin: 0 0 12px;
+}
+
+.retryButton {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-main-500);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* NotificationCard와 같은 크기의 카드 뼈대 */
+.skeletonCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 90px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fefefe;
+  box-shadow:
+    0 2px 6px 0 rgba(0, 0, 0, 0.08),
+    0 1px 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.skeletonText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}

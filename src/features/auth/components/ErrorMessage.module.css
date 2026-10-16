@@ -1,0 +1,15 @@
+.error {
+  margin: 0;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ff3b30;
+}
+
+.success {
+  margin: 0;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #22c55e;
+}

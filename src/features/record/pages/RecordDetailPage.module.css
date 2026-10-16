@@ -1,0 +1,125 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 19px;
+  padding-bottom: 24px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  font-size: 14px;
+  color: var(--color-gray-300, #5b6b6a);
+  text-align: center;
+}
+
+.retryButton {
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-main-500, #2f7f82);
+  color: var(--color-text-white, #fefefe);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.categoryBadge {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 11px;
+  border: 1px solid var(--color-main-500, #2f7f82);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-main-500, #2f7f82);
+  white-space: nowrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
+.amount {
+  margin: 0;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text-primary, #243130);
+}
+
+.amount.consume {
+  color: var(--color-gray-300, #5b6b6a);
+  text-decoration: line-through;
+}
+
+.date {
+  align-self: flex-end;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 27px 20px 32px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.reasonSection .sectionLabel {
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.sectionLabel {
+  margin: 0;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-gray-300, #5b6b6a);
+}
+
+.reason {
+  margin: 0 0 16px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--color-gray-100, #dddddd);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: var(--color-text-primary, #243130);
+}
+
+.skeletonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}

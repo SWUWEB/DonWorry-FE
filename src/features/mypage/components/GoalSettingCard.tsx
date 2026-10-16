@@ -1,0 +1,256 @@
+import { useEffect, useState } from 'react'
+import { isAxiosError } from 'axios'
+import Button from '@/shared/components/Button'
+import InputField from '@/shared/components/InputField'
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { isUnauthorizedError } from '@/shared/utils/isUnauthorizedError'
+import { useDeleteSavingGoal, useSavingGoal, useSetSavingGoal } from '../hooks/useUser'
+import Skeleton, { SkeletonGroup } from '@/shared/components/Skeleton'
+import styles from './GoalSettingCard.module.css'
+
+interface GoalSettingCardProps {
+  onUnauthorized?: () => void
+}
+
+export default function GoalSettingCard({ onUnauthorized = () => {} }: GoalSettingCardProps) {
+  const { data: goal, isLoading, isError, error: queryError, refetch } = useSavingGoal()
+  const { mutate: setSavingGoal, isPending } = useSetSavingGoal()
+  const { mutate: deleteSavingGoal, isPending: isDeleting } = useDeleteSavingGoal()
+
+  const [goalText, setGoalText] = useState('')
+  const [goalAmount, setGoalAmount] = useState('')
+  const [isActive, setIsActive] = useState(true)
+  const [error, setError] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+  const [deleted, setDeleted] = useState(false)
+  const [isUnauthorized, setIsUnauthorized] = useState(false)
+  const isBusy = isPending || isDeleting
+
+  useEffect(() => {
+    // 전용 조회 응답을 사용해 비활성 목표의 금액과 활성 여부도 그대로 복원합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGoalText(goal?.savingGoalText ?? '')
+    const targetAmount = goal?.targetSavingAmount
+    setGoalAmount(targetAmount == null ? '' : String(targetAmount))
+    setIsActive(goal?.savingGoalText ? goal.savingGoalIsActive : true)
+  }, [goal])
+
+  const unauthorizedDialog = (
+    <ConfirmDialog
+      isOpen={isUnauthorized || isUnauthorizedError(queryError)}
+      title="로그인이 필요합니다."
+      description="로그인 후 다시 이용해주세요."
+      confirmText="로그인하기"
+      onlyConfirm
+      onCancel={onUnauthorized}
+      onConfirm={onUnauthorized}
+    />
+  )
+
+  if (isLoading) {
+    return (
+      <SkeletonGroup label="목표 정보 불러오는 중" className={styles.card}>
+        <h2 className={styles.title}>목표 설정</h2>
+        {[0, 1].map((i) => (
+          <div key={i} className={styles.inputGroup}>
+            <Skeleton width={70} height={14} />
+            <Skeleton height={48} radius={12} />
+          </div>
+        ))}
+        <Skeleton height={44} radius={12} />
+        <Skeleton height={52} radius={12} />
+      </SkeletonGroup>
+    )
+  }
+
+  if (!goal) {
+    return (
+      <section className={styles.card}>
+        <h2 className={styles.title}>목표 설정</h2>
+        <p className={styles.formError} role="alert">
+          목표 정보를 불러오지 못했습니다.
+        </p>
+        <Button variant="outline" onClick={() => void refetch()}>
+          다시 시도
+        </Button>
+        {unauthorizedDialog}
+      </section>
+    )
+  }
+
+  const handleSave = () => {
+    if (isBusy) return
+    if (!goalText.trim()) {
+      setError('목표 이름을 입력해주세요.')
+      return
+    }
+
+    const amount = Number(goalAmount.replace(/,/g, ''))
+    if (!goalAmount.trim() || !Number.isFinite(amount) || amount <= 0) {
+      setError('목표 금액을 입력해주세요.')
+      return
+    }
+
+    setError('')
+    setSaved(false)
+    setDeleted(false)
+
+    setSavingGoal(
+      { savingGoalText: goalText, targetSavingAmount: amount, savingGoalIsActive: isActive },
+      {
+        onSuccess: () => setSaved(true),
+        onError: (err) => {
+          if (isUnauthorizedError(err)) {
+            setIsUnauthorized(true)
+            return
+          }
+          const fieldError = isAxiosError(err)
+            ? Object.values(
+                (err.response?.data as { errors?: { fieldErrors?: Record<string, string[]> } })
+                  ?.errors?.fieldErrors ?? {},
+              )
+                .flat()
+                .find(Boolean)
+            : undefined
+
+          setError(fieldError ?? '저장하지 못했습니다. 잠시 후 다시 시도해주세요.')
+        },
+      },
+    )
+  }
+
+  const handleDelete = () => {
+    if (isBusy) return
+    setDeleteError('')
+    deleteSavingGoal(undefined, {
+      onSuccess: () => {
+        setIsDeleteOpen(false)
+        setGoalText('')
+        setGoalAmount('')
+        setIsActive(true)
+        setError('')
+        setSaved(false)
+        setDeleted(true)
+      },
+      onError: (err) => {
+        if (isUnauthorizedError(err)) {
+          setIsDeleteOpen(false)
+          setIsUnauthorized(true)
+          return
+        }
+        setDeleteError('목표를 삭제하지 못했습니다. 잠시 후 다시 시도해주세요.')
+      },
+    })
+  }
+
+  return (
+    <section className={styles.card}>
+      <h2 className={styles.title}>목표 설정</h2>
+
+      {isError && (
+        <div>
+          <p className={styles.formError} role="alert">
+            최신 목표 정보를 불러오지 못했습니다. 현재 표시된 정보를 유지합니다.
+          </p>
+          <Button variant="outline" disabled={isBusy} onClick={() => void refetch()}>
+            다시 시도
+          </Button>
+        </div>
+      )}
+
+      <div className={styles.inputGroup}>
+        <InputField
+          label="목표 이름"
+          placeholder="예: 여행 자금, 목돈 마련"
+          value={goalText}
+          readOnly={isBusy}
+          onChange={(e) => {
+            setGoalText(e.target.value)
+            setSaved(false)
+            setDeleted(false)
+          }}
+        />
+      </div>
+
+      <div className={styles.inputGroup}>
+        <InputField
+          label="목표 금액"
+          placeholder="금액을 입력하세요"
+          inputMode="numeric"
+          value={goalAmount}
+          readOnly={isBusy}
+          onChange={(e) => {
+            setGoalAmount(e.target.value.replace(/[^0-9]/g, ''))
+            setSaved(false)
+            setDeleted(false)
+          }}
+          rightElement={<span className={styles.unit}>원</span>}
+        />
+      </div>
+
+      <div className={styles.toggleSection}>
+        <div>
+          <p className={styles.toggleTitle}>목표 달성 표시</p>
+
+          <p className={styles.toggleDescription}>마이페이지에서 목표 달성률을 표시합니다</p>
+        </div>
+
+        <button
+          type="button"
+          className={`${styles.toggle} ${isActive ? styles.toggleOn : styles.toggleOff}`}
+          aria-label={`목표 달성 표시 ${isActive ? '끄기' : '켜기'}`}
+          disabled={isBusy}
+          onClick={() => {
+            setIsActive((prev) => !prev)
+            setSaved(false)
+          }}
+        >
+          <div className={styles.toggleCircle} />
+        </button>
+      </div>
+
+      {error && (
+        <p className={styles.formError} role="alert">
+          {error}
+        </p>
+      )}
+      {saved && <p className={styles.formSuccess}>저장되었습니다.</p>}
+      {deleted && (
+        <p className={styles.formSuccess} role="status">
+          목표가 삭제되었습니다. 새 목표를 설정해보세요.
+        </p>
+      )}
+
+      <Button onClick={handleSave} disabled={isBusy}>
+        {isPending ? '저장 중...' : '저장하기'}
+      </Button>
+      {goal.savingGoalText && (
+        <Button
+          variant="outline"
+          disabled={isBusy}
+          onClick={() => {
+            setDeleteError('')
+            setIsDeleteOpen(true)
+          }}
+        >
+          목표 삭제
+        </Button>
+      )}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        title="목표를 삭제할까요?"
+        description="현재 목표가 해제됩니다. 삭제 후 새 목표를 설정할 수 있어요."
+        confirmText={isDeleting ? '삭제 중...' : '삭제하기'}
+        isLoading={isDeleting}
+        errorMessage={deleteError}
+        onCancel={() => {
+          if (!isDeleting) setIsDeleteOpen(false)
+        }}
+        onConfirm={handleDelete}
+      />
+      {unauthorizedDialog}
+    </section>
+  )
+}

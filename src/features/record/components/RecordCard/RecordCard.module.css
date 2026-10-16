@@ -1,0 +1,89 @@
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  padding: 8px;
+
+  border-radius: 16px;
+  background: #fdfefe;
+}
+
+.left {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  /* 긴 상품명이 금액 영역을 밀어내지 않고 남은 폭 안에서 줄바꿈되게 합니다. */
+  min-width: 0;
+}
+
+.thumbnail {
+  width: 46px;
+  height: 46px;
+
+  border-radius: 7px;
+
+  background: #e4e4e4;
+
+  flex-shrink: 0;
+}
+
+.thumbnail {
+  object-fit: cover;
+}
+
+.fallbackThumbnail {
+  background: var(--color-text-white);
+  border: 1px solid var(--color-main-100);
+  box-sizing: border-box;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.category {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.amount {
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: right;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.saved {
+  color: #273233;
+}
+
+.consume {
+  color: #a8afaf;
+  text-decoration-line: line-through;
+}

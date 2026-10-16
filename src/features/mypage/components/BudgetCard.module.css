@@ -1,0 +1,48 @@
+.card {
+  margin-bottom: 20px;
+  padding: 17px 20px;
+  border-radius: 16px;
+  background: var(--color-main-500);
+  box-shadow: 0 4px 16px rgba(36, 49, 48, 0.08);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.amount {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #286a6d;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.skeleton {
+  margin-top: 6px;
+}
+
+/* 진한 민트 카드 위에서도 보이도록 반투명 흰색으로 표시합니다. */
+.skeleton > span {
+  background: rgba(255, 255, 255, 0.3);
+}

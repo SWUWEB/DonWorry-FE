@@ -1,0 +1,125 @@
+.card {
+  width: 100%;
+  margin-top: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-gray-100);
+  border-radius: 16px;
+  background: var(--color-text-white);
+  box-shadow: var(--budget-card-shadow, 0 4px 14px rgba(36, 49, 48, 0.06));
+}
+
+.wageRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.wageText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.description {
+  color: var(--color-gray-200);
+  font-size: 11px;
+}
+
+.wageValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-main-500);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.unit {
+  color: #c0c0c0;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.metricCard {
+  min-width: 0;
+  min-height: 94px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #f7faf9;
+}
+
+.metricLabel {
+  overflow: hidden;
+  color: #a3aaba;
+  font-size: 12px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hoursValue,
+.emptyValue {
+  color: #182030;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hoursValueAccent {
+  color: var(--color-main-500);
+}
+
+.hoursUnit {
+  margin-left: 4px;
+  color: #a3aaba;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.notice {
+  margin: 12px 2px 0;
+  color: var(--color-gray-200);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@media (max-width: 340px) {
+  .card {
+    padding-inline: 16px;
+  }
+
+  .metricCard {
+    padding: 14px 12px;
+  }
+
+  .hoursValue,
+  .emptyValue {
+    font-size: 19px;
+  }
+}

@@ -1,0 +1,29 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f7faf9;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 56px;
+  margin-bottom: 20px;
+  margin-top: -10px;
+}
+
+.backButton {
+  position: absolute;
+  left: 0;
+  color: #1f2937;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
